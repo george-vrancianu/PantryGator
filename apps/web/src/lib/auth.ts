@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from './api';
 import { clearPendingTheme } from './appearance';
+import { nativeSession } from './nativeSession';
 import { resetScanSession } from './scanSession';
 import { voiceNote } from './voiceNote';
 import { recipeReads } from './recipeReads';
@@ -71,7 +72,8 @@ export function useSignOut() {
   return useMutation({
     mutationFn: () =>
       apiRequest('/auth/sign-out', { method: 'POST', body: {} }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await nativeSession.forget();
       clearPendingTheme();
       voiceNote.clear();
       recipeReads.clear();

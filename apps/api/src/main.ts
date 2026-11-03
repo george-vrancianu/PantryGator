@@ -9,7 +9,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { configureApp, MAX_REQUEST_BODY_BYTES } from './app.setup';
 import type { AppConfig } from './config/env';
-import { allowedOrigins, isAllowedOrigin } from './config/origins';
 import { serveWebApp } from './web-app';
 
 async function bootstrap() {
@@ -20,14 +19,6 @@ async function bootstrap() {
   const config = app.get(ConfigService<AppConfig, true>);
 
   configureApp(app);
-  const origins = allowedOrigins(config.get('CLIENT_ORIGIN', { infer: true }));
-  app.enableCors({
-    origin: (origin, callback) => {
-      callback(null, !origin || isAllowedOrigin(origin, origins));
-    },
-    credentials: true,
-    methods: 'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS',
-  });
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('PantryGator API')

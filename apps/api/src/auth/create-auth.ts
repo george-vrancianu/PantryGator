@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { bearer } from 'better-auth/plugins';
 import { allowedOrigins, isAllowedOrigin } from '../config/origins';
 import type { Database } from '../database/database.types';
 import * as schema from '../database/schema';
@@ -41,6 +42,10 @@ export function createAuth(database: Database, options: CreateAuthOptions) {
     }),
     emailAndPassword: { enabled: true },
     plugins: [
+      // The mobile apps cannot keep the session cookie (WKWebView drops it across
+      // sites), so they send it back as `Authorization: Bearer` (ADR 0036). Only the
+      // signed value from `set-auth-token` is accepted.
+      bearer({ requireSignature: true }),
       {
         // Registers our Family table as a Better Auth model so the hook
         // can write it through the sign-up transaction adapter. The

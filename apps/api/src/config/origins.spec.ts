@@ -9,6 +9,14 @@ describe('isAllowedOrigin', () => {
     expect(allowed(client)).toBe(true);
   });
 
+  it('allows the mobile apps', () => {
+    expect(allowed('capacitor://localhost')).toBe(true);
+    expect(allowed('https://localhost')).toBe(true);
+    expect(allowed('capacitor://localhost.evil.com')).toBe(false);
+    expect(allowed('https://localhost.evil.com')).toBe(false);
+    expect(allowed('capacitor://evil')).toBe(false);
+  });
+
   it('allows localhost and loopback dev origins', () => {
     expect(allowed('http://localhost:5173')).toBe(true);
     expect(allowed('http://127.0.0.1:5174')).toBe(true);
