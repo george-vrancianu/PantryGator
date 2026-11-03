@@ -171,3 +171,6 @@ Set these in the environment (see `.env.example`):
 - `CLIENT_ORIGIN` and `BETTER_AUTH_URL`: both the public address, e.g. `https://pantry.example.com`.
 - `BETTER_AUTH_SECRET` and `SCAN_TOKEN_SECRET`: different random values, e.g. `openssl rand -base64 48`.
 - `AI_API_KEY`: your OpenAI API key.
+- `TRUSTED_CLIENT_IP_HEADER`: behind a hosting proxy, the header holding the visitor's IP (Render: `cf-connecting-ip`). Leave it unset when nothing sits in front of the API.
+
+To deploy on Render, see `docs/deploy-render.md`.

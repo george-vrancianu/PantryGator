@@ -36,6 +36,7 @@ import { createAuth } from './create-auth';
           baseURL: config.get('BETTER_AUTH_URL', { infer: true }),
           secret: config.get('BETTER_AUTH_SECRET', { infer: true }),
           clientOrigin: config.get('CLIENT_ORIGIN', { infer: true }),
+          rateLimit: config.get('NODE_ENV', { infer: true }) !== 'test',
           signup: {
             requiresPromoCode: config.get('SIGNUP_REQUIRES_PROMO_CODE', {
               infer: true,

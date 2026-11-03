@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+  # Render deploys a main commit only after its checks pass, and a commit with no checks never deploys.
+  push:
+    branches: [main]
 
 permissions:
   contents: read

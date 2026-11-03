@@ -13,10 +13,8 @@ import { InviteCodeRateLimiter } from './invite-code-rate-limiter';
  * Run it after AuthGuard. Requests the per-Member limit blocks do not charge
  * the IP, so one throttled Member cannot lock out the rest of a shared IP.
  *
- * The IP is the socket address: nothing here trusts X-Forwarded-For, because
- * the API is not configured behind a proxy and the header would be spoofable.
- * Behind a proxy, enable Fastify's `trustProxy` first or every client shares
- * the proxy's IP.
+ * The IP is `request.clientIp`: the socket address, or the header named by
+ * `TRUSTED_CLIENT_IP_HEADER` behind a hosting proxy (see `common/client-ip.ts`).
  *
  * Per-process and in memory (fixed one-minute windows, held by
  * `InviteCodeRateLimiter`, which signup with an Invite Code shares): it assumes a single
@@ -42,7 +40,7 @@ export class InviteCodeRateLimitGuard implements CanActivate {
         now,
       ) ??
       this.limiter.hit(
-        `ip:${request.ip}`,
+        `ip:${request.clientIp}`,
         this.config.get('INVITE_CODE_LIMIT_PER_IP', { infer: true }),
         now,
       );

@@ -1,0 +1,61 @@
+# Render Blueprint: the API (serving the web app from its own origin) plus Postgres, in Frankfurt.
+# Spec: https://render.com/docs/blueprint-spec. Walkthrough: docs/deploy-render.md.
+# Region, database name, user and Postgres version cannot be changed after creation.
+
+services:
+  - type: web
+    name: pocket-pantry
+    runtime: node # Node version from .nvmrc
+    region: frankfurt
+    plan: 0.5c-512mb # 0.5 CPU, 512 MB. Watch memory: Scan bodies are up to 12 MB of JSON.
+    branch: main
+    # Deploy a main commit only once its GitHub Actions checks pass (.github/workflows/ci.yml).
+    autoDeployTrigger: checksPass
+    # NODE_ENV=production would skip devDependencies; the build and migrations need them.
+    buildCommand: npm ci --include=dev && npm run build
+    # Runs on a separate instance before each deploy; a failure keeps the previous deploy live.
+    preDeployCommand: npm run db:migrate
+    startCommand: npm run start:prod -w @pocket-pantry/api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HUSKY
+        value: '0'
+      # Relative to apps/api, where the start command runs.
+      - key: WEB_DIST_DIR
+        value: ../web/dist
+      # Cloudflare sits in front of every Render web service and overwrites this header,
+      # so clients cannot spoof it (https://render.com/articles/host-pocketbase-on-render).
+      - key: TRUSTED_CLIENT_IP_HEADER
+        value: cf-connecting-ip
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pocket-pantry-db
+          property: connectionString
+      # Random 256-bit values, generated once.
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: SCAN_TOKEN_SECRET
+        generateValue: true
+      # Prompted for when the Blueprint is created: the public address, e.g.
+      # https://pocket-pantry.onrender.com (both the same).
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: AI_API_KEY
+        sync: false
+      # `true` while testing: new Families need a Promo Code, so strangers cannot spend AI credits.
+      - key: SIGNUP_REQUIRES_PROMO_CODE
+        sync: false
+
+databases:
+  - name: pocket-pantry-db
+    plan: 0.1c-256mb
+    region: frankfurt
+    postgresMajorVersion: '17' # matches CI and docker-compose
+    databaseName: pocket_pantry
+    user: pocket_pantry
+    # No connections from outside Render. Use the service's Shell for one-off commands.
+    ipAllowList: []

@@ -61,7 +61,11 @@ export class CreditsController {
     @Res({ passthrough: true }) reply: FastifyReply,
     @Body(new ZodValidationPipe(redeemBody)) body: z.infer<typeof redeemBody>,
   ): Promise<RedeemedPromoCode> {
-    const refund = this.promoLimiter.reserve(member.id, request.ip, reply);
+    const refund = this.promoLimiter.reserve(
+      member.id,
+      request.clientIp,
+      reply,
+    );
     const redeemed = await this.promoCodes.redeem(member.id, body.code);
     // Only failures use the budget.
     refund();
