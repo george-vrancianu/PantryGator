@@ -1,8 +1,11 @@
 import multipart from '@fastify/multipart';
+import { ConfigService } from '@nestjs/config';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AUTH } from './auth/auth.constants';
 import type { AuthInstance } from './auth/auth.types';
 import { toErrorResponse } from './common/api-error';
+import { registerClientIp } from './common/client-ip';
+import type { AppConfig } from './config/env';
 import { MAX_VOICE_AUDIO_BYTES } from './voice/voice.schemas';
 import { registerAuthHandler } from './auth/register-auth-handler';
 
@@ -12,6 +15,13 @@ export const MAX_REQUEST_BODY_BYTES = 12 * 1024 * 1024;
 /** Wiring shared by the real server and the integration tests. */
 export function configureApp(app: NestFastifyApplication): void {
   app.setGlobalPrefix('api');
+  // Before any route: guards, the auth handler and limiters read request.clientIp.
+  registerClientIp(
+    app.getHttpAdapter().getInstance(),
+    app
+      .get(ConfigService<AppConfig, true>)
+      .get('TRUSTED_CLIENT_IP_HEADER', { infer: true }),
+  );
   // Errors raised by Fastify itself (malformed JSON, routes registered outside
   // Nest such as /api/auth/*) never reach Nest's exception filter.
   app

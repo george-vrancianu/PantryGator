@@ -18,6 +18,11 @@ export type CreateAuthOptions = {
   clientOrigin: string;
   /** Default: signup open, Welcome Grant, optional Promo Code (the seed and tests). */
   signup?: SignupPolicy;
+  /**
+   * Better Auth's own per-IP rate limit (sign-in and sign-up: 3 per 10 s). Default on.
+   * The API turns it off under NODE_ENV=test, where every request comes from one IP.
+   */
+  rateLimit?: boolean;
 };
 
 /** The Better Auth instance; shared by AuthModule and the dev seed. */
@@ -115,7 +120,10 @@ export function createAuth(database: Database, options: CreateAuthOptions) {
         },
       },
     },
-    rateLimit: { enabled: true, window: 60, max: 100 },
+    rateLimit: { enabled: options.rateLimit ?? true, window: 60, max: 100 },
+    // Key the rate limit on our header, not x-forwarded-for: behind a proxy that
+    // header has several entries (Better Auth then finds no IP) or a client-chosen one.
+    advanced: { ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] } },
     // Function form so our strict matcher governs, not better-auth's
     // looser `*` wildcard (which matches `10.a.evil.com`).
     trustedOrigins: (request) => {

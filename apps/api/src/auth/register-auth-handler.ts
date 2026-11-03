@@ -3,7 +3,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 import { codeForStatus } from '../common/api-error';
 import type { AuthInstance } from './auth.types';
 
-/** Internal header carrying the socket address to Better Auth's hooks; overwritten on every request. */
+/** Internal header carrying the client IP (`request.clientIp`) to Better Auth; overwritten on every request. */
 export const CLIENT_IP_HEADER = 'x-pocket-pantry-client-ip';
 
 /**
@@ -43,8 +43,8 @@ export function registerAuthHandler(
       const url = new URL(request.url, origin);
       const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
       const headers = fromNodeHeaders(request.raw.headers);
-      // The socket address, set by us: signup's Promo Code limiter trusts this, never a client header.
-      headers.set(CLIENT_IP_HEADER, request.ip);
+      // Set by us: signup's limiters and Better Auth's rate limit trust this, never a client-sent header.
+      headers.set(CLIENT_IP_HEADER, request.clientIp);
       if (hasBody && request.body !== undefined) {
         headers.set('content-type', 'application/json');
       }

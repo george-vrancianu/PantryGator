@@ -108,6 +108,12 @@ const envSchema = z.object({
     .default(
       'PocketPantry/1.0 (https://github.com/george-vrancianu/pocketPantry)',
     ),
+  /**
+   * Header holding the client's IP when a hosting proxy sits in front of the API (Render:
+   * `cf-connecting-ip`). Only name one the platform overwrites on every request; see
+   * `common/client-ip.ts`. Unset: the socket address, right when nothing proxies the API.
+   */
+  TRUSTED_CLIENT_IP_HEADER: z.string().min(1).optional(),
   /** Built web app (`apps/web/dist`) to serve from the API's origin. Unset: API only. */
   WEB_DIST_DIR: z.string().min(1).optional(),
   /** Dev-only: save every Scan's photos and raw AI answer here. Refused in production, ignored outside development. */
