@@ -30,6 +30,7 @@ import {
   siriNeedsShortcutUrl,
   siriShortcutUrl,
 } from '../../../lib/siriShortcut';
+import { usePreferredSpokenLanguage } from '../../../lib/usePreferredSpokenLanguage';
 import {
   ScopeCaption,
   SectionHeading,
@@ -264,6 +265,10 @@ export function SiriSection() {
   const [name, setName] = useState('');
   const [revealed, setRevealed] = useState<CreatedAssistantToken | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const { spokenLanguage } = usePreferredSpokenLanguage();
+  // The iPhone app has the commands built in. Siri has no Romanian, so only a Romanian speaker still
+  // needs the Shortcuts (their Dictate Text can be set to it). The web has no built-in commands.
+  const showSetupGuide = !siriOnDevice.isAvailable() || spokenLanguage === 'ro';
   const tokens = query.data;
   const error = create.error ?? revoke.error;
 
@@ -343,7 +348,7 @@ export function SiriSection() {
             </Stack>
           ) : null}
           {error ? <Alert>{translateApiError(t, error)}</Alert> : null}
-          <SetupGuide />
+          {showSetupGuide ? <SetupGuide /> : null}
         </Stack>
       </Card>
     </Stack>

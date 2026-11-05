@@ -76,8 +76,8 @@ struct GatorShortcuts: AppShortcutsProvider {
 /// Posts a dictated command to the Assistant Request endpoint and returns what Siri should say.
 /// A reply with `speech` is spoken as it is, whatever the status. Without one: 401 means the commands
 /// are switched off (the token was revoked or is unknown); anything else (no network, a bad body, a
-/// server error) means PantryGator could not be reached. The fixed replies are English for now and go
-/// through `String(localized:defaultValue:)` so they can be translated later.
+/// server error) means PantryGator could not be reached. The fixed replies go through
+/// `String(localized:defaultValue:)`; Localizable.xcstrings translates them (en, ro, da) by the phone's language.
 enum AssistantRequest {
     /// What each command puts before the dictated words (docs/siri-shortcut.md, "The Gator Shortcuts").
     enum Prefix {
@@ -90,7 +90,7 @@ enum AssistantRequest {
         localized: "siri.reply.notOn", defaultValue: "Turn on Siri in PantryGator Settings.")
     static let switchedOffReply = String(
         localized: "siri.reply.switchedOff",
-        defaultValue: "PantryGator voice commands are switched off. To turn them back on, open PantryGator, go to Settings, and turn on Siri.")
+        defaultValue: "PantryGator voice commands are off. Turn on Siri in PantryGator Settings.")
     static let unreachableReply = String(
         localized: "siri.reply.unreachable", defaultValue: "PantryGator couldn't be reached. Try again.")
     static let lockedReply = String(
