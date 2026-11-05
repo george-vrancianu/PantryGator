@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from './api';
 import { clearPendingTheme } from './appearance';
 import { nativeSession } from './nativeSession';
+import { siriOnDevice } from './siriOnDevice';
 import { resetScanSession } from './scanSession';
 import { voiceNote } from './voiceNote';
 import { recipeReads } from './recipeReads';
@@ -70,8 +71,11 @@ export function useSignUp<Result = undefined>(
 export function useSignOut() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-      apiRequest('/auth/sign-out', { method: 'POST', body: {} }),
+    mutationFn: async () => {
+      // The phone's Siri token is revoked while the session still can (best effort), then cleared.
+      if (siriOnDevice.isAvailable()) await siriOnDevice.signOut();
+      return apiRequest('/auth/sign-out', { method: 'POST', body: {} });
+    },
     onSuccess: async () => {
       await nativeSession.forget();
       clearPendingTheme();

@@ -21,11 +21,20 @@ const APP_TOKEN: Row = {
   lastUsedAt: null,
 };
 
-function stubServer(options: { failCreate?: boolean; failRevoke?: boolean }) {
-  let rows: Row[] = [];
+function stubServer(options: {
+  failCreate?: boolean;
+  failRevoke?: boolean;
+  /** The Member's active tokens to begin with. */
+  rows?: Row[];
+  /** The signed-in Member's id. */
+  memberId?: string;
+}) {
+  let rows: Row[] = options.rows ?? [];
   const { fetchMock, calls } = stubApi({
     'GET /api/auth/get-session': () =>
-      Response.json({ user: { id: 'm1', name: 'Ana', email: 'a@b.c' } }),
+      Response.json({
+        user: { id: options.memberId ?? 'm1', name: 'Ana', email: 'a@b.c' },
+      }),
     'GET /api/assistant-tokens': () => Response.json(rows),
     'POST /api/assistant-tokens': () => {
       if (options.failCreate)
@@ -110,7 +119,7 @@ describe('Use Siri switch in the iPhone app', () => {
       memberId: 'm1',
       apiOrigin: '',
     };
-    const calls = stubServer({});
+    const calls = stubServer({ rows: [APP_TOKEN] });
     renderWithProviders(<SiriSection />);
     const user = userEvent.setup();
 
@@ -177,7 +186,7 @@ describe('Use Siri switch in the iPhone app', () => {
       memberId: 'm1',
       apiOrigin: '',
     };
-    stubServer({ failRevoke: true });
+    stubServer({ failRevoke: true, rows: [APP_TOKEN] });
     renderWithProviders(<SiriSection />);
     const user = userEvent.setup();
 
@@ -193,5 +202,76 @@ describe('Use Siri switch in the iPhone app', () => {
     );
     expect(toggle).toHaveAttribute('aria-checked', 'true');
     expect(keychain.clear).not.toHaveBeenCalled();
+  });
+
+  describe('reconciling with the server', () => {
+    const STORED = {
+      secret: 's',
+      tokenId: 'app1',
+      memberId: 'm1',
+      apiOrigin: '',
+    };
+
+    it('keeps the switch on while the token is still in the Member list', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED };
+      stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      await screen.findByText('PantryGator app (iPhone)');
+      expect(keychain.clear).not.toHaveBeenCalled();
+    });
+
+    it('shows the switch off and clears the item when the token was revoked elsewhere', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED };
+      stubServer({ rows: [] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() => expect(keychain.item).toBeNull());
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'false'),
+      );
+    });
+
+    it('shows the switch off and clears the item for another Member, without a revoke request', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED, memberId: 'someone-else' };
+      const calls = stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() => expect(keychain.item).toBeNull());
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'false'),
+      );
+      expect(calls.map((c) => c.key)).not.toContain(
+        'DELETE /api/assistant-tokens/app1',
+      );
+    });
+
+    it('keeps the item when the token list cannot be read (offline)', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED };
+      const { fetchMock } = stubApi({
+        'GET /api/auth/get-session': () =>
+          Response.json({ user: { id: 'm1', name: 'Ana', email: 'a@b.c' } }),
+        'GET /api/assistant-tokens': () =>
+          Response.json({ code: 'boom', params: {} }, { status: 500 }),
+      });
+      vi.stubGlobal('fetch', fetchMock);
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      expect(keychain.clear).not.toHaveBeenCalled();
+    });
   });
 });
