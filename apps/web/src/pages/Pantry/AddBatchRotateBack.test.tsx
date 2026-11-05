@@ -2,7 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
 import { openOverlay, stubPantry } from '../../test/addBatch';
-import { shutter } from '../../test/scan';
+import { emitBarcode, fakeCamera, shutter } from '../../test/scan';
 import { stubScreen } from '../../test/screen';
 
 // The add-Batch camera rotates its chrome back on a phone on the web, as the other two cameras do
@@ -63,6 +63,19 @@ describe('The add-Batch camera rotates back', () => {
     expect(frame().style.transform).toContain('rotate(-270deg)');
     act(() => s.rotate(0));
     expect(frame().style.transform).toBe('');
+  });
+
+  it('holds the barcode result card inside the turned box', async () => {
+    stubPantry({
+      'GET /api/barcode-lookup/5941234567899': () =>
+        Response.json({ found: false }),
+    });
+    const s = stubScreen({ ...PHONE });
+    await openOverlay('barcode');
+    act(() => s.rotate(90));
+    await waitFor(() => expect(fakeCamera.emit).not.toBeNull());
+    act(() => emitBarcode('5941234567899'));
+    expect(frame()).toContainElement(await screen.findByTestId('barcode-card'));
   });
 
   it('is never rotated back in the app', async () => {

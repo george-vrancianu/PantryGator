@@ -162,18 +162,11 @@ export function ModeSlider<Mode extends CameraMode>({
     const onMove = (event: PointerEvent) => {
       const start = drag;
       if (!start || start.pointerId !== event.pointerId) return;
-      if (
-        !start.moved &&
-        !(() => {
-          const { x, y } = latest.current.toFrameDelta(
-            event.clientX - start.x,
-            event.clientY - start.y,
-          );
-          return startsHorizontalDrag(x, y);
-        })()
-      ) {
-        return;
-      }
+      const d = latest.current.toFrameDelta(
+        event.clientX - start.x,
+        event.clientY - start.y,
+      );
+      if (!start.moved && !startsHorizontalDrag(d.x, d.y)) return;
       if (!start.moved) {
         start.moved = true;
         latest.current.onDragChange?.(true);
