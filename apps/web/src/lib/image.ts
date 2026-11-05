@@ -1,5 +1,5 @@
 import { RECEIPT_OUTPUT_WIDTH } from './receiptGuide';
-import { turnedSize } from './cameraFrame';
+import { frameSize } from './cameraFrame';
 import type { ScreenAngle } from './cameraOrientation';
 import { guideRect, type GuideView, type Rect } from './scanGuides';
 
@@ -33,7 +33,7 @@ export async function resizeImage(
 ): Promise<string> {
   const bitmap = await createImageBitmap(source);
   try {
-    const turned = turnedSize(bitmap, turn);
+    const turned = frameSize(bitmap, turn);
     const { width, height } = fitWithin(turned.width, turned.height);
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -103,7 +103,7 @@ export function turnedGuideCrop(
   guide: Rect,
   turn: ScreenAngle,
 ): Rect {
-  return guideCropRect(turnedSize(frame, turn), view, guide);
+  return guideCropRect(frameSize(frame, turn), view, guide);
 }
 
 /** The size a receipt crop is sent at: at most `outputWidth` wide, keeping the crop's aspect, never upscaled. */

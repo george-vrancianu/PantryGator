@@ -6,7 +6,7 @@ import {
   useState,
   type RefObject,
 } from 'react';
-import { turnedSize } from '../../../lib/cameraFrame';
+import { frameSize } from '../../../lib/cameraFrame';
 import type { Rect } from '../../../lib/scanGuides';
 import { useCameraFrame } from './CameraFrame';
 
@@ -34,7 +34,7 @@ function Flying({
         x: bounds.left + bounds.width / 2,
         y: bounds.top + bounds.height / 2,
       });
-      const size = turnedSize(bounds, frame.angle);
+      const size = frameSize(bounds, frame.angle);
       const to = {
         left: centre.x - size.width / 2,
         top: centre.y - size.height / 2,

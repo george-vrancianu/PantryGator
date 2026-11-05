@@ -14,16 +14,6 @@ import {
 import { useCameraFrame } from './CameraFrame';
 import { glassFocusRing } from './glass';
 
-/** A drag's movement since `start`, read in the frame: `[dx, dy]`. */
-function swipeDelta(
-  toFrameDelta: (dx: number, dy: number) => { x: number; y: number },
-  event: { clientX: number; clientY: number },
-  start: { x: number; y: number },
-): [number, number] {
-  const delta = toFrameDelta(event.clientX - start.x, event.clientY - start.y);
-  return [delta.x, delta.y];
-}
-
 /**
  * Whether a sideways swipe on the viewfinder also drives the slider (handoff 12). The one switch to
  * limit the swipe to the slider itself if device testing shows accidental mode changes.
@@ -174,9 +164,13 @@ export function ModeSlider<Mode extends CameraMode>({
       if (!start || start.pointerId !== event.pointerId) return;
       if (
         !start.moved &&
-        !startsHorizontalDrag(
-          ...swipeDelta(latest.current.toFrameDelta, event, start),
-        )
+        !(() => {
+          const { x, y } = latest.current.toFrameDelta(
+            event.clientX - start.x,
+            event.clientY - start.y,
+          );
+          return startsHorizontalDrag(x, y);
+        })()
       ) {
         return;
       }

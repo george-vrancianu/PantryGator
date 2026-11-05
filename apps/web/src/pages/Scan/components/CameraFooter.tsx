@@ -2,7 +2,7 @@ import { Box, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { FOOTER_MIN_BOTTOM, SHUTTER_ROW_HEIGHT } from '../../../lib/scanGuides';
 import { glassBar, translucent } from './glass';
-import { insetBottom } from './CameraFrame';
+import { insetBottom, insetLeft, insetRight } from './CameraFrame';
 
 type Props = {
   /** The left cell of the shutter row: the photo stack on the Scan page, empty on the add-Batch camera. */
@@ -75,6 +75,8 @@ export function CameraFooter({
           ...glassBar,
           borderTop: `1px solid ${translucent(tokens.color.ink, 6)}`,
           pb: `max(${insetBottom}, ${FOOTER_MIN_BOTTOM}px)`,
+          pl: insetLeft,
+          pr: insetRight,
         }}
       >
         <Box

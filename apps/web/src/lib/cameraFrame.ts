@@ -21,11 +21,15 @@ export type FourInsets = {
   left: number;
 };
 
-/** The portrait frame's size for a window of `viewport`: width and height swap at 90 and 270. */
+/**
+ * The size of a box once turned by `angle`: width and height swap at 90 and 270. For the portrait
+ * frame of a window, and for a photo turned clockwise. Reads `width`/`height` by name, so an
+ * ImageBitmap or DOMRect (getters on the prototype) works.
+ */
 export function frameSize(viewport: Size, angle: ScreenAngle): Size {
   return angle === 90 || angle === 270
     ? { width: viewport.height, height: viewport.width }
-    : { ...viewport };
+    : { width: viewport.width, height: viewport.height };
 }
 
 function turnClockwise(x: number, y: number, angle: ScreenAngle): Point {
@@ -69,39 +73,39 @@ export function toFramePoint(
 }
 
 /**
- * The safe-area insets of the window's edges, as the frame's top and bottom: the frame's top is
- * the window's left at 90, its right at 270 and its bottom at 180.
+ * Which window edge sits at the frame's [top, bottom, left, right]: the frame's top is the
+ * window's left at 90, its right at 270 and its bottom at 180.
  */
+const FRAME_EDGES: Record<
+  ScreenAngle,
+  [keyof FourInsets, keyof FourInsets, keyof FourInsets, keyof FourInsets]
+> = {
+  0: ['top', 'bottom', 'left', 'right'],
+  90: ['left', 'right', 'top', 'bottom'],
+  180: ['bottom', 'top', 'right', 'left'],
+  270: ['right', 'left', 'bottom', 'top'],
+};
+
+/** The safe-area insets of the window's edges, as the frame's top and bottom. */
 export function frameInsets(
   insets: FourInsets,
   angle: ScreenAngle,
 ): { top: number; bottom: number } {
-  switch (angle) {
-    case 90:
-      return { top: insets.left, bottom: insets.right };
-    case 180:
-      return { top: insets.bottom, bottom: insets.top };
-    case 270:
-      return { top: insets.right, bottom: insets.left };
-    default:
-      return { top: insets.top, bottom: insets.bottom };
-  }
+  const [top, bottom] = FRAME_EDGES[angle];
+  return { top: insets[top], bottom: insets[bottom] };
 }
 
-/** The CSS `env()` for each frame edge: what the frame's top and bottom insets are called on the window. */
-export function frameInsetVariables(angle: ScreenAngle): {
-  top: string;
-  bottom: string;
-} {
-  const edge = {
-    0: ['top', 'bottom'],
-    90: ['left', 'right'],
-    180: ['bottom', 'top'],
-    270: ['right', 'left'],
-  }[angle];
+/** The CSS `env()` for each frame edge: what the frame's four insets are called on the window. */
+export function frameInsetVariables(
+  angle: ScreenAngle,
+): Record<keyof FourInsets, string> {
+  const [top, bottom, left, right] = FRAME_EDGES[angle];
+  const env = (edge: keyof FourInsets) => `env(safe-area-inset-${edge}, 0px)`;
   return {
-    top: `env(safe-area-inset-${edge[0]}, 0px)`,
-    bottom: `env(safe-area-inset-${edge[1]}, 0px)`,
+    top: env(top),
+    bottom: env(bottom),
+    left: env(left),
+    right: env(right),
   };
 }
 
@@ -120,9 +124,4 @@ export function videoPoint(photo: Point, turn: ScreenAngle): Point {
     default:
       return { ...photo };
   }
-}
-
-/** The size of a `frame` once turned clockwise by `turn`. */
-export function turnedSize(frame: Size, turn: ScreenAngle): Size {
-  return frameSize(frame, turn);
 }

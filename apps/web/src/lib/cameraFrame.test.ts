@@ -5,10 +5,9 @@ import {
   frameSize,
   toFrameDelta,
   toFramePoint,
-  turnedSize,
   videoPoint,
 } from './cameraFrame';
-import { rotatedBounds, rotatedCropTransform } from './image';
+import { rotatedBounds, rotatedCropTransform, turnedGuideCrop } from './image';
 
 const near = (a: number, b: number) => expect(a).toBeCloseTo(b, 6);
 
@@ -84,7 +83,55 @@ describe('the rotated-back frame', () => {
     expect(frameInsetVariables(90)).toEqual({
       top: 'env(safe-area-inset-left, 0px)',
       bottom: 'env(safe-area-inset-right, 0px)',
+      left: 'env(safe-area-inset-top, 0px)',
+      right: 'env(safe-area-inset-bottom, 0px)',
     });
+    expect(frameInsetVariables(270)).toMatchObject({
+      left: 'env(safe-area-inset-bottom, 0px)',
+      right: 'env(safe-area-inset-top, 0px)',
+    });
+    expect(frameInsetVariables(0)).toMatchObject({
+      left: 'env(safe-area-inset-left, 0px)',
+      right: 'env(safe-area-inset-right, 0px)',
+    });
+  });
+});
+
+/** Like an ImageBitmap or a DOMRect: width and height are getters on the prototype, not own properties. */
+class Measured {
+  constructor(
+    private w: number,
+    private h: number,
+  ) {}
+  get width() {
+    return this.w;
+  }
+  get height() {
+    return this.h;
+  }
+}
+
+describe('sizes read from an ImageBitmap or a DOMRect', () => {
+  it('keeps the size at 0 and 180 and swaps it at 90 and 270', () => {
+    const bitmap = new Measured(30, 40);
+    expect(frameSize(bitmap, 0)).toEqual({ width: 30, height: 40 });
+    expect(frameSize(bitmap, 180)).toEqual({ width: 30, height: 40 });
+    expect(frameSize(bitmap, 90)).toEqual({ width: 40, height: 30 });
+    expect(frameSize(new Measured(30, 40), 0)).toEqual({
+      width: 30,
+      height: 40,
+    });
+  });
+
+  it('gives the plain crop for a getter-sized frame at 0 and 180', () => {
+    const view = { width: 100, height: 200 };
+    const guide = { x: 10, y: 20, width: 50, height: 60 };
+    const plain = { width: 100, height: 200 };
+    for (const turn of [0, 180] as const) {
+      expect(
+        turnedGuideCrop(new Measured(100, 200), view, guide, turn),
+      ).toEqual(turnedGuideCrop(plain, view, guide, turn));
+    }
   });
 });
 
@@ -128,17 +175,17 @@ describe('the photo turn', () => {
   });
 
   it('gives a portrait photo from a landscape frame at 90 and 270', () => {
-    expect(turnedSize(frame, 90)).toEqual({ width: 1080, height: 1920 });
-    expect(turnedSize(frame, 270)).toEqual({ width: 1080, height: 1920 });
-    expect(turnedSize(frame, 180)).toEqual(frame);
-    expect(turnedSize(frame, 0)).toEqual(frame);
+    expect(frameSize(frame, 90)).toEqual({ width: 1080, height: 1920 });
+    expect(frameSize(frame, 270)).toEqual({ width: 1080, height: 1920 });
+    expect(frameSize(frame, 180)).toEqual(frame);
+    expect(frameSize(frame, 0)).toEqual(frame);
   });
 
   it.each([0, 90, 180, 270] as const)(
     'videoPoint at %i is the inverse of the clockwise turn',
     (turn) => {
       const size = { width: 1920, height: 1080 };
-      const photoSize = turnedSize(size, turn);
+      const photoSize = frameSize(size, turn);
       const p = { x: 0.5, y: 0.44 };
       const v = videoPoint(p, turn);
       // Take that point of the video through the turn and land on p.

@@ -26,7 +26,11 @@ import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
 import { BarcodeResultCard } from './components/BarcodeResultCard';
-import { CameraFrame, insetTop } from './components/CameraFrame';
+import {
+  CameraFrame,
+  insetTop,
+  swipeTouchAction,
+} from './components/CameraFrame';
 import { CameraFooter } from './components/CameraFooter';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
@@ -39,6 +43,7 @@ import { ZoomPill } from './components/ZoomPill';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
 import { measureShot, useGuideRect } from './hooks/useGuideRect';
 import { useScanLanguage } from '../../lib/useScanLanguage';
+import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 
 export type { CameraMode };
@@ -97,6 +102,7 @@ export function CameraOverlay({
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
   usePortraitLock();
+  const { rotateBack } = useCameraOrientation();
   const camera = useCamera();
   const { scanLanguage, scanLanguageToSend, setScanLanguage } =
     useScanLanguage();
@@ -306,7 +312,11 @@ export function CameraOverlay({
     >
       <Box
         ref={setViewfinder}
-        sx={{ position: 'absolute', inset: 0, touchAction: 'pan-y' }}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          touchAction: swipeTouchAction(rotateBack),
+        }}
       >
         <Box
           component="video"

@@ -118,6 +118,14 @@ describe.each(cameras)('Rotate back in %s', (_name, route) => {
     expect(frame()).toContainElement(screen.getByTestId('info-scrim'));
   });
 
+  it('holds the Scan Language menu inside the turned box', async () => {
+    const s = stubScreen({ ...PHONE });
+    renderCamera(route);
+    act(() => s.rotate(90));
+    await userEvent.click(screen.getByRole('button', { name: /Reading/ }));
+    expect(frame()).toContainElement(screen.getByRole('menu'));
+  });
+
   it('follows a rotation while the camera is open, and back to upright', () => {
     const s = stubScreen({ ...PHONE });
     renderCamera(route);
@@ -129,15 +137,17 @@ describe.each(cameras)('Rotate back in %s', (_name, route) => {
     expect(turned()).toContain('rotate(-270deg)');
   });
 
-  it('does not render again when one rotation fires change, orientationchange and resize', () => {
+  it('swipes along the screen-vertical on the viewfinder at 90 and 270', () => {
     const s = stubScreen({ ...PHONE });
     renderCamera(route);
+    const surface = () =>
+      (screen.queryByTestId('scan-viewfinder') ??
+        screen.getByTestId('camera-overlay').firstElementChild) as HTMLElement;
+    expect(getComputedStyle(surface()).touchAction).toBe('pan-y');
     act(() => s.rotate(90));
-    const box = frame();
-    act(() => s.setAngle(90));
-    act(() => window.dispatchEvent(new Event('resize')));
-    expect(frame()).toBe(box);
-    expect(turned()).toContain('rotate(-90deg)');
+    expect(getComputedStyle(surface()).touchAction).toBe('pan-x');
+    act(() => s.rotate(180));
+    expect(getComputedStyle(surface()).touchAction).toBe('pan-y');
   });
 
   it('never rotates back in the app', () => {

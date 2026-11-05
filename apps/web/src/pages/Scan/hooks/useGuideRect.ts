@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { CameraMode } from '../../../lib/cameraMode';
 import { frameSize } from '../../../lib/cameraFrame';
 import {
@@ -42,10 +43,12 @@ export function measureShot(feed?: HTMLElement | null): {
 
 /** The guide for `mode` on this screen, kept up to date when the screen is resized or rotated. */
 export function useGuideRect(mode: CameraMode): Rect {
-  // Re-measures whenever the angle or the window's size changes.
+  // Measured again only when the angle or the window's size changes, not on every render.
   const { rotateBack, viewportWidth, viewportHeight } = useCameraOrientation();
-  void rotateBack;
-  void viewportWidth;
-  void viewportHeight;
-  return guideRect(mode, measureView());
+  const view = useMemo(
+    () => measureView(),
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- the reading is the cue to measure again
+    [rotateBack, viewportWidth, viewportHeight],
+  );
+  return useMemo(() => guideRect(mode, view), [mode, view]);
 }

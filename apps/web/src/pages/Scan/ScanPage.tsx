@@ -10,7 +10,7 @@ import {
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shade } from './components/glass';
-import { CameraFrame } from './components/CameraFrame';
+import { CameraFrame, swipeTouchAction } from './components/CameraFrame';
 import { CameraFooter } from './components/CameraFooter';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
@@ -30,6 +30,7 @@ import {
   type Rect,
 } from '../../lib/scanGuides';
 import { failedCopyKey } from '../../lib/scanSession';
+import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
 
@@ -43,6 +44,7 @@ export function ScanPage(props: ScanPageProps) {
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
   usePortraitLock();
+  const { rotateBack } = useCameraOrientation();
   // Where the guide is when a card joins the Scan Session: the photo flies from there to the stack.
   const guideNow = useRef<Rect | null>(null);
   const { fly, stackRef, layer: flights } = useFlyToStack();
@@ -85,7 +87,11 @@ export function ScanPage(props: ScanPageProps) {
       <Box
         ref={setViewfinder}
         data-testid="scan-viewfinder"
-        sx={{ position: 'absolute', inset: 0, touchAction: 'pan-y' }}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          touchAction: swipeTouchAction(rotateBack),
+        }}
       >
         <Box
           component="video"
