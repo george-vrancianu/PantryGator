@@ -1,3 +1,5 @@
+import { nativeSession } from './nativeSession';
+
 // Same origin by default: Vite proxies `/api` in dev, the API serves the app in production.
 const apiOrigin = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 
@@ -43,18 +45,27 @@ export async function apiRequest<T>(
   path: string,
   { method = 'GET', body, signal, keepalive }: RequestOptions = {},
 ): Promise<T> {
+  // The mobile apps send the session as a Bearer token instead of the cookie.
+  // A browser skips the await, so the request still starts in the same tick.
+  const native = nativeSession.isActive();
+  const authorization = native
+    ? await nativeSession.authorization()
+    : undefined;
+  const headers: Record<string, string> = {
+    // A FormData body sets its own multipart content type (with the boundary).
+    ...(body === undefined || body instanceof FormData
+      ? {}
+      : { 'content-type': 'application/json' }),
+    ...(authorization ? { authorization } : {}),
+  };
   let response: Response;
   try {
     response = await fetch(`${apiOrigin}/api${path}`, {
       method,
-      credentials: 'include',
+      credentials: native ? 'omit' : 'include',
       ...(signal ? { signal } : {}),
       ...(keepalive ? { keepalive } : {}),
-      // A FormData body sets its own multipart content type (with the boundary).
-      headers:
-        body === undefined || body instanceof FormData
-          ? {}
-          : { 'content-type': 'application/json' },
+      headers,
       body:
         body === undefined || body instanceof FormData
           ? (body as FormData | undefined)
@@ -63,6 +74,8 @@ export async function apiRequest<T>(
   } catch {
     throw new ApiError('network_error', 0);
   }
+
+  if (native) await nativeSession.remember(response);
 
   if (!response.ok) {
     const parsed: unknown = await response.json().catch(() => null);

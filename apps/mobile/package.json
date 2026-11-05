@@ -1,0 +1,20 @@
+{
+  "name": "@pocket-pantry/mobile",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build:web": "VITE_API_URL=${API_URL:-https://pocket-pantry-6olt.onrender.com} npm run build:mobile -w @pocket-pantry/web",
+    "sync": "npm run build:web && cap sync",
+    "open:ios": "cap open ios",
+    "open:android": "cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/preferences": "^8.0.1"
+  }
+}

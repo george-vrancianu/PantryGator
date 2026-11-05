@@ -6,6 +6,7 @@ import type { AuthInstance } from './auth/auth.types';
 import { toErrorResponse } from './common/api-error';
 import { registerClientIp } from './common/client-ip';
 import type { AppConfig } from './config/env';
+import { allowedOrigins, isAllowedOrigin } from './config/origins';
 import { MAX_VOICE_AUDIO_BYTES } from './voice/voice.schemas';
 import { registerAuthHandler } from './auth/register-auth-handler';
 
@@ -15,12 +16,21 @@ export const MAX_REQUEST_BODY_BYTES = 12 * 1024 * 1024;
 /** Wiring shared by the real server and the integration tests. */
 export function configureApp(app: NestFastifyApplication): void {
   app.setGlobalPrefix('api');
+  const config = app.get(ConfigService<AppConfig, true>);
+  const origins = allowedOrigins(config.get('CLIENT_ORIGIN', { infer: true }));
+  app.enableCors({
+    origin: (origin, callback) => {
+      callback(null, !origin || isAllowedOrigin(origin, origins));
+    },
+    credentials: true,
+    methods: 'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS',
+    // The mobile apps read the session token from this header (Better Auth's bearer plugin).
+    exposedHeaders: ['set-auth-token'],
+  });
   // Before any route: guards, the auth handler and limiters read request.clientIp.
   registerClientIp(
     app.getHttpAdapter().getInstance(),
-    app
-      .get(ConfigService<AppConfig, true>)
-      .get('TRUSTED_CLIENT_IP_HEADER', { infer: true }),
+    config.get('TRUSTED_CLIENT_IP_HEADER', { infer: true }),
   );
   // Errors raised by Fastify itself (malformed JSON, routes registered outside
   // Nest such as /api/auth/*) never reach Nest's exception filter.

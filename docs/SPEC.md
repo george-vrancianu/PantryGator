@@ -10,7 +10,7 @@ The retzetar MVP proved that photographing a receipt, a product, a plate, or a p
 
 ## Solution
 
-Pocket Pantry is a mobile-first web app, with a Flutter mobile app planned later against the same API. A Member belongs to one Family. The Family shares a Pantry, a Shopping List, and Family Settings. Groceries enter the Pantry by Scan, by Finish Shopping, or by manual entry, and every entry is matched to the Catalog so the app can reason about what the family actually has. Expiry is tracked per Batch, and Expiring Soon items surface on the Dashboard.
+Pocket Pantry is a mobile-first web app, with iOS and Android apps that package the same web app with Capacitor ([ADR 0036](adr/0036-mobile-apps-wrap-the-web-app-with-capacitor.md)). A Member belongs to one Family. The Family shares a Pantry, a Shopping List, and Family Settings. Groceries enter the Pantry by Scan, by Finish Shopping, or by manual entry, and every entry is matched to the Catalog so the app can reason about what the family actually has. Expiry is tracked per Batch, and Expiring Soon items surface on the Dashboard.
 
 Wave 1 is a vertical slice: auth, Family, Pantry, the four Scan Modes, Shopping List, Dashboard, Family Settings, Admin catalog curation, and full internationalisation. Recipes, alerts, and push come in wave 2. Suggestions on the Shopping List (see Quick List) are not alerts: they are derived at read time and never pushed or stored as notifications.
 
@@ -150,12 +150,12 @@ These stories were added on 2026-10-10 after a grilling session and number on fr
 
 ### Repository and stack
 
-- npm-workspaces monorepo with three packages: a web app, an API, and a shared UI package. A Flutter app will join later as a fourth package and consumes the same API.
+- npm-workspaces monorepo with three packages: a web app, an API, and a shared UI package. The mobile apps live in `apps/mobile` and package the web build ([ADR 0036](adr/0036-mobile-apps-wrap-the-web-app-with-capacitor.md)).
 - The API and the UI package start as copies of the equivalent retzetar packages, renamed, with git history not carried over. Specifically copied: the NestJS on Fastify server, the Drizzle schema and migration tooling, better-auth integration with email and password, the structured-output AI service and its OpenAI configuration, the four scan services and their schemas and specs, the catalog matching validator, the receipt quantity normaliser, client image resizing, the typed fetch wrapper, and the MUI theme wrapper.
 - The web app is built fresh to the handoff: React, TypeScript, Vite, React Router, TanStack Query for server state, Zustand only for client-only state such as the in-progress Review.
 - Node version matches retzetar. Package scope is `@pocket-pantry`.
 - Postgres runs in Docker Compose locally. No deployment in wave 1. When there is one, the API must run as a single instance: the Plate token uses and the Invite Code rate limiter are in memory (see `apps/api/README.md`).
-- All business logic lives in the API. The web client renders, validates input, and calls endpoints. This is what keeps the future Flutter client thin.
+- All business logic lives in the API. The web client renders, validates input, and calls endpoints. This keeps any future second client thin.
 
 ### Design and UI
 
@@ -167,7 +167,7 @@ These stories were added on 2026-10-10 after a grilling session and number on fr
 
 ### Auth and Family
 
-- better-auth with email and password only. Sessions as in retzetar. Bearer-token mode is a later addition for Flutter.
+- better-auth with email and password only. Sessions as in retzetar. The mobile apps send the session as a Bearer token ([ADR 0036](adr/0036-mobile-apps-wrap-the-web-app-with-capacitor.md)).
 - Every Member belongs to exactly one Family, created at signup as a Household of One with the Member as Owner. There is no nullable family anywhere in the data model.
 - Family has one Owner. All Members have equal read and write on Family data. Owner-only actions: regenerate Invite Code, remove Member, transfer ownership, delete Family.
 - Invite Code: 8 characters from an unambiguous uppercase alphanumeric alphabet, reusable until it expires 7 days after generation. Regenerating revokes the previous code. Redeeming requires the code to be unexpired and the redeemer not to be in that Family already.
@@ -295,7 +295,7 @@ No end-to-end browser tests in wave 1.
 - Budget tracking and nutrition as real features. Their Widgets are static placeholders.
 - Image storage.
 - Deployment and hosting.
-- Flutter mobile app.
+- Mobile apps (now planned in [ADR 0036](adr/0036-mobile-apps-wrap-the-web-app-with-capacitor.md)).
 
 ## Further Notes
 

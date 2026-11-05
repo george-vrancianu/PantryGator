@@ -19,3 +19,5 @@
 ## Revisit
 
 Before the Flutter client starts. Tracked in the issue "Move Pantry roll-up and search server-side before the Flutter client". Moving it server-side would supersede this ADR and restore the SPEC wording.
+
+Update: the mobile apps package the web client with Capacitor (ADR 0036) and reuse this logic as it is, so they no longer require the move.

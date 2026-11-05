@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PantryGator</string>
+    <string name="title_activity_main">PantryGator</string>
+    <string name="package_name">ro.vrancianu.pantrygator</string>
+    <string name="custom_url_scheme">ro.vrancianu.pantrygator</string>
+</resources>

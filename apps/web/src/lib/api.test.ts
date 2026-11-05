@@ -1,5 +1,7 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Capacitor } from '@capacitor/core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, apiRequest } from './api';
+import { nativeSession } from './nativeSession';
 
 function stubFetch(response: Response | Error) {
   const fetchMock = vi.fn(() =>
@@ -70,6 +72,65 @@ describe('apiRequest', () => {
     await expect(apiRequest('/x')).rejects.toMatchObject({
       code: 'network_error',
       status: 0,
+    });
+  });
+});
+
+describe('apiRequest in the mobile apps', () => {
+  beforeEach(() => {
+    vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
+  });
+
+  afterEach(async () => {
+    await nativeSession.forget();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  const lastInit = (fetchMock: ReturnType<typeof stubFetch>) =>
+    fetchMock.mock.calls.at(-1)![1 as never] as RequestInit;
+
+  it('keeps the token a sign-in hands over and sends it as a Bearer token, without cookies', async () => {
+    stubFetch(
+      Response.json({}, { headers: { 'set-auth-token': 'abc.signature' } }),
+    );
+    await apiRequest('/auth/sign-in/email', { method: 'POST', body: {} });
+
+    const fetchMock = stubFetch(Response.json({}));
+    await apiRequest('/family');
+
+    const init = lastInit(fetchMock);
+    expect(init.credentials).toBe('omit');
+    expect(init.headers).toMatchObject({
+      authorization: 'Bearer abc.signature',
+    });
+  });
+
+  it('sends no Authorization header before signing in, or after signing out', async () => {
+    let fetchMock = stubFetch(Response.json({}));
+    await apiRequest('/auth/get-session');
+    expect(lastInit(fetchMock).headers).not.toHaveProperty('authorization');
+
+    stubFetch(Response.json({}, { headers: { 'set-auth-token': 'abc.sig' } }));
+    await apiRequest('/auth/sign-in/email', { method: 'POST', body: {} });
+    await nativeSession.forget();
+
+    fetchMock = stubFetch(Response.json({}));
+    await apiRequest('/auth/get-session');
+    expect(lastInit(fetchMock).headers).not.toHaveProperty('authorization');
+  });
+
+  it('keeps the token across an app restart', async () => {
+    stubFetch(Response.json({}, { headers: { 'set-auth-token': 'kept.sig' } }));
+    await apiRequest('/auth/sign-in/email', { method: 'POST', body: {} });
+
+    vi.resetModules();
+    const fresh = await import('./api');
+    const fetchMock = stubFetch(Response.json({}));
+    await fresh.apiRequest('/family');
+
+    expect(lastInit(fetchMock).headers).toMatchObject({
+      authorization: 'Bearer kept.sig',
     });
   });
 });

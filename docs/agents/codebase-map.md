@@ -4,11 +4,12 @@ npm workspaces monorepo (Node >= 24, see `.nvmrc`). Run `npm ci` once per worktr
 
 ## Workspaces
 
-| Path          | What                                                             |
-| ------------- | ---------------------------------------------------------------- |
-| `apps/api`    | NestJS on Fastify, Drizzle ORM, Postgres                         |
-| `apps/web`    | React + Vite + react-i18next, TanStack Query                     |
-| `packages/ui` | Design system on MUI, Storybook, imported as `@pocket-pantry/ui` |
+| Path          | What                                                                              |
+| ------------- | --------------------------------------------------------------------------------- |
+| `apps/api`    | NestJS on Fastify, Drizzle ORM, Postgres                                          |
+| `apps/web`    | React + Vite + react-i18next, TanStack Query                                      |
+| `packages/ui` | Design system on MUI, Storybook, imported as `@pocket-pantry/ui`                  |
+| `apps/mobile` | Capacitor iOS and Android apps packaging the web build (ADR 0036); see its README |
 
 Which linter each workspace uses: `CODING_STANDARDS.md`.
 
