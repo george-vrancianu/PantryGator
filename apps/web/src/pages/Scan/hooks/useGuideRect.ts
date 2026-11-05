@@ -15,7 +15,7 @@ import { useCameraOrientation } from '../../../lib/useCameraOrientation';
  * frame's edges, and the device class.
  */
 export function measureView(feed?: HTMLElement | null): GuideView {
-  const { deviceClass, rotateBack } = readCameraOrientation();
+  const { deviceClass, layout, rotateBack } = readCameraOrientation();
   const size = frameSize(
     {
       width: feed?.clientWidth || window.innerWidth,
@@ -27,6 +27,7 @@ export function measureView(feed?: HTMLElement | null): GuideView {
     ...size,
     insets: readSafeAreaInsets(rotateBack),
     deviceClass,
+    layout,
   };
 }
 

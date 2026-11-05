@@ -2,7 +2,6 @@ import {
   Alert,
   bodyFont,
   Box,
-  Snackbar,
   tokens,
   useForcedThemeColor,
   visuallyHidden,
@@ -11,12 +10,13 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shade } from './components/glass';
 import { CameraFrame, swipeTouchAction } from './components/CameraFrame';
-import { CameraFooter } from './components/CameraFooter';
+import { CameraControls } from './components/CameraControls';
+import { CameraToast } from './components/CameraToast';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
 import { ImportButton } from './components/ImportButton';
 import { InfoSheet } from './components/InfoSheet';
-import { ModeSlider } from './components/ModeSlider';
+import { ModePicker } from './components/ModeList';
 import { PhotoStack } from './components/PhotoStack';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ZoomPill } from './components/ZoomPill';
@@ -152,7 +152,7 @@ export function ScanPage(props: ScanPageProps) {
           onInfo={() => setInfoOpen(true)}
         />
 
-        <CameraFooter
+        <CameraControls
           zoom={
             screen.camera.zoomSupported ? (
               <ZoomPill onZoom={screen.camera.setZoom} />
@@ -217,7 +217,7 @@ export function ScanPage(props: ScanPageProps) {
             />
           }
           slider={
-            <ModeSlider
+            <ModePicker
               modes={screen.modes}
               mode={screen.mode}
               disabled={screen.modesDisabled || infoOpen}
@@ -231,16 +231,16 @@ export function ScanPage(props: ScanPageProps) {
 
         {flights}
 
-        <Snackbar
+        <CameraToast
           open={screen.toast !== null}
           onClose={screen.clearToast}
           // 56 pt above the footer, clear of its status line.
-          bottom={FOOTER_HEIGHT + FOOTER_MIN_BOTTOM + 56}
+          aboveFooter={FOOTER_HEIGHT + FOOTER_MIN_BOTTOM + 56}
         >
           <Alert severity={screen.toast?.severity} role="status">
             {screen.toast?.text}
           </Alert>
-        </Snackbar>
+        </CameraToast>
 
         <Box role="status" sx={visuallyHidden}>
           {(['failed', 'lookupFailed'] as const).map((key) =>
@@ -256,11 +256,11 @@ export function ScanPage(props: ScanPageProps) {
           ) : null}
         </Box>
 
-        <Snackbar open={screen.notAdded} onClose={screen.dismissNotAdded}>
+        <CameraToast open={screen.notAdded} onClose={screen.dismissNotAdded}>
           <Alert severity="warning" role="status">
             {t('notAdded')}
           </Alert>
-        </Snackbar>
+        </CameraToast>
 
         {infoOpen ? <InfoSheet onClose={closeInfo} /> : null}
       </CameraFrame>

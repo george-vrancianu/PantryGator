@@ -9,17 +9,22 @@ export type Insets = { top: number; bottom: number };
 export type GuideDeviceClass = 'phone' | 'tablet';
 
 /**
+ * Where the controls are: a `footer` under the feed (phones, tablet portrait) or a `rail` down the
+ * right edge (a tablet or desktop window in landscape).
+ */
+export type CameraLayout = 'footer' | 'rail';
+
+/**
  * The camera screen: its size and safe-area insets. The insets default to none, the device class to
- * a phone. `rightInset` is room taken on the right edge (pt, default 0); the clear area ends where
- * it starts. It only shapes tablet guides: a phone guide ignores it. ticket 762 is expected to replace it
- * with a layout input plus a shared RAIL_WIDTH constant.
+ * a phone, the layout to the footer. In the rail layout the clear area has no footer and stops
+ * `RAIL_WIDTH` short of the right edge; only tablet guides take that shape (a phone is never in it).
  */
 export type GuideView = {
   width: number;
   height: number;
   insets?: Insets;
   deviceClass?: GuideDeviceClass;
-  rightInset?: number;
+  layout?: CameraLayout;
 };
 
 /**
@@ -36,6 +41,12 @@ export const FOOTER_HEIGHT = SHUTTER_ROW_HEIGHT + MODE_SLIDER_HEIGHT;
  * bottom safe area, not added to it: a home indicator already leaves room.
  */
 export const FOOTER_MIN_BOTTOM = 20;
+
+/**
+ * The width of the rail (pt, without the safe area): the shared constant of the rail component and
+ * the guide maths, because the guide is centred in the clear area left of it.
+ */
+export const RAIL_WIDTH = 168;
 
 /** The guide sits this far above the middle of the clear area (room for the zoom pill later). */
 export const GUIDE_LIFT = 14;
@@ -59,7 +70,7 @@ export function clearArea(view: GuideView): { top: number; height: number } {
   return { top, height };
 }
 
-/** The clear area with its horizontal extent: left of any `rightInset`, from x = 0. */
+/** The clear area with its horizontal extent: with the rail (if any) taken off its right, from x = 0. */
 export function clearBox(view: GuideView): {
   left: number;
   top: number;
@@ -68,12 +79,16 @@ export function clearBox(view: GuideView): {
 } {
   const insets = view.insets ?? { top: 0, bottom: 0 };
   const top = insets.top + TOP_BAR_HEIGHT;
-  const bottom =
-    view.height - (Math.max(insets.bottom, FOOTER_MIN_BOTTOM) + FOOTER_HEIGHT);
+  const rail = view.layout === 'rail';
+  // The rail runs the full height, so there is no footer to leave room for.
+  const bottom = rail
+    ? view.height - insets.bottom
+    : view.height -
+      (Math.max(insets.bottom, FOOTER_MIN_BOTTOM) + FOOTER_HEIGHT);
   return {
     left: 0,
     top,
-    width: view.width - (view.rightInset ?? 0),
+    width: view.width - (rail ? RAIL_WIDTH : 0),
     height: bottom - top,
   };
 }
@@ -102,8 +117,10 @@ function referenceRatio(mode: CameraMode): number {
 export function guideRect(mode: CameraMode, view: GuideView): Rect {
   const clear = clearBox(view);
   // Centred in the clear area, then lifted: 14 pt above its middle.
+  // In the rail layout there is no zoom pill over the guide's room, so it is not lifted.
+  const lift = view.layout === 'rail' ? 0 : GUIDE_LIFT;
   const centreY = (height: number) =>
-    clear.top + clear.height / 2 - GUIDE_LIFT - height / 2;
+    clear.top + clear.height / 2 - lift - height / 2;
   if (view.deviceClass === 'tablet') {
     const ratio = referenceRatio(mode);
     const height = Math.min(

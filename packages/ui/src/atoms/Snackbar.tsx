@@ -9,12 +9,20 @@ export type SnackbarProps = {
   onClose: () => void;
   /** Where it sits: `'aboveDock'` clears the floating Dock (and the device's bottom inset), a number is the distance from the bottom in px, a string a CSS length. Defaults to the bottom edge. */
   bottom?: 'aboveDock' | number | string;
+  /** The distance from the right edge (a number in px, or a CSS length): the toast then centres in the space left of it, e.g. beside a rail. */
+  right?: number | string;
   /** Usually an `Alert`. */
   children: ReactNode;
 };
 
 /** A transient message at the bottom of the screen that closes itself after 6 s. A click elsewhere does not dismiss it. */
-export function Snackbar({ open, onClose, bottom, children }: SnackbarProps) {
+export function Snackbar({
+  open,
+  onClose,
+  bottom,
+  right,
+  children,
+}: SnackbarProps) {
   return (
     <MuiSnackbar
       open={open}
@@ -23,7 +31,7 @@ export function Snackbar({ open, onClose, bottom, children }: SnackbarProps) {
         if (reason !== 'clickaway') onClose();
       }}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      sx={
+      sx={[
         bottom === 'aboveDock'
           ? {
               bottom: {
@@ -33,8 +41,12 @@ export function Snackbar({ open, onClose, bottom, children }: SnackbarProps) {
             }
           : bottom !== undefined
             ? { bottom }
-            : undefined
-      }
+            : {},
+        // MUI centres a Snackbar on the window from `sm` up: centre it between the edges instead.
+        right !== undefined
+          ? { left: 0, right, transform: 'none', justifyContent: 'center' }
+          : {},
+      ]}
     >
       {/* Floats like a toast: the Theme's float shadow on the control radius. */}
       <Box

@@ -28,15 +28,16 @@ import { IMAGE_PREPARATION } from '../../lib/scanImage';
 import { BarcodeResultCard } from './components/BarcodeResultCard';
 import {
   CameraFrame,
+  FeedBox,
   insetTop,
   swipeTouchAction,
 } from './components/CameraFrame';
-import { CameraFooter } from './components/CameraFooter';
+import { CameraControls } from './components/CameraControls';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
 import { InfoSheet } from './components/InfoSheet';
 import { glassFocusRing, shade, translucent } from './components/glass';
-import { ModeSlider } from './components/ModeSlider';
+import { ModePicker } from './components/ModeList';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ShutterButton } from './components/ShutterButton';
 import { ZoomPill } from './components/ZoomPill';
@@ -368,7 +369,7 @@ export function CameraOverlay({
             </Fading>
           }
         />
-        <CameraFooter
+        <CameraControls
           zoom={
             camera.zoomSupported ? <ZoomPill onZoom={camera.setZoom} /> : null
           }
@@ -400,7 +401,7 @@ export function CameraOverlay({
           }
           slider={
             modes.length > 1 ? (
-              <ModeSlider
+              <ModePicker
                 modes={modes}
                 mode={mode}
                 disabled={preparing || infoOpen}
@@ -469,14 +470,7 @@ export function CameraOverlay({
           </Box>
         </Box>
         {failed ? (
-          <Box
-            sx={{
-              position: 'absolute',
-              left: 14,
-              right: 14,
-              bottom: 196,
-            }}
-          >
+          <FeedBox aboveFooter={196}>
             <Alert role="alert">
               {failed}
               <Box
@@ -497,16 +491,14 @@ export function CameraOverlay({
                 {t('typeIt')}
               </Box>
             </Alert>
-          </Box>
+          </FeedBox>
         ) : null}
         {preparing && mode === 'product' ? (
-          <Box
+          <FeedBox
             role="status"
+            aboveFooter={196}
+            centred
             sx={{
-              position: 'absolute',
-              left: '50%',
-              bottom: 196,
-              transform: 'translateX(-50%)',
               px: 1.75,
               py: 1.125,
               borderRadius: radius.pill,
@@ -517,7 +509,7 @@ export function CameraOverlay({
             }}
           >
             {t('readingLabel')}
-          </Box>
+          </FeedBox>
         ) : null}
         {card ? (
           <BarcodeResultCard

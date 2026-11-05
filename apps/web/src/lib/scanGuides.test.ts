@@ -5,6 +5,7 @@ import {
   FOOTER_MIN_BOTTOM,
   GUIDE_LIFT,
   MODE_SLIDER_HEIGHT,
+  RAIL_WIDTH,
   SCAN_GUIDES,
   SHUTTER_ROW_HEIGHT,
   TOP_BAR_HEIGHT,
@@ -162,17 +163,52 @@ describe('guideRect on a tablet', () => {
     expect(guideRect('barcode', view).width).toBeCloseTo(768 * 0.9);
   });
 
-  it('centres left of a right inset', () => {
+  describe('in the rail layout', () => {
     const view = {
       width: 1024,
       height: 768,
       deviceClass: 'tablet' as const,
-      rightInset: 200,
+      layout: 'rail' as const,
     };
-    const rect = guideRect('product', view);
-    expect(rect.x + rect.width / 2).toBeCloseTo(412);
-    expect(rect.x + rect.width).toBeLessThanOrEqual(824);
-    expect(clearBox(view)).toMatchObject({ left: 0, width: 824 });
+
+    it('has no footer and gives the rail its width', () => {
+      expect(clearBox(view)).toEqual({
+        left: 0,
+        top: TOP_BAR_HEIGHT,
+        width: 1024 - RAIL_WIDTH,
+        height: 768 - TOP_BAR_HEIGHT,
+      });
+    });
+
+    it('keeps the bottom safe area clear, not the footer', () => {
+      expect(
+        clearBox({ ...view, insets: { top: 24, bottom: 20 } }),
+      ).toMatchObject({
+        top: 24 + TOP_BAR_HEIGHT,
+        height: 768 - 20 - 24 - TOP_BAR_HEIGHT,
+      });
+    });
+
+    it('centres the guide in the clear area, left of the rail', () => {
+      for (const mode of CAMERA_MODES) {
+        const rect = guideRect(mode, view);
+        const clear = clearBox(view);
+        expect(rect.x + rect.width / 2).toBeCloseTo(clear.width / 2);
+        expect(rect.y + rect.height / 2).toBeCloseTo(
+          clear.top + clear.height / 2,
+        );
+        expect(rect.x + rect.width).toBeLessThanOrEqual(clear.width);
+      }
+    });
+  });
+
+  it('the footer layout is the default and unchanged', () => {
+    const view = { width: 1024, height: 768, deviceClass: 'tablet' as const };
+    for (const mode of CAMERA_MODES) {
+      expect(guideRect(mode, { ...view, layout: 'footer' })).toEqual(
+        guideRect(mode, view),
+      );
+    }
   });
 
   it("an explicit phone device class gives today's guide", () => {
