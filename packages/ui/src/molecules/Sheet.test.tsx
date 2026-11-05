@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Sheet } from '../index';
 import { paintedColour } from '../test/colour';
 import { renderWithTheme as render } from '../test/render';
+import { stubScreen } from '../test/stubScreen';
 import { writeAppearance } from '../theme/appearance';
 
 describe('Sheet', () => {
@@ -27,14 +28,7 @@ describe('Sheet', () => {
 
   describe('slide-up', () => {
     const slideTransition = (reduce: boolean) => {
-      vi.stubGlobal('matchMedia', (query: string) => ({
-        matches: reduce && query.includes('reduce'),
-        media: query,
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        addListener: () => {},
-        removeListener: () => {},
-      }));
+      stubScreen(false, reduce);
       render(
         <Sheet open onClose={() => undefined} label="Add items">
           Body

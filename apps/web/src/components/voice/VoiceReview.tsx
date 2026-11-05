@@ -16,7 +16,7 @@ import {
   palette,
 } from '@pocket-pantry/ui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AddToShoppingListButton } from './AddToShoppingListButton';
 import { applyToast } from './applyResult';
@@ -227,12 +227,17 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
       : (picker.querySelector<HTMLElement>('[aria-pressed="true"]') ??
         picker.querySelector<HTMLElement>('button, input') ??
         picker);
-  const openingFocus: RefObject<HTMLElement | null> = {
-    get current() {
-      const picker = blocking ? pickerOf(blocking.id) : null;
-      return picker ? pickerControl(picker) : title.current;
-    },
-  };
+  const blockingId = blocking?.id;
+  const openingFocus = useMemo<RefObject<HTMLElement | null>>(
+    () => ({
+      get current() {
+        const picker = blockingId ? pickerOf(blockingId) : null;
+        return picker ? pickerControl(picker) : title.current;
+      },
+    }),
+    // pickerOf / pickerControl only read refs and the DOM; the blocking row is the one input.
+    [blockingId],
+  );
   // Focus after the Member's tap (the row that holds Apply back): scrolled into view, then focused.
   const focusPicker = (id: string) => {
     const picker = pickerOf(id);

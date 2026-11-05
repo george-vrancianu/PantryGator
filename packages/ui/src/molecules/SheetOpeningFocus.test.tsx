@@ -6,10 +6,7 @@ import { Sheet } from '../index';
 import { renderWithTheme as render } from '../test/render';
 import { stubScreen } from '../test/stubScreen';
 
-function open(
-  initialFocus: React.RefObject<HTMLElement | null> | undefined,
-  extra?: React.ReactNode,
-) {
+function open(initialFocus: React.RefObject<HTMLElement | null> | undefined) {
   render(
     <Sheet
       open
@@ -18,8 +15,7 @@ function open(
       initialFocus={initialFocus}
     >
       <button type="button">First</button>
-      <input aria-label="Search" ref={undefined} />
-      {extra}
+      <input aria-label="Search" />
     </Sheet>,
   );
 }
@@ -119,6 +115,30 @@ describe('Sheet opening focus', () => {
     );
     await entered();
     expect(document.activeElement).toBe(screen.getByLabelText('Other'));
+  });
+
+  it('moves focus to the target when a tap on the scrim left it on the page body', async () => {
+    stubScreen(true);
+    const ref = createRef<HTMLElement>();
+    render(
+      <Sheet
+        open
+        onClose={() => undefined}
+        label="Add items"
+        initialFocus={ref}
+      >
+        <button type="button" ref={ref as React.Ref<HTMLButtonElement>}>
+          Target
+        </button>
+      </Sheet>,
+    );
+    // The Member taps the scrim before the slide-in ends: focus leaves the paper for the body.
+    act(() => (document.activeElement as HTMLElement).blur());
+    expect(document.activeElement).toBe(document.body);
+    await entered();
+    expect(document.activeElement).toBe(
+      screen.getByRole('button', { name: 'Target' }),
+    );
   });
 
   it('Tab from the sheet reaches the first control', async () => {

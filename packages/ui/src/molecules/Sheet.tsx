@@ -12,7 +12,7 @@ import { Box } from '../atoms/Layout';
 import { useToastHost } from './ToastProvider';
 import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
-import { useOpeningFocus } from '../theme/useOpeningFocus';
+import { focusOpening } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { palette, radius, shadow } from '../theme/themeVars';
 
@@ -101,7 +101,7 @@ export function Sheet({
   // Only while open: a toast raised as the sheet closes must not sit in the
   // paper that is sliding away.
   useToastHost(open ? paper : null);
-  const focusInitial = useOpeningFocus(paper, initialFocus, centred);
+  const focusInitial = focusOpening(paper, initialFocus, centred);
   return (
     <MuiDialog
       open={open}

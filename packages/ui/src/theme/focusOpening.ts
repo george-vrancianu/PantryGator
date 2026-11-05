@@ -22,10 +22,12 @@ export function isTextField(el: HTMLElement): boolean {
 
 /**
  * The opening focus of a Sheet or Dialog (ADR 0039). Returns the function to
- * call once the open transition ends. Focus moves to `initialFocus` only if it
- * is still on the paper, and, below `md`, never onto a text field.
+ * call once the open transition ends. Focus moves to `initialFocus` unless the
+ * Member already moved it to a control inside the sheet. Focus still on the
+ * paper, or outside it (a tap on the scrim leaves it on the body), has not been
+ * moved by the Member. Below `md`, never onto a text field.
  */
-export function useOpeningFocus(
+export function focusOpening(
   paper: HTMLElement | null,
   initialFocus: RefObject<HTMLElement | null> | undefined,
   centred: boolean,
@@ -33,7 +35,8 @@ export function useOpeningFocus(
   return () => {
     const target = initialFocus?.current;
     if (!target || !paper) return;
-    if (document.activeElement !== paper) return;
+    const active = document.activeElement;
+    if (active && active !== paper && paper.contains(active)) return;
     if (!centred && isTextField(target)) return;
     target.focus();
   };

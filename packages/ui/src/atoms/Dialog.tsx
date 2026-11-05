@@ -4,7 +4,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState, type ReactNode, type RefObject } from 'react';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
-import { useOpeningFocus } from '../theme/useOpeningFocus';
+import { focusOpening } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
 
 export type DialogProps = {
@@ -39,7 +39,7 @@ export function Dialog({
 }: DialogProps) {
   const centred = useBreakpointUp('md');
   const [paper, setPaper] = useState<HTMLElement | null>(null);
-  const focusInitial = useOpeningFocus(paper, initialFocus, centred);
+  const focusInitial = focusOpening(paper, initialFocus, centred);
   return (
     <MuiDialog
       open={open}
