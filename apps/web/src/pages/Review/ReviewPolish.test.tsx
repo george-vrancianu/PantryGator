@@ -105,23 +105,27 @@ describe('Review polish: focus', () => {
     expect(document.body).toHaveFocus();
   });
 
-  it('opening a row with a missing quantity focuses Quantity, and closing the sheet returns to the row', async () => {
+  it('opening a row with a missing quantity leaves Quantity unfocused on a phone, and closing the sheet returns to the row', async () => {
     renderReview([line({ quantity: null })]);
     await userEvent.click(row('Parmesan'));
+    // A text field stays unfocused on a phone, so the keyboard does not jump the sheet.
     await waitFor(() =>
-      expect(screen.getByLabelText(/^Amount of/)).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(screen.getByLabelText(/^Amount of/)).not.toHaveFocus();
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(row('Parmesan')).toHaveFocus());
   });
 
-  it('focuses Quantity with motion enabled too', async () => {
+  it('leaves Quantity unfocused with motion enabled too', async () => {
     stubMotion(false);
     renderReview([line({ quantity: null })]);
     await userEvent.click(row('Parmesan'));
+    // A text field stays unfocused on a phone, so the keyboard does not jump the sheet.
     await waitFor(() =>
-      expect(screen.getByLabelText(/^Amount of/)).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(screen.getByLabelText(/^Amount of/)).not.toHaveFocus();
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(row('Parmesan')).toHaveFocus());
   });
@@ -134,14 +138,15 @@ describe('Review polish: focus', () => {
     );
   });
 
-  it('opening an Unmatched row with a blank name focuses the chooser', async () => {
+  it('opening an Unmatched row with a blank name leaves the chooser unfocused', async () => {
     renderReview([line({ match: null, name: '  ', quantity: 1 })]);
     await userEvent.click(row('  '));
     await waitFor(() =>
-      expect(
-        screen.getByRole('combobox', { name: 'Matched ingredient' }),
-      ).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(
+      screen.getByRole('combobox', { name: 'Matched ingredient' }),
+    ).not.toHaveFocus();
   });
 
   it('Done on a confident row returns focus to the row', async () => {

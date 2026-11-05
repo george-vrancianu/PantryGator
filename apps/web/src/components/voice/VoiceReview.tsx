@@ -16,7 +16,7 @@ import {
   palette,
 } from '@pocket-pantry/ui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AddToShoppingListButton } from './AddToShoppingListButton';
 import { applyToast } from './applyResult';
@@ -215,20 +215,35 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
     focusVoiceButton();
   };
 
-  // Focus: the row that holds Apply back, else the title.
+  // Where focus lands as the sheet opens: the control of the row that holds Apply back, else the title.
+  // A text field there stays unfocused on a phone (ADR 0039); the Sheet decides.
+  const pickerOf = (id: string) =>
+    body.current?.querySelector<HTMLElement>(`[data-voice-picker="${id}"]`) ??
+    null;
+  const pickerControl = (picker: HTMLElement) =>
+    // A picker that cannot take focus itself (the Location toggle group) hands it to its pressed button, else its first control.
+    picker.hasAttribute('tabindex') || picker.matches('button, input')
+      ? picker
+      : (picker.querySelector<HTMLElement>('[aria-pressed="true"]') ??
+        picker.querySelector<HTMLElement>('button, input') ??
+        picker);
+  const blockingId = blocking?.id;
+  const openingFocus = useMemo<RefObject<HTMLElement | null>>(
+    () => ({
+      get current() {
+        const picker = blockingId ? pickerOf(blockingId) : null;
+        return picker ? pickerControl(picker) : title.current;
+      },
+    }),
+    // pickerOf / pickerControl only read refs and the DOM; the blocking row is the one input.
+    [blockingId],
+  );
+  // Focus after the Member's tap (the row that holds Apply back): scrolled into view, then focused.
   const focusPicker = (id: string) => {
-    const picker = body.current?.querySelector<HTMLElement>(
-      `[data-voice-picker="${id}"]`,
-    );
+    const picker = pickerOf(id);
     if (!picker) return false;
     picker.scrollIntoView?.({ block: 'center' });
-    // A picker that cannot take focus itself (the Location toggle group) hands it to its pressed button, else its first control.
-    const control =
-      picker.hasAttribute('tabindex') || picker.matches('button, input')
-        ? picker
-        : (picker.querySelector<HTMLElement>('[aria-pressed="true"]') ??
-          picker.querySelector<HTMLElement>('button, input'));
-    (control ?? picker).focus();
+    pickerControl(picker).focus();
     return true;
   };
   // Declining the Discard question hands focus back to the Discard button.
@@ -317,8 +332,11 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
       onEscape={() => {
         if (!applying) setConfirming(true);
       }}
+      initialFocus={openingFocus}
       onEntered={() => {
-        if (!blocking || !focusPicker(blocking.id)) title.current?.focus();
+        // A text field that blocks Confirm is shown, not focused, on a phone.
+        const picker = blocking ? pickerOf(blocking.id) : null;
+        picker?.scrollIntoView?.({ block: 'center' });
       }}
       label={heading}
       header={

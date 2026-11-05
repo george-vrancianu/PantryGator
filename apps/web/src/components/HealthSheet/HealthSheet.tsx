@@ -38,7 +38,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
     <Sheet
       open={open}
       onClose={onClose}
-      onEntered={() => closeButton.current?.focus()}
+      initialFocus={closeButton}
       label={t('health.title')}
       header={
         <Box

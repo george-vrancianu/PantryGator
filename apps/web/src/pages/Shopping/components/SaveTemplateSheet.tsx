@@ -11,7 +11,7 @@ import {
   tokens,
   useToast,
 } from '@pocket-pantry/ui';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { translateApiError } from '../../../i18n/translateApiError';
@@ -60,6 +60,7 @@ function SaveForm({
   onClose,
   title,
 }: SaveTemplateSheetProps & { title: string }) {
+  const nameRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation(['templates', 'common', 'errors']);
   const toast = useToast();
   const navigate = useNavigate();
@@ -163,6 +164,7 @@ function SaveForm({
       onClose={onClose}
       label={title}
       size="content"
+      initialFocus={nameRef}
       header={header}
       footer={footer}
     >
@@ -186,8 +188,8 @@ function SaveForm({
             placeholder={t('templates:save.placeholder')}
             value={name}
             onChange={(event) => setName(event.target.value)}
+            inputRef={nameRef}
             slotProps={{ htmlInput: { maxLength: 100 } }}
-            autoFocus
           />
           {atLimit ? (
             <Typography

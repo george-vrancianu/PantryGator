@@ -132,6 +132,7 @@ export function ReviewPage({
         sheetOpen={screen.sheetOpen}
         onOpenSheet={screen.openSheet}
         onCloseSheet={screen.closeSheet}
+        sheetInitialFocus={screen.sheetInitialFocus}
         onSheetEntered={screen.sheetEntered}
         onSheetExited={screen.sheetExited}
         onChange={screen.change}

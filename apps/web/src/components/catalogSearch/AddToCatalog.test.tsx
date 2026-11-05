@@ -540,6 +540,11 @@ describe('Add to your catalog', () => {
         within(dialog).getByRole('combobox', { name: 'Category' }),
       ).toBeInTheDocument();
       expect(within(dialog).getByLabelText('Unit')).toHaveValue('pcs');
+      // On a phone the sheet keeps focus: a focused Category field would raise the keyboard mid-slide.
+      await waitFor(() => expect(dialog).toHaveFocus());
+      expect(
+        within(dialog).getByRole('combobox', { name: 'Category' }),
+      ).not.toHaveFocus();
 
       await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());

@@ -24,7 +24,7 @@ import {
 } from '../../test/location';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { trackScrolling } from '../../test/scroll';
-import { stubMotion } from '../../test/viewport';
+import { stubMotion, stubViewport } from '../../test/viewport';
 import { typeNote } from '../../test/addBatch';
 import { PantryPage } from './PantryPage';
 
@@ -2185,7 +2185,26 @@ describe('PantryPage', () => {
               ).not.toBeInTheDocument(),
             );
 
-          it('opens from the header "+" as a modal dialog over the list, with the search focused', async () => {
+          it('focuses the search when it opens from md up', async () => {
+            stubViewport(1024);
+            const user = userEvent.setup();
+            stubAdding();
+            renderWithProviders(<PantryPage />);
+            await user.click(
+              await screen.findByRole('button', { name: 'Add batch' }),
+            );
+
+            const dialog = await sheet();
+            await waitFor(() =>
+              expect(
+                within(dialog).getByRole('combobox', {
+                  name: 'Search ingredients',
+                }),
+              ).toHaveFocus(),
+            );
+          });
+
+          it('opens from the header "+" as a modal dialog over the list, with focus on the sheet on a phone', async () => {
             const user = userEvent.setup();
             stubAdding();
             renderWithProviders(<PantryPage />);
@@ -2196,13 +2215,12 @@ describe('PantryPage', () => {
 
             const dialog = await sheet();
             expect(dialog).toHaveAttribute('aria-modal', 'true');
-            await waitFor(() =>
-              expect(
-                within(dialog).getByRole('combobox', {
-                  name: 'Search ingredients',
-                }),
-              ).toHaveFocus(),
-            );
+            await waitFor(() => expect(dialog).toHaveFocus());
+            expect(
+              within(dialog).getByRole('combobox', {
+                name: 'Search ingredients',
+              }),
+            ).not.toHaveFocus();
             // The list is still rendered behind the scrim.
             expect(
               screen.getByRole('button', { name: /^Milk/, hidden: true }),
@@ -3853,6 +3871,9 @@ describe('PantryPage', () => {
       await user.click(
         await screen.findByRole('button', { name: 'Add batch' }),
       );
+      await user.click(
+        await screen.findByRole('combobox', { name: 'Search ingredients' }),
+      );
       const section = await screen.findByRole('region', {
         name: 'Recently stocked',
       });
@@ -3874,6 +3895,9 @@ describe('PantryPage', () => {
 
       await user.click(
         await screen.findByRole('button', { name: 'Add batch' }),
+      );
+      await user.click(
+        await screen.findByRole('combobox', { name: 'Search ingredients' }),
       );
       await user.click(
         await screen.findByRole('button', { name: /^Parmesan, added/ }),
@@ -3922,6 +3946,9 @@ describe('PantryPage', () => {
 
       await user.click(
         await screen.findByRole('button', { name: 'Add batch' }),
+      );
+      await user.click(
+        await screen.findByRole('combobox', { name: 'Search ingredients' }),
       );
       const section = await screen.findByRole('region', {
         name: 'Recently stocked',
@@ -3997,6 +4024,9 @@ describe('PantryPage Browse by aisle', () => {
     renderWithProviders(<PantryPage />);
 
     await user.click(await screen.findByRole('button', { name: 'Add batch' }));
+    await user.click(
+      await screen.findByRole('combobox', { name: 'Search ingredients' }),
+    );
     const recent = await screen.findByRole('region', {
       name: 'Recently stocked',
     });
