@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { videoPoint } from './cameraFrame';
 import { SCAN_INTERVAL_MS } from './cameraMode';
+import { readCameraOrientation } from './cameraOrientation';
 import { isValidBarcode } from './gtin';
 
 /** Ask for 1080p where the device can, in every Scan Mode so changing mode never restarts the stream: a receipt's small print is unreadable at the 640x480 browsers often default to. */
@@ -263,8 +265,15 @@ export function useCamera() {
           {
             focusMode: 'single-shot',
             // Approximate: the feed is object-fit: cover, so the guide centre in the video's own
-            // coordinates is not exactly (0.5, FOCUS_POINT_Y).
-            pointsOfInterest: [{ x: 0.5, y: FOCUS_POINT_Y }],
+            // coordinates is not exactly (0.5, FOCUS_POINT_Y). With the screen turned, the guide
+            // (in the rotated-back frame) is at that point of the turned photo: the video's own
+            // point is that turned back.
+            pointsOfInterest: [
+              videoPoint(
+                { x: 0.5, y: FOCUS_POINT_Y },
+                readCameraOrientation().photoTurn,
+              ),
+            ],
           },
         ],
       } as FocusConstraints)

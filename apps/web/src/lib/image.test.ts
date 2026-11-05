@@ -5,6 +5,7 @@ import {
   receiptOutputSize,
   rotatedBounds,
   rotatedCropTransform,
+  turnedGuideCrop,
 } from './image';
 import { guideRect } from './scanGuides';
 
@@ -258,5 +259,50 @@ describe('rotatedCropTransform', () => {
       expect(x).toBeCloseTo(one[i][0] / 2);
       expect(y).toBeCloseTo(one[i][1] / 2);
     });
+  });
+});
+
+describe('the photo turn before the crop under the guide', () => {
+  const phone = { width: 390, height: 844, insets: { top: 47, bottom: 34 } };
+  const guide = guideRect('receipt', phone);
+
+  it("0 is exactly today's crop", () => {
+    for (const frame of [
+      { width: 1080, height: 1920 },
+      { width: 1920, height: 1080 },
+    ]) {
+      expect(turnedGuideCrop(frame, phone, guide, 0)).toEqual(
+        guideCropRect(frame, phone, guide),
+      );
+    }
+  });
+
+  it.each([90, 270] as const)(
+    'a landscape frame at %i gives the portrait crop that matches the guide on screen',
+    (turn) => {
+      // Landscape grip: the camera delivers 1920 x 1080; the photo is 1080 x 1920 once turned.
+      const crop = turnedGuideCrop(
+        { width: 1920, height: 1080 },
+        phone,
+        guide,
+        turn,
+      );
+      expect(crop.height).toBeGreaterThan(crop.width);
+      expect(crop.width / crop.height).toBeCloseTo(
+        guide.width / guide.height,
+        1,
+      );
+      // Same as cropping a portrait frame of the turned size.
+      expect(crop).toEqual(
+        guideCropRect({ width: 1080, height: 1920 }, phone, guide),
+      );
+    },
+  );
+
+  it('a 180 turn keeps the frame size and the crop', () => {
+    const frame = { width: 1920, height: 1080 };
+    expect(turnedGuideCrop(frame, phone, guide, 180)).toEqual(
+      guideCropRect(frame, phone, guide),
+    );
   });
 });

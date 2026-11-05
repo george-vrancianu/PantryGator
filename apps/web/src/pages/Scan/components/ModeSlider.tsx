@@ -11,7 +11,18 @@ import {
   startsHorizontalDrag,
   uniformCentres,
 } from '../../../lib/sliderGesture';
+import { useCameraFrame } from './CameraFrame';
 import { glassFocusRing } from './glass';
+
+/** A drag's movement since `start`, read in the frame: `[dx, dy]`. */
+function swipeDelta(
+  toFrameDelta: (dx: number, dy: number) => { x: number; y: number },
+  event: { clientX: number; clientY: number },
+  start: { x: number; y: number },
+): [number, number] {
+  const delta = toFrameDelta(event.clientX - start.x, event.clientY - start.y);
+  return [delta.x, delta.y];
+}
 
 /**
  * Whether a sideways swipe on the viewfinder also drives the slider (handoff 12). The one switch to
@@ -96,7 +107,10 @@ export function ModeSlider<Mode extends CameraMode>({
   const clickGuard = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(clickGuard.current), []);
 
+  // A swipe is read in the frame's own directions: along the strip, whichever way the screen is turned.
+  const { toFrameDelta } = useCameraFrame();
   const latest = useRef({
+    toFrameDelta,
     modes,
     index,
     centres,
@@ -107,6 +121,7 @@ export function ModeSlider<Mode extends CameraMode>({
   });
   useLayoutEffect(() => {
     latest.current = {
+      toFrameDelta,
       modes,
       index,
       centres,
@@ -135,7 +150,10 @@ export function ModeSlider<Mode extends CameraMode>({
     const offsetNow = (event: PointerEvent, start: NonNullable<typeof drag>) =>
       dragOffset(
         start.startIndex,
-        event.clientX - start.x,
+        latest.current.toFrameDelta(
+          event.clientX - start.x,
+          event.clientY - start.y,
+        ).x,
         latest.current.centres,
       );
     const onDown = (event: PointerEvent) => {
@@ -156,7 +174,9 @@ export function ModeSlider<Mode extends CameraMode>({
       if (!start || start.pointerId !== event.pointerId) return;
       if (
         !start.moved &&
-        !startsHorizontalDrag(event.clientX - start.x, event.clientY - start.y)
+        !startsHorizontalDrag(
+          ...swipeDelta(latest.current.toFrameDelta, event, start),
+        )
       ) {
         return;
       }
@@ -190,7 +210,10 @@ export function ModeSlider<Mode extends CameraMode>({
       const { modes, centres, index, onChange } = latest.current;
       const target = releaseTarget({
         offset: offsetNow(event, start),
-        dx: event.clientX - start.x,
+        dx: latest.current.toFrameDelta(
+          event.clientX - start.x,
+          event.clientY - start.y,
+        ).x,
         dt: Math.max(1, performance.now() - start.t),
         index: start.startIndex,
         centres,

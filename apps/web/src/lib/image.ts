@@ -1,4 +1,6 @@
 import { RECEIPT_OUTPUT_WIDTH } from './receiptGuide';
+import { turnedSize } from './cameraFrame';
+import type { ScreenAngle } from './cameraOrientation';
 import { guideRect, type GuideView, type Rect } from './scanGuides';
 
 export type { Rect };
@@ -20,17 +22,43 @@ export function fitWithin(
   };
 }
 
-/** Resizes a camera frame or gallery file to a JPEG data URL, ready to send to a scan endpoint. */
-export async function resizeImage(source: Blob): Promise<string> {
+/**
+ * Resizes a camera frame or gallery file to a JPEG data URL, ready to send to a scan endpoint.
+ * `turn` (a camera frame's photo turn) turns the frame clockwise by that angle first, so the
+ * result is in the phone's portrait frame; the default 0 leaves it as it is.
+ */
+export async function resizeImage(
+  source: Blob,
+  turn: ScreenAngle = 0,
+): Promise<string> {
   const bitmap = await createImageBitmap(source);
   try {
-    const { width, height } = fitWithin(bitmap.width, bitmap.height);
+    const turned = turnedSize(bitmap, turn);
+    const { width, height } = fitWithin(turned.width, turned.height);
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext('2d');
     if (!context) throw new Error('canvas unavailable');
-    context.drawImage(bitmap, 0, 0, width, height);
+    if (turn === 0) {
+      context.drawImage(bitmap, 0, 0, width, height);
+    } else {
+      context.setTransform(
+        ...rotatedCropTransform(
+          bitmap,
+          { x: 0, y: 0, width: turned.width, height: turned.height },
+          turn,
+          width / turned.width,
+        ),
+      );
+      context.drawImage(
+        bitmap,
+        -bitmap.width / 2,
+        -bitmap.height / 2,
+        bitmap.width,
+        bitmap.height,
+      );
+    }
     return canvas.toDataURL('image/jpeg', JPEG_QUALITY);
   } finally {
     bitmap.close();
@@ -62,6 +90,20 @@ export function guideCropRect(
     width: Math.round(width),
     height: Math.round(height),
   };
+}
+
+/**
+ * The part of a camera frame under the guide once the frame is turned clockwise by `turn`: the
+ * crop, in the turned photo's pixels. `view` and `guide` are in the phone's portrait frame, so a
+ * landscape frame at 90 or 270 gives the portrait crop that is on screen under the guide.
+ */
+export function turnedGuideCrop(
+  frame: { width: number; height: number },
+  view: { width: number; height: number },
+  guide: Rect,
+  turn: ScreenAngle,
+): Rect {
+  return guideCropRect(turnedSize(frame, turn), view, guide);
 }
 
 /** The size a receipt crop is sent at: at most `outputWidth` wide, keeping the crop's aspect, never upscaled. */
@@ -153,16 +195,23 @@ function cropReceiptRegion(
 /**
  * Crops a receipt camera frame to the on-screen guide and scales it to the receipt output size.
  * `view` is the size of the aspect-filled feed on screen and its safe-area insets; the guide is
- * centred in the clear area between the bars.
+ * centred in the clear area between the bars. `turn` is the photo turn captured at the shutter:
+ * the frame is turned first, and `view` is the phone's portrait frame.
  */
 export async function cropToReceiptGuide(
   frame: Blob,
   view: GuideView,
+  turn: ScreenAngle = 0,
 ): Promise<string> {
   const bitmap = await createImageBitmap(frame);
   try {
-    const crop = guideCropRect(bitmap, view, guideRect('receipt', view));
-    return cropReceiptRegion(bitmap, crop, 0);
+    const crop = turnedGuideCrop(
+      bitmap,
+      view,
+      guideRect('receipt', view),
+      turn,
+    );
+    return cropReceiptRegion(bitmap, crop, turn);
   } finally {
     bitmap.close();
   }
