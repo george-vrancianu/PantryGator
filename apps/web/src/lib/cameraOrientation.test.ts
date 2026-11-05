@@ -31,6 +31,17 @@ const input = (
   native,
 });
 
+describe('cameraOrientation locksPortrait', () => {
+  it.each([
+    ['phone in the app', sizes.phonePortrait, true, true],
+    ['phone on the web', sizes.phonePortrait, false, false],
+    ['tablet in the app', sizes.tabletPortrait, true, false],
+    ['tablet on the web', sizes.tabletPortrait, false, false],
+  ])('%s', (_name, size, native, locks) => {
+    expect(cameraOrientation(input(size, 0, native)).locksPortrait).toBe(locks);
+  });
+});
+
 describe('cameraOrientation device class and layout', () => {
   it.each([
     ['phone portrait', sizes.phonePortrait, 'phone', 'footer'],

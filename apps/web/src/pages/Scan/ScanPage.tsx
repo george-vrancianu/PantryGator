@@ -29,6 +29,7 @@ import {
   type Rect,
 } from '../../lib/scanGuides';
 import { failedCopyKey } from '../../lib/scanSession';
+import { usePortraitLock } from '../../lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
 
 export type ScanPageProps = ScanScreenModes;
@@ -40,6 +41,7 @@ export type ScanPageProps = ScanScreenModes;
 export function ScanPage(props: ScanPageProps) {
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
+  usePortraitLock();
   // Where the guide is when a card joins the Scan Session: the photo flies from there to the stack.
   const guideNow = useRef<Rect | null>(null);
   const { fly, stackRef, layer: flights } = useFlyToStack();

@@ -38,6 +38,7 @@ import { ZoomPill } from './components/ZoomPill';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
 import { measureView, useGuideRect } from './hooks/useGuideRect';
 import { useScanLanguage } from '../../lib/useScanLanguage';
+import { usePortraitLock } from '../../lib/usePortraitLock';
 
 export type { CameraMode };
 
@@ -94,6 +95,7 @@ export function CameraOverlay({
 }: Props) {
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
+  usePortraitLock();
   const camera = useCamera();
   const { scanLanguage, scanLanguageToSend, setScanLanguage } =
     useScanLanguage();
