@@ -63,6 +63,10 @@ describe('Use Siri switch in the iPhone app', () => {
     await vi.waitFor(() => expect(toggle).toBeEnabled());
     expect(toggle).toHaveAttribute('aria-checked', 'false');
     expect(screen.getByText('Hey Siri, PantryGator needs')).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, PantryGator got')).toBeInTheDocument();
+    expect(
+      screen.getByText('Hey Siri, PantryGator, do we have'),
+    ).toBeInTheDocument();
   });
 
   it('is not offered in a browser', () => {

@@ -35,9 +35,11 @@ export function SiriSwitch() {
           aria-describedby={`${id}-hint`}
         />
       </Stack>
-      <Typography variant="body1" sx={{ fontWeight: 600 }}>
-        {t('use.phrases.needs')}
-      </Typography>
+      {(['needs', 'got', 'have'] as const).map((command) => (
+        <Typography key={command} variant="body1" sx={{ fontWeight: 600 }}>
+          {t(`use.phrases.${command}`)}
+        </Typography>
+      ))}
       {siri.error ? <Alert>{translateApiError(t, siri.error)}</Alert> : null}
     </Stack>
   );
