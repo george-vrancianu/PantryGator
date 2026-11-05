@@ -1,8 +1,10 @@
 import { Box } from '@pocket-pantry/ui';
+import type { SxProps, Theme } from '@mui/material/styles';
 import {
   createContext,
   useContext,
   useMemo,
+  type ComponentProps,
   type ReactNode,
   type CSSProperties,
 } from 'react';
@@ -15,6 +17,7 @@ import {
   type Size,
 } from '../../../lib/cameraFrame';
 import type { ScreenAngle } from '../../../lib/cameraOrientation';
+import { RAIL_WIDTH, type CameraLayout } from '../../../lib/scanGuides';
 import { useCameraOrientation } from '../../../lib/useCameraOrientation';
 
 /** The CSS custom properties the camera bars read for their safe-area insets (ADR 0037). */
@@ -33,6 +36,8 @@ export const insetRight = `var(${INSET_RIGHT}, env(safe-area-inset-right))`;
 type FrameValue = {
   /** The rotate-back: the frame is turned by `-angle` degrees. */
   angle: ScreenAngle;
+  /** Where the controls are: under the feed, or in the rail down the right edge. */
+  layout: CameraLayout;
   /** The portrait frame's size. */
   size: Size;
   /** A pointer movement on the screen, read in the frame. */
@@ -43,6 +48,7 @@ type FrameValue = {
 
 const upright: FrameValue = {
   angle: 0,
+  layout: 'footer',
   size: { width: 0, height: 0 },
   toFrameDelta: (dx, dy) => ({ x: dx, y: dy }),
   toFramePoint: (point) => point,
@@ -87,11 +93,12 @@ export function CameraFrame({ children }: { children: ReactNode }) {
     const size = frameSize(viewport, angle);
     return {
       angle,
+      layout: orientation.layout,
       size,
       toFrameDelta: (dx, dy) => toFrameDelta(dx, dy, angle),
       toFramePoint: (point) => toFramePoint(point, angle, size),
     };
-  }, [angle, viewport]);
+  }, [angle, orientation.layout, viewport]);
   const { size } = value;
   const insets = frameInsetVariables(angle);
   const turned = angle !== 0;
@@ -138,5 +145,75 @@ export function CameraFrame({ children }: { children: ReactNode }) {
         {children}
       </Box>
     </FrameContext.Provider>
+  );
+}
+
+/** How far up (px, plus the bottom inset) messages in the feed sit in the rail layout, where there is no footer. */
+export const FEED_BOTTOM_IN_RAIL = 72;
+
+/**
+ * Where things that sit at the bottom of the feed go, in either layout. Under a footer they sit
+ * above it, at the distance each passes; in the rail layout there is no footer, so they sit near
+ * the bottom edge and stop short of the rail, never over it.
+ */
+export function useFeedArea(): {
+  layout: CameraLayout;
+  /** The `bottom` of something in the feed: `aboveFooter` px under a footer, `inRail` px (plus the bottom inset) in the rail layout. */
+  bottom: (aboveFooter: number, inRail: number) => number | string;
+  /** The `right` of something that is `margin` px from the feed's right edge. */
+  right: (margin: number) => number | string;
+} {
+  const { layout } = useCameraFrame();
+  const rail = layout === 'rail';
+  return {
+    layout,
+    bottom: (aboveFooter, inRail) =>
+      rail ? `calc(${insetBottom} + ${inRail}px)` : aboveFooter,
+    right: (margin) =>
+      rail ? `calc(${RAIL_WIDTH}px + ${insetRight} + ${margin}px)` : margin,
+  };
+}
+
+/**
+ * A message box at the bottom of the feed (an alert, a "reading" pill): `aboveFooter` px up under a
+ * footer, `inRail` px up in the rail layout where it also stops short of the rail. `centred` puts it
+ * in the middle of the feed instead of stretching it between `margin` px edges.
+ */
+export function FeedBox({
+  aboveFooter,
+  inRail = FEED_BOTTOM_IN_RAIL,
+  margin = 14,
+  centred = false,
+  sx,
+  children,
+  ...rest
+}: {
+  aboveFooter: number;
+  inRail?: number;
+  margin?: number;
+  centred?: boolean;
+  sx?: SxProps<Theme>;
+  children: ReactNode;
+} & Omit<ComponentProps<typeof Box>, 'sx' | 'children'>) {
+  const feed = useFeedArea();
+  const rail = feed.layout === 'rail';
+  return (
+    <Box
+      {...rest}
+      sx={[
+        { position: 'absolute', bottom: feed.bottom(aboveFooter, inRail) },
+        centred
+          ? {
+              left: rail
+                ? `calc((100% - ${RAIL_WIDTH}px - ${insetRight}) / 2)`
+                : '50%',
+              transform: 'translateX(-50%)',
+            }
+          : { left: margin, right: feed.right(margin) },
+        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+      ]}
+    >
+      {children}
+    </Box>
   );
 }

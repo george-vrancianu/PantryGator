@@ -14,6 +14,8 @@ export type DialogProps = {
   children: ReactNode;
   /** Buttons along the bottom edge, e.g. Cancel. */
   actions?: ReactNode;
+  /** Centred whatever the window's width (a landscape tablet's own layout decides); by default only from `md` up. */
+  centred?: boolean;
 };
 
 /**
@@ -28,8 +30,10 @@ export function Dialog({
   title,
   children,
   actions,
+  centred: forceCentred = false,
 }: DialogProps) {
-  const centred = useBreakpointUp('md');
+  const wide = useBreakpointUp('md');
+  const centred = forceCentred || wide;
   return (
     <MuiDialog
       open={open}

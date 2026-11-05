@@ -1,5 +1,11 @@
 import { Box, tokens, visuallyHidden } from '@pocket-pantry/ui';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '../../../lib/cameraMode';
 import { CreditPrice } from '../../../components/CreditPrice';
@@ -21,6 +27,106 @@ import { glassFocusRing } from './glass';
 export const VIEWFINDER_SWIPE = true;
 
 const HAPTIC_MS = 6;
+
+/** The arrow keys that step to the next and the previous mode. */
+export type ModeKeys = { next: readonly string[]; previous: readonly string[] };
+export const HORIZONTAL_KEYS: ModeKeys = {
+  next: ['ArrowRight'],
+  previous: ['ArrowLeft'],
+};
+/** The vertical list answers the up and down arrows too. */
+export const VERTICAL_KEYS: ModeKeys = {
+  next: ['ArrowRight', 'ArrowDown'],
+  previous: ['ArrowLeft', 'ArrowUp'],
+};
+
+/**
+ * Arrow keys step through the modes anywhere on the screen, unless a sheet or a read owns them, a
+ * slider or text field has focus, or a modifier is held. Shared by the strip and the rail's list.
+ */
+export function useModeKeys<Mode extends CameraMode>(options: {
+  modes: readonly Mode[];
+  mode: Mode;
+  keysDisabled: boolean;
+  onChange: (mode: Mode) => void;
+  keys: ModeKeys;
+}) {
+  const latest = useRef(options);
+  useLayoutEffect(() => {
+    latest.current = options;
+  });
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const { modes, mode, keysDisabled, onChange, keys } = latest.current;
+      const step = keys.next.includes(event.key)
+        ? 1
+        : keys.previous.includes(event.key)
+          ? -1
+          : 0;
+      const next = modes[modes.indexOf(mode) + step];
+      if (!step || !next || keysDisabled) return;
+      if (event.defaultPrevented || event.isComposing) return;
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        target.closest(
+          'input, select, textarea, [contenteditable], [role=slider]',
+        )
+      ) {
+        return;
+      }
+      onChange(next);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, []);
+}
+
+/** A change of mode buzzes, and keeps keyboard focus on the radio that is now checked. */
+export function useFocusFollowsMode(
+  group: RefObject<HTMLElement | null>,
+  mode: CameraMode,
+) {
+  const previous = useRef(mode);
+  useEffect(() => {
+    if (previous.current === mode) return;
+    previous.current = mode;
+    navigator.vibrate?.(HAPTIC_MS);
+    if (group.current?.contains(document.activeElement)) {
+      group.current
+        .querySelector<HTMLElement>('[aria-checked="true"]')
+        ?.focus();
+    }
+  }, [group, mode]);
+}
+
+/** A mode's name, and its credit price while it is the chosen Scan mode. */
+export function ModeLabel({
+  mode,
+  active,
+}: {
+  mode: CameraMode;
+  active: boolean;
+}) {
+  const { t } = useTranslation('scan');
+  const price = useCreditPrice('scan');
+  return (
+    <>
+      {t(`mode.${mode}`)}
+      {active && mode !== 'barcode' && price ? (
+        <Box
+          component="span"
+          sx={{ fontWeight: 600, textTransform: 'none', ml: 0.75 }}
+        >
+          {'· '}
+          <CreditPrice kind="scan" />
+        </Box>
+      ) : null}
+    </>
+  );
+}
+
 const CLICK_GUARD_MS = 50;
 const LABEL_GAP = 26;
 const reducedMotion = '@media (prefers-reduced-motion: reduce)';
@@ -224,42 +330,15 @@ export function ModeSlider<Mode extends CameraMode>({
     };
   }, [surface, hasStrip]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const step =
-        event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-      const { modes, index, keysDisabled, onChange } = latest.current;
-      const next = modes[index + step];
-      if (!step || !next || keysDisabled) return;
-      if (event.defaultPrevented || event.isComposing) return;
-      if (event.altKey || event.ctrlKey || event.metaKey) return;
-      const target = event.target;
-      if (
-        target instanceof HTMLElement &&
-        target.closest(
-          'input, select, textarea, [contenteditable], [role=slider]',
-        )
-      ) {
-        return;
-      }
-      onChange(next);
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, []);
+  useModeKeys({
+    modes,
+    mode,
+    keysDisabled,
+    onChange,
+    keys: HORIZONTAL_KEYS,
+  });
 
-  const previous = useRef(mode);
-  useEffect(() => {
-    if (previous.current === mode) return;
-    previous.current = mode;
-    navigator.vibrate?.(HAPTIC_MS);
-    // Keep keyboard focus on the radio that is now checked.
-    if (group.current?.contains(document.activeElement)) {
-      group.current
-        .querySelector<HTMLElement>('[aria-checked="true"]')
-        ?.focus();
-    }
-  }, [mode]);
+  useFocusFollowsMode(group, mode);
 
   if (modes.length < 2) return null;
 
@@ -338,16 +417,7 @@ export function ModeSlider<Mode extends CameraMode>({
                 [reducedMotion]: { transition: 'none' },
               }}
             >
-              {t(`mode.${item}`)}
-              {active && item !== 'barcode' && price ? (
-                <Box
-                  component="span"
-                  sx={{ fontWeight: 600, textTransform: 'none', ml: 0.75 }}
-                >
-                  {'· '}
-                  <CreditPrice kind="scan" />
-                </Box>
-              ) : null}
+              <ModeLabel mode={item} active={active} />
             </Box>
           );
         })}
