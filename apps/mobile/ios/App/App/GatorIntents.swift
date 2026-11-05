@@ -6,8 +6,10 @@ import Foundation
 /// (see `AssistantRequest.Prefix`, the same text the Gator Shortcuts in docs/siri-shortcut.md send); the
 /// request, the reply and the fixed failure replies are shared in `AssistantRequest`. They read the
 /// Keychain item themselves, so the secret never passes through JavaScript.
-/// None opens the app (`openAppWhenRun` false). `supportedModes` (iOS 26) is not set: it cannot be
-/// written to compile on older SDKs, and a non-foreground intent already stays in the background.
+/// None opens the app (`openAppWhenRun` false). `supportedModes` (iOS 26, which deprecates
+/// `openAppWhenRun`) is deferred: it needs `#if compiler(>=6.2)` plus `@available(iOS 26.0, *)` so older
+/// Xcode versions still build. `openAppWhenRun = false` alone is expected to keep the app closed on
+/// iOS 26 (a device check).
 struct GatorNeedsIntent: AppIntent {
     static let title: LocalizedStringResource = "Gator needs"
     static let description = IntentDescription("Add what you need to your Shopping List.")
@@ -18,7 +20,7 @@ struct GatorNeedsIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let reply = await AssistantRequest.send(prefix: AssistantRequest.Prefix.needs, text: items)
-        return .result(dialog: "\(reply)")
+        return .result(dialog: IntentDialog(stringLiteral: reply))
     }
 }
 
@@ -32,7 +34,7 @@ struct GatorGotIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let reply = await AssistantRequest.send(prefix: AssistantRequest.Prefix.got, text: items)
-        return .result(dialog: "\(reply)")
+        return .result(dialog: IntentDialog(stringLiteral: reply))
     }
 }
 
@@ -46,7 +48,7 @@ struct GatorDoWeHaveIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let reply = await AssistantRequest.send(prefix: AssistantRequest.Prefix.doWeHave, text: items)
-        return .result(dialog: "\(reply)")
+        return .result(dialog: IntentDialog(stringLiteral: reply))
     }
 }
 

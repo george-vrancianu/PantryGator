@@ -15,6 +15,9 @@ export type CreatedAssistantToken = AssistantToken & { secret: string };
 
 export const assistantTokensQueryKey = ['assistant-tokens'] as const;
 
+/** The iPhone app's Siri switch state (see `siriOnDevice`); it follows the token list, so revoking a token refreshes it too. */
+export const siriOnDeviceQueryKey = ['siri-on-device'] as const;
+
 export const fetchAssistantTokens = () =>
   apiRequest<AssistantToken[]>('/assistant-tokens');
 
@@ -46,6 +49,9 @@ export function useRevokeAssistantToken() {
         method: 'DELETE',
       }),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: assistantTokensQueryKey }),
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: assistantTokensQueryKey }),
+        queryClient.invalidateQueries({ queryKey: siriOnDeviceQueryKey }),
+      ]),
   });
 }

@@ -38,13 +38,8 @@ enum SiriKeychain {
 
     /// Nil when nothing is stored (or it cannot be read).
     static func load() -> SiriCredentials? {
-        var query = identity
-        query[kSecReturnData as String] = true
-        query[kSecMatchLimit as String] = kSecMatchLimitOne
-        var result: AnyObject?
-        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-              let data = result as? Data else { return nil }
-        return try? JSONDecoder().decode(SiriCredentials.self, from: data)
+        if case .found(let credentials) = read() { return credentials }
+        return nil
     }
 
     /// What reading the item found. `locked` is a Keychain that cannot be read right now (before the first

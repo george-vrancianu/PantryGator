@@ -9,6 +9,7 @@ import { apiOrigin, apiRequest, ApiError } from './api';
 import {
   assistantTokensQueryKey,
   fetchAssistantTokens,
+  siriOnDeviceQueryKey,
   type CreatedAssistantToken,
 } from './assistantTokens';
 
@@ -57,8 +58,12 @@ export const siriOnDevice = {
    * Makes what is on the phone honest: an item for another Member, or for a token that is no longer
    * active, is cleared (never revoked: the token is gone, or it is not this Member's to revoke).
    * Returns what is left. If the Member's tokens cannot be read (offline) the item is kept.
+   * `listTokens` reads the Member's active tokens (the hook passes a shared, cached read).
    */
-  async reconcile(memberId: string): Promise<SiriStored | null> {
+  async reconcile(
+    memberId: string,
+    listTokens: () => Promise<{ id: string }[]> = fetchAssistantTokens,
+  ): Promise<SiriStored | null> {
     const stored = await siriOnDevice.stored();
     if (!stored) return null;
     if (stored.memberId !== memberId) {
@@ -67,7 +72,7 @@ export const siriOnDevice = {
     }
     let tokens;
     try {
-      tokens = await fetchAssistantTokens();
+      tokens = await listTokens();
     } catch {
       return stored;
     }
@@ -150,11 +155,9 @@ function revoke(tokenId: string) {
   });
 }
 
-const storedQueryKey = ['siri-on-device'] as const;
-
 function refresh(queryClient: QueryClient) {
   return Promise.all([
-    queryClient.invalidateQueries({ queryKey: storedQueryKey }),
+    queryClient.invalidateQueries({ queryKey: siriOnDeviceQueryKey }),
     queryClient.invalidateQueries({ queryKey: assistantTokensQueryKey }),
   ]);
 }
@@ -166,10 +169,18 @@ function refresh(queryClient: QueryClient) {
 export function useSiriOnDevice(memberId: string | undefined) {
   const queryClient = useQueryClient();
   const stored = useQuery({
-    queryKey: [...storedQueryKey, memberId],
+    queryKey: [...siriOnDeviceQueryKey, memberId],
     // Reconciled with the signed-in Member and their active tokens whenever it is fetched: on every
     // mount (gcTime 0) and after a change. Not on every read: the app's default staleTime applies.
-    queryFn: () => siriOnDevice.reconcile(memberId as string),
+    queryFn: () =>
+      siriOnDevice.reconcile(memberId as string, () =>
+        // Shares the token list's own request on this screen; never older than this fetch.
+        queryClient.fetchQuery({
+          queryKey: assistantTokensQueryKey,
+          queryFn: fetchAssistantTokens,
+          staleTime: 0,
+        }),
+      ),
     enabled: memberId !== undefined,
     // The Keychain is the truth, so never serve a cached answer after a change.
     gcTime: 0,

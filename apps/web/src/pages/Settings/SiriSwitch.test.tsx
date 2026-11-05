@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fakeNativeIos, keychain, resetSiriEnvironment } from '../../test/siri';
@@ -197,6 +197,41 @@ describe('Use Siri switch in the iPhone app', () => {
       'DELETE /api/assistant-tokens/app1',
     );
     expect(keychain.clear).toHaveBeenCalled();
+    expect(keychain.item).toBeNull();
+  });
+
+  it('revoking the phone token from the list below turns the switch off and clears the phone', async () => {
+    fakeNativeIos();
+    keychain.item = {
+      secret: 's',
+      tokenId: 'app1',
+      memberId: 'm1',
+      apiOrigin: '',
+    };
+    stubServer({ rows: [APP_TOKEN] });
+    renderWithProviders(<SiriSection />);
+    const user = userEvent.setup();
+
+    const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+    await vi.waitFor(() =>
+      expect(toggle).toHaveAttribute('aria-checked', 'true'),
+    );
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Revoke PantryGator app (iPhone)',
+      }),
+    );
+    await user.click(
+      await within(
+        await screen.findByRole('group', {
+          name: 'Revoke PantryGator app (iPhone)? Anything using it stops working.',
+        }),
+      ).findByRole('button', { name: 'Revoke' }),
+    );
+
+    await vi.waitFor(() =>
+      expect(toggle).toHaveAttribute('aria-checked', 'false'),
+    );
     expect(keychain.item).toBeNull();
   });
 
