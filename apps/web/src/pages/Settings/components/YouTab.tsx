@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { LanguageSwitcher } from '../../../components/LanguageSwitcher';
 import { LOCALES } from '../../../i18n';
 import { SCAN_LANGUAGES } from '../../../i18n/resources';
+import { nativeSession } from '../../../lib/nativeSession';
 import { useSession, useSignOut } from '../../../lib/auth';
 import {
   useMemberPreferences,
@@ -165,7 +166,8 @@ export function YouTab() {
         ) : null}
       </Stack>
       <AllergiesSection />
-      <SiriSection />
+      {/* Siri setup is iPhone-only; it does nothing in the Android app. */}
+      {nativeSession.isAndroidApp() ? null : <SiriSection />}
       {isAdmin ? (
         <Stack component="section" spacing={1} aria-labelledby={`${id}-admin`}>
           <SectionHeading
