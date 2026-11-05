@@ -41,4 +41,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.delegateClass = SceneDelegate.self
         return config
     }
+
+    // The camera locks the screen to portrait through @capacitor/screen-orientation;
+    // the window must ask the bridge view controller which orientations it allows.
+    // Read the root view controller from `window`: with the UIScene lifecycle
+    // `self.window` is always nil.
+    func application(_ application: UIApplication,
+                     supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard let bridgeViewController = window?.rootViewController as? CAPBridgeViewController else {
+            return .all
+        }
+        return bridgeViewController.supportedInterfaceOrientations
+    }
 }
