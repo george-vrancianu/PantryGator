@@ -27,11 +27,10 @@ export function SiriSwitch() {
         <Toggle
           checked={siri.isOn === true}
           disabled={siri.isOn === undefined || !memberId || siri.busy}
-          onChange={(wanted) =>
-            wanted && memberId
-              ? siri.turnOn(memberId, t('use.tokenName'))
-              : siri.turnOff()
-          }
+          onChange={(wanted) => {
+            if (!wanted) siri.turnOff();
+            else if (memberId) siri.turnOn(memberId, t('use.tokenName'));
+          }}
           aria-labelledby={`${id}-label`}
           aria-describedby={`${id}-hint`}
         />

@@ -1,27 +1,9 @@
-import { Capacitor } from '@capacitor/core';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { fakeNativeIos, keychain, resetSiriEnvironment } from '../../test/siri';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { SiriSection } from './components/SiriSection';
-
-// The Keychain plugin, faked at its registration boundary.
-const keychain = vi.hoisted(() => ({
-  item: null as null | {
-    secret: string;
-    tokenId: string;
-    memberId: string;
-    apiOrigin: string;
-  },
-  set: vi.fn(),
-  clear: vi.fn(),
-  get: vi.fn(),
-}));
-
-vi.mock('@capacitor/core', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@capacitor/core')>()),
-  registerPlugin: () => keychain,
-}));
 
 type Row = {
   id: string;
@@ -65,32 +47,15 @@ function stubServer(options: { failCreate?: boolean; failRevoke?: boolean }) {
   return calls;
 }
 
-function nativeIos() {
-  vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
-  vi.spyOn(Capacitor, 'getPlatform').mockReturnValue('ios');
-}
-
 describe('Use Siri switch in the iPhone app', () => {
-  beforeEach(() => {
-    keychain.item = null;
-    keychain.set.mockReset().mockImplementation(async (item) => {
-      keychain.item = item;
-    });
-    keychain.clear.mockReset().mockImplementation(async () => {
-      keychain.item = null;
-    });
-    keychain.get.mockReset().mockImplementation(async () => ({
-      tokenId: keychain.item?.tokenId,
-      memberId: keychain.item?.memberId,
-    }));
-  });
+  beforeEach(resetSiriEnvironment);
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
   it('shows the switch off, with the phrase to say', async () => {
-    nativeIos();
+    fakeNativeIos();
     stubServer({});
     renderWithProviders(<SiriSection />);
 
@@ -107,7 +72,7 @@ describe('Use Siri switch in the iPhone app', () => {
   });
 
   it('turning it on stores the token on the phone and lists it, without showing the secret', async () => {
-    nativeIos();
+    fakeNativeIos();
     const calls = stubServer({});
     renderWithProviders(<SiriSection />);
     const user = userEvent.setup();
@@ -138,7 +103,7 @@ describe('Use Siri switch in the iPhone app', () => {
   });
 
   it('turning it off revokes the token and clears the phone', async () => {
-    nativeIos();
+    fakeNativeIos();
     keychain.item = {
       secret: 's',
       tokenId: 'app1',
@@ -167,7 +132,7 @@ describe('Use Siri switch in the iPhone app', () => {
   });
 
   it('a create failure shows the error and leaves the switch off and nothing stored', async () => {
-    nativeIos();
+    fakeNativeIos();
     stubServer({ failCreate: true });
     renderWithProviders(<SiriSection />);
     const user = userEvent.setup();
@@ -176,13 +141,15 @@ describe('Use Siri switch in the iPhone app', () => {
     await vi.waitFor(() => expect(toggle).toBeEnabled());
     await user.click(toggle);
 
-    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    );
     expect(toggle).toHaveAttribute('aria-checked', 'false');
     expect(keychain.set).not.toHaveBeenCalled();
   });
 
   it('a failure storing on the phone revokes the new token and leaves the switch off', async () => {
-    nativeIos();
+    fakeNativeIos();
     const calls = stubServer({});
     keychain.set.mockRejectedValue(new Error('keychain'));
     renderWithProviders(<SiriSection />);
@@ -192,15 +159,18 @@ describe('Use Siri switch in the iPhone app', () => {
     await vi.waitFor(() => expect(toggle).toBeEnabled());
     await user.click(toggle);
 
-    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    );
     expect(toggle).toHaveAttribute('aria-checked', 'false');
+    expect(keychain.item).toBeNull();
     expect(calls.map((c) => c.key)).toContain(
       'DELETE /api/assistant-tokens/app1',
     );
   });
 
   it('a revoke failure shows the error and leaves the switch on with the item kept', async () => {
-    nativeIos();
+    fakeNativeIos();
     keychain.item = {
       secret: 's',
       tokenId: 'app1',
@@ -218,7 +188,9 @@ describe('Use Siri switch in the iPhone app', () => {
     await vi.waitFor(() => expect(toggle).toBeEnabled());
     await user.click(toggle);
 
-    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    );
     expect(toggle).toHaveAttribute('aria-checked', 'true');
     expect(keychain.clear).not.toHaveBeenCalled();
   });

@@ -22,7 +22,10 @@ import {
 type StoredItem = { tokenId?: string; memberId?: string };
 
 type SiriKeychainPlugin = {
-  /** The API origin is stored with the secret so the intents know where to post. */
+  /**
+   * The API origin is stored with the secret so the intents know where to post. It is frozen when the
+   * switch is turned on: a later build with another API URL keeps the old one until it is toggled again.
+   */
   set(item: {
     secret: string;
     tokenId: string;

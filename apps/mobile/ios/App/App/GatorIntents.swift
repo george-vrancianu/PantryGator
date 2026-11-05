@@ -16,7 +16,7 @@ struct GatorNeedsIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let reply = await AssistantRequest.send(prefix: "Add to the shopping list: ", text: items)
-        return .result(dialog: IntentDialog(stringLiteral: reply))
+        return .result(dialog: "\(reply)")
     }
 }
 
