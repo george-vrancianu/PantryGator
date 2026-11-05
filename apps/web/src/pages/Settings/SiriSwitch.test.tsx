@@ -95,11 +95,16 @@ describe('Use Siri switch in the iPhone app', () => {
 
   it('hides the Shortcut setup steps from an English-speaking Member', async () => {
     fakeNativeIos();
-    stubServer({ spokenLanguage: 'en' });
+    const calls = stubServer({ spokenLanguage: 'en' });
     renderWithProviders(<SiriSection />);
 
     const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
     await vi.waitFor(() => expect(toggle).toBeEnabled());
+    await vi.waitFor(() =>
+      expect(calls.some((c) => c.key === 'GET /api/settings/preferences')).toBe(
+        true,
+      ),
+    );
     expect(screen.queryByText('Set up Siri')).not.toBeInTheDocument();
     expect(screen.queryByText(/Hey Siri, Pantry add/)).not.toBeInTheDocument();
   });
@@ -117,10 +122,10 @@ describe('Use Siri switch in the iPhone app', () => {
     renderWithProviders(<SiriSection />, { locale: 'da' });
 
     expect(
-      await screen.findByText('Hey Siri, Gator mangler'),
+      await screen.findByText('Hej Siri, Gator mangler'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Hey Siri, Gator har købt')).toBeInTheDocument();
-    expect(screen.getByText('Hey Siri, Gator, har vi')).toBeInTheDocument();
+    expect(screen.getByText('Hej Siri, Gator har købt')).toBeInTheDocument();
+    expect(screen.getByText('Hej Siri, Gator, har vi')).toBeInTheDocument();
   });
 
   it('is not offered in a browser', () => {

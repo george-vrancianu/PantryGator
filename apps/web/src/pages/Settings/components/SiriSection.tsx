@@ -22,7 +22,6 @@ import {
 } from '../../../lib/assistantTokens';
 import { formatDate } from '../../../lib/dateFormat';
 import { localIso } from '../../../lib/pantry';
-import { usePreferredSpokenLanguage } from '../../../lib/usePreferredSpokenLanguage';
 import { siriOnDevice } from '../../../lib/siriOnDevice';
 import { SiriSwitch } from './SiriSwitch';
 import {
@@ -31,6 +30,7 @@ import {
   siriNeedsShortcutUrl,
   siriShortcutUrl,
 } from '../../../lib/siriShortcut';
+import { usePreferredSpokenLanguage } from '../../../lib/usePreferredSpokenLanguage';
 import {
   ScopeCaption,
   SectionHeading,
