@@ -129,6 +129,24 @@ describe('receipt crop follows the on-screen guide on an aspect-fill feed', () =
     );
   });
 
+  it('follows the tablet guide, which keeps the portrait phone shape', () => {
+    const tablet = {
+      width: 1024,
+      height: 768,
+      insets: { top: 0, bottom: 0 },
+      deviceClass: 'tablet' as const,
+    };
+    const { guide, rect } = crop(1920, 1080, tablet);
+    const scale = Math.max(1024 / 1920, 768 / 1080);
+    expect(guide.height).toBeGreaterThan(guide.width);
+    expect(rect.width).toBeCloseTo(guide.width / scale, -1);
+    expect(rect.height).toBeCloseTo(guide.height / scale, -1);
+    expect(rect.x + rect.width / 2).toBeCloseTo(
+      (1920 - 1024 / scale) / 2 + (guide.x + guide.width / 2) / scale,
+      -1,
+    );
+  });
+
   it('is sent at the crop aspect rather than a forced 1:3, one tile wide, never upscaled', () => {
     expect(receiptOutputSize(800, 1980)).toEqual({
       width: 512,

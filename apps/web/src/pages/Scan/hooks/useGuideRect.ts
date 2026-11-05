@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import type { CameraMode } from '../../../lib/cameraMode';
+import { readCameraOrientation } from '../../../lib/cameraOrientation';
 import { readSafeAreaInsets } from '../../../lib/safeArea';
 import { guideRect, type GuideView, type Rect } from '../../../lib/scanGuides';
 
-/** The camera screen's size and safe-area insets right now. */
+/** The camera screen's size, safe-area insets and device class right now. */
 export function measureView(feed?: HTMLElement | null): GuideView {
   return {
     width: feed?.clientWidth || window.innerWidth,
     height: feed?.clientHeight || window.innerHeight,
     insets: readSafeAreaInsets(),
+    deviceClass: readCameraOrientation().deviceClass,
   };
 }
 
