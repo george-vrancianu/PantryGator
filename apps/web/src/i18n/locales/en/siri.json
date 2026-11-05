@@ -1,5 +1,13 @@
 {
   "title": "Siri",
+  "use": {
+    "label": "Use Siri",
+    "hint": "Lets you talk to your lists with Siri, even while your phone is locked. Turn it off to stop it on this phone.",
+    "tokenName": "PantryGator app (iPhone)",
+    "phrases": {
+      "needs": "Hey Siri, PantryGator needs"
+    }
+  },
   "hint": "Create an Assistant Token for each device that talks to your lists by voice. A token can add to your lists, tick off items already on your Shopping List, and read your Pantry and Shopping List to answer questions, and nothing else; revoke it here to stop it right away.",
   "nameLabel": "Token name",
   "namePlaceholder": "For example, my iPhone",

@@ -22,6 +22,8 @@ import {
 } from '../../../lib/assistantTokens';
 import { formatDate } from '../../../lib/dateFormat';
 import { localIso } from '../../../lib/pantry';
+import { siriOnDevice } from '../../../lib/siriOnDevice';
+import { SiriSwitch } from './SiriSwitch';
 import {
   siriHaveShortcutUrl,
   siriGotShortcutUrl,
@@ -287,6 +289,7 @@ export function SiriSection() {
       />
       <Card>
         <Stack spacing={1.5}>
+          {siriOnDevice.isAvailable() ? <SiriSwitch /> : null}
           <Typography variant="meta" color="text.secondary">
             {t('siri:hint')}
           </Typography>
