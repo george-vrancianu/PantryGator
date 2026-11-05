@@ -1,4 +1,11 @@
-import { useEffect, useReducer, useRef, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBreakpointUp } from '@pocket-pantry/ui';
@@ -202,10 +209,18 @@ export function useReviewScreen(
         ? sheetTitleId(key)
         : sheetFieldId(line, field);
   };
+  // The Sheet focuses this once it has opened (a text field stays unfocused on a phone, ADR 0039).
+  const sheetInitialFocus = useMemo<RefObject<HTMLElement | null>>(
+    () => ({
+      get current() {
+        const id = enterFocus.current;
+        return id ? document.getElementById(id) : null;
+      },
+    }),
+    [],
+  );
   const sheetEntered = () => {
-    const id = enterFocus.current;
     enterFocus.current = null;
-    if (id) document.getElementById(id)?.focus();
   };
   const closeSheet = () => {
     if (sheetKey === null) return;
@@ -329,6 +344,7 @@ export function useReviewScreen(
     sheetOpen,
     openSheet,
     closeSheet,
+    sheetInitialFocus,
     sheetEntered,
     sheetExited,
     change,

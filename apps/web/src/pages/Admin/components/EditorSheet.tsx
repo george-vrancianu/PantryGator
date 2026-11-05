@@ -27,7 +27,7 @@ export function EditorSheet({
       open
       label={title}
       onClose={onClose}
-      onEntered={() => titleRef.current?.focus()}
+      initialFocus={titleRef}
       header={
         <SheetHeader
           size="roomy"

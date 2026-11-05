@@ -50,6 +50,15 @@ async function openSheet() {
   return user;
 }
 
+/** On a phone the sheet opens without the keyboard: the Member taps the search to see its tiles. */
+async function openSheetAndTapSearch() {
+  const user = await openSheet();
+  await user.click(
+    await screen.findByRole('combobox', { name: 'Search ingredients' }),
+  );
+  return user;
+}
+
 describe('the Add to Pantry sheet before a pick', () => {
   beforeEach(() => localStorage.clear());
 
@@ -65,7 +74,7 @@ describe('the Add to Pantry sheet before a pick', () => {
 
   it('shows Popular to start with amount and Location when nothing was stocked', async () => {
     stub([]);
-    const user = await openSheet();
+    const user = await openSheetAndTapSearch();
     const tile = await screen.findByRole('button', {
       name: 'Milk, 0.5 L · Fridge',
     });
@@ -85,7 +94,7 @@ describe('the Add to Pantry sheet before a pick', () => {
     const calls = stub([
       { ...milk, lastStockedAt: new Date().toISOString(), inPantry: true },
     ]);
-    await openSheet();
+    await openSheetAndTapSearch();
     expect(await screen.findByText('Recently stocked')).toBeInTheDocument();
     expect(screen.queryByText('Popular to start')).not.toBeInTheDocument();
     expect(calls.some((call) => call.key.includes('popular-to-start'))).toBe(

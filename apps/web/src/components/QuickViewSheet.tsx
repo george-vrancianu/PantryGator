@@ -118,7 +118,7 @@ export function QuickViewSheet({
     <Sheet
       open={open}
       onClose={onClose}
-      onEntered={() => closeButton.current?.focus()}
+      initialFocus={closeButton}
       label={recipe.title}
       size="content"
       header={

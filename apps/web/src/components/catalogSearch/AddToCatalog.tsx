@@ -121,6 +121,7 @@ export function AddToCatalog({
       onPicked={picked}
       onCancel={onDismiss}
       initialAllergenIds={initialAllergenIds}
+      autoFocus={wide}
     />
   );
 
@@ -132,7 +133,7 @@ export function AddToCatalog({
         header={header}
         size="content"
         onClose={onDismiss}
-        onEntered={() => categoryRef.current?.focus()}
+        initialFocus={categoryRef}
       >
         {form}
       </Sheet>
