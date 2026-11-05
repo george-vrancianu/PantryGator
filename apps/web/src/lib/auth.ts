@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from './api';
+import { ApiError, apiRequest } from './api';
 import { clearPendingTheme } from './appearance';
 import { nativeSession } from './nativeSession';
 import { siriOnDevice } from './siriOnDevice';
@@ -73,8 +73,19 @@ export function useSignOut() {
   return useMutation({
     mutationFn: async () => {
       // The phone's Siri token is revoked while the session still can (best effort), then cleared.
-      if (siriOnDevice.isAvailable()) await siriOnDevice.signOut();
-      return apiRequest('/auth/sign-out', { method: 'POST', body: {} });
+      if (siriOnDevice.isAvailable()) {
+        const session = queryClient.getQueryData<Session>(sessionQueryKey);
+        await siriOnDevice.signOut(session?.user.id);
+      }
+      try {
+        return await apiRequest('/auth/sign-out', { method: 'POST', body: {} });
+      } catch (error) {
+        // In the app, offline counts as signed out here: the session is local, so sign-out never gets
+        // stuck. The server session lapses on its own. A server error still fails.
+        const offline =
+          error instanceof ApiError && error.code === 'network_error';
+        if (!(offline && nativeSession.isActive())) throw error;
+      }
     },
     onSuccess: async () => {
       await nativeSession.forget();

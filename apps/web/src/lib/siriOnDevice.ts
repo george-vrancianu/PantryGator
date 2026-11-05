@@ -62,7 +62,7 @@ export const siriOnDevice = {
     const stored = await siriOnDevice.stored();
     if (!stored) return null;
     if (stored.memberId !== memberId) {
-      await keychain.clear();
+      await clearIfUnchanged(stored);
       return null;
     }
     let tokens;
@@ -72,7 +72,7 @@ export const siriOnDevice = {
       return stored;
     }
     if (!tokens.some((token) => token.id === stored.tokenId)) {
-      await keychain.clear();
+      await clearIfUnchanged(stored);
       return null;
     }
     return stored;
@@ -81,12 +81,15 @@ export const siriOnDevice = {
   /**
    * Before sign-out: revokes the stored token (best effort) and clears the item whatever happens, so
    * an offline or failed revoke never blocks signing out. A token left behind stays in the Member's
-   * list to revoke later. Nothing stored means no request.
+   * list to revoke later. Nothing stored, or a token that is not `memberId`'s (the signed-in Member,
+   * if known), means no request.
    */
-  async signOut(): Promise<void> {
+  async signOut(memberId?: string): Promise<void> {
     try {
       const stored = await siriOnDevice.stored();
-      if (stored) await revoke(stored.tokenId).catch(() => undefined);
+      if (stored && (!memberId || stored.memberId === memberId)) {
+        await revoke(stored.tokenId).catch(() => undefined);
+      }
     } catch {
       // Reading the phone failed: still clear below.
     }
@@ -133,6 +136,14 @@ export const siriOnDevice = {
   },
 };
 
+/** Clears the item only if it is still the one that was read: the Member may have turned Siri off and on meanwhile. */
+async function clearIfUnchanged(read: SiriStored) {
+  const now = await siriOnDevice.stored();
+  if (now?.tokenId === read.tokenId && now.memberId === read.memberId) {
+    await keychain.clear();
+  }
+}
+
 function revoke(tokenId: string) {
   return apiRequest<{ id: string }>(`/assistant-tokens/${tokenId}`, {
     method: 'DELETE',
@@ -148,12 +159,16 @@ function refresh(queryClient: QueryClient) {
   ]);
 }
 
-/** The switch for the signed-in Member (`memberId`, once known): on when the phone holds their token. Turning it on or off keeps the token list in step. */
+/**
+ * The switch for the signed-in Member (`memberId`, once known): on when the phone holds their token.
+ * Turning it on or off keeps the token list in step.
+ */
 export function useSiriOnDevice(memberId: string | undefined) {
   const queryClient = useQueryClient();
   const stored = useQuery({
     queryKey: [...storedQueryKey, memberId],
-    // Reconciled with the signed-in Member and their active tokens each time it is read.
+    // Reconciled with the signed-in Member and their active tokens whenever it is fetched: on every
+    // mount (gcTime 0) and after a change. Not on every read: the app's default staleTime applies.
     queryFn: () => siriOnDevice.reconcile(memberId as string),
     enabled: memberId !== undefined,
     // The Keychain is the truth, so never serve a cached answer after a change.
