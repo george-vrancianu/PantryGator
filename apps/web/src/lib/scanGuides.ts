@@ -1,18 +1,10 @@
+import type { CameraLayout, DeviceClass } from './cameraOrientation';
 import type { CameraMode } from './cameraMode';
 
 export type Rect = { x: number; y: number; width: number; height: number };
 
 /** Safe-area insets in pt (`env(safe-area-inset-*)`); 0 where the device has none. */
 export type Insets = { top: number; bottom: number };
-
-/** A phone keeps today's screen-relative guides; a tablet (laptop and desktop windows too) keeps the portrait phone's shapes. */
-export type GuideDeviceClass = 'phone' | 'tablet';
-
-/**
- * Where the controls are: a `footer` under the feed (phones, tablet portrait) or a `rail` down the
- * right edge (a tablet or desktop window in landscape).
- */
-export type CameraLayout = 'footer' | 'rail';
 
 /**
  * The camera screen: its size and safe-area insets. The insets default to none, the device class to
@@ -23,7 +15,7 @@ export type GuideView = {
   width: number;
   height: number;
   insets?: Insets;
-  deviceClass?: GuideDeviceClass;
+  deviceClass?: DeviceClass;
   layout?: CameraLayout;
 };
 

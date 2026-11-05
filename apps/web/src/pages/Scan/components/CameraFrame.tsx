@@ -16,8 +16,8 @@ import {
   type Point,
   type Size,
 } from '../../../lib/cameraFrame';
-import type { ScreenAngle } from '../../../lib/cameraOrientation';
-import { RAIL_WIDTH, type CameraLayout } from '../../../lib/scanGuides';
+import type { CameraLayout, ScreenAngle } from '../../../lib/cameraOrientation';
+import { RAIL_WIDTH } from '../../../lib/scanGuides';
 import { useCameraOrientation } from '../../../lib/useCameraOrientation';
 
 /** The CSS custom properties the camera bars read for their safe-area insets (ADR 0037). */
@@ -74,7 +74,7 @@ export function useCameraFrame(): FrameValue {
  * just the window.
  *
  * The box is a positioned, portrait-sized containing block: bars, the guide, sheets, `fixed`
- * toasts and flights all lay out in it. A later layout (the tablet rail) lays itself out inside
+ * toasts and flights all lay out in it. The tablet rail lays itself out inside
  * it the same way. The bars read their safe-area insets from `--camera-inset-top` and
  * `--camera-inset-bottom` and the left and right pair (`insetTop` and so on), which are the
  * window's edges that sit at the frame's edges.

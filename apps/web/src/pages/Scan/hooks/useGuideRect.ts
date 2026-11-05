@@ -3,6 +3,7 @@ import type { CameraMode } from '../../../lib/cameraMode';
 import { frameSize } from '../../../lib/cameraFrame';
 import {
   readCameraOrientation,
+  type CameraOrientation,
   type ScreenAngle,
 } from '../../../lib/cameraOrientation';
 import { readSafeAreaInsets } from '../../../lib/safeArea';
@@ -14,8 +15,11 @@ import { useCameraOrientation } from '../../../lib/useCameraOrientation';
  * rotate-back, so its width and height swap at 90 and 270), its safe-area insets mapped to the
  * frame's edges, and the device class.
  */
-export function measureView(feed?: HTMLElement | null): GuideView {
-  const { deviceClass, layout, rotateBack } = readCameraOrientation();
+export function measureView(
+  feed?: HTMLElement | null,
+  orientation: CameraOrientation = readCameraOrientation(),
+): GuideView {
+  const { deviceClass, layout, rotateBack } = orientation;
   const size = frameSize(
     {
       width: feed?.clientWidth || window.innerWidth,
@@ -39,7 +43,11 @@ export function measureShot(feed?: HTMLElement | null): {
   view: GuideView;
   turn: ScreenAngle;
 } {
-  return { view: measureView(feed), turn: readCameraOrientation().photoTurn };
+  const orientation = readCameraOrientation();
+  return {
+    view: measureView(feed, orientation),
+    turn: orientation.photoTurn,
+  };
 }
 
 /** The guide for `mode` on this screen, kept up to date when the screen is resized or rotated. */

@@ -57,6 +57,23 @@ describe('The add-Batch camera in landscape on a tablet', () => {
     expect(screen.queryByTestId('info-scrim')).toBeNull();
   });
 
+  it('closes the Info dialog on Escape, not the camera', async () => {
+    stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    await openOverlay('product');
+    await userEvent.click(
+      screen.getByRole('button', { name: 'How scanning works' }),
+    );
+    expect(
+      screen.getByRole('dialog', { name: 'Scanning your pantry' }),
+    ).toBeInTheDocument();
+    await userEvent.keyboard('{Escape}');
+    expect(
+      screen.queryByRole('dialog', { name: 'Scanning your pantry' }),
+    ).toBeNull();
+    expect(screen.getByTestId('camera-overlay')).toBeInTheDocument();
+    expect(screen.getByTestId('scan-rail')).toBeInTheDocument();
+  });
+
   it('shows the barcode result card in the feed, not in the rail', async () => {
     stubPantry({
       'GET /api/barcode-lookup/5941234567899': () =>
