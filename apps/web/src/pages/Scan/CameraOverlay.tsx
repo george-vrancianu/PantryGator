@@ -19,7 +19,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../i18n/translateApiError';
 import { ApiError } from '../../lib/api';
-import { usePortraitLock } from '../../lib/usePortraitLock';
 import { isOutOfCredits } from '../../lib/credits';
 import { useBarcodeLookup, type BarcodeLookup } from '../../lib/barcode';
 import { readBarcode, useCamera } from '../../lib/camera';
@@ -39,6 +38,7 @@ import { ZoomPill } from './components/ZoomPill';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
 import { measureView, useGuideRect } from './hooks/useGuideRect';
 import { useScanLanguage } from '../../lib/useScanLanguage';
+import { usePortraitLock } from '../../lib/usePortraitLock';
 
 export type { CameraMode };
 

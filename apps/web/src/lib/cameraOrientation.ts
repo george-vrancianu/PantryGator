@@ -32,6 +32,8 @@ export type CameraOrientation = {
   rotateBack: ScreenAngle;
   /** Degrees to turn a captured photo. One switch with `rotateBack`: they never differ (ADR 0037). */
   photoTurn: ScreenAngle;
+  /** True on a phone in the native app: the camera locks the screen to portrait while open (ADR 0037). */
+  locksPortrait: boolean;
 };
 
 function asAngle(angle: number): ScreenAngle {
@@ -53,7 +55,13 @@ export function cameraOrientation(
       : 'footer';
   const turn =
     deviceClass === 'phone' && !input.native ? asAngle(input.angle) : 0;
-  return { deviceClass, layout, rotateBack: turn, photoTurn: turn };
+  return {
+    deviceClass,
+    layout,
+    rotateBack: turn,
+    photoTurn: turn,
+    locksPortrait: deviceClass === 'phone' && input.native,
+  };
 }
 
 /** The angle the screen reports: `screen.orientation`, else iOS's older `window.orientation`, else 0. */
@@ -89,10 +97,7 @@ export function watchCameraOrientation(
   };
 }
 
-/** True on a phone in the native app: the only place the camera locks the screen to portrait (ADR 0037). */
+/** Whether the camera locks the screen to portrait now: a phone in the native app. */
 export function locksPortraitNatively(): boolean {
-  return (
-    Capacitor.isNativePlatform() &&
-    readCameraOrientation().deviceClass === 'phone'
-  );
+  return readCameraOrientation().locksPortrait;
 }

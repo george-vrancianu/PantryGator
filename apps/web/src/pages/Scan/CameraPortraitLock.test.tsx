@@ -1,5 +1,5 @@
 import { ScreenOrientation } from '@capacitor/screen-orientation';
-import { act, screen } from '@testing-library/react';
+import { act, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -55,6 +55,9 @@ describe.each(cameras)('Portrait lock in %s', (_name, route) => {
 
   it('locks to portrait on a phone in the app, and not before', () => {
     stubScreen({ ...PHONE, native: true });
+    renderCamera('/elsewhere');
+    expect(ScreenOrientation.lock).not.toHaveBeenCalled();
+    cleanup();
     renderCamera(route);
     expect(ScreenOrientation.lock).toHaveBeenCalledExactlyOnceWith({
       orientation: 'portrait',
