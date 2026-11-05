@@ -5,8 +5,22 @@ export type Rect = { x: number; y: number; width: number; height: number };
 /** Safe-area insets in pt (`env(safe-area-inset-*)`); 0 where the device has none. */
 export type Insets = { top: number; bottom: number };
 
-/** The camera screen: its size and safe-area insets. The insets default to none. */
-export type GuideView = { width: number; height: number; insets?: Insets };
+/** A phone keeps today's screen-relative guides; a tablet (laptop and desktop windows too) keeps the portrait phone's shapes. */
+export type GuideDeviceClass = 'phone' | 'tablet';
+
+/**
+ * The camera screen: its size and safe-area insets. The insets default to none, the device class to
+ * a phone. `rightInset` is room taken on the right edge (pt, default 0); the clear area ends where
+ * it starts. It only shapes tablet guides: a phone guide ignores it. #762 is expected to replace it
+ * with a layout input plus a shared RAIL_WIDTH constant.
+ */
+export type GuideView = {
+  width: number;
+  height: number;
+  insets?: Insets;
+  deviceClass?: GuideDeviceClass;
+  rightInset?: number;
+};
 
 /**
  * Bar heights of the camera chrome (handoff sections 2.1 and 5.1), in pt, without the safe areas.
@@ -41,24 +55,70 @@ export const SCAN_GUIDES: Record<
 
 /** The part of the screen between the bars, as its top edge and height. */
 export function clearArea(view: GuideView): { top: number; height: number } {
+  const { top, height } = clearBox(view);
+  return { top, height };
+}
+
+/** The clear area with its horizontal extent: left of any `rightInset`, from x = 0. */
+export function clearBox(view: GuideView): {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+} {
   const insets = view.insets ?? { top: 0, bottom: 0 };
   const top = insets.top + TOP_BAR_HEIGHT;
   const bottom =
     view.height - (Math.max(insets.bottom, FOOTER_MIN_BOTTOM) + FOOTER_HEIGHT);
-  return { top, height: bottom - top };
+  return {
+    left: 0,
+    top,
+    width: view.width - (view.rightInset ?? 0),
+    height: bottom - top,
+  };
+}
+
+/** The reference portrait phone (no insets) whose guide shapes a tablet keeps. */
+const REFERENCE_PHONE: GuideView = { width: 390, height: 844 };
+
+/** A tablet guide is at most this share of the clear area's height... */
+export const TABLET_GUIDE_MAX_HEIGHT = 0.8;
+/**
+ * ...and of its width. 0.9 sits just above the widest phone guide (Ingredients, 0.88 of the width),
+ * so only the wide Barcode guide in a narrow clear area is ever held back by it.
+ */
+export const TABLET_GUIDE_MAX_WIDTH = 0.9;
+
+/** A guide's width over height on the reference portrait phone. */
+function referenceRatio(mode: CameraMode): number {
+  const clear = clearBox(REFERENCE_PHONE);
+  return (
+    (REFERENCE_PHONE.width * SCAN_GUIDES[mode].width) /
+    (clear.height * SCAN_GUIDES[mode].height)
+  );
 }
 
 /** The guide for a camera mode on `view`, in pt from the screen's top left. */
 export function guideRect(mode: CameraMode, view: GuideView): Rect {
-  const clear = clearArea(view);
+  const clear = clearBox(view);
+  // Centred in the clear area, then lifted: 14 pt above its middle.
+  const centreY = (height: number) =>
+    clear.top + clear.height / 2 - GUIDE_LIFT - height / 2;
+  if (view.deviceClass === 'tablet') {
+    const ratio = referenceRatio(mode);
+    const height = Math.min(
+      clear.height * TABLET_GUIDE_MAX_HEIGHT,
+      (clear.width * TABLET_GUIDE_MAX_WIDTH) / ratio,
+    );
+    const width = height * ratio;
+    return {
+      x: clear.left + clear.width / 2 - width / 2,
+      y: centreY(height),
+      width,
+      height,
+    };
+  }
   const width = view.width * SCAN_GUIDES[mode].width;
   const height = clear.height * SCAN_GUIDES[mode].height;
-  // Centred in the clear area, then lifted: 14 pt above its middle.
-  const centreY = clear.top + clear.height / 2 - GUIDE_LIFT;
-  return {
-    x: (view.width - width) / 2,
-    y: centreY - height / 2,
-    width,
-    height,
-  };
+  return { x: (view.width - width) / 2, y: centreY(height), width, height };
 }

@@ -9,6 +9,7 @@ import {
   SHUTTER_ROW_HEIGHT,
   TOP_BAR_HEIGHT,
   clearArea,
+  clearBox,
   guideRect,
 } from './scanGuides';
 
@@ -107,5 +108,79 @@ describe('guideRect', () => {
       plain.y + plain.height / 2 + (47 - (34 - 20)) / 2,
       0,
     );
+  });
+});
+
+describe('guideRect on a tablet', () => {
+  const reference = { width: 390, height: 844 };
+  const ratioOf = (mode: (typeof CAMERA_MODES)[number]) => {
+    const r = guideRect(mode, reference);
+    return r.width / r.height;
+  };
+  const views = [
+    { name: 'iPad portrait', width: 768, height: 1024 },
+    { name: 'tablet portrait', width: 820, height: 1180 },
+    { name: 'tablet landscape', width: 1024, height: 768 },
+    { name: 'iPad Pro landscape', width: 1366, height: 1024 },
+    { name: 'desktop window', width: 1440, height: 900 },
+  ];
+
+  describe.each(views)('$name', ({ width, height }) => {
+    const view = { width, height, deviceClass: 'tablet' as const };
+    const clear = clearBox(view);
+
+    it.each(CAMERA_MODES)(
+      '%s keeps its phone ratio, fits and is centred then lifted',
+      (mode) => {
+        const rect = guideRect(mode, view);
+        expect(rect.width / rect.height).toBeCloseTo(ratioOf(mode), 6);
+        expect(rect.height).toBeLessThanOrEqual(clear.height * 0.8 + 1e-9);
+        expect(rect.width).toBeLessThanOrEqual(clear.width + 1e-9);
+        expect(rect.x).toBeGreaterThanOrEqual(0);
+        expect(rect.x + rect.width / 2).toBeCloseTo(width / 2);
+        expect(rect.y + rect.height / 2).toBeCloseTo(
+          clear.top + clear.height / 2 - GUIDE_LIFT,
+        );
+      },
+    );
+
+    it('keeps the Receipt guide taller than wide', () => {
+      const rect = guideRect('receipt', view);
+      expect(rect.height).toBeGreaterThan(rect.width);
+    });
+  });
+
+  it('fills 80% of the clear height when the width allows', () => {
+    const view = { width: 1024, height: 768, deviceClass: 'tablet' as const };
+    expect(guideRect('receipt', view).height).toBeCloseTo(
+      clearBox(view).height * 0.8,
+    );
+  });
+
+  it('is held to 90% of the clear width for the wide Barcode guide', () => {
+    const view = { width: 768, height: 1024, deviceClass: 'tablet' as const };
+    expect(guideRect('barcode', view).width).toBeCloseTo(768 * 0.9);
+  });
+
+  it('centres left of a right inset', () => {
+    const view = {
+      width: 1024,
+      height: 768,
+      deviceClass: 'tablet' as const,
+      rightInset: 200,
+    };
+    const rect = guideRect('product', view);
+    expect(rect.x + rect.width / 2).toBeCloseTo(412);
+    expect(rect.x + rect.width).toBeLessThanOrEqual(824);
+    expect(clearBox(view)).toMatchObject({ left: 0, width: 824 });
+  });
+
+  it("an explicit phone device class gives today's guide", () => {
+    const phone = { width: 390, height: 844, insets: { top: 47, bottom: 34 } };
+    for (const mode of CAMERA_MODES) {
+      expect(guideRect(mode, { ...phone, deviceClass: 'phone' })).toEqual(
+        guideRect(mode, phone),
+      );
+    }
   });
 });
