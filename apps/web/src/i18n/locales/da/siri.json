@@ -1,5 +1,13 @@
 {
   "title": "Siri",
+  "use": {
+    "label": "Brug Siri",
+    "hint": "Lader dig tale med dine lister via Siri, også mens din telefon er låst. Slå det fra for at stoppe det på denne telefon.",
+    "tokenName": "PantryGator-appen (iPhone)",
+    "phrases": {
+      "needs": "Hey Siri, PantryGator needs"
+    }
+  },
   "hint": "Opret et assistent-token til hver enhed, der taler med dine lister via stemmen. Et token kan tilføje til dine lister, krydse varer af, der allerede står på din indkøbsliste, og læse dit spisekammer og din indkøbsliste for at svare på spørgsmål, men intet andet; tilbagekald det her for at stoppe det med det samme.",
   "nameLabel": "Tokenets navn",
   "namePlaceholder": "For eksempel min iPhone",
