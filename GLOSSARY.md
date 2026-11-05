@@ -293,15 +293,15 @@ The maximum number of Voice Notes a Member may record per day.
 _Avoid_: Voice quota, Scan Cap (a separate limit)
 
 **Assistant Request**:
-Text a Member dictates to a voice assistant (today only Siri, through an Apple Shortcut) and the Shortcut sends to the API with an Assistant Token. It is read into Voice Actions like a Voice Note, but the safe ones are applied at once with no Review and the rest are refused. The reply is one sentence for the assistant to speak, in the language the Member spoke (the UI Language when that can't be told); what is written follows the Catalog Language. Not a Voice Note (no recording, no transcription) and not a Scan; the text is not stored.
-_Avoid_: Siri command, assistant call, Voice Note, Gator (the mascot, even when a Shortcut's phrase names it)
+Text a Member dictates to a voice assistant (today only Siri: through a Shortcut the Member installs, or through a phrase built into the iPhone app) and that sends to the API with an Assistant Token. It is read into Voice Actions like a Voice Note, but the safe ones are applied at once with no Review and the rest are refused. The reply is one sentence for the assistant to speak, in the language the Member spoke (the UI Language when that can't be told); what is written follows the Catalog Language. Not a Voice Note (no recording, no transcription) and not a Scan; the text is not stored.
+_Avoid_: Siri command, assistant call, Voice Note, Gator (the mascot, even when a Siri phrase names it)
 
 **Assistant Cap**:
 The maximum number of Assistant Requests a Member may make per day. Separate from the Voice Cap and the Scan Cap, so using Siri never locks a Member out of in-app Voice Notes.
 _Avoid_: Assistant quota, Voice Cap (a separate limit)
 
 **Assistant Token**:
-A secret a Member creates in Settings, with a name such as "George's iPhone", and pastes into the Shortcut. It authenticates as a Bearer token on the Assistant Request endpoint only, and is accepted nowhere else. It belongs to the Member, not to a Family, and is shown once; only a hash is stored. A Member can have several and revoke each separately.
+A secret a Member creates in Settings, with a name such as "George's iPhone", and pastes into the Shortcut; or one the iPhone app creates when the Member turns Siri on, and revokes when they turn it off or sign out. It authenticates as a Bearer token on the Assistant Request endpoint only, and is accepted nowhere else. It belongs to the Member, not to a Family, and is shown once; only a hash is stored. A Member can have several and revoke each separately.
 _Avoid_: API key, session, login
 
 ### Recipes
