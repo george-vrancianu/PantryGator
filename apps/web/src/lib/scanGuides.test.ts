@@ -175,7 +175,7 @@ describe('guideRect on a tablet', () => {
     expect(clearBox(view)).toMatchObject({ left: 0, width: 824 });
   });
 
-  it('leaves a phone view exactly as before, whatever the right inset is absent', () => {
+  it("an explicit phone device class gives today's guide", () => {
     const phone = { width: 390, height: 844, insets: { top: 47, bottom: 34 } };
     for (const mode of CAMERA_MODES) {
       expect(guideRect(mode, { ...phone, deviceClass: 'phone' })).toEqual(

@@ -10,8 +10,9 @@ export type GuideDeviceClass = 'phone' | 'tablet';
 
 /**
  * The camera screen: its size and safe-area insets. The insets default to none, the device class to
- * a phone. `rightInset` is room taken on the right edge (the tablet landscape rail, pt); the clear
- * area ends where it starts. It defaults to 0.
+ * a phone. `rightInset` is room taken on the right edge (pt, default 0); the clear area ends where
+ * it starts. It only shapes tablet guides: a phone guide ignores it. #762 is expected to replace it
+ * with a layout input plus a shared RAIL_WIDTH constant.
  */
 export type GuideView = {
   width: number;
@@ -89,7 +90,7 @@ export const TABLET_GUIDE_MAX_HEIGHT = 0.8;
 export const TABLET_GUIDE_MAX_WIDTH = 0.9;
 
 /** A guide's width over height on the reference portrait phone. */
-export function referenceRatio(mode: CameraMode): number {
+function referenceRatio(mode: CameraMode): number {
   const clear = clearBox(REFERENCE_PHONE);
   return (
     (REFERENCE_PHONE.width * SCAN_GUIDES[mode].width) /
@@ -100,26 +101,24 @@ export function referenceRatio(mode: CameraMode): number {
 /** The guide for a camera mode on `view`, in pt from the screen's top left. */
 export function guideRect(mode: CameraMode, view: GuideView): Rect {
   const clear = clearBox(view);
-  let width = view.width * SCAN_GUIDES[mode].width;
-  let height = clear.height * SCAN_GUIDES[mode].height;
+  // Centred in the clear area, then lifted: 14 pt above its middle.
+  const centreY = (height: number) =>
+    clear.top + clear.height / 2 - GUIDE_LIFT - height / 2;
   if (view.deviceClass === 'tablet') {
     const ratio = referenceRatio(mode);
-    height = Math.min(
+    const height = Math.min(
       clear.height * TABLET_GUIDE_MAX_HEIGHT,
       (clear.width * TABLET_GUIDE_MAX_WIDTH) / ratio,
     );
-    width = height * ratio;
+    const width = height * ratio;
+    return {
+      x: clear.left + clear.width / 2 - width / 2,
+      y: centreY(height),
+      width,
+      height,
+    };
   }
-  // Centred in the clear area, then lifted: 14 pt above its middle.
-  const centreX = clear.left + clear.width / 2;
-  const centreY = clear.top + clear.height / 2 - GUIDE_LIFT;
-  return {
-    x:
-      view.deviceClass === 'tablet'
-        ? centreX - width / 2
-        : (view.width - width) / 2,
-    y: centreY - height / 2,
-    width,
-    height,
-  };
+  const width = view.width * SCAN_GUIDES[mode].width;
+  const height = clear.height * SCAN_GUIDES[mode].height;
+  return { x: (view.width - width) / 2, y: centreY(height), width, height };
 }

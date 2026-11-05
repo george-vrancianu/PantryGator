@@ -145,6 +145,10 @@ describe('receipt crop follows the on-screen guide on an aspect-fill feed', () =
       (1920 - 1024 / scale) / 2 + (guide.x + guide.width / 2) / scale,
       -1,
     );
+    expect(rect.y + rect.height / 2).toBeCloseTo(
+      (guide.y + guide.height / 2) / scale + (1080 - 768 / scale) / 2,
+      -1,
+    );
   });
 
   it('is sent at the crop aspect rather than a forced 1:3, one tile wide, never upscaled', () => {
