@@ -11,7 +11,7 @@ export type GuideDeviceClass = 'phone' | 'tablet';
 /**
  * The camera screen: its size and safe-area insets. The insets default to none, the device class to
  * a phone. `rightInset` is room taken on the right edge (pt, default 0); the clear area ends where
- * it starts. It only shapes tablet guides: a phone guide ignores it. #762 is expected to replace it
+ * it starts. It only shapes tablet guides: a phone guide ignores it. ticket 762 is expected to replace it
  * with a layout input plus a shared RAIL_WIDTH constant.
  */
 export type GuideView = {

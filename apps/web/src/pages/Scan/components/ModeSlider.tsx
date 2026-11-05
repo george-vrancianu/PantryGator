@@ -11,6 +11,7 @@ import {
   startsHorizontalDrag,
   uniformCentres,
 } from '../../../lib/sliderGesture';
+import { useCameraFrame } from './CameraFrame';
 import { glassFocusRing } from './glass';
 
 /**
@@ -96,7 +97,10 @@ export function ModeSlider<Mode extends CameraMode>({
   const clickGuard = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(clickGuard.current), []);
 
+  // A swipe is read in the frame's own directions: along the strip, whichever way the screen is turned.
+  const { toFrameDelta } = useCameraFrame();
   const latest = useRef({
+    toFrameDelta,
     modes,
     index,
     centres,
@@ -107,6 +111,7 @@ export function ModeSlider<Mode extends CameraMode>({
   });
   useLayoutEffect(() => {
     latest.current = {
+      toFrameDelta,
       modes,
       index,
       centres,
@@ -135,7 +140,10 @@ export function ModeSlider<Mode extends CameraMode>({
     const offsetNow = (event: PointerEvent, start: NonNullable<typeof drag>) =>
       dragOffset(
         start.startIndex,
-        event.clientX - start.x,
+        latest.current.toFrameDelta(
+          event.clientX - start.x,
+          event.clientY - start.y,
+        ).x,
         latest.current.centres,
       );
     const onDown = (event: PointerEvent) => {
@@ -154,12 +162,11 @@ export function ModeSlider<Mode extends CameraMode>({
     const onMove = (event: PointerEvent) => {
       const start = drag;
       if (!start || start.pointerId !== event.pointerId) return;
-      if (
-        !start.moved &&
-        !startsHorizontalDrag(event.clientX - start.x, event.clientY - start.y)
-      ) {
-        return;
-      }
+      const d = latest.current.toFrameDelta(
+        event.clientX - start.x,
+        event.clientY - start.y,
+      );
+      if (!start.moved && !startsHorizontalDrag(d.x, d.y)) return;
       if (!start.moved) {
         start.moved = true;
         latest.current.onDragChange?.(true);
@@ -190,7 +197,10 @@ export function ModeSlider<Mode extends CameraMode>({
       const { modes, centres, index, onChange } = latest.current;
       const target = releaseTarget({
         offset: offsetNow(event, start),
-        dx: event.clientX - start.x,
+        dx: latest.current.toFrameDelta(
+          event.clientX - start.x,
+          event.clientY - start.y,
+        ).x,
         dt: Math.max(1, performance.now() - start.t),
         index: start.startIndex,
         centres,

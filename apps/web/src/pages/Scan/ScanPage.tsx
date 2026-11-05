@@ -10,6 +10,7 @@ import {
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { shade } from './components/glass';
+import { CameraFrame, swipeTouchAction } from './components/CameraFrame';
 import { CameraFooter } from './components/CameraFooter';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
@@ -29,6 +30,7 @@ import {
   type Rect,
 } from '../../lib/scanGuides';
 import { failedCopyKey } from '../../lib/scanSession';
+import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
 
@@ -42,6 +44,7 @@ export function ScanPage(props: ScanPageProps) {
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
   usePortraitLock();
+  const { rotateBack } = useCameraOrientation();
   // Where the guide is when a card joins the Scan Session: the photo flies from there to the stack.
   const guideNow = useRef<Rect | null>(null);
   const { fly, stackRef, layer: flights } = useFlyToStack();
@@ -84,7 +87,11 @@ export function ScanPage(props: ScanPageProps) {
       <Box
         ref={setViewfinder}
         data-testid="scan-viewfinder"
-        sx={{ position: 'absolute', inset: 0, touchAction: 'pan-y' }}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          touchAction: swipeTouchAction(rotateBack),
+        }}
       >
         <Box
           component="video"
@@ -112,6 +119,9 @@ export function ScanPage(props: ScanPageProps) {
             backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
           }}
         />
+      </Box>
+
+      <CameraFrame>
         <Viewfinder
           rect={guide}
           shot={shot}
@@ -121,139 +131,139 @@ export function ScanPage(props: ScanPageProps) {
             screen.scans.filter((scan) => scan.mode === 'barcode').length
           }
         />
-      </Box>
 
-      <CameraTopBar
-        heading={t('title', { mode: modeLabel.toLocaleLowerCase() })}
-        onClose={screen.close}
-        torch={
-          screen.camera.torchSupported
-            ? { on: screen.flash, onToggle: () => void screen.toggleFlash() }
-            : undefined
-        }
-        language={
-          <Fading hidden={!screen.scanLanguageShown}>
-            <ScanLanguageChip
-              value={screen.scanLanguage}
-              disabled={screen.scanLanguageLocked}
-              onChange={screen.pickScanLanguage}
+        <CameraTopBar
+          heading={t('title', { mode: modeLabel.toLocaleLowerCase() })}
+          onClose={screen.close}
+          torch={
+            screen.camera.torchSupported
+              ? { on: screen.flash, onToggle: () => void screen.toggleFlash() }
+              : undefined
+          }
+          language={
+            <Fading hidden={!screen.scanLanguageShown}>
+              <ScanLanguageChip
+                value={screen.scanLanguage}
+                disabled={screen.scanLanguageLocked}
+                onChange={screen.pickScanLanguage}
+              />
+            </Fading>
+          }
+          onInfo={() => setInfoOpen(true)}
+        />
+
+        <CameraFooter
+          zoom={
+            screen.camera.zoomSupported ? (
+              <ZoomPill onZoom={screen.camera.setZoom} />
+            ) : null
+          }
+          status={
+            <>
+              <Box
+                role="status"
+                sx={{ minHeight: 24, textAlign: 'center', fontSize: 13 }}
+              >
+                {screen.reading ? t('reading') : null}
+                {screen.camera.status === 'unavailable'
+                  ? t('noCamera')
+                  : screen.mode === 'barcode'
+                    ? t('overlay.pointAtBarcode')
+                    : null}
+              </Box>
+              {/* Barcode Lookups are not Scans: the Scan Cap does not stop them. */}
+              {screen.capped && screen.mode !== 'barcode' ? (
+                <Box sx={{ mt: 1 }}>
+                  <Alert severity="warning">
+                    {t(screen.outOfCredits ? 'outOfCredits' : 'capReached')}
+                  </Alert>
+                </Box>
+              ) : null}
+              {screen.error ? (
+                <Box sx={{ mt: 1 }}>
+                  <Alert>{screen.error}</Alert>
+                </Box>
+              ) : null}
+            </>
+          }
+          stack={
+            <PhotoStack
+              scans={screen.scans}
+              onOpen={screen.openReview}
+              stackRef={stackRef}
             />
-          </Fading>
-        }
-        onInfo={() => setInfoOpen(true)}
-      />
+          }
+          shutter={
+            <ShutterButton
+              ring={screen.mode === 'barcode'}
+              disabled={
+                screen.controlsDisabled ||
+                screen.full ||
+                screen.camera.status !== 'ready'
+              }
+              onShoot={() => {
+                fire();
+                void screen.shoot();
+              }}
+              onBlocked={screen.shutterBlocked}
+              focusForScan={screen.camera.focusForScan}
+            />
+          }
+          right={
+            <ImportButton
+              hidden={screen.mode === 'barcode' || !screen.importOffered}
+              disabled={screen.controlsDisabled}
+              onFiles={screen.importFiles}
+            />
+          }
+          slider={
+            <ModeSlider
+              modes={screen.modes}
+              mode={screen.mode}
+              disabled={screen.modesDisabled || infoOpen}
+              keysDisabled={screen.modesDisabled || infoOpen || screen.reading}
+              onChange={screen.setMode}
+              swipeSurface={viewfinder}
+              onDragChange={setSliding}
+            />
+          }
+        />
 
-      <CameraFooter
-        zoom={
-          screen.camera.zoomSupported ? (
-            <ZoomPill onZoom={screen.camera.setZoom} />
-          ) : null
-        }
-        status={
-          <>
-            <Box
-              role="status"
-              sx={{ minHeight: 24, textAlign: 'center', fontSize: 13 }}
-            >
-              {screen.reading ? t('reading') : null}
-              {screen.camera.status === 'unavailable'
-                ? t('noCamera')
-                : screen.mode === 'barcode'
-                  ? t('overlay.pointAtBarcode')
-                  : null}
-            </Box>
-            {/* Barcode Lookups are not Scans: the Scan Cap does not stop them. */}
-            {screen.capped && screen.mode !== 'barcode' ? (
-              <Box sx={{ mt: 1 }}>
-                <Alert severity="warning">
-                  {t(screen.outOfCredits ? 'outOfCredits' : 'capReached')}
-                </Alert>
-              </Box>
-            ) : null}
-            {screen.error ? (
-              <Box sx={{ mt: 1 }}>
-                <Alert>{screen.error}</Alert>
-              </Box>
-            ) : null}
-          </>
-        }
-        stack={
-          <PhotoStack
-            scans={screen.scans}
-            onOpen={screen.openReview}
-            stackRef={stackRef}
-          />
-        }
-        shutter={
-          <ShutterButton
-            ring={screen.mode === 'barcode'}
-            disabled={
-              screen.controlsDisabled ||
-              screen.full ||
-              screen.camera.status !== 'ready'
-            }
-            onShoot={() => {
-              fire();
-              void screen.shoot();
-            }}
-            onBlocked={screen.shutterBlocked}
-            focusForScan={screen.camera.focusForScan}
-          />
-        }
-        right={
-          <ImportButton
-            hidden={screen.mode === 'barcode' || !screen.importOffered}
-            disabled={screen.controlsDisabled}
-            onFiles={screen.importFiles}
-          />
-        }
-        slider={
-          <ModeSlider
-            modes={screen.modes}
-            mode={screen.mode}
-            disabled={screen.modesDisabled || infoOpen}
-            keysDisabled={screen.modesDisabled || infoOpen || screen.reading}
-            onChange={screen.setMode}
-            swipeSurface={viewfinder}
-            onDragChange={setSliding}
-          />
-        }
-      />
+        {flights}
 
-      {flights}
+        <Snackbar
+          open={screen.toast !== null}
+          onClose={screen.clearToast}
+          // 56 pt above the footer, clear of its status line.
+          bottom={FOOTER_HEIGHT + FOOTER_MIN_BOTTOM + 56}
+        >
+          <Alert severity={screen.toast?.severity} role="status">
+            {screen.toast?.text}
+          </Alert>
+        </Snackbar>
 
-      <Snackbar
-        open={screen.toast !== null}
-        onClose={screen.clearToast}
-        // 56 pt above the footer, clear of its status line.
-        bottom={FOOTER_HEIGHT + FOOTER_MIN_BOTTOM + 56}
-      >
-        <Alert severity={screen.toast?.severity} role="status">
-          {screen.toast?.text}
-        </Alert>
-      </Snackbar>
+        <Box role="status" sx={visuallyHidden}>
+          {(['failed', 'lookupFailed'] as const).map((key) =>
+            screen.scans.some(
+              (scan) => scan.status === 'failed' && failedCopyKey(scan) === key,
+            ) ? (
+              <p key={key}>{t(`session.${key}`)}</p>
+            ) : null,
+          )}
+          {photos > 0 ? <p>{t('photoAdded', { count: photos })}</p> : null}
+          {screen.barcodesAnnounced > 0 ? (
+            <p>{t('barcodeAdded', { count: screen.barcodesAnnounced })}</p>
+          ) : null}
+        </Box>
 
-      <Box role="status" sx={visuallyHidden}>
-        {(['failed', 'lookupFailed'] as const).map((key) =>
-          screen.scans.some(
-            (scan) => scan.status === 'failed' && failedCopyKey(scan) === key,
-          ) ? (
-            <p key={key}>{t(`session.${key}`)}</p>
-          ) : null,
-        )}
-        {photos > 0 ? <p>{t('photoAdded', { count: photos })}</p> : null}
-        {screen.barcodesAnnounced > 0 ? (
-          <p>{t('barcodeAdded', { count: screen.barcodesAnnounced })}</p>
-        ) : null}
-      </Box>
+        <Snackbar open={screen.notAdded} onClose={screen.dismissNotAdded}>
+          <Alert severity="warning" role="status">
+            {t('notAdded')}
+          </Alert>
+        </Snackbar>
 
-      <Snackbar open={screen.notAdded} onClose={screen.dismissNotAdded}>
-        <Alert severity="warning" role="status">
-          {t('notAdded')}
-        </Alert>
-      </Snackbar>
-
-      {infoOpen ? <InfoSheet onClose={closeInfo} /> : null}
+        {infoOpen ? <InfoSheet onClose={closeInfo} /> : null}
+      </CameraFrame>
     </Box>
   );
 }

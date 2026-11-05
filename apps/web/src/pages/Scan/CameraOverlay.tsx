@@ -26,6 +26,11 @@ import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
 import { BarcodeResultCard } from './components/BarcodeResultCard';
+import {
+  CameraFrame,
+  insetTop,
+  swipeTouchAction,
+} from './components/CameraFrame';
 import { CameraFooter } from './components/CameraFooter';
 import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
@@ -36,8 +41,9 @@ import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ShutterButton } from './components/ShutterButton';
 import { ZoomPill } from './components/ZoomPill';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
-import { measureView, useGuideRect } from './hooks/useGuideRect';
+import { measureShot, useGuideRect } from './hooks/useGuideRect';
 import { useScanLanguage } from '../../lib/useScanLanguage';
+import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 
 export type { CameraMode };
@@ -96,6 +102,7 @@ export function CameraOverlay({
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
   usePortraitLock();
+  const { rotateBack } = useCameraOrientation();
   const camera = useCamera();
   const { scanLanguage, scanLanguageToSend, setScanLanguage } =
     useScanLanguage();
@@ -227,13 +234,16 @@ export function CameraOverlay({
     shooting.current = true;
     setFailed(null);
     try {
+      // The guide and the turn as they are when the shutter fires, not when the frame arrives.
+      const aim = measureShot(camera.videoRef.current);
       const frame = await camera.capture();
       if (!frame) return;
       setPreparing(true);
       const image = await IMAGE_PREPARATION[mode](
         frame,
         'camera',
-        measureView(camera.videoRef.current),
+        aim.view,
+        aim.turn,
       );
       if (closed.current) return;
       // The frame's barcode settles later, never delaying the read: the ZXing decode is main-thread
@@ -302,7 +312,11 @@ export function CameraOverlay({
     >
       <Box
         ref={setViewfinder}
-        sx={{ position: 'absolute', inset: 0, touchAction: 'pan-y' }}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          touchAction: swipeTouchAction(rotateBack),
+        }}
       >
         <Box
           component="video"
@@ -328,200 +342,202 @@ export function CameraOverlay({
             backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
           }}
         />
+      </Box>
+      <CameraFrame>
         <Viewfinder
           rect={guide}
           shot={shot}
           sliding={sliding}
           scanLine={mode === 'barcode' && card === null}
         />
-      </Box>
-      <CameraTopBar
-        onClose={cancel}
-        torch={
-          camera.torchSupported
-            ? { on: flash, onToggle: () => void toggleFlash() }
-            : undefined
-        }
-        onInfo={() => setInfoOpen(true)}
-        language={
-          <Fading hidden={mode === 'barcode'}>
-            <ScanLanguageChip
-              value={scanLanguage}
-              disabled={preparing}
-              onChange={setScanLanguage}
-            />
-          </Fading>
-        }
-      />
-      <CameraFooter
-        zoom={
-          camera.zoomSupported ? <ZoomPill onZoom={camera.setZoom} /> : null
-        }
-        status={
-          <>
-            <Typography
-              role="status"
-              component="div"
-              sx={{ minHeight: 24, textAlign: 'center', fontSize: 13 }}
-            >
-              {camera.status === 'unavailable'
-                ? t('overlay.noCamera')
-                : mode === 'barcode' && card === null
-                  ? t('overlay.pointAtBarcode')
-                  : null}
-            </Typography>
-          </>
-        }
-        shutter={
-          <ShutterButton
-            ring={mode === 'barcode'}
-            disabled={preparing || camera.status !== 'ready'}
-            onShoot={() => {
-              fire();
-              void shoot();
-            }}
-            focusForScan={camera.focusForScan}
-          />
-        }
-        slider={
-          modes.length > 1 ? (
-            <ModeSlider
-              modes={modes}
-              mode={mode}
-              disabled={preparing || infoOpen}
-              keysDisabled={preparing || infoOpen}
-              swipeSurface={viewfinder}
-              onDragChange={setSliding}
-              onChange={(next) => {
-                const picked = modes.find((item) => item === next);
-                if (!picked) return;
-                setMode(picked);
-                dismissCard();
-                setFailed(null);
-                if (picked === 'barcode') setPendingCode(null);
+        <CameraTopBar
+          onClose={cancel}
+          torch={
+            camera.torchSupported
+              ? { on: flash, onToggle: () => void toggleFlash() }
+              : undefined
+          }
+          onInfo={() => setInfoOpen(true)}
+          language={
+            <Fading hidden={mode === 'barcode'}>
+              <ScanLanguageChip
+                value={scanLanguage}
+                disabled={preparing}
+                onChange={setScanLanguage}
+              />
+            </Fading>
+          }
+        />
+        <CameraFooter
+          zoom={
+            camera.zoomSupported ? <ZoomPill onZoom={camera.setZoom} /> : null
+          }
+          status={
+            <>
+              <Typography
+                role="status"
+                component="div"
+                sx={{ minHeight: 24, textAlign: 'center', fontSize: 13 }}
+              >
+                {camera.status === 'unavailable'
+                  ? t('overlay.noCamera')
+                  : mode === 'barcode' && card === null
+                    ? t('overlay.pointAtBarcode')
+                    : null}
+              </Typography>
+            </>
+          }
+          shutter={
+            <ShutterButton
+              ring={mode === 'barcode'}
+              disabled={preparing || camera.status !== 'ready'}
+              onShoot={() => {
+                fire();
+                void shoot();
               }}
+              focusForScan={camera.focusForScan}
             />
-          ) : (
-            <Box sx={visuallyHidden}>{t(`mode.${mode}`)}</Box>
-          )
-        }
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 'calc(env(safe-area-inset-top, 0px) + 64px)',
-          display: 'flex',
-          justifyContent: 'center',
-          pointerEvents: 'none',
-        }}
-      >
-        <Box
-          data-testid="adds-to-pantry"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            py: 0.75,
-            px: 1.375,
-            borderRadius: radius.pill,
-            backgroundColor: translucent(tokens.color.accent, 16),
-            color: tokens.color.accent,
-            fontSize: 12,
-            fontWeight: 700,
-            pointerEvents: 'auto',
-          }}
-        >
-          {t('addsToPantry')}
-          <Box
-            component="button"
-            type="button"
-            onClick={() => onScanSeveral(mode)}
-            sx={{
-              border: 0,
-              background: 'none',
-              color: tokens.color.ink,
-              font: 'inherit',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              p: 0,
-              '&:focus-visible': glassFocusRing,
-            }}
-          >
-            {t('scanSeveral')}
-          </Box>
-        </Box>
-      </Box>
-      {failed ? (
+          }
+          slider={
+            modes.length > 1 ? (
+              <ModeSlider
+                modes={modes}
+                mode={mode}
+                disabled={preparing || infoOpen}
+                keysDisabled={preparing || infoOpen}
+                swipeSurface={viewfinder}
+                onDragChange={setSliding}
+                onChange={(next) => {
+                  const picked = modes.find((item) => item === next);
+                  if (!picked) return;
+                  setMode(picked);
+                  dismissCard();
+                  setFailed(null);
+                  if (picked === 'barcode') setPendingCode(null);
+                }}
+              />
+            ) : (
+              <Box sx={visuallyHidden}>{t(`mode.${mode}`)}</Box>
+            )
+          }
+        />
         <Box
           sx={{
             position: 'absolute',
-            left: 14,
-            right: 14,
-            bottom: 196,
+            left: 0,
+            right: 0,
+            top: `calc(${insetTop} + 64px)`,
+            display: 'flex',
+            justifyContent: 'center',
+            pointerEvents: 'none',
           }}
         >
-          <Alert role="alert">
-            {failed}
+          <Box
+            data-testid="adds-to-pantry"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              py: 0.75,
+              px: 1.375,
+              borderRadius: radius.pill,
+              backgroundColor: translucent(tokens.color.accent, 16),
+              color: tokens.color.accent,
+              fontSize: 12,
+              fontWeight: 700,
+              pointerEvents: 'auto',
+            }}
+          >
+            {t('addsToPantry')}
             <Box
               component="button"
               type="button"
-              onClick={typeIt}
+              onClick={() => onScanSeveral(mode)}
               sx={{
-                ml: 1,
                 border: 0,
                 background: 'none',
-                color: 'inherit',
+                color: tokens.color.ink,
                 font: 'inherit',
-                fontWeight: 700,
                 textDecoration: 'underline',
                 cursor: 'pointer',
+                p: 0,
+                '&:focus-visible': glassFocusRing,
               }}
             >
-              {t('typeIt')}
+              {t('scanSeveral')}
             </Box>
-          </Alert>
+          </Box>
         </Box>
-      ) : null}
-      {preparing && mode === 'product' ? (
-        <Box
-          role="status"
-          sx={{
-            position: 'absolute',
-            left: '50%',
-            bottom: 196,
-            transform: 'translateX(-50%)',
-            px: 1.75,
-            py: 1.125,
-            borderRadius: radius.pill,
-            backgroundColor: shade(80),
-            fontSize: 13,
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {t('readingLabel')}
-        </Box>
-      ) : null}
-      {card ? (
-        <BarcodeResultCard
-          code={card.code}
-          lookup={card.lookup}
-          error={
-            card.error === undefined
-              ? undefined
-              : translateApiError(tAll, card.error)
-          }
-          onScanAgain={dismissCard}
-          onUse={confirmCard}
-          onTakePhoto={takePhotoOfCard}
-          onTypeIt={typeIt}
-        />
-      ) : null}
-      {infoOpen ? (
-        <InfoSheet onClose={closeInfo} modes={modes} stackTip={false} />
-      ) : null}
+        {failed ? (
+          <Box
+            sx={{
+              position: 'absolute',
+              left: 14,
+              right: 14,
+              bottom: 196,
+            }}
+          >
+            <Alert role="alert">
+              {failed}
+              <Box
+                component="button"
+                type="button"
+                onClick={typeIt}
+                sx={{
+                  ml: 1,
+                  border: 0,
+                  background: 'none',
+                  color: 'inherit',
+                  font: 'inherit',
+                  fontWeight: 700,
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+              >
+                {t('typeIt')}
+              </Box>
+            </Alert>
+          </Box>
+        ) : null}
+        {preparing && mode === 'product' ? (
+          <Box
+            role="status"
+            sx={{
+              position: 'absolute',
+              left: '50%',
+              bottom: 196,
+              transform: 'translateX(-50%)',
+              px: 1.75,
+              py: 1.125,
+              borderRadius: radius.pill,
+              backgroundColor: shade(80),
+              fontSize: 13,
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {t('readingLabel')}
+          </Box>
+        ) : null}
+        {card ? (
+          <BarcodeResultCard
+            code={card.code}
+            lookup={card.lookup}
+            error={
+              card.error === undefined
+                ? undefined
+                : translateApiError(tAll, card.error)
+            }
+            onScanAgain={dismissCard}
+            onUse={confirmCard}
+            onTakePhoto={takePhotoOfCard}
+            onTypeIt={typeIt}
+          />
+        ) : null}
+        {infoOpen ? (
+          <InfoSheet onClose={closeInfo} modes={modes} stackTip={false} />
+        ) : null}
+      </CameraFrame>
     </Box>
   );
 }

@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { stubScreen } from '../test/screen';
 import {
   cameraConstraints,
   clampZoom,
@@ -120,6 +121,8 @@ describe('barcode detection', () => {
 describe('focusForScan', () => {
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
     Reflect.deleteProperty(navigator, 'mediaDevices');
   });
 
@@ -148,6 +151,46 @@ describe('focusForScan', () => {
     void promise.then(() => (state.done = true));
     return state;
   };
+
+  it.each([
+    [90, { x: FOCUS_POINT_Y, y: 0.5 }],
+    [180, { x: 0.5, y: 1 - FOCUS_POINT_Y }],
+    [270, { x: 1 - FOCUS_POINT_Y, y: 0.5 }],
+  ] as const)(
+    "with the screen turned to %i it aims where the guide is on screen, in the video's own coordinates",
+    async (angle, expected) => {
+      stubScreen({ width: 390, height: 844, angle });
+      const { hook, applyConstraints } = await openCamera({
+        focusMode: ['manual', 'single-shot', 'continuous'],
+      });
+      vi.useFakeTimers();
+      act(() => {
+        hook.result.current.focusForScan().cancel();
+      });
+      expect(applyConstraints).toHaveBeenNthCalledWith(1, {
+        advanced: [{ focusMode: 'single-shot', pointsOfInterest: [expected] }],
+      });
+    },
+  );
+
+  it('aims at the centre of the guide as it is in the app, where nothing is rotated back', async () => {
+    stubScreen({ width: 390, height: 844, angle: 90, native: true });
+    const { hook, applyConstraints } = await openCamera({
+      focusMode: ['manual', 'single-shot', 'continuous'],
+    });
+    vi.useFakeTimers();
+    act(() => {
+      hook.result.current.focusForScan().cancel();
+    });
+    expect(applyConstraints).toHaveBeenNthCalledWith(1, {
+      advanced: [
+        {
+          focusMode: 'single-shot',
+          pointsOfInterest: [{ x: 0.5, y: FOCUS_POINT_Y }],
+        },
+      ],
+    });
+  });
 
   it('where single-shot focus exists, focuses on the guide centre, then returns to continuous', async () => {
     const { hook, applyConstraints } = await openCamera({

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CAMERA_MODES, type CameraMode } from '../../../lib/cameraMode';
 import { glassFocusRing, shade, translucent } from './glass';
+import { insetBottom } from './CameraFrame';
 
 const FOCUSABLE =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -73,7 +74,7 @@ export function InfoSheet({
           width: '100%',
           p: 3,
           pt: 1.5,
-          pb: 'calc(24px + env(safe-area-inset-bottom))',
+          pb: `calc(24px + ${insetBottom})`,
           borderRadius: `${radius.card} ${radius.card} 0 0`,
           backgroundColor: translucent(tokens.color.surface, 82),
           backdropFilter: 'blur(14px)',
