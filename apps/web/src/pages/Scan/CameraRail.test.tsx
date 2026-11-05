@@ -1,7 +1,15 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from 'vitest';
 import { resetScanSession } from '../../lib/scanSession';
 import { RAIL_WIDTH } from '../../lib/scanGuides';
 import { renderWithProviders } from '../../test/render';
@@ -116,6 +124,31 @@ describe('The Scan page in landscape on a tablet', () => {
     const status = screen.getByText('Point the camera at the barcode.');
     expect(rail()).not.toContainElement(status);
     expect(screen.getByTestId('camera-frame')).toContainElement(status);
+  });
+
+  it('stops the status line short of the rail', () => {
+    stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    renderCamera('/scan?mode=barcode');
+    expect(getComputedStyle(screen.getByTestId('scan-status')).right).toContain(
+      `${RAIL_WIDTH}px`,
+    );
+  });
+
+  it('scrolls the chosen mode into view', () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    onTestFinished(() => {
+      // @ts-expect-error jsdom has no scrollIntoView; put it back as it was
+      delete Element.prototype.scrollIntoView;
+    });
+    stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    renderCamera('/scan?mode=receipt');
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+    expect(
+      scrollIntoView.mock.contexts.some(
+        (el) => (el as HTMLElement).getAttribute('aria-checked') === 'true',
+      ),
+    ).toBe(true);
   });
 
   it('opens Info as a centred dialog', async () => {

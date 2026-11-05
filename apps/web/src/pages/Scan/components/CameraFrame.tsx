@@ -148,6 +148,9 @@ export function CameraFrame({ children }: { children: ReactNode }) {
   );
 }
 
+/** How far up (px, plus the bottom inset) messages in the feed sit in the rail layout, where there is no footer. */
+export const FEED_BOTTOM_IN_RAIL = 72;
+
 /**
  * Where things that sit at the bottom of the feed go, in either layout. Under a footer they sit
  * above it, at the distance each passes; in the rail layout there is no footer, so they sit near
@@ -178,7 +181,7 @@ export function useFeedArea(): {
  */
 export function FeedBox({
   aboveFooter,
-  inRail = 72,
+  inRail = FEED_BOTTOM_IN_RAIL,
   margin = 14,
   centred = false,
   sx,

@@ -44,7 +44,8 @@ export const FOOTER_MIN_BOTTOM = 20;
 
 /**
  * The width of the rail (pt, without the safe area): the shared constant of the rail component and
- * the guide maths, because the guide is centred in the clear area left of it.
+ * the guide maths, because the guide is centred in the clear area left of it. The guide maths ignores
+ * the right safe-area inset the on-screen rail adds on top (none on tablets and desktops today).
  */
 export const RAIL_WIDTH = 168;
 

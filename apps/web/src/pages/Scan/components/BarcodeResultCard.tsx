@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { BarcodeLookupNotes } from '../../../components/BarcodeLookupNotes';
 import type { BarcodeLookup } from '../../../lib/barcode';
 import { BARCODE_GLYPH } from './barcodeGlyph';
-import { useFeedArea } from './CameraFrame';
+import { FEED_BOTTOM_IN_RAIL, useFeedArea } from './CameraFrame';
 
 const INK = palette('text-primary');
 const MUTED = palette('text-secondary');
@@ -68,7 +68,7 @@ export function BarcodeResultCard({
         position: 'absolute',
         left: 14,
         right: feed.right(14),
-        bottom: feed.bottom(190, 72),
+        bottom: feed.bottom(190, FEED_BOTTOM_IN_RAIL),
         p: 1.5,
         borderRadius: radius.sheet,
         backgroundColor: 'background.paper',

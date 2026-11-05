@@ -37,7 +37,7 @@ import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
 import { InfoSheet } from './components/InfoSheet';
 import { glassFocusRing, shade, translucent } from './components/glass';
-import { ModePicker } from './components/ModeList';
+import { ModePicker } from './components/ModePicker';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ShutterButton } from './components/ShutterButton';
 import { ZoomPill } from './components/ZoomPill';

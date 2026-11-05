@@ -16,7 +16,7 @@ import { CameraTopBar } from './components/CameraTopBar';
 import { Fading } from './components/Fading';
 import { ImportButton } from './components/ImportButton';
 import { InfoSheet } from './components/InfoSheet';
-import { ModePicker } from './components/ModeList';
+import { ModePicker } from './components/ModePicker';
 import { PhotoStack } from './components/PhotoStack';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ZoomPill } from './components/ZoomPill';

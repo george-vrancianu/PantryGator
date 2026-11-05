@@ -2,7 +2,7 @@ import { Box, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { RAIL_WIDTH, TOP_BAR_HEIGHT } from '../../../lib/scanGuides';
 import { glassBar, translucent } from './glass';
-import { insetBottom, insetRight, insetTop, useFeedArea } from './CameraFrame';
+import { insetBottom, insetRight, insetTop, FeedBox } from './CameraFrame';
 
 type Props = {
   stack?: ReactNode;
@@ -30,24 +30,18 @@ export function CameraRail({
   status,
   zoom,
 }: Props) {
-  const feed = useFeedArea();
   return (
     <>
       {status ? (
-        <Box
+        <FeedBox
+          aboveFooter={0}
+          inRail={0}
+          margin={0}
           data-testid="scan-status"
-          sx={{
-            position: 'absolute',
-            left: 0,
-            right: feed.right(0),
-            bottom: feed.bottom(0, 0),
-            px: 2.5,
-            pb: 1,
-            pointerEvents: 'none',
-          }}
+          sx={{ px: 2.5, pb: 1, pointerEvents: 'none' }}
         >
           {status}
-        </Box>
+        </FeedBox>
       ) : null}
       <Box
         data-testid="scan-rail"
@@ -60,10 +54,10 @@ export function CameraRail({
           width: `calc(${RAIL_WIDTH}px + ${insetRight})`,
           boxSizing: 'border-box',
           borderLeft: `1px solid ${translucent(tokens.color.ink, 6)}`,
-          pr: insetRight,
           pb: `max(${insetBottom}, 16px)`,
           pt: 2,
-          px: 1.5,
+          pl: 1.5,
+          pr: `calc(${insetRight} + 12px)`,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

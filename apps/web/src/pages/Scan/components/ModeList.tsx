@@ -1,12 +1,10 @@
 import { Box, tokens, visuallyHidden } from '@pocket-pantry/ui';
-import { useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '../../../lib/cameraMode';
-import { useCameraFrame } from './CameraFrame';
 import { glassFocusRing } from './glass';
 import {
   ModeLabel,
-  ModeSlider,
   VERTICAL_KEYS,
   useFocusFollowsMode,
   useModeKeys,
@@ -39,6 +37,12 @@ export function ModeList<Mode extends CameraMode>({
   const group = useRef<HTMLDivElement>(null);
   useModeKeys({ modes, mode, keysDisabled, onChange, keys: VERTICAL_KEYS });
   useFocusFollowsMode(group, mode);
+  // Keep the chosen mode in view when the list scrolls (on open, and when the arrows move it).
+  useLayoutEffect(() => {
+    group.current
+      ?.querySelector('[aria-checked="true"]')
+      ?.scrollIntoView?.({ block: 'nearest' });
+  }, [mode]);
   if (modes.length < 2) return null;
   return (
     <Box
@@ -93,27 +97,4 @@ export function ModeList<Mode extends CameraMode>({
       </Box>
     </Box>
   );
-}
-
-/**
- * The mode picker for the layout the camera is in: the strip in the footer, the list in the rail.
- * Hosts mount this where they used to mount `ModeSlider`; the strip's swipe props only apply there.
- */
-export function ModePicker<Mode extends CameraMode>(
-  props: Parameters<typeof ModeSlider<Mode>>[0],
-) {
-  const { layout } = useCameraFrame();
-  if (layout === 'rail') {
-    const { modes, mode, disabled, keysDisabled, onChange } = props;
-    return (
-      <ModeList
-        modes={modes}
-        mode={mode}
-        disabled={disabled}
-        keysDisabled={keysDisabled}
-        onChange={onChange}
-      />
-    );
-  }
-  return <ModeSlider {...props} />;
 }

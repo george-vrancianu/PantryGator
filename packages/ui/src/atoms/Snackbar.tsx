@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import MuiSnackbar from '@mui/material/Snackbar';
+import type { Theme } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 import { aboveDock, DOCK_HEIGHT } from '../theme/dock';
 import { radius, shadow } from '../theme/themeVars';
@@ -43,8 +44,17 @@ export function Snackbar({
             ? { bottom }
             : {},
         // MUI centres a Snackbar on the window from `sm` up: centre it between the edges instead.
+        // MUI sets that inside a `min-width` media query, which comes later in the CSS, so the override
+        // has to sit in the same query to win.
         right !== undefined
-          ? { left: 0, right, transform: 'none', justifyContent: 'center' }
+          ? (theme: Theme) => {
+              const override = { left: 0, right, transform: 'none' };
+              return {
+                ...override,
+                justifyContent: 'center',
+                [theme.breakpoints.up('sm')]: override,
+              };
+            }
           : {},
       ]}
     >

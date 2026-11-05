@@ -1,6 +1,6 @@
 import { Snackbar } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { useFeedArea } from './CameraFrame';
+import { FEED_BOTTOM_IN_RAIL, useFeedArea } from './CameraFrame';
 
 /**
  * A toast over the camera feed. Under a footer it sits `aboveFooter` px up (the bottom edge when
@@ -24,7 +24,7 @@ export function CameraToast({
       onClose={onClose}
       bottom={
         feed.layout === 'rail' || aboveFooter !== undefined
-          ? feed.bottom(aboveFooter ?? 0, 72)
+          ? feed.bottom(aboveFooter ?? 0, FEED_BOTTOM_IN_RAIL)
           : undefined
       }
       right={feed.layout === 'rail' ? feed.right(0) : undefined}

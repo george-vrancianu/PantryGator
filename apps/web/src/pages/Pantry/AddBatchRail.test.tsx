@@ -69,6 +69,7 @@ describe('The add-Batch camera in landscape on a tablet', () => {
     const card = await screen.findByTestId('barcode-card');
     expect(rail()).not.toContainElement(card);
     expect(screen.getByTestId('camera-frame')).toContainElement(card);
+    expect(getComputedStyle(card).right).toContain(`${RAIL_WIDTH}px`);
   });
 
   it('switches to the footer when the tablet turns to portrait', async () => {
