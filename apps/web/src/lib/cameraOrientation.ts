@@ -9,10 +9,13 @@ export type CameraLayout = 'footer' | 'rail';
 export type ScreenAngle = 0 | 90 | 180 | 270;
 
 export type CameraOrientationInput = {
-  /** The screen's size in CSS pixels, as it reports it now. */
-  width: number;
-  height: number;
-  /** The angle the screen reports (`screen.orientation.angle`). */
+  /** The screen's size in CSS pixels. Only its shortest side is used (the device class). On iOS it never swaps on rotation. */
+  screenWidth: number;
+  screenHeight: number;
+  /** The window's size: the layout follows it, so a narrow desktop window gets no rail and an iPad turned to landscape does. */
+  viewportWidth: number;
+  viewportHeight: number;
+  /** The angle the screen reports. Negative and over-360 values are normalised. */
   angle: number;
   /** True inside the native shell, which locks portrait itself. */
   native: boolean;
@@ -22,14 +25,18 @@ export type CameraOrientation = {
   /** Fixed by the screen's shortest side, so it never changes on rotation. */
   deviceClass: DeviceClass;
   layout: CameraLayout;
-  /** Degrees to turn the camera chrome back so it reads upright. */
+  /**
+   * The reported angle, in degrees. The chrome is turned back by the opposite
+   * angle: apply `rotate(-rotateBack deg)` (ADR 0037).
+   */
   rotateBack: ScreenAngle;
   /** Degrees to turn a captured photo. One switch with `rotateBack`: they never differ (ADR 0037). */
   photoTurn: ScreenAngle;
 };
 
 function asAngle(angle: number): ScreenAngle {
-  return angle === 90 || angle === 180 || angle === 270 ? angle : 0;
+  const turn = ((angle % 360) + 360) % 360;
+  return turn === 90 || turn === 180 || turn === 270 ? turn : 0;
 }
 
 /** Decide how the camera handles orientation. Pure. */
@@ -37,33 +44,47 @@ export function cameraOrientation(
   input: CameraOrientationInput,
 ): CameraOrientation {
   const deviceClass: DeviceClass =
-    Math.min(input.width, input.height) < PHONE_SHORTEST_SIDE
+    Math.min(input.screenWidth, input.screenHeight) < PHONE_SHORTEST_SIDE
       ? 'phone'
       : 'tablet';
   const layout: CameraLayout =
-    deviceClass === 'tablet' && input.width > input.height ? 'rail' : 'footer';
+    deviceClass === 'tablet' && input.viewportWidth > input.viewportHeight
+      ? 'rail'
+      : 'footer';
   const turn =
     deviceClass === 'phone' && !input.native ? asAngle(input.angle) : 0;
   return { deviceClass, layout, rotateBack: turn, photoTurn: turn };
 }
 
-/** `cameraOrientation` for the screen as it is now. */
+/** The angle the screen reports: `screen.orientation`, else iOS's older `window.orientation`, else 0. */
+function reportedAngle(): number {
+  return screen.orientation?.angle ?? window.orientation ?? 0;
+}
+
+/** `cameraOrientation` for the screen and window as they are now. */
 export function readCameraOrientation(): CameraOrientation {
   return cameraOrientation({
-    width: screen.width,
-    height: screen.height,
-    angle: screen.orientation?.angle ?? 0,
+    screenWidth: screen.width,
+    screenHeight: screen.height,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+    angle: reportedAngle(),
     native: Capacitor.isNativePlatform(),
   });
 }
 
-/** Call `onChange` whenever the screen reports a new angle; returns the stop function. */
+/** Call `onChange` when the reported angle or the window size changes; returns the stop function, which removes every listener added. */
 export function watchCameraOrientation(
   onChange: (orientation: CameraOrientation) => void,
 ): () => void {
-  const target = screen.orientation;
-  if (!target) return () => undefined;
   const listener = () => onChange(readCameraOrientation());
-  target.addEventListener('change', listener);
-  return () => target.removeEventListener('change', listener);
+  const orientation = screen.orientation;
+  orientation?.addEventListener('change', listener);
+  window.addEventListener('orientationchange', listener);
+  window.addEventListener('resize', listener);
+  return () => {
+    orientation?.removeEventListener('change', listener);
+    window.removeEventListener('orientationchange', listener);
+    window.removeEventListener('resize', listener);
+  };
 }

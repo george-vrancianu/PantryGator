@@ -7,6 +7,7 @@ import {
 } from './cameraOrientation';
 
 const sizes = {
+  ipadLandscape: { width: 1024, height: 768 },
   phonePortrait: { width: 390, height: 844 },
   phoneLandscape: { width: 844, height: 390 },
   tabletPortrait: { width: 820, height: 1180 },
@@ -16,17 +17,32 @@ const sizes = {
   edgeTablet: { width: 600, height: 1000 },
 };
 
+/** Screen and viewport of the same size, as on a window filling its screen. */
+const input = (
+  size: { width: number; height: number },
+  angle: number,
+  native: boolean,
+) => ({
+  screenWidth: size.width,
+  screenHeight: size.height,
+  viewportWidth: size.width,
+  viewportHeight: size.height,
+  angle,
+  native,
+});
+
 describe('cameraOrientation device class and layout', () => {
   it.each([
     ['phone portrait', sizes.phonePortrait, 'phone', 'footer'],
     ['phone landscape (844 x 390)', sizes.phoneLandscape, 'phone', 'footer'],
     ['tablet portrait', sizes.tabletPortrait, 'tablet', 'footer'],
     ['tablet landscape', sizes.tabletLandscape, 'tablet', 'rail'],
+    ['1024 x 768 tablet', sizes.ipadLandscape, 'tablet', 'rail'],
     ['desktop window', sizes.desktop, 'tablet', 'rail'],
     ['shortest side 599', sizes.edgePhone, 'phone', 'footer'],
     ['shortest side 600', sizes.edgeTablet, 'tablet', 'footer'],
   ] as const)('%s', (_name, size, deviceClass, layout) => {
-    const result = cameraOrientation({ ...size, angle: 0, native: false });
+    const result = cameraOrientation(input(size, 0, false));
     expect(result.deviceClass).toBe(deviceClass);
     expect(result.layout).toBe(layout);
   });
@@ -34,9 +50,9 @@ describe('cameraOrientation device class and layout', () => {
   it('a phone stays a phone when the screen turns', () => {
     for (const size of [sizes.phonePortrait, sizes.phoneLandscape]) {
       for (const angle of [0, 90, 180, 270]) {
-        expect(
-          cameraOrientation({ ...size, angle, native: false }).deviceClass,
-        ).toBe('phone');
+        expect(cameraOrientation(input(size, angle, false)).deviceClass).toBe(
+          'phone',
+        );
       }
     }
   });
@@ -52,7 +68,7 @@ describe('cameraOrientation angles', () => {
     'on a phone on the web, reported %i gives rotate-back and photo turn %i',
     (angle, expected) => {
       for (const size of [sizes.phonePortrait, sizes.phoneLandscape]) {
-        const result = cameraOrientation({ ...size, angle, native: false });
+        const result = cameraOrientation(input(size, angle, false));
         expect(result.rotateBack).toBe(expected);
         expect(result.photoTurn).toBe(expected);
       }
@@ -63,7 +79,7 @@ describe('cameraOrientation angles', () => {
     'in the app both angles are 0 (reported %i)',
     (angle) => {
       for (const size of Object.values(sizes)) {
-        const result = cameraOrientation({ ...size, angle, native: true });
+        const result = cameraOrientation(input(size, angle, true));
         expect(result.rotateBack).toBe(0);
         expect(result.photoTurn).toBe(0);
       }
@@ -79,19 +95,31 @@ describe('cameraOrientation angles', () => {
         sizes.desktop,
         sizes.edgeTablet,
       ]) {
-        const result = cameraOrientation({ ...size, angle, native: false });
+        const result = cameraOrientation(input(size, angle, false));
         expect(result.rotateBack).toBe(0);
         expect(result.photoTurn).toBe(0);
       }
     },
   );
 
-  it('treats a missing or odd reported angle as 0', () => {
-    expect(
-      cameraOrientation({ ...sizes.phonePortrait, angle: 45, native: false })
-        .rotateBack,
-    ).toBe(0);
-  });
+  it.each([
+    [-90, 270],
+    [-180, 180],
+    [-270, 90],
+    [450, 90],
+    [360, 0],
+    [45, 0],
+    [Number.NaN, 0],
+  ])(
+    'normalises reported %s to %s on a phone on the web',
+    (angle, expected) => {
+      const result = cameraOrientation(
+        input(sizes.phonePortrait, angle, false),
+      );
+      expect(result.rotateBack).toBe(expected);
+      expect(result.photoTurn).toBe(expected);
+    },
+  );
 });
 
 describe('reading the screen', () => {
@@ -125,11 +153,85 @@ describe('reading the screen', () => {
     });
   });
 
-  it('a tablet turned to landscape gets the rail', () => {
+  it('an Android tablet turned to landscape gets the rail', () => {
     const screen = stubScreen({ width: 820, height: 1180 });
     expect(readCameraOrientation().layout).toBe('footer');
     screen.rotate(90);
     expect(readCameraOrientation().layout).toBe('rail');
+  });
+
+  it('an iPad turned to landscape gets the rail though its screen size stays portrait', () => {
+    const screen = stubScreen({
+      width: 820,
+      height: 1180,
+      swapsOnRotate: false,
+    });
+    screen.rotate(90);
+    expect(window.screen.height).toBeGreaterThan(window.screen.width);
+    expect(readCameraOrientation()).toMatchObject({
+      deviceClass: 'tablet',
+      layout: 'rail',
+    });
+  });
+
+  it('an iPhone turned to landscape stays a phone with the angle following', () => {
+    const screen = stubScreen({
+      width: 390,
+      height: 844,
+      swapsOnRotate: false,
+    });
+    screen.rotate(270);
+    expect(readCameraOrientation()).toMatchObject({
+      deviceClass: 'phone',
+      layout: 'footer',
+      rotateBack: 270,
+    });
+  });
+
+  it('a narrow window on a landscape monitor gets no rail', () => {
+    stubScreen({
+      width: 1920,
+      height: 1080,
+      viewport: { width: 500, height: 900 },
+    });
+    expect(readCameraOrientation()).toMatchObject({
+      deviceClass: 'tablet',
+      layout: 'footer',
+    });
+  });
+
+  it('a wide window gets the rail and resizing it narrow takes it away', () => {
+    const screen = stubScreen({ width: 1920, height: 1080 });
+    expect(readCameraOrientation().layout).toBe('rail');
+    screen.resizeViewport({ width: 500, height: 900 });
+    expect(readCameraOrientation().layout).toBe('footer');
+  });
+
+  it('reads the angle from window.orientation where screen.orientation is missing', () => {
+    const screen = stubScreen({
+      width: 390,
+      height: 844,
+      legacyOrientation: true,
+    });
+    screen.setAngle(270);
+    expect(window.orientation).toBe(-90);
+    expect(readCameraOrientation().rotateBack).toBe(270);
+    screen.setAngle(90);
+    expect(readCameraOrientation().rotateBack).toBe(90);
+  });
+
+  it('watches orientationchange where screen.orientation is missing', () => {
+    const screen = stubScreen({
+      width: 390,
+      height: 844,
+      legacyOrientation: true,
+    });
+    const seen: number[] = [];
+    const stop = watchCameraOrientation((o) => seen.push(o.rotateBack));
+    screen.setAngle(180);
+    stop();
+    screen.setAngle(90);
+    expect(seen).toEqual([180]);
   });
 
   it('tells a watcher when the reported angle changes, until it stops', () => {
@@ -140,5 +242,24 @@ describe('reading the screen', () => {
     stop();
     screen.setAngle(270);
     expect(seen).toEqual([180]);
+  });
+
+  it('tells a watcher when the window resizes, until it stops', () => {
+    const screen = stubScreen({ width: 1920, height: 1080 });
+    const seen: string[] = [];
+    const stop = watchCameraOrientation((o) => seen.push(o.layout));
+    screen.resizeViewport({ width: 500, height: 900 });
+    stop();
+    screen.resizeViewport({ width: 1200, height: 900 });
+    expect(seen).toEqual(['footer']);
+  });
+
+  it('stop removes every listener it added', () => {
+    stubScreen({ width: 390, height: 844 });
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    const stop = watchCameraOrientation(() => undefined);
+    stop();
+    expect(remove.mock.calls).toEqual(add.mock.calls);
   });
 });

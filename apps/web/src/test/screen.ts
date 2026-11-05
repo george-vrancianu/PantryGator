@@ -2,42 +2,85 @@ import { Capacitor } from '@capacitor/core';
 import { vi } from 'vitest';
 
 type Angle = 0 | 90 | 180 | 270;
+type Size = { width: number; height: number };
 
 /**
- * Fake the screen for camera tests: its size, the angle it reports (with
- * `change` events, as a browser fires them) and whether the app runs in the
- * native shell. Undo with `vi.unstubAllGlobals()` and `vi.restoreAllMocks()`.
- * Sizes are what the screen reports, so a phone turned to landscape swaps
- * width and height: use `rotate`.
+ * Fake the screen for camera tests: its size, the viewport (window) size, the
+ * angle it reports (with the events a browser fires) and whether the app runs
+ * in the native shell. Undo with `vi.unstubAllGlobals()` and
+ * `vi.restoreAllMocks()`.
+ *
+ * - `width`/`height`: the screen. `viewport` defaults to the same size.
+ * - `swapsOnRotate` (default true) models Android Chrome, where the screen
+ *   size swaps on rotation; false models iOS and iPadOS, where the screen
+ *   size stays portrait and only the viewport swaps.
+ * - `legacyOrientation` models iOS before 16.4: no `screen.orientation`, the
+ *   angle is `window.orientation` (0, 90, -90, 180) with `orientationchange`.
  */
 export function stubScreen(options: {
   width: number;
   height: number;
+  viewport?: Size;
   angle?: Angle;
   native?: boolean;
+  swapsOnRotate?: boolean;
+  legacyOrientation?: boolean;
 }) {
+  const swapsOnRotate = options.swapsOnRotate ?? true;
+  const legacy = options.legacyOrientation ?? false;
   const orientation = new EventTarget() as EventTarget & { angle: number };
   orientation.angle = options.angle ?? 0;
-  const screen = {
+  const screen: Size & { orientation?: typeof orientation } = {
     width: options.width,
     height: options.height,
-    orientation,
+    ...(legacy ? {} : { orientation }),
+  };
+  const viewport = options.viewport ?? {
+    width: options.width,
+    height: options.height,
   };
   vi.stubGlobal('screen', screen);
+  const publishViewport = () => {
+    vi.stubGlobal('innerWidth', viewport.width);
+    vi.stubGlobal('innerHeight', viewport.height);
+  };
+  publishViewport();
+  const legacyAngle = (angle: Angle) => (angle === 270 ? -90 : angle);
+  if (legacy) vi.stubGlobal('orientation', legacyAngle(options.angle ?? 0));
   const isNative = vi
     .spyOn(Capacitor, 'isNativePlatform')
     .mockReturnValue(options.native ?? false);
+
+  const report = (angle: Angle) => {
+    if (legacy) {
+      vi.stubGlobal('orientation', legacyAngle(angle));
+      window.dispatchEvent(new Event('orientationchange'));
+    } else {
+      orientation.angle = angle;
+      orientation.dispatchEvent(new Event('change'));
+    }
+  };
   return {
-    /** Report this angle and tell the listeners. The size stays. */
-    setAngle(angle: Angle) {
-      orientation.angle = angle;
-      orientation.dispatchEvent(new Event('change'));
+    /** Report this angle and tell the listeners. No size changes. */
+    setAngle: report,
+    /** Resize the window (the viewport) and fire `resize`. */
+    resizeViewport(size: Size) {
+      viewport.width = size.width;
+      viewport.height = size.height;
+      publishViewport();
+      window.dispatchEvent(new Event('resize'));
     },
-    /** Turn the device a quarter: width and height swap, the angle follows. */
+    /**
+     * Turn the device a quarter: the viewport swaps and the angle follows; the
+     * screen size swaps too unless `swapsOnRotate` is false (iOS).
+     */
     rotate(angle: Angle) {
-      [screen.width, screen.height] = [screen.height, screen.width];
-      orientation.angle = angle;
-      orientation.dispatchEvent(new Event('change'));
+      if (swapsOnRotate)
+        [screen.width, screen.height] = [screen.height, screen.width];
+      [viewport.width, viewport.height] = [viewport.height, viewport.width];
+      publishViewport();
+      report(angle);
+      window.dispatchEvent(new Event('resize'));
     },
     /** Switch between the native shell (true) and the web (false). */
     setNative(native: boolean) {
