@@ -10,8 +10,8 @@ export function SiriSwitch() {
   const { t } = useTranslation('siri');
   const id = useId();
   const session = useSession();
-  const siri = useSiriOnDevice();
   const memberId = session.data?.user.id;
+  const siri = useSiriOnDevice(memberId);
 
   return (
     <Stack spacing={1}>
