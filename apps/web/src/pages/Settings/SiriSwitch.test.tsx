@@ -21,11 +21,28 @@ const APP_TOKEN: Row = {
   lastUsedAt: null,
 };
 
-function stubServer(options: { failCreate?: boolean; failRevoke?: boolean }) {
+function stubServer(options: {
+  failCreate?: boolean;
+  failRevoke?: boolean;
+  spokenLanguage?: 'en' | 'ro' | 'da';
+}) {
   let rows: Row[] = [];
   const { fetchMock, calls } = stubApi({
     'GET /api/auth/get-session': () =>
       Response.json({ user: { id: 'm1', name: 'Ana', email: 'a@b.c' } }),
+    'GET /api/settings/preferences': () =>
+      Response.json({
+        locale: 'en',
+        catalogLanguage: null,
+        effectiveCatalogLanguage: 'en',
+        scanLanguage: null,
+        effectiveScanLanguage: 'en',
+        spokenLanguage: null,
+        effectiveSpokenLanguage: options.spokenLanguage ?? 'en',
+        theme: null,
+        hideRecipesWithAllergies: false,
+        introDone: true,
+      }),
     'GET /api/assistant-tokens': () => Response.json(rows),
     'POST /api/assistant-tokens': () => {
       if (options.failCreate)
@@ -62,11 +79,48 @@ describe('Use Siri switch in the iPhone app', () => {
     const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
     await vi.waitFor(() => expect(toggle).toBeEnabled());
     expect(toggle).toHaveAttribute('aria-checked', 'false');
-    expect(screen.getByText('Hey Siri, PantryGator needs')).toBeInTheDocument();
-    expect(screen.getByText('Hey Siri, PantryGator got')).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, Gator needs')).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, Gator got')).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, Gator, do we have')).toBeInTheDocument();
+  });
+
+  it('shows the Shortcut setup steps to a Romanian-speaking Member, since Siri has no Romanian', async () => {
+    fakeNativeIos();
+    stubServer({ spokenLanguage: 'ro' });
+    renderWithProviders(<SiriSection />);
+
+    expect(await screen.findByText('Set up Siri')).toBeInTheDocument();
+    expect(screen.getByText(/Hey Siri, Pantry add/)).toBeInTheDocument();
+  });
+
+  it('hides the Shortcut setup steps from an English-speaking Member', async () => {
+    fakeNativeIos();
+    stubServer({ spokenLanguage: 'en' });
+    renderWithProviders(<SiriSection />);
+
+    const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+    await vi.waitFor(() => expect(toggle).toBeEnabled());
+    expect(screen.queryByText('Set up Siri')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Hey Siri, Pantry add/)).not.toBeInTheDocument();
+  });
+
+  it('still shows the Shortcut setup steps on the web, whatever the language', async () => {
+    stubServer({ spokenLanguage: 'en' });
+    renderWithProviders(<SiriSection />);
+
+    expect(await screen.findByText('Set up Siri')).toBeInTheDocument();
+  });
+
+  it('shows the Danish phrases in Danish', async () => {
+    fakeNativeIos();
+    stubServer({});
+    renderWithProviders(<SiriSection />, { locale: 'da' });
+
     expect(
-      screen.getByText('Hey Siri, PantryGator, do we have'),
+      await screen.findByText('Hey Siri, Gator mangler'),
     ).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, Gator har købt')).toBeInTheDocument();
+    expect(screen.getByText('Hey Siri, Gator, har vi')).toBeInTheDocument();
   });
 
   it('is not offered in a browser', () => {
