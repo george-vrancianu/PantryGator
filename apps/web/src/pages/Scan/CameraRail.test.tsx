@@ -136,10 +136,14 @@ describe('The Scan page in landscape on a tablet', () => {
 
   it('scrolls the chosen mode into view', () => {
     const scrollIntoView = vi.fn();
+    const original = Element.prototype.scrollIntoView;
     Element.prototype.scrollIntoView = scrollIntoView;
     onTestFinished(() => {
-      // @ts-expect-error jsdom has no scrollIntoView; put it back as it was
-      delete Element.prototype.scrollIntoView;
+      // jsdom has no scrollIntoView; put it back as it was
+      if (original) Element.prototype.scrollIntoView = original;
+      else
+        // @ts-expect-error removing the stub
+        delete Element.prototype.scrollIntoView;
     });
     stubScreen({ ...TABLET, viewport: LANDSCAPE });
     renderCamera('/scan?mode=receipt');

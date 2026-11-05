@@ -34,4 +34,24 @@ describe('Snackbar', () => {
     expect(lastLeft).toContain('transform:none');
     expect(css).toContain('min-width:600px');
   });
+
+  it('keeps a numeric `bottom` in force from the sm breakpoint up, where MUI sets 24px', () => {
+    render(
+      <Snackbar open onClose={() => {}} bottom={150}>
+        Hello
+      </Snackbar>,
+    );
+    const root = screen.getByText('Hello').closest('.MuiSnackbar-root');
+    const className = Array.from(root?.classList ?? []).find((c) =>
+      c.startsWith('css-'),
+    );
+    const rules = [
+      ...emittedCss().matchAll(new RegExp(`\\.${className}\\{([^}]*)\\}`, 'g')),
+    ];
+    const lastBottom = rules
+      .map((m) => m[1])
+      .filter((body) => body.includes('bottom:'))
+      .at(-1);
+    expect(lastBottom).toContain('bottom:150px');
+  });
 });

@@ -41,11 +41,17 @@ export function Snackbar({
               },
             }
           : bottom !== undefined
-            ? { bottom }
+            ? // MUI sets `bottom: 24` from `sm` up inside a media query, which comes later in the CSS,
+              // so the value has to sit in the same query to win. Same value at every width.
+              (theme: Theme) => ({
+                bottom,
+                [theme.breakpoints.up('sm')]: { bottom },
+              })
             : {},
         // MUI centres a Snackbar on the window from `sm` up: centre it between the edges instead.
         // MUI sets that inside a `min-width` media query, which comes later in the CSS, so the override
-        // has to sit in the same query to win.
+        // has to sit in the same query to win. The query only cancels MUI's own: both branches must
+        // keep the same values, so no layout depends on window width (even inside CameraFrame).
         right !== undefined
           ? (theme: Theme) => {
               const override = { left: 0, right, transform: 'none' };
