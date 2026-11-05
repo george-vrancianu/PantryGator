@@ -15,10 +15,13 @@ export type CreatedAssistantToken = AssistantToken & { secret: string };
 
 export const assistantTokensQueryKey = ['assistant-tokens'] as const;
 
+export const fetchAssistantTokens = () =>
+  apiRequest<AssistantToken[]>('/assistant-tokens');
+
 export function useAssistantTokens() {
   return useQuery({
     queryKey: assistantTokensQueryKey,
-    queryFn: () => apiRequest<AssistantToken[]>('/assistant-tokens'),
+    queryFn: fetchAssistantTokens,
   });
 }
 
