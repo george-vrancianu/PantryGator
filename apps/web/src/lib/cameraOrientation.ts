@@ -88,3 +88,11 @@ export function watchCameraOrientation(
     window.removeEventListener('resize', listener);
   };
 }
+
+/** True on a phone in the native app: the only place the camera locks the screen to portrait (ADR 0037). */
+export function locksPortraitNatively(): boolean {
+  return (
+    Capacitor.isNativePlatform() &&
+    readCameraOrientation().deviceClass === 'phone'
+  );
+}

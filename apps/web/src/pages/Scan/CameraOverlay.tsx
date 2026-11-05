@@ -19,6 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../i18n/translateApiError';
 import { ApiError } from '../../lib/api';
+import { usePortraitLock } from '../../lib/usePortraitLock';
 import { isOutOfCredits } from '../../lib/credits';
 import { useBarcodeLookup, type BarcodeLookup } from '../../lib/barcode';
 import { readBarcode, useCamera } from '../../lib/camera';
@@ -94,6 +95,7 @@ export function CameraOverlay({
 }: Props) {
   const { t } = useTranslation('scan');
   useForcedThemeColor('dark');
+  usePortraitLock();
   const camera = useCamera();
   const { scanLanguage, scanLanguageToSend, setScanLanguage } =
     useScanLanguage();
