@@ -18,7 +18,13 @@ function App() {
 /** What happened, in order: the revoke, the sign-out request and the Keychain clear. */
 let events: string[] = [];
 
-function stubServer(options: { failRevoke?: boolean; offline?: boolean } = {}) {
+function stubServer(
+  options: {
+    failRevoke?: boolean;
+    offline?: boolean;
+    signOutStatus?: number;
+  } = {},
+) {
   const { fetchMock, calls } = stubApi({
     'GET /api/settings/family': () =>
       Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
@@ -45,6 +51,12 @@ function stubServer(options: { failRevoke?: boolean; offline?: boolean } = {}) {
     },
     'POST /api/auth/sign-out': () => {
       events.push('sign-out');
+      if (options.signOutStatus) {
+        return Response.json(
+          { code: 'error' },
+          { status: options.signOutStatus },
+        );
+      }
       return options.offline
         ? Promise.reject(new TypeError('Failed to fetch'))
         : Response.json({ success: true });
@@ -125,6 +137,35 @@ describe('Signing out of the iPhone app with Siri', () => {
     expect(keychain.item).toBeNull();
   });
 
+  it('a 401 on sign-out counts as signed out and the item is cleared', async () => {
+    keychain.item = { ...STORED };
+    stubServer({ signOutStatus: 401 });
+    renderWithProviders(<App />, { route: '/settings' });
+
+    await signOut();
+
+    expect(await screen.findByText('Sign in page')).toBeInTheDocument();
+    expect(keychain.item).toBeNull();
+  });
+
+  it('a server error on sign-out after a good revoke keeps the Member signed in with Siri off', async () => {
+    keychain.item = { ...STORED };
+    stubServer({ signOutStatus: 500 });
+    renderWithProviders(<App />, { route: '/settings' });
+
+    await signOut();
+
+    await vi.waitFor(() =>
+      expect(events).toEqual(['revoke', 'clear', 'sign-out']),
+    );
+    expect(keychain.item).toBeNull();
+    // Still on Settings, still signed in: the Member can try again.
+    expect(screen.queryByText('Sign in page')).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'Sign out' }),
+    ).toBeEnabled();
+  });
+
   it('does not revoke another Member token, but still clears the item', async () => {
     keychain.item = { ...STORED, memberId: 'someone-else' };
     const calls = stubServer();
@@ -140,9 +181,8 @@ describe('Signing out of the iPhone app with Siri', () => {
 
     await signOut();
 
-    await vi.waitFor(() =>
-      expect(keys(calls)).toContain('POST /api/auth/sign-out'),
-    );
+    // Signed out, not just asked to: the response has been handled.
+    expect(await screen.findByText('Sign in page')).toBeInTheDocument();
     expect(keys(calls)).not.toContain('DELETE /api/assistant-tokens/app1');
     expect(keychain.item).toBeNull();
   });
@@ -157,5 +197,27 @@ describe('Signing out of the iPhone app with Siri', () => {
       expect(keys(calls)).toContain('POST /api/auth/sign-out'),
     );
     expect(keys(calls)).not.toContain('DELETE /api/assistant-tokens/app1');
+  });
+});
+
+describe('Signing out on the web while offline', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it('still fails: only the apps count offline as signed out', async () => {
+    events = [];
+    resetSiriEnvironment();
+    stubServer({ offline: true });
+    renderWithProviders(<App />, { route: '/settings' });
+
+    await signOut();
+
+    await vi.waitFor(() => expect(events).toEqual(['sign-out']));
+    expect(screen.queryByText('Sign in page')).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'Sign out' }),
+    ).toBeEnabled();
   });
 });

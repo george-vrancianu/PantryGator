@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { nextBackgroundOrder } from '../components/background/backgroundItem';
-import { ApiError } from './api';
+import { ApiError, isNetworkError } from './api';
 import { isOutOfCredits } from './credits';
 import {
   readRecipeLink,
@@ -139,10 +139,6 @@ export function siteOf(url: string): string | null {
     return null;
   }
 }
-
-/** No response at all (the request never got an answer), not an answer that says no. */
-const isNetworkError = (error: unknown) =>
-  error instanceof ApiError && error.code === 'network_error';
 
 /** The API answered that the Link Cap is reached. */
 export const isCapReached = (error: unknown) =>

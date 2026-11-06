@@ -25,6 +25,10 @@ export class ApiError extends Error {
   }
 }
 
+/** No response at all (the request never got an answer), not an answer that says no. */
+export const isNetworkError = (error: unknown): boolean =>
+  error instanceof ApiError && error.code === 'network_error';
+
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;

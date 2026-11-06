@@ -1,4 +1,4 @@
-import { ApiError, apiRequest } from './api';
+import { ApiError, apiRequest, isNetworkError } from './api';
 import { OUT_OF_CREDITS } from './credits';
 import { barcodeCardLine, lookupBarcode } from './barcode';
 import type { PlateDishes } from './plate';
@@ -39,9 +39,7 @@ const lookups = new Set<string>();
 /** A dropped connection gets one more try; any other error is the answer. */
 const withNetworkRetry = <T>(request: () => Promise<T>) =>
   request().catch((error: unknown) =>
-    error instanceof ApiError && error.code === 'network_error'
-      ? request()
-      : Promise.reject(error),
+    isNetworkError(error) ? request() : Promise.reject(error),
   );
 
 /** A Plate Scan has no Scan Language; its photo yields dish guesses to pick from. */
