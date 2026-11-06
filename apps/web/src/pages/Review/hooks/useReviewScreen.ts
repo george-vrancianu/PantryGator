@@ -204,6 +204,8 @@ export function useReviewScreen(
     if (!line) return;
     setSheetKey(key);
     dispatch({ type: 'openOnly', key });
+    // A blocked-Save sheet closed before it finished opening must not make this open scroll.
+    blockedEntry.current = false;
     const field = firstFocusField(line);
     // A matched line with nothing to fix has no field to land on: the title, not the chooser.
     enterFocus.current =

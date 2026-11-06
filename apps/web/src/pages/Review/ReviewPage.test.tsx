@@ -1,4 +1,10 @@
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -448,6 +454,43 @@ describe('ReviewPage', () => {
       await waitFor(() => expect(scrolled).toContain(amount));
       expect(amount).not.toHaveFocus();
     } finally {
+      // @ts-expect-error jsdom has no scrollIntoView
+      delete Element.prototype.scrollIntoView;
+    }
+  });
+
+  it('does not scroll on a later row-tap after a blocked-Save sheet closed before it finished opening', async () => {
+    const scrolled: Element[] = [];
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    try {
+      renderReview([line({ quantity: 5 })]);
+      await openSheet('Parmesan');
+      fireEvent.change(screen.getByLabelText(/^Amount of/), {
+        target: { value: '0' },
+      });
+      await userEvent.keyboard('{Escape}');
+      await sheetClosed();
+      await userEvent.click(
+        screen.getByRole('button', { name: 'Save 1 item' }),
+      );
+      // Close it again before the open transition ends.
+      const opening = await screen.findByRole('dialog', { name: 'Parmesan' });
+      expect(scrolled).toEqual([]);
+      fireEvent.keyDown(opening, { key: 'Escape' });
+      await sheetClosed();
+      scrolled.length = 0;
+      // Fake timers, so the open transition can be run to its end: onEntered runs then.
+      vi.useFakeTimers();
+      fireEvent.click(row('Parmesan'));
+      await act(() => vi.advanceTimersByTimeAsync(1000));
+      expect(
+        screen.getByRole('dialog', { name: 'Parmesan' }),
+      ).toBeInTheDocument();
+      expect(scrolled).toEqual([]);
+    } finally {
+      vi.useRealTimers();
       // @ts-expect-error jsdom has no scrollIntoView
       delete Element.prototype.scrollIntoView;
     }
