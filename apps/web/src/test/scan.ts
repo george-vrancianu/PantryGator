@@ -2,7 +2,7 @@ import { act, fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useEffect, useState } from 'react';
 import { beforeEach, expect, vi } from 'vitest';
-import type { CameraStatus, FocusPass } from '../lib/camera';
+import type { CameraStatus, FocusPass, FocusPoint } from '../lib/camera';
 
 /** The shutter button, which takes a Scan. */
 export const shutter = () => screen.getByRole('button', { name: 'Take photo' });
@@ -151,6 +151,8 @@ function defaults() {
     }>,
     /** Focus passes started, and cancelled; `finishFocus` ends the latest one (single-shot only). */
     focuses: 0,
+    /** The guide centre each focus pass was told to aim at (undefined: the default point). */
+    focusPoints: [] as Array<FocusPoint | undefined>,
     cancels: 0,
     /** The camera stream's lifecycle: `useCamera` mounted / unmounted. */
     starts: 0,
@@ -208,8 +210,9 @@ function watchBarcodes(onCode: (code: string) => void) {
   return stop;
 }
 
-function focusForScan(): FocusPass {
+function focusForScan(guideCentre?: FocusPoint): FocusPass {
   fakeCamera.focuses += 1;
+  fakeCamera.focusPoints.push(guideCentre);
   let finish: () => void = () => {};
   const done = new Promise<void>((resolve) => (finish = resolve));
   if (!fakeCamera.focusSupported) {

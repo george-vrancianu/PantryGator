@@ -10,6 +10,7 @@ import {
 } from '@pocket-pantry/ui';
 import {
   type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -25,24 +26,33 @@ import { readBarcode, useCamera } from '../../lib/camera';
 import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
-import { BarcodeResultCard } from './components/BarcodeResultCard';
+import { BarcodeResultCard } from '../../components/camera/BarcodeResultCard';
 import {
   CameraFrame,
   FeedBox,
   insetTop,
   swipeTouchAction,
-} from './components/CameraFrame';
-import { CameraControls } from './components/CameraControls';
-import { CameraTopBar } from './components/CameraTopBar';
+  useFeedArea,
+} from '../../components/camera/CameraFrame';
+import { CameraControls } from '../../components/camera/CameraControls';
+import { CameraTopBar } from '../../components/camera/CameraTopBar';
 import { Fading } from './components/Fading';
-import { InfoSheet } from './components/InfoSheet';
-import { glassFocusRing, shade, translucent } from './components/glass';
-import { ModePicker } from './components/ModePicker';
+import { InfoSheet } from '../../components/camera/InfoSheet';
+import {
+  glassFocusRing,
+  shade,
+  translucent,
+} from '../../components/camera/glass';
+import { ModePicker } from '../../components/camera/ModePicker';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ShutterButton } from './components/ShutterButton';
 import { ZoomPill } from './components/ZoomPill';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
-import { measureShot, useGuideRect } from './hooks/useGuideRect';
+import {
+  guideFocusPoint,
+  measureShot,
+  useGuideRect,
+} from './hooks/useGuideRect';
 import { useScanLanguage } from '../../lib/useScanLanguage';
 import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
@@ -86,6 +96,26 @@ type Props = {
   onCancel: () => void;
 };
 
+/** The row the "adds to pantry" pill sits in, under the top bar: centred on the feed, so left of the rail where there is one. */
+function AddsToPantryRow({ children }: { children: ReactNode }) {
+  const feed = useFeedArea();
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        left: 0,
+        right: feed.right(0),
+        top: `calc(${insetTop} + 64px)`,
+        display: 'flex',
+        justifyContent: 'center',
+        pointerEvents: 'none',
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
 /**
  * The camera as a full-screen overlay for a page that needs one photo back (the add-Batch form),
  * not a Scan Session. Its mode lives in the overlay, never in the URL: it is opened over a page
@@ -128,8 +158,8 @@ export function CameraOverlay({
   const productRead = useProductRead();
   const barcodeLookup = useBarcodeLookup();
   const { shot, fire } = useShotFeedback();
-  const guide = useGuideRect(mode);
   const [viewfinder, setViewfinder] = useState<HTMLElement | null>(null);
+  const guide = useGuideRect(mode, viewfinder);
   const [sliding, setSliding] = useState(false);
   const shooting = useRef(false);
   // The Barcode Lookup in flight (its number), so a result that lands after the card was dismissed
@@ -396,7 +426,9 @@ export function CameraOverlay({
                 fire();
                 void shoot();
               }}
-              focusForScan={camera.focusForScan}
+              focusForScan={() =>
+                camera.focusForScan(guideFocusPoint(guide, viewfinder))
+              }
             />
           }
           slider={
@@ -422,17 +454,7 @@ export function CameraOverlay({
             )
           }
         />
-        <Box
-          sx={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: `calc(${insetTop} + 64px)`,
-            display: 'flex',
-            justifyContent: 'center',
-            pointerEvents: 'none',
-          }}
-        >
+        <AddsToPantryRow>
           <Box
             data-testid="adds-to-pantry"
             sx={{
@@ -468,7 +490,7 @@ export function CameraOverlay({
               {t('scanSeveral')}
             </Box>
           </Box>
-        </Box>
+        </AddsToPantryRow>
         {failed ? (
           <FeedBox aboveFooter={196}>
             <Alert role="alert">

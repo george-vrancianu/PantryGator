@@ -1,7 +1,7 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../../test/render';
+import { renderWithProviders } from '../../test/render';
 import { InfoSheet } from './InfoSheet';
 
 describe('InfoSheet focus trap', () => {

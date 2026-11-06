@@ -9,8 +9,8 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BarcodeLookupNotes } from '../../../components/BarcodeLookupNotes';
-import type { BarcodeLookup } from '../../../lib/barcode';
+import { BarcodeLookupNotes } from '../BarcodeLookupNotes';
+import type { BarcodeLookup } from '../../lib/barcode';
 import { BARCODE_GLYPH } from './barcodeGlyph';
 import { FEED_BOTTOM_IN_RAIL, useFeedArea } from './CameraFrame';
 

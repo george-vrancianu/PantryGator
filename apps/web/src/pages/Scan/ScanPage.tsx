@@ -8,22 +8,25 @@ import {
 } from '@pocket-pantry/ui';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { shade } from './components/glass';
-import { CameraFrame, swipeTouchAction } from './components/CameraFrame';
-import { CameraControls } from './components/CameraControls';
-import { CameraToast } from './components/CameraToast';
-import { CameraTopBar } from './components/CameraTopBar';
+import { shade } from '../../components/camera/glass';
+import {
+  CameraFrame,
+  swipeTouchAction,
+} from '../../components/camera/CameraFrame';
+import { CameraControls } from '../../components/camera/CameraControls';
+import { CameraToast } from '../../components/camera/CameraToast';
+import { CameraTopBar } from '../../components/camera/CameraTopBar';
 import { Fading } from './components/Fading';
 import { ImportButton } from './components/ImportButton';
-import { InfoSheet } from './components/InfoSheet';
-import { ModePicker } from './components/ModePicker';
+import { InfoSheet } from '../../components/camera/InfoSheet';
+import { ModePicker } from '../../components/camera/ModePicker';
 import { PhotoStack } from './components/PhotoStack';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ZoomPill } from './components/ZoomPill';
 import { ShutterButton } from './components/ShutterButton';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
-import { useFlyToStack } from './components/FlyToStack';
-import { useGuideRect } from './hooks/useGuideRect';
+import { useFlyToStack } from '../../components/camera/FlyToStack';
+import { guideFocusPoint, useGuideRect } from './hooks/useGuideRect';
 import {
   FOOTER_HEIGHT,
   FOOTER_MIN_BOTTOM,
@@ -60,12 +63,12 @@ export function ScanPage(props: ScanPageProps) {
   const modeLabel = t(`mode.${screen.mode}`);
   const [infoOpen, setInfoOpen] = useState(false);
   const { shot, fire } = useShotFeedback();
-  const guide = useGuideRect(screen.mode);
+  // The viewfinder, so a sideways swipe on it also drives the mode slider.
+  const [viewfinder, setViewfinder] = useState<HTMLElement | null>(null);
+  const guide = useGuideRect(screen.mode, viewfinder);
   useLayoutEffect(() => {
     guideNow.current = guide;
   });
-  // The viewfinder, so a sideways swipe on it also drives the mode slider.
-  const [viewfinder, setViewfinder] = useState<HTMLElement | null>(null);
   const [sliding, setSliding] = useState(false);
   const closeInfo = useCallback(() => setInfoOpen(false), [setInfoOpen]);
 
@@ -206,7 +209,9 @@ export function ScanPage(props: ScanPageProps) {
                 void screen.shoot();
               }}
               onBlocked={screen.shutterBlocked}
-              focusForScan={screen.camera.focusForScan}
+              focusForScan={() =>
+                screen.camera.focusForScan(guideFocusPoint(guide, viewfinder))
+              }
             />
           }
           right={
