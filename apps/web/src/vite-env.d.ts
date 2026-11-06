@@ -4,6 +4,11 @@ interface ImportMetaEnv {
   /** API origin. Defaults to the page's own origin. */
   readonly VITE_API_URL?: string;
   /**
+   * The build the app was made from, e.g. "20261106.1758 · 9dabce4" (build number and commit).
+   * Set by apps/mobile/scripts/build-ios.sh; Settings shows it under Sign out. Hidden while unset.
+   */
+  readonly VITE_BUILD?: string;
+  /**
    * iCloud link to the "Pantry add" Shortcut (see docs/siri-shortcut.md). The Settings Siri section
    * links to it; the link is hidden while this is unset or empty.
    */

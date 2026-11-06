@@ -114,6 +114,7 @@
   "account": "Konto",
   "localeSaveFailed": "Dit sprog kunne ikke gemmes. Prøv igen.",
   "signOut": "Log ud",
+  "build": "Build {{build}}",
   "appearance": {
     "title": "Udseende",
     "warm": "Varm redaktionel",
