@@ -297,6 +297,16 @@ export function YouTab() {
           </Button>
         )}
       </Stack>
+      {/* Set by the mobile build (apps/mobile/scripts/build-ios.sh), so a phone shows which build it runs. */}
+      {import.meta.env.VITE_BUILD ? (
+        <Typography
+          variant="meta"
+          color="text.secondary"
+          sx={{ textAlign: 'center' }}
+        >
+          {t('build', { build: import.meta.env.VITE_BUILD })}
+        </Typography>
+      ) : null}
     </Stack>
   );
 }

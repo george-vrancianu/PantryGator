@@ -118,6 +118,7 @@
   "account": "Cont",
   "localeSaveFailed": "Nu am putut salva limba. Încearcă din nou.",
   "signOut": "Deconectare",
+  "build": "Versiunea {{build}}",
   "appearance": {
     "title": "Aspect",
     "warm": "Cald editorial",
