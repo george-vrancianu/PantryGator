@@ -30,7 +30,8 @@ export function feedSize(feed?: HTMLElement | null): Size {
  * frame's edges, and the device class. The caller passes the feed's size and the orientation, so
  * nothing here reads the window. In the rail layout the rail is taken off the feed only where
  * it lies over it: a feed as wide as the window runs under the rail, one that stops short of it
- * (by the rail's width or more) has none of it over it.
+ * (by the rail's width or more) has none of it over it. That reads the feed as starting at x = 0
+ * in unrotated window coordinates (the rail is tablet-only and tablets are never rotated back).
  */
 export function measureView(
   feed: Size,
@@ -80,28 +81,19 @@ export function useGuideRect(
   // The orientation reading holds the window's size, so this measures again only when the angle,
   // the layout or the size changes, not on every render.
   const orientation = useCameraOrientation();
-  const [observed, setObserved] = useState<Size | null>(null);
+  const [, setFeedResizes] = useState(0);
   useEffect(() => {
     if (!feed || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(() => {
-      const next = feedSize(feed);
-      setObserved((old) =>
-        old && old.width === next.width && old.height === next.height
-          ? old
-          : next,
-      );
-    });
+    // Only a cue to render again: the size itself is always read live below.
+    const observer = new ResizeObserver(() => setFeedResizes((n) => n + 1));
     observer.observe(feed);
     return () => observer.disconnect();
   }, [feed]);
+  const { width, height } = feedSize(feed);
   const view = useMemo(
     () =>
-      measureView(
-        observed ?? feedSize(feed),
-        orientation,
-        orientation.viewportWidth,
-      ),
-    [feed, observed, orientation],
+      measureView({ width, height }, orientation, orientation.viewportWidth),
+    [width, height, orientation],
   );
   return useMemo(() => guideRect(mode, view), [mode, view]);
 }

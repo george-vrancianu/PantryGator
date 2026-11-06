@@ -5,9 +5,9 @@ import { readCameraOrientation } from '../../../lib/cameraOrientation';
 import { guideRect, RAIL_WIDTH } from '../../../lib/scanGuides';
 import { feedSize, measureView, useGuideRect } from './useGuideRect';
 
-const measure2 = (feed: HTMLElement) =>
+const measureFeed = (feed: HTMLElement) =>
   measureView(feedSize(feed), readCameraOrientation(), window.innerWidth);
-const measure = () =>
+const measureWindow = () =>
   measureView(feedSize(), readCameraOrientation(), window.innerWidth);
 
 /** An element that reports this client size (jsdom has no layout). */
@@ -32,7 +32,7 @@ describe('measureView', () => {
 
   it('is a phone on a phone screen', () => {
     stubScreen({ width: 390, height: 844 });
-    expect(measure().deviceClass).toBe('phone');
+    expect(measureWindow().deviceClass).toBe('phone');
   });
 
   it('is a tablet on a tablet, even when the window is narrow', () => {
@@ -41,7 +41,7 @@ describe('measureView', () => {
       height: 1180,
       viewport: { width: 500, height: 900 },
     });
-    expect(measure().deviceClass).toBe('tablet');
+    expect(measureWindow().deviceClass).toBe('tablet');
   });
 
   it('is a tablet in a desktop window', () => {
@@ -50,7 +50,7 @@ describe('measureView', () => {
       height: 1080,
       viewport: { width: 1440, height: 900 },
     });
-    expect(measure().deviceClass).toBe('tablet');
+    expect(measureWindow().deviceClass).toBe('tablet');
   });
 });
 
@@ -66,7 +66,7 @@ describe('measuring from the feed', () => {
     Object.defineProperty(feed, 'clientWidth', { value: 1000 });
     Object.defineProperty(feed, 'clientHeight', { value: 820 });
     expect(feedSize(feed)).toEqual({ width: 1000, height: 820 });
-    const view = measure2(feed);
+    const view = measureFeed(feed);
     expect(view).toMatchObject({ width: 1000, height: 820 });
   });
 
@@ -82,7 +82,7 @@ describe('measuring from the feed', () => {
       viewport: { width: 844, height: 390 },
       angle: 90,
     });
-    const view = measure();
+    const view = measureWindow();
     expect(view).toMatchObject({ width: 390, height: 844 });
   });
 });
@@ -97,16 +97,16 @@ describe('the rail and a feed that stops short of it', () => {
 
   it('takes the whole rail off a feed that runs under it', () => {
     stubScreen({ ...TABLET, viewport: LANDSCAPE });
-    const view = measure2(feedOf(1180, 820));
+    const view = measureFeed(feedOf(1180, 820));
     expect(view.railOverlap).toBe(RAIL_WIDTH);
   });
 
   it('takes none of it off a feed that ends where the rail begins', () => {
     stubScreen({ ...TABLET, viewport: LANDSCAPE });
-    const view = measure2(feedOf(1180 - RAIL_WIDTH, 820));
+    const view = measureFeed(feedOf(1180 - RAIL_WIDTH, 820));
     expect(view.railOverlap).toBe(0);
     // The guide is centred in the feed, as it is in the feed that runs under the rail.
-    const under = guideRect('product', measure2(feedOf(1180, 820)));
+    const under = guideRect('product', measureFeed(feedOf(1180, 820)));
     const beside = guideRect('product', view);
     expect(beside.x + beside.width / 2).toBeCloseTo(under.x + under.width / 2);
     expect(beside.width).toBeCloseTo(under.width);
@@ -114,14 +114,14 @@ describe('the rail and a feed that stops short of it', () => {
 
   it('takes off only the part of the rail over a feed that ends partway', () => {
     stubScreen({ ...TABLET, viewport: LANDSCAPE });
-    expect(measure2(feedOf(1180 - 100, 820)).railOverlap).toBe(
+    expect(measureFeed(feedOf(1180 - 100, 820)).railOverlap).toBe(
       RAIL_WIDTH - 100,
     );
   });
 
   it('has no rail overlap in the footer layout', () => {
     stubScreen({ ...TABLET });
-    expect(measure2(feedOf(820, 1180)).railOverlap).toBeUndefined();
+    expect(measureFeed(feedOf(820, 1180)).railOverlap).toBeUndefined();
   });
 });
 

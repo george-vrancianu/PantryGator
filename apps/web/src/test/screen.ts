@@ -14,7 +14,8 @@ type Size = { width: number; height: number };
  * - `swapsOnRotate` (default true) models Android Chrome, where the screen
  *   size swaps on rotation; false models iOS and iPadOS, where the screen
  *   size stays portrait and only the viewport swaps.
- * - Animation frames are queued, not run on their own: `setAngle`, `resizeViewport` and `rotate`
+ * - Every `requestAnimationFrame` callback in the test is queued, not run on its own (other code's
+ *   too): they run when a screen event or `inOneFrame` flushes the queue. `setAngle`, `resizeViewport` and `rotate`
  *   run them straight after firing their events, so a test sees the settled state. Wrap several
  *   in `inOneFrame` to fire their events before the one frame that follows (as a device does
  *   when `change` arrives before the window has its new size).
