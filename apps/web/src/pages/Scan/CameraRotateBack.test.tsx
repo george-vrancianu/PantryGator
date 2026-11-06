@@ -9,8 +9,8 @@ import { shutter, takeScan } from '../../test/scan';
 import { stubScreen } from '../../test/screen';
 import { IntroCameraPage } from '../Intro/IntroCameraPage';
 import { ScanPage } from './ScanPage';
-import { CameraFrame } from './components/CameraFrame';
-import { CameraToast } from './components/CameraToast';
+import { CameraFrame } from '../../components/camera/CameraFrame';
+import { CameraToast } from '../../components/camera/CameraToast';
 
 // On a phone on the web the camera chrome is rotated back by the opposite angle and the photo is
 // turned by the angle captured at the shutter (ADR 0037). The add-Batch camera is covered in

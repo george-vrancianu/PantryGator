@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { SCAN_LANGUAGES, type ScanLanguage } from '../../../i18n/resources';
 import { keyframesSx } from '../../../lib/keyframesSx';
 import { SCAN_LANGUAGE_NAMES } from '../../../lib/scanLanguage';
-import { glassFocusRing, translucent } from './glass';
+import { glassFocusRing, translucent } from '../../../components/camera/glass';
 
 type Props = {
   value: ScanLanguage;

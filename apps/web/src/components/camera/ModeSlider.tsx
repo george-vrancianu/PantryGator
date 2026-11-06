@@ -7,16 +7,16 @@ import {
   type RefObject,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { CreditPrice } from '../../../components/CreditPrice';
-import { useCreditPrice } from '../../../lib/credits';
-import { MODE_SLIDER_HEIGHT } from '../../../lib/scanGuides';
+import type { CameraMode } from '../../lib/cameraMode';
+import { CreditPrice } from '../CreditPrice';
+import { useCreditPrice } from '../../lib/credits';
+import { MODE_SLIDER_HEIGHT } from '../../lib/scanGuides';
 import {
   dragOffset,
   releaseTarget,
   startsHorizontalDrag,
   uniformCentres,
-} from '../../../lib/sliderGesture';
+} from '../../lib/sliderGesture';
 import { useCameraFrame } from './CameraFrame';
 import { glassFocusRing } from './glass';
 

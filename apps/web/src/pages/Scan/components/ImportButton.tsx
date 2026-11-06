@@ -2,7 +2,11 @@ import { Box, GalleryIcon, PlusIcon, tokens } from '@pocket-pantry/ui';
 import { useRef, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Fading } from './Fading';
-import { glassFocusRing, shade, translucent } from './glass';
+import {
+  glassFocusRing,
+  shade,
+  translucent,
+} from '../../../components/camera/glass';
 
 type Props = {
   /** Barcode reads on its own: Import fades out and leaves the tab order, keeping its place. */

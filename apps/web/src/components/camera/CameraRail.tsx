@@ -1,6 +1,6 @@
 import { Box, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { RAIL_WIDTH, TOP_BAR_HEIGHT } from '../../../lib/scanGuides';
+import { RAIL_WIDTH, TOP_BAR_HEIGHT } from '../../lib/scanGuides';
 import { glassBar, translucent } from './glass';
 import { insetBottom, insetRight, insetTop, FeedBox } from './CameraFrame';
 

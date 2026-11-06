@@ -15,10 +15,10 @@ import {
   toFramePoint,
   type Point,
   type Size,
-} from '../../../lib/cameraFrame';
-import type { CameraLayout, ScreenAngle } from '../../../lib/cameraOrientation';
-import { RAIL_WIDTH } from '../../../lib/scanGuides';
-import { useCameraOrientation } from '../../../lib/useCameraOrientation';
+} from '../../lib/cameraFrame';
+import type { CameraLayout, ScreenAngle } from '../../lib/cameraOrientation';
+import { RAIL_WIDTH } from '../../lib/scanGuides';
+import { useCameraOrientation } from '../../lib/useCameraOrientation';
 
 /** The CSS custom properties the camera bars read for their safe-area insets (ADR 0037). */
 export const INSET_TOP = '--camera-inset-top';

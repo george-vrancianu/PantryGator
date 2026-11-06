@@ -26,20 +26,24 @@ import { readBarcode, useCamera } from '../../lib/camera';
 import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
-import { BarcodeResultCard } from './components/BarcodeResultCard';
+import { BarcodeResultCard } from '../../components/camera/BarcodeResultCard';
 import {
   CameraFrame,
   FeedBox,
   insetTop,
   swipeTouchAction,
   useFeedArea,
-} from './components/CameraFrame';
-import { CameraControls } from './components/CameraControls';
-import { CameraTopBar } from './components/CameraTopBar';
+} from '../../components/camera/CameraFrame';
+import { CameraControls } from '../../components/camera/CameraControls';
+import { CameraTopBar } from '../../components/camera/CameraTopBar';
 import { Fading } from './components/Fading';
-import { InfoSheet } from './components/InfoSheet';
-import { glassFocusRing, shade, translucent } from './components/glass';
-import { ModePicker } from './components/ModePicker';
+import { InfoSheet } from '../../components/camera/InfoSheet';
+import {
+  glassFocusRing,
+  shade,
+  translucent,
+} from '../../components/camera/glass';
+import { ModePicker } from '../../components/camera/ModePicker';
 import { ScanLanguageChip } from './components/ScanLanguageChip';
 import { ShutterButton } from './components/ShutterButton';
 import { ZoomPill } from './components/ZoomPill';

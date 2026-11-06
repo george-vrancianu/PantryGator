@@ -1,7 +1,7 @@
 import { Box, radius, tokens } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { glassFocusRing, shade } from './glass';
+import { glassFocusRing, shade } from '../../../components/camera/glass';
 
 /** The two zoom levels of the pill (handoff 3.3). */
 const LEVELS = [1, 2] as const;

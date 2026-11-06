@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CAMERA_MODES, type CameraMode } from '../../../lib/cameraMode';
+import { CAMERA_MODES, type CameraMode } from '../../lib/cameraMode';
 import { glassFocusRing, shade, translucent } from './glass';
 import { insetBottom, useCameraFrame } from './CameraFrame';
 

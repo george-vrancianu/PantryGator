@@ -8,8 +8,12 @@ import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { summariseStack, type StackSummary } from '../../../lib/photoStack';
 import type { SessionScan } from '../../../lib/scanSession';
-import { BARCODE_GLYPH } from './barcodeGlyph';
-import { glassFocusRing, shade, translucent } from './glass';
+import { BARCODE_GLYPH } from '../../../components/camera/barcodeGlyph';
+import {
+  glassFocusRing,
+  shade,
+  translucent,
+} from '../../../components/camera/glass';
 
 const SIZE = 54;
 

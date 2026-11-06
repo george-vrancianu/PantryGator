@@ -6,8 +6,8 @@ import {
   useState,
   type RefObject,
 } from 'react';
-import { frameSize } from '../../../lib/cameraFrame';
-import type { Rect } from '../../../lib/scanGuides';
+import { frameSize } from '../../lib/cameraFrame';
+import type { Rect } from '../../lib/scanGuides';
 import { useCameraFrame } from './CameraFrame';
 
 const FLY_MS = 460;

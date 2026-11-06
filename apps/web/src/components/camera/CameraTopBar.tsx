@@ -9,7 +9,7 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TOP_BAR_HEIGHT } from '../../../lib/scanGuides';
+import { TOP_BAR_HEIGHT } from '../../lib/scanGuides';
 import { glassBar, glassFocusRing, translucent } from './glass';
 import { insetLeft, insetRight, insetTop } from './CameraFrame';
 

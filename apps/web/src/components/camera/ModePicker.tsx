@@ -1,4 +1,4 @@
-import type { CameraMode } from '../../../lib/cameraMode';
+import type { CameraMode } from '../../lib/cameraMode';
 import { useCameraFrame } from './CameraFrame';
 import { ModeList } from './ModeList';
 import { ModeSlider } from './ModeSlider';
