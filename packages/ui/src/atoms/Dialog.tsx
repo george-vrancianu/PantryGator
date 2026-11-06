@@ -21,7 +21,8 @@ export type DialogProps = {
   /**
    * The element to focus once the dialog has opened. Without it, focus stays on
    * the dialog itself. Below `md` a text field is not focused (the phone keyboard
-   * would jump the dialog); focus moves only if it is still on the dialog.
+   * would jump the dialog). It never moves focus the Member has already moved to a
+   * control inside the dialog; focus left outside the dialog goes to the dialog.
    */
   initialFocus?: RefObject<HTMLElement | null>;
   /**
