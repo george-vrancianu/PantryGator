@@ -322,7 +322,9 @@ describe('"Paste text instead" on a failed row', () => {
       screen.queryByRole('dialog', { name: 'In the background' }),
     ).toBeNull();
     const text = screen.getByLabelText(/^Recipe text/);
-    expect(text).toHaveFocus();
+    // On a phone the field stays unfocused so the keyboard does not jump the sheet (ADR 0039).
+    await waitFor(() => expect(sheet).toHaveFocus());
+    expect(text).not.toHaveFocus();
     expect(
       screen.getByText('Paste the recipe from example.com.'),
     ).toBeVisible();

@@ -197,6 +197,8 @@ export function useReviewScreen(
   const exitFocus = useRef<string | null>(null);
   // Where focus goes once the sheet has finished opening (the dialog takes focus itself while it opens).
   const enterFocus = useRef<string | null>(null);
+  // The sheet is opening because Save or Confirm was blocked: its invalid field is scrolled into view.
+  const blockedEntry = useRef(false);
   const openSheet = (key: string) => {
     const line = state.lines.find((l) => l.key === key);
     if (!line) return;
@@ -220,6 +222,11 @@ export function useReviewScreen(
     [],
   );
   const sheetEntered = () => {
+    // A field that blocks Save is shown, not focused, on a phone (a text field keeps the keyboard down, ADR 0039).
+    const id = enterFocus.current;
+    if (id && blockedEntry.current)
+      document.getElementById(id)?.scrollIntoView?.({ block: 'center' });
+    blockedEntry.current = false;
     enterFocus.current = null;
   };
   const closeSheet = () => {
@@ -268,7 +275,10 @@ export function useReviewScreen(
       setSheetKey(line.key);
       dispatch({ type: 'openOnly', key: line.key });
       if (alreadyOpen) setFocusId(target);
-      else enterFocus.current = target;
+      else {
+        enterFocus.current = target;
+        blockedEntry.current = true;
+      }
     } else {
       dispatch({ type: 'open', key: line.key });
       setFocusId(target);

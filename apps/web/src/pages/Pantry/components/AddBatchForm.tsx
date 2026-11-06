@@ -81,7 +81,7 @@ type Props = {
   onScanSeveral: (mode: CameraMode) => void;
   /** The Catalog Search input, for a host Sheet's `initialFocus` (ADR 0039). */
   searchRef?: RefObject<HTMLInputElement | null>;
-  /** Focus the search on mount. A host Sheet leaves this off at its opening and uses `initialFocus`. Default `true`. */
+  /** Focus the search on mount. A host Sheet leaves this off at its opening and uses `initialFocus`. Default `false`. */
   autoFocus?: boolean;
 };
 
@@ -101,7 +101,7 @@ export function AddBatchForm({
   onSayIt,
   onScanSeveral,
   searchRef,
-  autoFocus = true,
+  autoFocus = false,
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const form = useAddBatchForm({ onSaved, start, presetLocation });

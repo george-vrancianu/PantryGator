@@ -58,7 +58,7 @@ export type AddToCatalogFormProps = {
   /**
    * Focus the Category field when the form appears. A host that is a Sheet leaves this off and
    * passes `categoryRef` to the Sheet's `initialFocus` (ADR 0039). A field revealed by a tap on
-   * the mode tabs still takes focus. Default `true`.
+   * the mode tabs still takes focus. Default `false`; a caller that wants focus on mount passes it.
    */
   autoFocus?: boolean;
 };
@@ -87,7 +87,7 @@ export function AddToCatalogForm({
   onPicked,
   onCancel,
   initialAllergenIds,
-  autoFocus = true,
+  autoFocus = false,
 }: AddToCatalogFormProps) {
   const { color } = tokens;
   const { t } = useTranslation('catalog');

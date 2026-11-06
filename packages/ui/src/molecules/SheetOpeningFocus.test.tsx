@@ -141,6 +141,23 @@ describe('Sheet opening focus', () => {
     );
   });
 
+  it('focuses the sheet when a scrim tap left focus on the body and there is no target', async () => {
+    stubScreen(true);
+    open(undefined);
+    const sheet = screen.getByRole('dialog', { name: 'Add items' });
+    act(() => (document.activeElement as HTMLElement).blur());
+    expect(document.activeElement).toBe(document.body);
+    await entered();
+    expect(document.activeElement).toBe(sheet);
+  });
+
+  it('on a phone, focuses the sheet instead of a text field when focus is on the body', async () => {
+    const sheet = withTarget(false, 'input');
+    act(() => (document.activeElement as HTMLElement).blur());
+    await entered();
+    expect(document.activeElement).toBe(sheet);
+  });
+
   it('Tab from the sheet reaches the first control', async () => {
     // user-event awaits real timers; the sheet is waited for with waitFor.
     vi.useRealTimers();

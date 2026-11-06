@@ -9,7 +9,7 @@ import {
   Typography,
   radius,
 } from '@pocket-pantry/ui';
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent, type RefObject } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CreditPrice } from '../../../components/CreditPrice';
 import { useCreditPrice } from '../../../lib/credits';
@@ -51,15 +51,18 @@ export function FromTextSheet({
   prefill?: FromTextPrefill;
 }) {
   const { t } = useTranslation('recipes');
+  const field = useRef<HTMLTextAreaElement>(null);
   return (
     <Sheet
       open={open}
       onClose={onClose}
       onExited={onExited}
+      // A failed link read's text field takes focus once the sheet has opened (a phone keeps it unfocused, ADR 0039).
+      initialFocus={prefill ? field : undefined}
       size="content"
       label={t('fromText.heading')}
     >
-      <FromTextForm onSubmitted={onClose} prefill={prefill} />
+      <FromTextForm onSubmitted={onClose} prefill={prefill} field={field} />
     </Sheet>
   );
 }
@@ -68,9 +71,11 @@ export function FromTextSheet({
 function FromTextForm({
   onSubmitted,
   prefill,
+  field,
 }: {
   onSubmitted: () => void;
   prefill?: FromTextPrefill;
+  field: RefObject<HTMLTextAreaElement | null>;
 }) {
   const { t, i18n } = useTranslation('recipes');
   const price = useCreditPrice('link-text');
@@ -78,16 +83,11 @@ function FromTextForm({
   const [language, setLanguage] = useState<ReadingLanguage>('catalog');
   const [full, setFull] = useState(false);
   const [note, setNote] = useState<PasteNote | null>(null);
-  const field = useRef<HTMLTextAreaElement>(null);
   const fieldId = useId();
   // Hidden where the browser cannot read the clipboard.
   const canPaste =
     typeof navigator !== 'undefined' &&
     typeof navigator.clipboard?.readText === 'function';
-
-  useEffect(() => {
-    if (prefill) field.current?.focus();
-  }, [prefill]);
 
   const input = text.trim();
 
