@@ -92,6 +92,36 @@ describe('Settings You tab', () => {
     document.documentElement.removeAttribute('data-theme');
   });
 
+  describe('Build', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('shows the build the app was made from, below Sign out', async () => {
+      vi.stubEnv('VITE_BUILD', '20261106.1758 · 9dabce4');
+      stubSystemScheme(false);
+      stubYou();
+      renderWithProviders(<SettingsPage />, { route: '/settings' });
+
+      const build = await screen.findByText('Build 20261106.1758 · 9dabce4');
+      const signOut = screen.getByRole('button', { name: 'Sign out' });
+      expect(
+        signOut.compareDocumentPosition(build) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+
+    it('shows no build when the web app was built without one', async () => {
+      vi.stubEnv('VITE_BUILD', '');
+      stubSystemScheme(false);
+      stubYou();
+      renderWithProviders(<SettingsPage />, { route: '/settings' });
+
+      await screen.findByRole('button', { name: 'Sign out' });
+      expect(screen.queryByText(/^Build /)).not.toBeInTheDocument();
+    });
+  });
+
   describe('Siri section by platform', () => {
     it.each([
       ['the web', false, 'web', true],

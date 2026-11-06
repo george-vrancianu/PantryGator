@@ -15,6 +15,8 @@ This builds `apps/web` into `www/` against the hosted API and copies it into bot
 1. `npm ci`, then `npm run sync -w @pocket-pantry/mobile`.
 2. `npm run open:ios -w @pocket-pantry/mobile` opens Xcode. Pick the team under Signing & Capabilities, run on a device, or Product > Archive and upload to TestFlight.
 
+Or from a terminal, also over SSH: `TEAM_ID=<team> apps/mobile/scripts/build-ios.sh <device-udid>` syncs, builds, installs on the phone and opens the app. It stamps a build number (the Mac's local time, `YYYYMMDD.HHMM`) as the app's `CFBundleVersion`, and Settings shows it under Sign out with the commit, e.g. "Build 20261106.1758 · 9dabce4". A plain `npm run sync` sets no build, so Settings shows none. Over SSH, unlock the login keychain first (`security unlock-keychain`), or signing fails with `errSecInternalComponent`.
+
 ## Android (JDK 21 and the Android SDK)
 
 1. `npm run sync -w @pocket-pantry/mobile`.
