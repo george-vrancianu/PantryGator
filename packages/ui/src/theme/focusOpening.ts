@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 
 const NON_TEXT_INPUTS = new Set([
   'button',
@@ -40,4 +40,33 @@ export function focusOpening(
     if (!centred && isTextField(target)) return;
     target.focus();
   };
+}
+
+/** A text field holds focus right now: closing a sheet onto it would raise the phone keyboard. */
+function textFieldHasFocus(): boolean {
+  const active =
+    typeof document === 'undefined' ? null : document.activeElement;
+  return active instanceof HTMLElement && isTextField(active);
+}
+
+/**
+ * The closing focus of a Sheet or Dialog (ADR 0039): whether to skip putting
+ * focus back where it was before the open. On iOS a tap on a button does not
+ * focus it, so a text field the Member typed in earlier can still hold focus
+ * when a sheet opens; restoring onto it as the sheet closes would raise the
+ * keyboard. Below `md` (`centred` false) the restore is skipped then; the
+ * caller's `onExited` can still move focus. Decided in the render that opens
+ * the sheet, while that field still has focus: the MUI focus trap reads it once
+ * per open.
+ */
+export function useSkipTextRestore(open: boolean, centred: boolean): boolean {
+  const [wasOpen, setWasOpen] = useState(open);
+  const [skip, setSkip] = useState(
+    () => open && !centred && textFieldHasFocus(),
+  );
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setSkip(!centred && textFieldHasFocus());
+  }
+  return skip;
 }

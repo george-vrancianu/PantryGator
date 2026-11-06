@@ -6,6 +6,7 @@ When a sheet opened with focus on a text field, the phone keyboard came up durin
 
 - **`Sheet` and `Dialog` own the opening focus.** Callers pass an `initialFocus` ref instead of focusing something in `onEntered` or with `autoFocus`. Once the open transition ends, the component focuses that element, unless it is a text field and the screen is below `md`. In that case focus stays on the paper. It never moves focus that is no longer on the paper, so a Member who has already reached a field keeps it.
 - **The paper is the landing element.** It is already focusable, a screen reader announces the sheet's name, and Tab from it goes to the first control. No hidden first item is added.
+- **Closing never puts focus back on a text field below `md`.** On iOS a tap on a button does not focus it, so a field the Member typed in earlier can still hold focus when a sheet opens. Restoring focus onto it as the sheet closes raised the keyboard until the caller's `onExited` moved focus on. When a text field held focus at the open, the sheet skips the restore; `onExited` can still focus the opener.
 - **Only the opening focus is covered.** A field that appears because of the Member's tap inside an open sheet, such as Add tip, Rename, Edit or the next search after an add, may still take focus and raise the keyboard.
 - **A field that blocks Confirm is scrolled into view, not focused**, when it is a text field on a phone (Voice Review).
 

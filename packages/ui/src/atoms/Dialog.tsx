@@ -4,7 +4,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState, type ReactNode, type RefObject } from 'react';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
-import { focusOpening } from '../theme/focusOpening';
+import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
 
 export type DialogProps = {
@@ -29,7 +29,7 @@ export type DialogProps = {
  * A modal that is a bottom sheet on a phone (anchored to the bottom edge, full
  * width, rounded top) and a centred dialog from the `md` breakpoint up (see
  * `useBreakpointUp`). Focus is trapped while open and returns to the element
- * that opened it on close.
+ * that opened it on close, except onto a text field below `md` (ADR 0039).
  */
 export function Dialog({
   open,
@@ -44,9 +44,11 @@ export function Dialog({
   const centred = forceCentred || wide;
   const [paper, setPaper] = useState<HTMLElement | null>(null);
   const focusInitial = focusOpening(paper, initialFocus, centred);
+  const skipRestore = useSkipTextRestore(open, centred);
   return (
     <MuiDialog
       open={open}
+      disableRestoreFocus={skipRestore}
       onClose={onClose}
       fullWidth
       maxWidth={centred ? 'sm' : false}

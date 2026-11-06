@@ -12,7 +12,7 @@ import { Box } from '../atoms/Layout';
 import { useToastHost } from './ToastProvider';
 import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
-import { focusOpening } from '../theme/focusOpening';
+import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { palette, radius, shadow } from '../theme/themeVars';
 
@@ -42,7 +42,7 @@ export type SheetProps = {
   initialFocus?: RefObject<HTMLElement | null>;
   /**
    * Called once the close transition has finished: the dialog is gone, the app is no longer `aria-hidden`
-   * and focus is back on the opener. Use it for anything that needs to focus something after the close.
+   * and focus is back on the opener (below `md`, not when that was a text field: ADR 0039). Use it for anything that needs to focus something after the close.
    */
   onExited?: () => void;
   /** Accessible name of the dialog. */
@@ -77,7 +77,8 @@ const SlideUp = forwardRef(function SlideUp(
 /**
  * A modal sheet: a bottom sheet (90 dvh or content-sized, handle, slides up) below `md`, a
  * centred dialog (`sm` wide, 80 vh) from `md` up. Built on the MUI dialog, so
- * focus is trapped while open and returns to the opener on close.
+ * focus is trapped while open and returns to the opener on close, except onto
+ * a text field below `md` (ADR 0039).
  */
 export function Sheet({
   open,
@@ -102,9 +103,11 @@ export function Sheet({
   // paper that is sliding away.
   useToastHost(open ? paper : null);
   const focusInitial = focusOpening(paper, initialFocus, centred);
+  const skipRestore = useSkipTextRestore(open, centred);
   return (
     <MuiDialog
       open={open}
+      disableRestoreFocus={skipRestore}
       onClose={(_event, reason) => {
         if (dismissable) onClose();
         else if (reason === 'escapeKeyDown') onEscape?.();
