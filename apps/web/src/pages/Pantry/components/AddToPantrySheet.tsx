@@ -9,7 +9,7 @@ import {
   Sheet,
   useToast,
 } from '@pocket-pantry/ui';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { formatRowAmount } from '../../../lib/amount';
@@ -54,6 +54,7 @@ export function AddToPantrySheet({
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const toast = useToast();
+  const searchRef = useRef<HTMLInputElement>(null);
   const deleteBatch = useDeleteBatch();
   // This visit: the Batches added (and not undone), and which form is showing (it starts over per save).
   const [added, setAdded] = useState<Batch[]>([]);
@@ -111,6 +112,7 @@ export function AddToPantrySheet({
       open={open}
       onClose={close}
       onExited={onExited}
+      initialFocus={searchRef}
       label={t('form.title')}
       header={
         <Box
@@ -214,6 +216,9 @@ export function AddToPantrySheet({
         ) : null}
         <AddBatchForm
           key={formKey}
+          searchRef={searchRef}
+          // The first form gets focus from the Sheet; the one after a save is the Member's doing.
+          autoFocus={formKey > 0}
           start={formKey === 0 ? start : undefined}
           presetLocation={location}
           onSaved={saved}

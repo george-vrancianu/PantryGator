@@ -138,9 +138,8 @@ export function DefaultExpirySheet({
       onClose={onClose}
       onEntered={() => {
         entered.current = true;
-        if (view.mode === 'pick') searchRef.current?.focus();
-        else titleRef.current?.focus();
       }}
+      initialFocus={view.mode === 'pick' ? searchRef : titleRef}
       onExited={onExited}
       label={category ? category.name : t('defaultExpiry.pickTitle')}
       size={view.mode === 'pick' ? 'tall' : 'content'}

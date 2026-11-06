@@ -135,17 +135,7 @@ export function AddSheet({
       onExited={onExited}
       label={t('addSheet.title')}
       header={header}
-      onEntered={() => {
-        // Do not steal focus from a field the Member has already reached.
-        const focused = document.activeElement;
-        if (
-          !focused ||
-          focused === document.body ||
-          focused.getAttribute('role') === 'dialog'
-        ) {
-          searchRef.current?.focus();
-        }
-      }}
+      initialFocus={searchRef}
     >
       <Box sx={{ p: '4px 20px 24px' }}>
         <IngredientsSearch

@@ -1,5 +1,5 @@
 import { Box, Sheet, tokens } from '@pocket-pantry/ui';
-import { useState } from 'react';
+import { useState, type RefObject } from 'react';
 import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
 import {
   displayName,
@@ -21,6 +21,9 @@ type Props = {
   accessibleName: string;
   /** Swipe, backdrop or Escape: the edits stay and the line is not confirmed. */
   onClose: () => void;
+  /** Where focus lands once the sheet has opened (ADR 0039). */
+  initialFocus: RefObject<HTMLElement | null>;
+  /** Non-focus work once the sheet has opened. */
   onEntered: () => void;
   onExited: () => void;
   onChange: (patch: Partial<ReviewLine>) => void;
@@ -35,6 +38,7 @@ export function ReviewLineSheet({
   line,
   accessibleName,
   onClose,
+  initialFocus,
   onEntered,
   onExited,
   ...panel
@@ -45,6 +49,7 @@ export function ReviewLineSheet({
     <Sheet
       open={open}
       onClose={onClose}
+      initialFocus={initialFocus}
       onEntered={onEntered}
       onExited={() => {
         setOpened((n) => n + 1);

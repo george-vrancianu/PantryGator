@@ -55,6 +55,12 @@ export type AddToCatalogFormProps = {
    * otherwise those Allergens ticked. A caller that knows more, such as a Barcode Lookup, passes it.
    */
   initialAllergenIds?: readonly string[];
+  /**
+   * Focus the Category field when the form appears. A host that is a Sheet leaves this off and
+   * passes `categoryRef` to the Sheet's `initialFocus` (ADR 0039). A field revealed by a tap on
+   * the mode tabs still takes focus. Default `true`.
+   */
+  autoFocus?: boolean;
 };
 
 const categoryMeta = (category: CatalogCategory) =>
@@ -81,12 +87,15 @@ export function AddToCatalogForm({
   onPicked,
   onCancel,
   initialAllergenIds,
+  autoFocus = true,
 }: AddToCatalogFormProps) {
   const { color } = tokens;
   const { t } = useTranslation('catalog');
   const id = useId();
   const [name, setName] = useState(typed);
   const [mode, setMode] = useState<Mode>('new');
+  // Once the Member has used the tabs, a Category field that comes back may take focus.
+  const [tabbed, setTabbed] = useState(false);
   const aliasRef = useRef<HTMLInputElement>(null);
   const [unit, setUnit] = useState<Unit>('pcs');
   const [contains, setContains] = useState<ContainsSelection>(() =>
@@ -169,7 +178,10 @@ export function AddToCatalogForm({
           { value: 'alias', label: t('catalogAdd.modeAlias') },
         ]}
         value={mode}
-        onChange={setMode}
+        onChange={(next) => {
+          setTabbed(true);
+          setMode(next);
+        }}
       />
       {mode === 'alias' ? (
         <AddToCatalogAlias
@@ -239,7 +251,7 @@ export function AddToCatalogForm({
                     'aria-controls': listId,
                     'aria-activedescendant':
                       active >= 0 ? `${id}-category-${active}` : undefined,
-                    autoFocus: true,
+                    autoFocus: autoFocus || tabbed,
                   },
                 }}
               />

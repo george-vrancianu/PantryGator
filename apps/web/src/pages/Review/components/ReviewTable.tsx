@@ -1,4 +1,5 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
+import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
 import {
@@ -24,6 +25,7 @@ type Props = {
   sheetOpen: boolean;
   onOpenSheet: (key: string) => void;
   onCloseSheet: () => void;
+  sheetInitialFocus: RefObject<HTMLElement | null>;
   onSheetEntered: () => void;
   onSheetExited: () => void;
   onChange: (key: string, patch: Partial<ReviewLine>) => void;
@@ -46,6 +48,7 @@ export function ReviewTable({
   sheetOpen,
   onOpenSheet,
   onCloseSheet,
+  sheetInitialFocus,
   onSheetEntered,
   onSheetExited,
   onChange,
@@ -132,6 +135,7 @@ export function ReviewTable({
           blocked={!!blocked[sheetLine.key]}
           accessibleName={accessibleNameOf(sheetLine)}
           onClose={onCloseSheet}
+          initialFocus={sheetInitialFocus}
           onEntered={onSheetEntered}
           onExited={onSheetExited}
           onChange={(patch) => onChange(sheetLine.key, patch)}

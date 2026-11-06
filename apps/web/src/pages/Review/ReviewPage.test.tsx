@@ -415,8 +415,9 @@ describe('ReviewPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save 2 items' }));
     const dialog = await screen.findByRole('dialog', { name: 'Milk' });
     await waitFor(() =>
-      expect(within(dialog).getByLabelText(/^Amount of/)).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(within(dialog).getByLabelText(/^Amount of/)).not.toHaveFocus();
     expect(screen.getAllByText(/Enter an amount from 0.001/)).toHaveLength(1);
     await userEvent.keyboard('{Escape}');
     await sheetClosed();
@@ -710,6 +711,7 @@ describe('ReviewPage', () => {
     expect(
       screen.queryByRole('dialog', { name: /Change match/ }),
     ).not.toBeInTheDocument();
+    await userEvent.click(search);
     await userEvent.click(await screen.findByRole('option', { name: /Milk/ }));
     const panel = await screen.findByRole('dialog', { name: 'Milk' });
     expect(within(panel).getByTestId('selected-token')).toHaveTextContent(
@@ -764,14 +766,15 @@ describe('ReviewPage', () => {
     ).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('focuses the chooser when an Unmatched line opens', async () => {
+  it('leaves the chooser unfocused when an Unmatched line opens on a phone', async () => {
     renderReview([line({ match: null, name: 'Mystery jar', quantity: 1 })]);
     await openSheet('Mystery jar');
     await waitFor(() =>
-      expect(
-        screen.getByRole('combobox', { name: 'Matched ingredient' }),
-      ).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(
+      screen.getByRole('combobox', { name: 'Matched ingredient' }),
+    ).not.toHaveFocus();
   });
 
   it('offers Use as typed on an Unmatched line, which keeps it Unmatched under a token with a pill', async () => {
@@ -908,10 +911,11 @@ describe('ReviewPage', () => {
     await sheetClosed();
     await userEvent.click(screen.getByRole('button', { name: 'Save 1 item' }));
     await waitFor(() =>
-      expect(
-        screen.getByRole('combobox', { name: 'Matched ingredient' }),
-      ).toHaveFocus(),
+      expect(document.activeElement).toHaveAttribute('role', 'dialog'),
     );
+    expect(
+      screen.getByRole('combobox', { name: 'Matched ingredient' }),
+    ).not.toHaveFocus();
   });
 
   it.each(['0', '1e3', '2000000'])(
@@ -928,8 +932,9 @@ describe('ReviewPage', () => {
         screen.getByRole('button', { name: 'Save 1 item' }),
       );
       await waitFor(() =>
-        expect(screen.getByLabelText(/^Amount of/)).toHaveFocus(),
+        expect(document.activeElement).toHaveAttribute('role', 'dialog'),
       );
+      expect(screen.getByLabelText(/^Amount of/)).not.toHaveFocus();
       expect(screen.getByLabelText(/^Amount of/)).toHaveAttribute(
         'aria-invalid',
         'true',
@@ -1154,6 +1159,7 @@ describe('ReviewPage: Add to your catalog (#270)', () => {
     );
     await openSheet('Kombucha');
     const search = screen.getByRole('combobox', { name: 'Matched ingredient' });
+    await userEvent.click(search);
     await userEvent.click(
       await screen.findByRole('option', {
         name: /Add “Kombucha” to your catalog/,

@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CategoryOptions } from '../../lib/settings';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { stubViewport } from '../../test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 type Override = { categoryId: string; name: string; days: number };
@@ -579,19 +580,35 @@ describe('Default expiry', () => {
       await waitFor(() => expect(rowOf('Milk')).toHaveFocus());
     });
 
-    it('moves focus to the search field on open', async () => {
+    const openPick = async () => {
       const user = userEvent.setup();
       stubFamily([]);
       renderFamily();
       await user.click(
         await screen.findByRole('button', { name: 'Set a category' }),
       );
+      return screen.findByRole('dialog');
+    };
+
+    it('moves focus to the search field on open from md up', async () => {
+      stubViewport(1024);
+      await openPick();
 
       await waitFor(() =>
         expect(
           screen.getByRole('textbox', { name: 'Search categories' }),
         ).toHaveFocus(),
       );
+    });
+
+    it('keeps focus on the sheet on a phone, so the keyboard stays down', async () => {
+      stubViewport(390);
+      const sheet = await openPick();
+
+      await waitFor(() => expect(sheet).toHaveFocus());
+      expect(
+        screen.getByRole('textbox', { name: 'Search categories' }),
+      ).not.toHaveFocus();
     });
   });
 });

@@ -1,4 +1,5 @@
 import { Button, Dialog } from '@pocket-pantry/ui';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from './catalogSearch/CatalogSearch';
 import type { CatalogSearchResult } from '../lib/catalog';
@@ -29,11 +30,13 @@ export function MatchDialog({
   onClose,
 }: Props) {
   const { t } = useTranslation(['review', 'common']);
+  const searchRef = useRef<HTMLInputElement>(null);
   return (
     <Dialog
       open={open}
       onClose={onClose}
       title={t('review:match.dialogTitle', { name })}
+      initialFocus={searchRef}
       actions={
         <Button variant="ghost" onClick={onClose}>
           {t('common:cancel')}
@@ -41,7 +44,7 @@ export function MatchDialog({
       }
     >
       <CatalogSearch
-        autoFocus
+        inputRef={searchRef}
         showUnit={false}
         defaultQuery={defaultQuery}
         newIngredientAllergenIds={newIngredientAllergenIds}

@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from '@pocket-pantry/ui';
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useRef, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
 import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/BrowseByAisle';
@@ -79,6 +79,10 @@ type Props = {
   onSayIt?: () => void;
   /** Scan several, from the camera: the host closes the sheet and opens the Scan page in this mode. */
   onScanSeveral: (mode: CameraMode) => void;
+  /** The Catalog Search input, for a host Sheet's `initialFocus` (ADR 0039). */
+  searchRef?: RefObject<HTMLInputElement | null>;
+  /** Focus the search on mount. A host Sheet leaves this off at its opening and uses `initialFocus`. Default `true`. */
+  autoFocus?: boolean;
 };
 
 /** What the submit button in the sheet footer says, and whether it can be pressed. */
@@ -96,6 +100,8 @@ export function AddBatchForm({
   onCameraOpenChange,
   onSayIt,
   onScanSeveral,
+  searchRef,
+  autoFocus = true,
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const form = useAddBatchForm({ onSaved, start, presetLocation });
@@ -106,7 +112,8 @@ export function AddBatchForm({
   const formRef = useRef<HTMLFormElement>(null);
   const picked = form.ingredient?.name ?? form.unmatchedName;
   const { camera } = form;
-  const searchInput = useRef<HTMLInputElement>(null);
+  const ownSearchInput = useRef<HTMLInputElement>(null);
+  const searchInput = searchRef ?? ownSearchInput;
   // After the overlay closes, focus goes back to the button that opened it; with that gone (a match
   // hides the quick row) it goes to the search, which is the token once an Ingredient is picked.
   const wasOpen = useRef(false);
@@ -179,7 +186,7 @@ export function AddBatchForm({
       {camera.fromOpenFoodFacts ? <OpenFoodFactsCredit /> : null}
 
       <CatalogSearch
-        autoFocus
+        autoFocus={autoFocus}
         inputRef={searchInput}
         placeholder={tCatalog('search.placeholderAdd')}
         defaultQuery={form.initialQuery}

@@ -39,7 +39,7 @@ function AnswerSheet() {
     <Sheet
       open
       onClose={done}
-      onEntered={() => title.current?.focus()}
+      initialFocus={title}
       label={t('answers.title')}
       header={
         <Box sx={{ px: 2.5, pt: 1.5, pb: 1.5 }}>
