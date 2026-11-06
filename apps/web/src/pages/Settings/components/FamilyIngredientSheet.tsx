@@ -233,12 +233,17 @@ export function FamilyIngredientSheet({
   };
 
   // After a removal focus goes to the next chip's ×, else the previous, else "+ Add a name".
-  const focusAfterRemoval = useRef<number | null>(null);
+  // The effect waits until the removed chip is really gone: an earlier render's effect can still
+  // be queued when the × is pressed, and it would spend the hand-off on the old list.
+  const focusAfterRemoval = useRef<{ chip: string; index: number } | null>(
+    null,
+  );
   const chipListRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
-    const index = focusAfterRemoval.current;
-    if (index === null) return;
+    const handOff = focusAfterRemoval.current;
+    if (handOff === null || chips.includes(handOff.chip)) return;
     focusAfterRemoval.current = null;
+    const { index } = handOff;
     const buttons = chipListRef.current?.querySelectorAll<HTMLButtonElement>(
       'li[data-chip] button',
     );
@@ -248,8 +253,10 @@ export function FamilyIngredientSheet({
 
   const removeChip = (chip: string) => {
     const position = chips.indexOf(chip);
-    focusAfterRemoval.current =
-      position < chips.length - 1 ? position : position - 1;
+    focusAfterRemoval.current = {
+      chip,
+      index: position < chips.length - 1 ? position : position - 1,
+    };
     // A name added to the draft goes first: it may share its name with a removed saved one.
     if (added.includes(chip)) {
       setAdded((prev) => prev.filter((n) => n !== chip));
