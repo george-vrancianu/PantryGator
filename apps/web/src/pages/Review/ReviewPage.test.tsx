@@ -427,6 +427,32 @@ describe('ReviewPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('scrolls the invalid field into view, leaving focus on the sheet, when Save is blocked', async () => {
+    const scrolled: Element[] = [];
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    try {
+      renderReview([line({ quantity: 5 })]);
+      await openSheet('Parmesan');
+      fireEvent.change(screen.getByLabelText(/^Amount of/), {
+        target: { value: '0' },
+      });
+      await userEvent.keyboard('{Escape}');
+      await sheetClosed();
+      await userEvent.click(
+        screen.getByRole('button', { name: 'Save 1 item' }),
+      );
+      const dialog = await screen.findByRole('dialog', { name: 'Parmesan' });
+      const amount = within(dialog).getByLabelText(/^Amount of/);
+      await waitFor(() => expect(scrolled).toContain(amount));
+      expect(amount).not.toHaveFocus();
+    } finally {
+      // @ts-expect-error jsdom has no scrollIntoView
+      delete Element.prototype.scrollIntoView;
+    }
+  });
+
   it('Confirm with an invalid field focuses it instead of shutting the row', async () => {
     renderReview([line({ lowConfidence: true, quantity: 1 })]);
     await openSheet('Parmesan');
