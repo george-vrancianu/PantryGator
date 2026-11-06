@@ -1,0 +1,4 @@
+/* Siri phrases for the Gator App Shortcuts (GatorIntents.swift). */
+"${applicationName} needs" = "${applicationName} mangler";
+"${applicationName} got" = "${applicationName} har købt";
+"${applicationName}, do we have" = "${applicationName}, har vi";
