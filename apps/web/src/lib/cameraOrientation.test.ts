@@ -58,6 +58,19 @@ describe('cameraOrientation device class and layout', () => {
     expect(result.layout).toBe(layout);
   });
 
+  it.each([
+    ['500 px tall gets the rail', 500, 'rail'],
+    ['499 px tall keeps the footer', 499, 'footer'],
+  ] as const)('a wide tablet window %s', (_name, height, layout) => {
+    const result = cameraOrientation({
+      ...input(sizes.tabletLandscape, 0, false),
+      viewportWidth: 1200,
+      viewportHeight: height,
+    });
+    expect(result.layout).toBe(layout);
+    expect(result.deviceClass).toBe('tablet');
+  });
+
   it('a phone stays a phone when the screen turns', () => {
     for (const size of [sizes.phonePortrait, sizes.phoneLandscape]) {
       for (const angle of [0, 90, 180, 270]) {
@@ -263,6 +276,17 @@ describe('reading the screen', () => {
     stop();
     screen.resizeViewport({ width: 1200, height: 900 });
     expect(seen).toEqual(['footer']);
+  });
+
+  it('tells a watcher once for one rotation, though three events fire', () => {
+    const screen = stubScreen({ width: 390, height: 844 });
+    const seen: number[] = [];
+    const stop = watchCameraOrientation((o) => seen.push(o.rotateBack));
+    // rotate() publishes the new size and angle, then fires `change` and `resize`.
+    screen.rotate(90);
+    window.dispatchEvent(new Event('orientationchange'));
+    stop();
+    expect(seen).toEqual([90]);
   });
 
   it('stop removes every listener it added', () => {

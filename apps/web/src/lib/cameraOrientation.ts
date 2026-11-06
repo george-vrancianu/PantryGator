@@ -3,6 +3,9 @@ import { Capacitor } from '@capacitor/core';
 /** A screen whose shortest side is under this many CSS pixels is a phone. */
 export const PHONE_SHORTEST_SIDE = 600;
 
+/** The rail needs a window this tall (CSS px): in a shorter one its mode list is cramped, so the footer layout stays. */
+export const MIN_RAIL_HEIGHT = 500;
+
 export type DeviceClass = 'phone' | 'tablet';
 /** Where the camera chrome sits: the bottom footer, or the right rail. */
 export type CameraLayout = 'footer' | 'rail';
@@ -50,7 +53,9 @@ export function cameraOrientation(
       ? 'phone'
       : 'tablet';
   const layout: CameraLayout =
-    deviceClass === 'tablet' && input.viewportWidth > input.viewportHeight
+    deviceClass === 'tablet' &&
+    input.viewportWidth > input.viewportHeight &&
+    input.viewportHeight >= MIN_RAIL_HEIGHT
       ? 'rail'
       : 'footer';
   const turn =
@@ -81,11 +86,27 @@ export function readCameraOrientation(): CameraOrientation {
   });
 }
 
-/** Call `onChange` when the reported angle or the window size changes; returns the stop function, which removes every listener added. */
+/** Everything a reading is made of, as one comparable string: the orientation and the window's size. */
+function readingKey(orientation: CameraOrientation): string {
+  return JSON.stringify([orientation, window.innerWidth, window.innerHeight]);
+}
+
+/**
+ * Call `onChange` when the reported angle or the window size changes; returns the stop function,
+ * which removes every listener added. One rotation fires `change`, `orientationchange` and
+ * `resize`: they read the same screen, so only the first that finds a different reading is told.
+ */
 export function watchCameraOrientation(
   onChange: (orientation: CameraOrientation) => void,
 ): () => void {
-  const listener = () => onChange(readCameraOrientation());
+  let last = readingKey(readCameraOrientation());
+  const listener = () => {
+    const orientation = readCameraOrientation();
+    const key = readingKey(orientation);
+    if (key === last) return;
+    last = key;
+    onChange(orientation);
+  };
   const orientation = screen.orientation;
   orientation?.addEventListener('change', listener);
   window.addEventListener('orientationchange', listener);
