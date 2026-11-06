@@ -115,6 +115,20 @@ describe('Use Siri switch in the iPhone app', () => {
     expect(screen.queryByText(/Hey Siri, Pantry add/)).not.toBeInTheDocument();
   });
 
+  it('does not flash the Shortcut setup steps at a Romanian UI whose Spoken Language is English', async () => {
+    fakeNativeIos();
+    stubServer({ spokenLanguage: 'en' });
+    renderWithProviders(<SiriSection />, { locale: 'ro' });
+
+    // Before the Preferences have loaded, the UI Language must not decide.
+    expect(screen.queryByText('Configurează Siri')).not.toBeInTheDocument();
+    const toggle = await screen.findByRole('switch', {
+      name: 'Folosește Siri',
+    });
+    await vi.waitFor(() => expect(toggle).toBeEnabled());
+    expect(screen.queryByText('Configurează Siri')).not.toBeInTheDocument();
+  });
+
   it('still shows the Shortcut setup steps on the web, whatever the language', async () => {
     stubServer({ spokenLanguage: 'en' });
     renderWithProviders(<SiriSection />);
