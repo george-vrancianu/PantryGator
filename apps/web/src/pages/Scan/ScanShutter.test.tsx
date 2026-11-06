@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FOCUS_PAUSE_MS } from '../../lib/camera';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { stubScreen } from '../../test/screen';
 import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
 import { ScanPage } from './ScanPage';
 import {
@@ -101,6 +102,21 @@ describe('The shutter on the Scan page', () => {
     fireEvent.click(shutter());
     await flush();
     expect(scans()).toHaveLength(1);
+  });
+
+  it('a hold on a tablet in landscape aims at the guide, centred left of the rail, not at the fixed point', async () => {
+    stubScreen({
+      width: 820,
+      height: 1180,
+      viewport: { width: 1180, height: 820 },
+    });
+    renderScan();
+    press();
+    await advance(301);
+    const [point] = fakeCamera.focusPoints;
+    // Clear area: left of the 168 px rail, between the 52 px top bar and the bottom edge.
+    expect(point?.x).toBeCloseTo((1180 - 168) / 2 / 1180, 2);
+    expect(point?.y).toBeCloseTo((52 + 820) / 2 / 820, 2);
   });
 
   it('where single-shot focus is missing, a hold is the steady pause, then the Scan', async () => {

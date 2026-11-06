@@ -151,6 +151,8 @@ function defaults() {
     }>,
     /** Focus passes started, and cancelled; `finishFocus` ends the latest one (single-shot only). */
     focuses: 0,
+    /** The guide centre each focus pass was told to aim at (undefined: the default point). */
+    focusPoints: [] as Array<{ x: number; y: number } | undefined>,
     cancels: 0,
     /** The camera stream's lifecycle: `useCamera` mounted / unmounted. */
     starts: 0,
@@ -208,8 +210,9 @@ function watchBarcodes(onCode: (code: string) => void) {
   return stop;
 }
 
-function focusForScan(): FocusPass {
+function focusForScan(guideCentre?: { x: number; y: number }): FocusPass {
   fakeCamera.focuses += 1;
+  fakeCamera.focusPoints.push(guideCentre);
   let finish: () => void = () => {};
   const done = new Promise<void>((resolve) => (finish = resolve));
   if (!fakeCamera.focusSupported) {
