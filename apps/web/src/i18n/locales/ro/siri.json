@@ -1,5 +1,15 @@
 {
   "title": "Siri",
+  "use": {
+    "label": "Folosește Siri",
+    "hint": "Îți permite să vorbești cu listele tale prin Siri, chiar și cu telefonul blocat. Oprește-l ca să nu mai funcționeze pe acest telefon.",
+    "tokenName": "Aplicația PantryGator (iPhone)",
+    "phrases": {
+      "needs": "Hey Siri, Gator needs",
+      "got": "Hey Siri, Gator got",
+      "have": "Hey Siri, Gator, do we have"
+    }
+  },
   "hint": "Creează un jeton de asistent pentru fiecare dispozitiv care vorbește cu listele tale prin voce. Un jeton poate adăuga în liste, poate bifa articole deja aflate pe Lista de cumpărături și poate citi Cămara și Lista de cumpărături ca să răspundă la întrebări, dar nimic altceva; revocă-l aici ca să nu mai funcționeze imediat.",
   "nameLabel": "Numele jetonului",
   "namePlaceholder": "De exemplu, iPhone-ul meu",

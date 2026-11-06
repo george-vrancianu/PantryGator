@@ -23,6 +23,10 @@ export const nativeSession = {
   /** True inside the iOS and Android apps. */
   isActive: (): boolean => Capacitor.isNativePlatform(),
 
+  /** True inside the Android app only (not the web, not the iOS app). */
+  isAndroidApp: (): boolean =>
+    Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android',
+
   /** The `Authorization` header to send, if the app holds a session. */
   async authorization(): Promise<string | undefined> {
     if (!nativeSession.isActive()) return undefined;

@@ -6,6 +6,13 @@
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Gator</string>
+		</dict>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>PantryGator</string>
 	<key>CFBundleExecutable</key>
