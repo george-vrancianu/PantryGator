@@ -86,32 +86,63 @@ export function readCameraOrientation(): CameraOrientation {
   });
 }
 
-/** Everything a reading is made of, as one comparable string: the orientation and the window's size. */
-function readingKey(orientation: CameraOrientation): string {
-  return JSON.stringify([orientation, window.innerWidth, window.innerHeight]);
+/** The orientation and the window's size it was read at: the size the rotated-back frame is laid out from. */
+export type CameraReading = CameraOrientation & {
+  viewportWidth: number;
+  viewportHeight: number;
+};
+
+/** `readCameraOrientation` with the window's size it was read at. */
+export function readCameraReading(): CameraReading {
+  return {
+    ...readCameraOrientation(),
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+  };
+}
+
+/** Whether two readings say the same: the one definition of "nothing changed". */
+export function sameCameraReading(a: CameraReading, b: CameraReading): boolean {
+  return (
+    a.deviceClass === b.deviceClass &&
+    a.layout === b.layout &&
+    a.rotateBack === b.rotateBack &&
+    a.photoTurn === b.photoTurn &&
+    a.locksPortrait === b.locksPortrait &&
+    a.viewportWidth === b.viewportWidth &&
+    a.viewportHeight === b.viewportHeight
+  );
 }
 
 /**
  * Call `onChange` when the reported angle or the window size changes; returns the stop function,
  * which removes every listener added. One rotation fires `change`, `orientationchange` and
- * `resize`: they read the same screen, so only the first that finds a different reading is told.
+ * `resize`, and on a device the angle can arrive before the window has its new size: so the
+ * events only schedule one animation frame, and the reading is taken in that frame. An unchanged
+ * reading tells no one.
  */
 export function watchCameraOrientation(
-  onChange: (orientation: CameraOrientation) => void,
+  onChange: (orientation: CameraReading) => void,
 ): () => void {
-  let last = readingKey(readCameraOrientation());
+  let last = readCameraReading();
+  let frame: number | null = null;
+  const flush = () => {
+    frame = null;
+    const reading = readCameraReading();
+    if (sameCameraReading(last, reading)) return;
+    last = reading;
+    onChange(reading);
+  };
   const listener = () => {
-    const orientation = readCameraOrientation();
-    const key = readingKey(orientation);
-    if (key === last) return;
-    last = key;
-    onChange(orientation);
+    if (frame === null) frame = requestAnimationFrame(flush);
   };
   const orientation = screen.orientation;
   orientation?.addEventListener('change', listener);
   window.addEventListener('orientationchange', listener);
   window.addEventListener('resize', listener);
   return () => {
+    if (frame !== null) cancelAnimationFrame(frame);
+    frame = null;
     orientation?.removeEventListener('change', listener);
     window.removeEventListener('orientationchange', listener);
     window.removeEventListener('resize', listener);

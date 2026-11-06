@@ -1,48 +1,28 @@
 import { useEffect, useState } from 'react';
 import {
-  readCameraOrientation,
+  readCameraReading,
+  sameCameraReading,
   watchCameraOrientation,
-  type CameraOrientation,
+  type CameraReading,
 } from './cameraOrientation';
 
-export type CameraOrientationState = CameraOrientation & {
-  /** The window's size, which the rotated-back frame is laid out from. */
-  viewportWidth: number;
-  viewportHeight: number;
-};
-
-function read(): CameraOrientationState {
-  return {
-    ...readCameraOrientation(),
-    viewportWidth: window.innerWidth,
-    viewportHeight: window.innerHeight,
-  };
-}
-
-function same(a: CameraOrientationState, b: CameraOrientationState): boolean {
-  return (
-    a.deviceClass === b.deviceClass &&
-    a.layout === b.layout &&
-    a.rotateBack === b.rotateBack &&
-    a.photoTurn === b.photoTurn &&
-    a.locksPortrait === b.locksPortrait &&
-    a.viewportWidth === b.viewportWidth &&
-    a.viewportHeight === b.viewportHeight
-  );
-}
+export type CameraOrientationState = CameraReading;
 
 /**
- * The camera's orientation now, following rotation and resizing while the screen is mounted.
- * One rotation can fire `change`, `orientationchange` and `resize`: an unchanged reading keeps
- * the same state, so it does not render again.
+ * The camera's orientation now, following rotation and resizing while the screen is mounted. The
+ * watcher tells it once per change (one rotation fires several events), so it renders once.
  */
 export function useCameraOrientation(): CameraOrientationState {
-  const [state, setState] = useState(read);
+  const [state, setState] = useState(readCameraReading);
   useEffect(() => {
     // The reading can have moved between the first render and now.
-    const update = () => setState((old) => (same(old, read()) ? old : read()));
-    update();
-    return watchCameraOrientation(update);
+    const catchUp = () =>
+      setState((old) => {
+        const now = readCameraReading();
+        return sameCameraReading(old, now) ? old : now;
+      });
+    catchUp();
+    return watchCameraOrientation(setState);
   }, []);
   return state;
 }

@@ -178,6 +178,17 @@ describe('The Scan page in landscape on a tablet', () => {
     expect(screen.queryByTestId('scan-rail')).toBeNull();
   });
 
+  it('drops the rail for the footer when a mounted landscape window is resized under 500 px tall', () => {
+    const s = stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    renderCamera('/scan?mode=product');
+    expect(screen.getByTestId('scan-rail')).toBeInTheDocument();
+    act(() => s.resizeViewport({ width: 1180, height: 499 }));
+    expect(screen.getByTestId('scan-footer')).toBeInTheDocument();
+    expect(screen.queryByTestId('scan-rail')).toBeNull();
+    act(() => s.resizeViewport({ width: 1180, height: 500 }));
+    expect(screen.getByTestId('scan-rail')).toBeInTheDocument();
+  });
+
   it('switches between footer and rail when the tablet rotates', () => {
     const s = stubScreen({ ...TABLET, swapsOnRotate: false });
     renderCamera('/scan?mode=product');

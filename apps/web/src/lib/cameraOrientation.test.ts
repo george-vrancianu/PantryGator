@@ -278,15 +278,43 @@ describe('reading the screen', () => {
     expect(seen).toEqual(['footer']);
   });
 
-  it('tells a watcher once for one rotation, though three events fire', () => {
+  it('tells a watcher once, with the final reading, when the angle arrives before the window size', () => {
+    const screen = stubScreen({ width: 820, height: 1180 });
+    const seen: Array<[number, number, string]> = [];
+    const stop = watchCameraOrientation((o) =>
+      seen.push([o.viewportWidth, o.viewportHeight, o.layout]),
+    );
+    screen.inOneFrame(() => {
+      // `change` fires while the window still has its old size, then the size follows.
+      screen.setAngle(90);
+      screen.resizeViewport({ width: 1180, height: 820 });
+      window.dispatchEvent(new Event('orientationchange'));
+    });
+    stop();
+    expect(seen).toEqual([[1180, 820, 'rail']]);
+  });
+
+  it('tells no one when the frame finds the reading unchanged', () => {
     const screen = stubScreen({ width: 390, height: 844 });
     const seen: number[] = [];
     const stop = watchCameraOrientation((o) => seen.push(o.rotateBack));
-    // rotate() publishes the new size and angle, then fires `change` and `resize`.
-    screen.rotate(90);
-    window.dispatchEvent(new Event('orientationchange'));
+    screen.inOneFrame(() => {
+      screen.setAngle(0);
+      screen.resizeViewport({ width: 390, height: 844 });
+    });
     stop();
-    expect(seen).toEqual([90]);
+    expect(seen).toEqual([]);
+  });
+
+  it('a stop before the frame runs tells no one', () => {
+    const screen = stubScreen({ width: 390, height: 844 });
+    const seen: number[] = [];
+    const stop = watchCameraOrientation((o) => seen.push(o.rotateBack));
+    screen.inOneFrame(() => {
+      screen.setAngle(90);
+      stop();
+    });
+    expect(seen).toEqual([]);
   });
 
   it('stop removes every listener it added', () => {

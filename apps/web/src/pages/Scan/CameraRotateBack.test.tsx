@@ -242,14 +242,19 @@ describe('A toast in the turned camera frame', () => {
   const snackbar = () =>
     screen.getByText('Saved').closest<HTMLElement>('.MuiSnackbar-root')!;
 
-  /** The frame's own rule for a Snackbar inside it, if the stylesheet has one: the frame class then the Snackbar. */
+  /**
+   * The frame's own rule for a Snackbar inside it, if the stylesheet has one. jsdom ignores
+   * @media and has no layout, so the placement itself cannot be measured: this pins the rule
+   * that overrides MUI's `sm` centring, found by any of the frame's classes.
+   */
   function frameSnackbarRule(): CSSStyleRule | undefined {
-    const frameClass = frame().classList[frame().classList.length - 1];
+    const classes = Array.from(frame().classList);
     for (const sheet of Array.from(document.styleSheets)) {
       for (const rule of Array.from(sheet.cssRules)) {
         if (
           rule instanceof CSSStyleRule &&
-          rule.selectorText.includes(`.${frameClass} .MuiSnackbar-root`)
+          rule.selectorText.includes('.MuiSnackbar-root') &&
+          classes.some((name) => rule.selectorText.includes(`.${name}`))
         ) {
           return rule;
         }

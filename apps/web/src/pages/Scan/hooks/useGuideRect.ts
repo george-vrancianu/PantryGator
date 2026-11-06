@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { FocusPoint } from '../../../lib/camera';
 import type { CameraMode } from '../../../lib/cameraMode';
 import { frameSize, type Size } from '../../../lib/cameraFrame';
 import {
@@ -7,7 +8,12 @@ import {
   type ScreenAngle,
 } from '../../../lib/cameraOrientation';
 import { readSafeAreaInsets } from '../../../lib/safeArea';
-import { guideRect, type GuideView, type Rect } from '../../../lib/scanGuides';
+import {
+  guideRect,
+  RAIL_WIDTH,
+  type GuideView,
+  type Rect,
+} from '../../../lib/scanGuides';
 import { useCameraOrientation } from '../../../lib/useCameraOrientation';
 
 /** The size the camera feed takes on screen: the feed element's, else the window's. */
@@ -22,11 +28,14 @@ export function feedSize(feed?: HTMLElement | null): Size {
  * The camera chrome's frame right now: the phone's portrait box (the feed's size turned back by
  * the rotate-back, so its width and height swap at 90 and 270), its safe-area insets mapped to the
  * frame's edges, and the device class. The caller passes the feed's size and the orientation, so
- * nothing here reads the window.
+ * nothing here reads the window. In the rail layout the rail is taken off the feed only where
+ * it lies over it: a feed as wide as the window runs under the rail, one that stops short of it
+ * (by the rail's width or more) has none of it over it.
  */
 export function measureView(
   feed: Size,
   orientation: CameraOrientation,
+  windowWidth: number,
 ): GuideView {
   const { deviceClass, layout, rotateBack } = orientation;
   return {
@@ -34,6 +43,13 @@ export function measureView(
     insets: readSafeAreaInsets(rotateBack),
     deviceClass,
     layout,
+    railOverlap:
+      layout === 'rail'
+        ? Math.min(
+            RAIL_WIDTH,
+            Math.max(0, RAIL_WIDTH - (windowWidth - feed.width)),
+          )
+        : undefined,
   };
 }
 
@@ -47,14 +63,15 @@ export function measureShot(feed?: HTMLElement | null): {
 } {
   const orientation = readCameraOrientation();
   return {
-    view: measureView(feedSize(feed), orientation),
+    view: measureView(feedSize(feed), orientation, window.innerWidth),
     turn: orientation.photoTurn,
   };
 }
 
 /**
  * The guide for `mode` on this screen, kept up to date when the screen is resized or rotated.
- * Measured from `feed` (the viewfinder) where it is mounted, else from the window.
+ * Measured from `feed` (the viewfinder) where it is mounted, else from the window; the feed
+ * resizing on its own measures again where the browser has a `ResizeObserver`.
  */
 export function useGuideRect(
   mode: CameraMode,
@@ -63,9 +80,28 @@ export function useGuideRect(
   // The orientation reading holds the window's size, so this measures again only when the angle,
   // the layout or the size changes, not on every render.
   const orientation = useCameraOrientation();
+  const [observed, setObserved] = useState<Size | null>(null);
+  useEffect(() => {
+    if (!feed || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => {
+      const next = feedSize(feed);
+      setObserved((old) =>
+        old && old.width === next.width && old.height === next.height
+          ? old
+          : next,
+      );
+    });
+    observer.observe(feed);
+    return () => observer.disconnect();
+  }, [feed]);
   const view = useMemo(
-    () => measureView(feedSize(feed), orientation),
-    [feed, orientation],
+    () =>
+      measureView(
+        observed ?? feedSize(feed),
+        orientation,
+        orientation.viewportWidth,
+      ),
+    [feed, observed, orientation],
   );
   return useMemo(() => guideRect(mode, view), [mode, view]);
 }
@@ -77,10 +113,11 @@ export function useGuideRect(
 export function guideFocusPoint(
   guide: Rect,
   feed?: HTMLElement | null,
-): { x: number; y: number } {
+): FocusPoint {
   const { width, height } = measureView(
     feedSize(feed),
     readCameraOrientation(),
+    window.innerWidth,
   );
   return {
     x: (guide.x + guide.width / 2) / width,

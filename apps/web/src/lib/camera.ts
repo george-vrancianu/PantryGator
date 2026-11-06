@@ -68,7 +68,7 @@ export type CameraStatus = 'starting' | 'ready' | 'unavailable';
 export const FOCUS_TIMEOUT_MS = 1000;
 /** The steady pause where the browser cannot focus on demand (iOS Safari). */
 export const FOCUS_PAUSE_MS = 400;
-/** Where a focus pass aims when it is not told the guide's centre, as a fraction of the video height (approximate: the feed is object-fit: cover). */
+/** Where a focus pass aims when it is not told the guide's centre (the hosts always pass it; this is the fallback for a caller that cannot), as a fraction of the video height (approximate: the feed is object-fit: cover). */
 export const FOCUS_POINT_Y = 0.44;
 
 /** A point of the camera frame as a fraction across and down it (0 to 1). */
