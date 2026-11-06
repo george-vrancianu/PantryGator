@@ -68,6 +68,8 @@ export function InfoSheet({
       <Dialog
         open
         centred
+        // The camera is always dark; the dialog portals out of its subtree.
+        theme="dark"
         onClose={onClose}
         title={t('info.title')}
         actions={<Button onClick={onClose}>{t('info.ok')}</Button>}
