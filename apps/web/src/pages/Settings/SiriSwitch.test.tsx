@@ -350,6 +350,85 @@ describe('Use Siri switch in the iPhone app', () => {
       );
     });
 
+    it('refreshes the stored API origin when it differs from the build', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED, apiOrigin: 'https://old.example' };
+      stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      expect(keychain.updateApiOrigin).toHaveBeenCalledWith({ apiOrigin: '' });
+      expect(keychain.item).toEqual({ ...STORED, apiOrigin: '' });
+    });
+
+    it('leaves the stored API origin alone when it already matches', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED };
+      stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      expect(keychain.updateApiOrigin).not.toHaveBeenCalled();
+    });
+
+    it('does not touch the API origin of an item that is cleared', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED, apiOrigin: 'https://old.example' };
+      stubServer({ rows: [] });
+      renderWithProviders(<SiriSection />);
+
+      await vi.waitFor(() => expect(keychain.item).toBeNull());
+      expect(keychain.updateApiOrigin).not.toHaveBeenCalled();
+    });
+
+    it('keeps the switch on when updating the API origin fails', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED, apiOrigin: 'https://old.example' };
+      keychain.updateApiOrigin.mockRejectedValue(new Error('keychain'));
+      stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      expect(keychain.clear).not.toHaveBeenCalled();
+    });
+
+    it('asks for the token list once on mount', async () => {
+      fakeNativeIos();
+      keychain.item = { ...STORED };
+      const calls = stubServer({ rows: [APP_TOKEN] });
+      renderWithProviders(<SiriSection />);
+
+      const toggle = await screen.findByRole('switch', { name: 'Use Siri' });
+      await vi.waitFor(() =>
+        expect(toggle).toHaveAttribute('aria-checked', 'true'),
+      );
+      await screen.findByText('PantryGator app (iPhone)');
+      expect(
+        calls.filter((c) => c.key === 'GET /api/assistant-tokens'),
+      ).toHaveLength(1);
+    });
+
+    it('says something went wrong, with the switch disabled, when the phone cannot be read', async () => {
+      fakeNativeIos();
+      keychain.get.mockRejectedValue(new Error('keychain'));
+      stubServer({ rows: [] });
+      renderWithProviders(<SiriSection />);
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'Something went wrong. Please try again.',
+      );
+      expect(screen.getByRole('switch', { name: 'Use Siri' })).toBeDisabled();
+    });
+
     it('keeps the item when the token list cannot be read (offline)', async () => {
       fakeNativeIos();
       keychain.item = { ...STORED };

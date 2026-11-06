@@ -21,12 +21,12 @@ import {
  */
 
 /** What the plugin hands back: never the secret. Both are absent when nothing is stored. */
-type StoredItem = { tokenId?: string; memberId?: string };
+type StoredItem = { tokenId?: string; memberId?: string; apiOrigin?: string };
 
 type SiriKeychainPlugin = {
   /**
-   * The API origin is stored with the secret so the intents know where to post. It is frozen when the
-   * switch is turned on: a later build with another API URL keeps the old one until it is toggled again.
+   * The API origin is stored with the secret so the intents know where to post. `updateApiOrigin`
+   * keeps it in step with the build that is running (see `reconcile`).
    */
   set(item: {
     secret: string;
@@ -36,12 +36,18 @@ type SiriKeychainPlugin = {
   }): Promise<void>;
   clear(): Promise<void>;
   get(): Promise<StoredItem>;
+  /** Replaces the stored API origin and keeps the rest. Does nothing when nothing is stored. */
+  updateApiOrigin(item: { apiOrigin: string }): Promise<void>;
 };
 
 const keychain = registerPlugin<SiriKeychainPlugin>('SiriKeychain');
 
 /** What is on the phone: which token, and whose. */
-export type SiriStored = { tokenId: string; memberId: string };
+export type SiriStored = {
+  tokenId: string;
+  memberId: string;
+  apiOrigin?: string;
+};
 
 export const siriOnDevice = {
   /** Only the iPhone app can host the built-in commands. */
@@ -50,14 +56,15 @@ export const siriOnDevice = {
 
   /** The token the phone holds, or null. */
   async stored(): Promise<SiriStored | null> {
-    const { tokenId, memberId } = await keychain.get();
-    return tokenId && memberId ? { tokenId, memberId } : null;
+    const { tokenId, memberId, apiOrigin } = await keychain.get();
+    return tokenId && memberId ? { tokenId, memberId, apiOrigin } : null;
   },
 
   /**
    * Makes what is on the phone honest: an item for another Member, or for a token that is no longer
    * active, is cleared (never revoked: the token is gone, or it is not this Member's to revoke).
-   * Returns what is left. If the Member's tokens cannot be read (offline) the item is kept.
+   * Returns what is left. If the Member's tokens cannot be read (offline) the item is kept. A kept item
+   * whose API origin is not this build's gets the current one, so the intents post to the right API.
    * `listTokens` reads the Member's active tokens (the hook passes a shared, cached read).
    */
   async reconcile(
@@ -80,7 +87,7 @@ export const siriOnDevice = {
       await clearIfUnchanged(stored);
       return null;
     }
-    return stored;
+    return await withCurrentApiOrigin(stored);
   },
 
   /**
@@ -141,6 +148,17 @@ export const siriOnDevice = {
   },
 };
 
+/** Best effort: a failed update leaves the old origin, and the switch still follows the token. */
+async function withCurrentApiOrigin(stored: SiriStored): Promise<SiriStored> {
+  if (stored.apiOrigin === apiOrigin) return stored;
+  try {
+    await keychain.updateApiOrigin({ apiOrigin });
+    return { ...stored, apiOrigin };
+  } catch {
+    return stored;
+  }
+}
+
 /** Clears the item only if it is still the one that was read: the Member may have turned Siri off and on meanwhile. */
 async function clearIfUnchanged(read: SiriStored) {
   const now = await siriOnDevice.stored();
@@ -174,11 +192,12 @@ export function useSiriOnDevice(memberId: string | undefined) {
     // mount (gcTime 0) and after a change. Not on every read: the app's default staleTime applies.
     queryFn: () =>
       siriOnDevice.reconcile(memberId as string, () =>
-        // Shares the token list's own request on this screen; never older than this fetch.
+        // Shares the token list's own request on this screen; never much older than this fetch.
         queryClient.fetchQuery({
           queryKey: assistantTokensQueryKey,
           queryFn: fetchAssistantTokens,
-          staleTime: 0,
+          // A read this screen just made is reused; a change (invalidated) always refetches.
+          staleTime: 5_000,
         }),
       ),
     enabled: memberId !== undefined,
