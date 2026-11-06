@@ -19,7 +19,7 @@
 		A1B2C3D4E5F6071829304B01 /* SiriKeychainPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A01 /* SiriKeychainPlugin.swift */; };
 		A1B2C3D4E5F6071829304B02 /* AppBridgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A02 /* AppBridgeViewController.swift */; };
 		A1B2C3D4E5F6071829304B03 /* GatorIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A03 /* GatorIntents.swift */; };
-		A1B2C3D4E5F6071829304B04 /* AppShortcuts.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A04 /* AppShortcuts.xcstrings */; };
+		A1B2C3D4E5F6071829304B04 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A04 /* AppShortcuts.strings */; };
 		A1B2C3D4E5F6071829304B05 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304A05 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +38,8 @@
 		A1B2C3D4E5F6071829304A01 /* SiriKeychainPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriKeychainPlugin.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829304A02 /* AppBridgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBridgeViewController.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829304A03 /* GatorIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatorIntents.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F6071829304A04 /* AppShortcuts.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppShortcuts.xcstrings; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304A06 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304A07 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829304A05 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,7 +79,7 @@
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				A1B2C3D4E5F6071829304A03 /* GatorIntents.swift */,
-				A1B2C3D4E5F6071829304A04 /* AppShortcuts.xcstrings */,
+				A1B2C3D4E5F6071829304A04 /* AppShortcuts.strings */,
 				A1B2C3D4E5F6071829304A05 /* Localizable.xcstrings */,
 				A1B2C3D4E5F6071829304A02 /* AppBridgeViewController.swift */,
 				A1B2C3D4E5F6071829304A01 /* SiriKeychainPlugin.swift */,
@@ -165,7 +166,7 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
-				A1B2C3D4E5F6071829304B04 /* AppShortcuts.xcstrings in Resources */,
+				A1B2C3D4E5F6071829304B04 /* AppShortcuts.strings in Resources */,
 				A1B2C3D4E5F6071829304B05 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,6 +189,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		A1B2C3D4E5F6071829304A04 /* AppShortcuts.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1B2C3D4E5F6071829304A06 /* en */,
+				A1B2C3D4E5F6071829304A07 /* da */,
+			);
+			name = AppShortcuts.strings;
+			sourceTree = "<group>";
+		};
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
