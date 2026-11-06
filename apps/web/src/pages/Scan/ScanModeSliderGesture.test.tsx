@@ -154,7 +154,8 @@ describe('Scan mode slider gestures', () => {
     renderScan('/scan?mode=product');
     drag(screen.getByTestId('scan-feed'), { dx: -50 });
     expect(selected()).toEqual(['Barcode']);
-    drag(screen.getByTestId('scan-guide'), { dx: 150 });
+    // The guide lets touches through to the feed under it (pointer-events: none).
+    drag(screen.getByTestId('scan-feed'), { dx: 150 });
     expect(selected()).toEqual(['Ingredients']);
   });
 

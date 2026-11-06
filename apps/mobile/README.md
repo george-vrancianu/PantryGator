@@ -21,3 +21,12 @@ This builds `apps/web` into `www/` against the hosted API and copies it into bot
 2. `npm run open:android -w @pocket-pantry/mobile` opens Android Studio, or build from `android/` with `./gradlew assembleDebug`.
 
 The release APK must always be signed with the same keystore. Keep it and its passwords outside the repo, and back them up.
+
+## Camera orientation lock (`@capacitor/screen-orientation`)
+
+On a phone in the app, the camera locks the screen to portrait while it is open and unlocks when it closes (ADR 0037). Tablets are never locked. The plugin is a dependency of `apps/web` (the code) and `apps/mobile` (so the Capacitor CLI finds it). Its docs for Capacitor 8 ask for:
+
+- iOS: an `application(_:supportedInterfaceOrientationsFor:)` hook in `AppDelegate.swift` that returns the bridge view controller's orientations. Done. It reads the root view controller from the `window` argument, because `self.window` is nil under the UIScene lifecycle. `UIRequiresFullScreen` is only needed to lock an iPad, which we never do, so it is not set.
+- Android: nothing in the manifest. (Android 16 ignores the lock on large screens, which does not matter because tablets are not locked.)
+
+After changing the plugin, a human must run `npx cap sync` (or `npm run sync -w @pocket-pantry/mobile`) and rebuild both apps. The generated plugin lines in `android/capacitor.settings.gradle`, `android/app/capacitor.build.gradle` and `ios/App/CapApp-SPM/Package.swift` are committed.

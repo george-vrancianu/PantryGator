@@ -11,6 +11,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TOP_BAR_HEIGHT } from '../../../lib/scanGuides';
 import { glassBar, glassFocusRing, translucent } from './glass';
+import { insetLeft, insetRight, insetTop } from './CameraFrame';
 
 const iconButton = {
   display: 'flex',
@@ -63,7 +64,9 @@ export function CameraTopBar({
         left: 0,
         right: 0,
         borderBottom: `1px solid ${translucent(tokens.color.ink, 6)}`,
-        pt: 'env(safe-area-inset-top)',
+        pt: insetTop,
+        pl: insetLeft,
+        pr: insetRight,
       }}
     >
       <Box

@@ -15,6 +15,8 @@ export type DialogProps = {
   children: ReactNode;
   /** Buttons along the bottom edge, e.g. Cancel. */
   actions?: ReactNode;
+  /** Centred whatever the window's width (a landscape tablet's own layout decides); by default only from `md` up. */
+  centred?: boolean;
   /**
    * The element to focus once the dialog has opened. Without it, focus stays on
    * the dialog itself. Below `md` a text field is not focused (the phone keyboard
@@ -35,9 +37,11 @@ export function Dialog({
   title,
   children,
   actions,
+  centred: forceCentred = false,
   initialFocus,
 }: DialogProps) {
-  const centred = useBreakpointUp('md');
+  const wide = useBreakpointUp('md');
+  const centred = forceCentred || wide;
   const [paper, setPaper] = useState<HTMLElement | null>(null);
   const focusInitial = focusOpening(paper, initialFocus, centred);
   return (

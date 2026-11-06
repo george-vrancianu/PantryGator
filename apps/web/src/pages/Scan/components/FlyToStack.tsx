@@ -6,7 +6,9 @@ import {
   useState,
   type RefObject,
 } from 'react';
+import { frameSize } from '../../../lib/cameraFrame';
 import type { Rect } from '../../../lib/scanGuides';
+import { useCameraFrame } from './CameraFrame';
 
 const FLY_MS = 460;
 
@@ -22,10 +24,23 @@ function Flying({
   onDone: (id: number) => void;
 }) {
   const el = useRef<HTMLImageElement>(null);
+  const frame = useCameraFrame();
   useLayoutEffect(() => {
-    const to = target.current?.getBoundingClientRect();
+    const bounds = target.current?.getBoundingClientRect();
     const { from } = flight;
-    if (to && to.width > 0) {
+    if (bounds && bounds.width > 0) {
+      // The stack's rectangle is on the screen; the flight is drawn in the (maybe rotated-back) frame.
+      const centre = frame.toFramePoint({
+        x: bounds.left + bounds.width / 2,
+        y: bounds.top + bounds.height / 2,
+      });
+      const size = frameSize(bounds, frame.angle);
+      const to = {
+        left: centre.x - size.width / 2,
+        top: centre.y - size.height / 2,
+        width: size.width,
+        height: size.height,
+      };
       el.current?.animate?.(
         [
           { transform: 'none', borderRadius: radius.control },
@@ -43,7 +58,7 @@ function Flying({
     }
     const timer = window.setTimeout(() => onDone(flight.id), FLY_MS);
     return () => window.clearTimeout(timer);
-  }, [flight, target, onDone]);
+  }, [flight, target, onDone, frame]);
   return (
     <Box
       component="img"

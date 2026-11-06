@@ -26,7 +26,7 @@ import {
   useSessionScanLanguage,
 } from '../../../lib/sessionScanLanguage';
 import type { ScanLanguage } from '../../../i18n/resources';
-import { measureView } from './useGuideRect';
+import { measureShot } from './useGuideRect';
 import {
   CAMERA_MODES,
   loadScanPageMode,
@@ -192,7 +192,10 @@ export function useScanScreen(config: ScanScreenModes = {}) {
   const reading = resizing;
 
   /** A camera frame: prepare it, then join the Scan Session. (Gallery files go through `importPhotos`.) */
-  const scanFrame = async (frame: Blob): Promise<void> => {
+  const scanFrame = async (
+    frame: Blob,
+    aim: ReturnType<typeof measureShot>,
+  ): Promise<void> => {
     setLocalError(null);
     setNotAdded(false);
     setResizing(true);
@@ -205,7 +208,8 @@ export function useScanScreen(config: ScanScreenModes = {}) {
       image = await IMAGE_PREPARATION[mode](
         frame,
         'camera',
-        measureView(camera.videoRef.current),
+        aim.view,
+        aim.turn,
       );
     } catch {
       if (epoch === scanEpoch.current) {
@@ -249,8 +253,10 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     if (shooting.current || capped || mode === 'barcode') return;
     shooting.current = true;
     try {
+      // The guide and the turn as they are when the shutter fires, not when the frame arrives.
+      const aim = measureShot(camera.videoRef.current);
       const frame = await camera.capture();
-      if (frame) await scanFrame(frame);
+      if (frame) await scanFrame(frame, aim);
     } finally {
       shooting.current = false;
     }

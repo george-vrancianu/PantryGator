@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { BarcodeLookupNotes } from '../../../components/BarcodeLookupNotes';
 import type { BarcodeLookup } from '../../../lib/barcode';
 import { BARCODE_GLYPH } from './barcodeGlyph';
+import { FEED_BOTTOM_IN_RAIL, useFeedArea } from './CameraFrame';
 
 const INK = palette('text-primary');
 const MUTED = palette('text-secondary');
@@ -54,6 +55,7 @@ export function BarcodeResultCard({
 }: Props) {
   const { t } = useTranslation('scan');
   const reduced = usePrefersReducedMotion();
+  const feed = useFeedArea();
   const found = lookup?.found ? lookup : null;
   const name = found ? (found.unmatchedName ?? found.productDescription) : '';
   const match = found?.match ?? null;
@@ -65,8 +67,8 @@ export function BarcodeResultCard({
       sx={{
         position: 'absolute',
         left: 14,
-        right: 14,
-        bottom: 190,
+        right: feed.right(14),
+        bottom: feed.bottom(190, FEED_BOTTOM_IN_RAIL),
         p: 1.5,
         borderRadius: radius.sheet,
         backgroundColor: 'background.paper',

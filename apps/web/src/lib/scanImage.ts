@@ -1,4 +1,5 @@
 import { cropToReceiptGuide, resizeImage } from './image';
+import type { ScreenAngle } from './cameraOrientation';
 import type { ScanMode } from './scan';
 import type { GuideView } from './scanGuides';
 
@@ -11,18 +12,21 @@ export type ImagePreparation = (
   origin: ImageOrigin,
   /** On-screen size and safe-area insets of the feed the frame came from; the receipt guide is mapped through it. */
   view?: GuideView,
+  /** The photo turn captured at the shutter; applies to camera frames only. */
+  turn?: ScreenAngle,
 ) => Promise<string>;
 
-const resizeOnly: ImagePreparation = (source) => resizeImage(source);
+const resizeOnly: ImagePreparation = (source, origin, _view, turn) =>
+  resizeImage(source, origin === 'camera' ? turn : 0);
 
 /** How each Scan Mode prepares its image before sending it. */
 export const IMAGE_PREPARATION: Record<ScanMode, ImagePreparation> = {
   product: resizeOnly,
   // A camera frame is cropped to the viewfinder's guide. A gallery file is cropped by the
   // Member from its card in Review instead (cropToReceiptArea), so it never comes through here. Rejecting is deliberate, not a TODO.
-  receipt: (source, origin, view) =>
+  receipt: (source, origin, view, turn) =>
     origin === 'camera' && view
-      ? cropToReceiptGuide(source, view)
+      ? cropToReceiptGuide(source, view, turn)
       : Promise.reject(new Error('gallery receipts go through the crop step')),
   plate: resizeOnly,
   ingredients: resizeOnly,
