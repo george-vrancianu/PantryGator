@@ -7,7 +7,7 @@ import {
   Typography,
   tokens,
 } from '@pocket-pantry/ui';
-import { useRef, type Ref } from 'react';
+import { useMemo, useRef, type Ref, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   dateAndRelativeDay,
@@ -58,20 +58,27 @@ export function ExpirySheet({
 }: ExpirySheetProps) {
   const { t, i18n } = useTranslation('pantry');
   const quickPicks = useRef<HTMLDivElement>(null);
+  // The selected quick pick, or the first: a button, so a phone keyboard stays down.
+  const quickPick = useMemo<RefObject<HTMLElement | null>>(
+    () => ({
+      get current() {
+        const tiles = quickPicks.current;
+        return (
+          tiles?.querySelector<HTMLElement>('.tile[aria-pressed="true"]') ??
+          tiles?.querySelector<HTMLElement>('.tile') ??
+          null
+        );
+      },
+    }),
+    [],
+  );
   const today = useToday();
   const { staleThresholdDays, tagFor } = useExpiryTags(today);
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      onEntered={() => {
-        // The selected quick pick, or the first. A button, so a phone keyboard stays down.
-        const tiles = quickPicks.current;
-        (
-          tiles?.querySelector<HTMLElement>('.tile[aria-pressed="true"]') ??
-          tiles?.querySelector<HTMLElement>('.tile')
-        )?.focus();
-      }}
+      initialFocus={quickPick}
       onExited={onExited}
       label={title}
       size="content"

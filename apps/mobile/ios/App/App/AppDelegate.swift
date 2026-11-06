@@ -7,7 +7,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // A Keychain item outlives deleting the app, but the session does not. On the first launch of an
+        // install, drop any Siri token left by an earlier one, so Siri never posts for a signed-out app.
+        // Intents run in the app process, so this runs before them too.
+        if !UserDefaults.standard.bool(forKey: "siriKeychainInstalled") {
+            SiriKeychain.clear()
+            UserDefaults.standard.set(true, forKey: "siriKeychainInstalled")
+        }
         return true
     }
 

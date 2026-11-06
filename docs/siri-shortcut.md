@@ -2,6 +2,8 @@
 
 "Pantry add" is an Apple Shortcut that lets a Member say "Hey Siri, Pantry add", dictate what to add, and hear a one-sentence reply. It sends the dictated text to the API as an Assistant Request (see [ADR 0019](adr/0019-assistant-requests-apply-safe-voice-actions-without-review.md)). Build it on an iPhone or iPad in the Shortcuts app, then share it as an iCloud link.
 
+The iPhone app has these commands built in (Settings > Siri > Use Siri), so the Shortcuts below are for the web and for Members without the app, and for Romanian speakers: Siri has no Romanian, but the Shortcut's Dictate Text can be set to it.
+
 The name of the Shortcut is the Siri phrase, so it is "Pantry add" in every language. Siri's phrase is English; the dictated items can be in any language PantryGator supports.
 
 ## The API contract
@@ -49,11 +51,11 @@ Three more Shortcuts sit beside "Pantry add" (see [ADR 0023](adr/0023-assistant-
 
 Build each as a copy of "Pantry add" (Shortcuts app > duplicate), then change only the three things in its row. The **Text** action is a new action placed right after **Dictate Text**: type the prefix, then insert the **Dictated Text** variable after it, and use this Text action's result (instead of **Dictated Text**) as `text` in the request body in step 5. Every other action (the token Text with its Import Question, Date, Format Date, Get Contents of URL, Get Dictionary Value, and the If with its fallback) stays as in "Actions, in order".
 
-| Shortcut name (the Siri phrase) | Dictate Text prompt | Text prefix sent | What the API does |
-| --- | --- | --- | --- |
-| `Gator needs` | `What do you need?` | `Add to the shopping list: ` | Adds each item to the Shopping List. Replies "Added to your Shopping List: ...". |
-| `Gator got` | `What did you get?` | `Got ` | Ticks off each item that is on the Shopping List and unchecked, and writes nothing else. An item that isn't there (or is already ticked) is never added; the reply says "Not on your Shopping List: ...". |
-| `Gator, do we have` | `What are you looking for?` | `Do we have ` | Answers Pantry Questions from the Pantry and Shopping List (see [ADR 0020](adr/0020-voice-notes-and-assistant-requests-answer-pantry-questions.md)); Siri speaks at most 8 Ingredients, then "and N more, check PantryGator". |
+| Shortcut name (the Siri phrase) | Dictate Text prompt         | Text prefix sent             | What the API does                                                                                                                                                                                                             |
+| ------------------------------- | --------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Gator needs`                   | `What do you need?`         | `Add to the shopping list: ` | Adds each item to the Shopping List. Replies "Added to your Shopping List: ...".                                                                                                                                              |
+| `Gator got`                     | `What did you get?`         | `Got `                       | Ticks off each item that is on the Shopping List and unchecked, and writes nothing else. An item that isn't there (or is already ticked) is never added; the reply says "Not on your Shopping List: ...".                     |
+| `Gator, do we have`             | `What are you looking for?` | `Do we have `                | Answers Pantry Questions from the Pantry and Shopping List (see [ADR 0020](adr/0020-voice-notes-and-assistant-requests-answer-pantry-questions.md)); Siri speaks at most 8 Ingredients, then "and N more, check PantryGator". |
 
 Notes:
 

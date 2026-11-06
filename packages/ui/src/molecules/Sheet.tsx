@@ -6,11 +6,13 @@ import {
   type ReactElement,
   type ReactNode,
   type Ref,
+  type RefObject,
 } from 'react';
 import { Box } from '../atoms/Layout';
 import { useToastHost } from './ToastProvider';
 import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
+import { focusOpening } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { palette, radius, shadow } from '../theme/themeVars';
 
@@ -27,8 +29,17 @@ export type SheetProps = {
    * itself (say, a popover) calls `event.stopPropagation()` on that keydown.
    */
   onClose: () => void;
-  /** Called once the open transition has finished, e.g. to focus a field. */
+  /**
+   * Called once the open transition has finished. For non-focus work only:
+   * never focus a field here (ADR 0039); use `initialFocus`.
+   */
   onEntered?: () => void;
+  /**
+   * The element to focus once the open transition ends. Without it, focus stays on
+   * the sheet itself. Below `md` a text field is not focused (the phone keyboard
+   * would jump the sheet); focus moves only if it is still on the sheet.
+   */
+  initialFocus?: RefObject<HTMLElement | null>;
   /**
    * Called once the close transition has finished: the dialog is gone, the app is no longer `aria-hidden`
    * and focus is back on the opener. Use it for anything that needs to focus something after the close.
@@ -72,6 +83,7 @@ export function Sheet({
   open,
   onClose,
   onEntered,
+  initialFocus,
   onExited,
   label,
   header,
@@ -89,6 +101,7 @@ export function Sheet({
   // Only while open: a toast raised as the sheet closes must not sit in the
   // paper that is sliding away.
   useToastHost(open ? paper : null);
+  const focusInitial = focusOpening(paper, initialFocus, centred);
   return (
     <MuiDialog
       open={open}
@@ -107,7 +120,13 @@ export function Sheet({
       }
       slotProps={{
         backdrop: { sx: { backgroundColor: SCRIM } },
-        transition: { onEntered, onExited },
+        transition: {
+          onEntered: () => {
+            focusInitial();
+            onEntered?.();
+          },
+          onExited,
+        },
         paper: {
           ref: setPaper,
           'aria-label': label,

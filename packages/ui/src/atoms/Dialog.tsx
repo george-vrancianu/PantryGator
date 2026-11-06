@@ -2,8 +2,9 @@ import MuiDialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode, type RefObject } from 'react';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
+import { focusOpening } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
 
 export type DialogProps = {
@@ -16,6 +17,12 @@ export type DialogProps = {
   actions?: ReactNode;
   /** Centred whatever the window's width (a landscape tablet's own layout decides); by default only from `md` up. */
   centred?: boolean;
+  /**
+   * The element to focus once the dialog has opened. Without it, focus stays on
+   * the dialog itself. Below `md` a text field is not focused (the phone keyboard
+   * would jump the dialog); focus moves only if it is still on the dialog.
+   */
+  initialFocus?: RefObject<HTMLElement | null>;
 };
 
 /**
@@ -31,9 +38,12 @@ export function Dialog({
   children,
   actions,
   centred: forceCentred = false,
+  initialFocus,
 }: DialogProps) {
   const wide = useBreakpointUp('md');
   const centred = forceCentred || wide;
+  const [paper, setPaper] = useState<HTMLElement | null>(null);
+  const focusInitial = focusOpening(paper, initialFocus, centred);
   return (
     <MuiDialog
       open={open}
@@ -46,7 +56,9 @@ export function Dialog({
           : { '& .MuiDialog-container': { alignItems: 'flex-end' } }
       }
       slotProps={{
+        transition: { onEntered: focusInitial },
         paper: {
+          ref: setPaper,
           sx: centred
             ? { borderRadius: radius.sheet, boxShadow: shadow.float }
             : {

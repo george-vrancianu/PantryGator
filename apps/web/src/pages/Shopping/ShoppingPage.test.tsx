@@ -1410,12 +1410,7 @@ describe('ShoppingPage', () => {
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
 
-      const dialog = await openSheet();
-      await waitFor(() =>
-        expect(
-          within(dialog).getByRole('combobox', { name: 'Search ingredients' }),
-        ).toHaveFocus(),
-      );
+      await openSheet();
 
       expect(
         screen.queryByRole('region', { name: 'Recently stocked' }),
@@ -1425,7 +1420,8 @@ describe('ShoppingPage', () => {
       ).toBe(false);
     });
 
-    it('opens without tabs, with focus in the search field', async () => {
+    it('opens without tabs, with focus on the sheet on a phone', async () => {
+      stubViewport(390);
       stubShopping();
       renderWithProviders(<ShoppingPage />);
 
@@ -1433,11 +1429,9 @@ describe('ShoppingPage', () => {
 
       expect(within(dialog).queryByRole('tab')).toBeNull();
       expect(within(dialog).queryByRole('tablist')).toBeNull();
-      await waitFor(() =>
-        expect(
-          within(dialog).getByRole('combobox', { name: 'Search ingredients' }),
-        ).toHaveFocus(),
-      );
+      // On a phone the sheet keeps focus: a focused field would raise the keyboard mid-slide.
+      await waitFor(() => expect(dialog).toHaveFocus());
+      expect(search(dialog)).not.toHaveFocus();
     });
 
     it('shows no template chips on an empty search', async () => {
@@ -2665,7 +2659,20 @@ describe('ShoppingPage', () => {
           ).toBeNull();
         });
 
-        it('previews every item with its amount and focuses the name', async () => {
+        it('focuses the name from md up', async () => {
+          stubViewport(1024);
+          stubTemplates();
+          renderWithProviders(<ShoppingPage />);
+          const dialog = await openSave();
+
+          await vi.waitFor(() =>
+            expect(
+              within(dialog).getByRole('textbox', { name: 'Template name' }),
+            ).toHaveFocus(),
+          );
+        });
+
+        it('previews every item with its amount and leaves the keyboard down on a phone', async () => {
           stubTemplates();
           renderWithProviders(<ShoppingPage />);
           const user = userEvent.setup();
@@ -2674,7 +2681,8 @@ describe('ShoppingPage', () => {
           const name = within(dialog).getByRole('textbox', {
             name: 'Template name',
           });
-          await vi.waitFor(() => expect(name).toHaveFocus());
+          await vi.waitFor(() => expect(dialog).toHaveFocus());
+          expect(name).not.toHaveFocus();
           expect(name).toHaveAttribute('maxlength', '100');
           expect(
             within(dialog).getByText('Saves all 3 items, ticked ones too'),
@@ -2850,7 +2858,6 @@ describe('ShoppingPage', () => {
 
         const dialog = await openSheet();
 
-        await waitFor(() => expect(search(dialog)).toHaveFocus());
         expect(
           within(dialog).queryByText('Or start from a template'),
         ).toBeNull();

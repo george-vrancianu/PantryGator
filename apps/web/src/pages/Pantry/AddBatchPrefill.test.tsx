@@ -483,6 +483,10 @@ describe('Prefill the add-Batch form from a Product Scan', () => {
     // Nothing is picked, so there is no camera tag to show.
     expect(screen.queryByTestId('camera-source-tag')).toBeNull();
     // The note is read into the form; its field shows once an Ingredient is picked.
+    // The sheet opens without the keyboard on a phone, so the Member taps the search.
+    await user.click(
+      screen.getByRole('combobox', { name: 'Search ingredients' }),
+    );
     await user.click(await screen.findByRole('option', { name: /Yogurt/ }));
     expect(screen.queryByTestId('camera-source-tag')).toBeNull();
     expect(screen.getByLabelText('Note · optional')).toHaveValue(

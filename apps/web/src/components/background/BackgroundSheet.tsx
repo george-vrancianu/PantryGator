@@ -81,7 +81,7 @@ export function BackgroundSheet({
       open={open}
       onClose={onClose}
       onExited={onExited}
-      onEntered={focusTitle}
+      initialFocus={title}
       label={t('sheetTitle')}
       footer={footer}
       header={

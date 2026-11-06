@@ -1,5 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Capacitor } from '@capacitor/core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { unmatchedQueueQueryKey } from '../../lib/unmatched';
 import { renderWithProviders, stubApi } from '../../test/render';
@@ -89,6 +90,25 @@ describe('Settings You tab', () => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
     document.documentElement.removeAttribute('data-theme');
+  });
+
+  describe('Siri section by platform', () => {
+    it.each([
+      ['the web', false, 'web', true],
+      ['the iOS app', true, 'ios', true],
+      ['the Android app', true, 'android', false],
+    ])('on %s', async (_name, native, platform, shown) => {
+      vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(native);
+      vi.spyOn(Capacitor, 'getPlatform').mockReturnValue(platform);
+      stubSystemScheme(false);
+      stubYou();
+      renderWithProviders(<SettingsPage />, { route: '/settings' });
+
+      await screen.findByRole('group', { name: 'Language' });
+      const siri = screen.queryByRole('heading', { name: 'Siri' });
+      if (shown) expect(siri).toBeInTheDocument();
+      else expect(siri).not.toBeInTheDocument();
+    });
   });
 
   describe('Language', () => {
