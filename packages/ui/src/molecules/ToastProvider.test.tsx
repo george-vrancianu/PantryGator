@@ -218,38 +218,38 @@ describe('Toast floors', () => {
   // `calc()` survives; `composeToastBottom` below checks the composed values.
   it('sits just above the Dock with no floor', () => {
     render(<Harness floors={[null]} />);
-    expect(bottomOf()).toContain('bottom: calc(128px');
+    expect(bottomOf()).toContain('bottom: calc(100px');
   });
 
   it('is lifted while a floor is registered', () => {
     render(<Harness floors={[120]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(128px');
+    expect(bottomOf()).not.toContain('bottom: calc(100px');
   });
 
   it('ignores the floor when hosted in a modal', () => {
     render(<Harness floors={[120]} modal />);
-    expect(bottomOf()).toContain('bottom: calc(128px');
+    expect(bottomOf()).toContain('bottom: calc(100px');
   });
 
   it('drops back when the floor is cleared, and moves with a transition', () => {
     const { rerender } = render(<Harness floors={[120]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(128px');
+    expect(bottomOf()).not.toContain('bottom: calc(100px');
     const snackbar = screen
       .getByText('Saved')
       .closest<HTMLElement>('.MuiSnackbar-root')!;
     expect(getComputedStyle(snackbar).transition).toContain('bottom');
     rerender(<Harness floors={[null]} />);
-    expect(snackbarCss()).toContain('bottom: calc(128px');
+    expect(snackbarCss()).toContain('bottom: calc(100px');
   });
 
   it('keeps the lift while another floor is registered, and drops back once all are gone', () => {
     const { rerender } = render(<Harness floors={[120, 200]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(128px');
+    expect(bottomOf()).not.toContain('bottom: calc(100px');
     // Removing the higher floor leaves the lower one in force.
     rerender(<Harness floors={[120, null]} />);
-    expect(snackbarCss()).not.toContain('bottom: calc(128px');
+    expect(snackbarCss()).not.toContain('bottom: calc(100px');
     rerender(<Harness floors={[null, null]} />);
-    expect(snackbarCss()).toContain('bottom: calc(128px');
+    expect(snackbarCss()).toContain('bottom: calc(100px');
   });
 
   it('does not animate the move under reduced motion', () => {
