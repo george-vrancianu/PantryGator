@@ -1,12 +1,13 @@
 import {
   Box,
+  color,
   InputAdornment,
+  radius,
+  SAFE_TOP,
   SearchIcon,
   TagChip,
   TagIcon,
   TextField,
-  color,
-  radius,
   tokens,
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
@@ -45,11 +46,13 @@ export function RecipeFilters({ value, onChange, searchLabel, tags }: Props) {
     <Box
       sx={{
         position: 'sticky',
-        top: 0,
+        top: SAFE_TOP,
         zIndex: 2,
         bgcolor: tokens.color.bg,
-        mx: bleedSx.mx,
-        px: bleedSx.px,
+        ml: bleedSx.ml,
+        mr: bleedSx.mr,
+        pl: bleedSx.pl,
+        pr: bleedSx.pr,
         py: '8px',
       }}
     >

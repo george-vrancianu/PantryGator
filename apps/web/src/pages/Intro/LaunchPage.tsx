@@ -1,4 +1,12 @@
-import { Box, Button, Gator, Link, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Box,
+  Button,
+  Gator,
+  Link,
+  SAFE_TOP,
+  Stack,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IntroLook } from '../../components/IntroLook';
@@ -22,7 +30,7 @@ export function LaunchPage() {
       <Box
         component="main"
         sx={{
-          minHeight: '100vh',
+          minHeight: `calc(100vh - ${SAFE_TOP})`,
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',

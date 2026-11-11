@@ -26,6 +26,20 @@ describe('Sheet', () => {
     expect(style.borderRadius).toContain('var(--pp-r-card)');
   });
 
+  it('caps a phone sheet below the top inset so the grab handle stays reachable', () => {
+    stubScreen(false, false);
+    render(
+      <Sheet open onClose={() => undefined} label="Add items">
+        Body
+      </Sheet>,
+    );
+    const style = getComputedStyle(
+      screen.getByRole('dialog', { name: 'Add items' }),
+    );
+    expect(style.maxHeight).toContain('env(safe-area-inset-top');
+    expect(style.maxHeight).toContain('90dvh');
+  });
+
   describe('slide-up', () => {
     const slideTransition = (reduce: boolean) => {
       stubScreen(false, reduce);

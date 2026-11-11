@@ -1,4 +1,13 @@
-import { Box, Button, CheckIcon, Typography, palette } from '@pocket-pantry/ui';
+import {
+  Box,
+  Button,
+  CheckIcon,
+  gutterLeft,
+  gutterRight,
+  palette,
+  plusBottomInset,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { keyframesSx } from '../../lib/keyframesSx';
 
@@ -61,7 +70,12 @@ export function ReviewFooter({
   const confirmKey = merged
     ? 'review.footer.confirmAll'
     : 'review.footer.confirm';
-  const box = { p: '12px 16px calc(20px + env(safe-area-inset-bottom))' };
+  const box = {
+    pt: '12px',
+    pl: gutterLeft(16),
+    pr: gutterRight(16),
+    pb: plusBottomInset(20),
+  };
 
   if (confirming) {
     return (

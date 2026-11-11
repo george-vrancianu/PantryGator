@@ -2,10 +2,13 @@ import {
   Box,
   Button,
   CloseIcon,
+  displayType,
+  gutterLeft,
+  gutterRight,
   IconButton,
+  plusBottomInset,
   Sheet,
   TagField,
-  displayType,
   tokens,
   visuallyHidden,
 } from '@pocket-pantry/ui';
@@ -119,9 +122,10 @@ export function TagsSheet({
             display: 'grid',
             gridTemplateColumns: '1fr 2fr',
             gap: '10px',
-            px: 2.5,
+            pl: gutterLeft(20),
+            pr: gutterRight(20),
             pt: 1.5,
-            pb: 'calc(26px + env(safe-area-inset-bottom, 0px))',
+            pb: plusBottomInset(26),
           }}
         >
           <Button

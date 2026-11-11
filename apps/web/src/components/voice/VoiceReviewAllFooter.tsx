@@ -1,4 +1,11 @@
-import { Alert, Box, Button } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Button,
+  gutterLeft,
+  gutterRight,
+  plusBottomInset,
+} from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,7 +25,14 @@ export function VoiceReviewAllFooter({ onClose }: { onClose: () => void }) {
   const tooMany = refusedAt === reviewable;
   if (reviewable <= 1) return null;
   return (
-    <Box sx={{ p: '12px 16px calc(20px + env(safe-area-inset-bottom))' }}>
+    <Box
+      sx={{
+        pt: '12px',
+        pl: gutterLeft(16),
+        pr: gutterRight(16),
+        pb: plusBottomInset(20),
+      }}
+    >
       {tooMany ? (
         <Box sx={{ mb: '10px' }}>
           <Alert>

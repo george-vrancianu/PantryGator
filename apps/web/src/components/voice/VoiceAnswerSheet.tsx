@@ -1,11 +1,14 @@
 import {
   Box,
   Button,
-  Sheet,
-  Typography,
+  gutterLeft,
+  gutterRight,
   palette,
+  plusBottomInset,
   radius,
   shadow,
+  Sheet,
+  Typography,
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -60,7 +63,14 @@ function AnswerSheet() {
         </Box>
       }
       footer={
-        <Box sx={{ p: '12px 16px calc(20px + env(safe-area-inset-bottom))' }}>
+        <Box
+          sx={{
+            pt: '12px',
+            pl: gutterLeft(16),
+            pr: gutterRight(16),
+            pb: plusBottomInset(20),
+          }}
+        >
           <Button fullWidth onClick={done}>
             {t('answers.done')}
           </Button>
