@@ -1,5 +1,5 @@
 import { Alert, Button, Stack, TextField } from '@pocket-pantry/ui';
-import { useEffect, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExpiryField, expiryContext } from '../../../components/ExpiryPicker';
 import { LocationToggle } from '../../../components/LocationToggle';
@@ -21,9 +21,6 @@ export function EditBatchForm({ batch, onSaved, onCancel, onRemove }: Props) {
   const form = useEditBatchForm(batch, { onSaved });
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => {
-    formRef.current?.querySelector<HTMLElement>('input, select')?.focus();
-  }, []);
 
   return (
     <Stack

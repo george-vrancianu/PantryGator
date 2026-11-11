@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
 import { Typography } from '../atoms/Typography';
+import { topRoomBelowInset } from '../theme/safeArea';
 import { palette } from '../theme/themeVars';
 
 export type DashboardHeaderProps = {
@@ -28,7 +29,8 @@ export function DashboardHeader({
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-        pt: '28px',
+        // The page is already padded by the top inset; this room gives way to it (ADR 0040).
+        pt: topRoomBelowInset(28),
         pb: '18px',
         // Keeps the old date + h1 header's content height (about 54px) so the widget grid starts where it did.
         boxSizing: 'content-box',
