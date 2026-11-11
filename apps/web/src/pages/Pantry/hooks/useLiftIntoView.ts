@@ -1,5 +1,5 @@
 import {
-  DOCK_BOTTOM,
+  dockBottomPx,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
   usePrefersReducedMotion,
@@ -8,8 +8,8 @@ import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { LIFT_MS } from '../components/liftedBlock';
 
 /** The bottom of the viewport the Dock covers (its larger height, so it holds on every width),
- * with the capsule's overhang. */
-const DOCK_ZONE = DOCK_BOTTOM + DOCK_HEIGHT.md + DOCK_OVERHANG;
+ * with the capsule's overhang, from the Dock's real bottom (the home-indicator inset on a Face ID iPhone). */
+const dockZone = () => dockBottomPx() + DOCK_HEIGHT.md + DOCK_OVERHANG;
 /** Room left between the scrolled-in card and the Dock. */
 const BREATHING = 14;
 
@@ -31,7 +31,7 @@ export function useLiftIntoView(
     const timer = setTimeout(() => {
       const element = target.current;
       if (!element) return;
-      const limit = window.innerHeight - DOCK_ZONE;
+      const limit = window.innerHeight - dockZone();
       const { bottom } = element.getBoundingClientRect();
       if (bottom <= limit) return;
       window.scrollBy({

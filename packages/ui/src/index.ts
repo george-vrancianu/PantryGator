@@ -65,11 +65,11 @@ export { useBreakpointUp } from './theme/useBreakpointUp';
 export { usePrefersReducedMotion } from './theme/usePrefersReducedMotion';
 export {
   aboveDock,
-  DOCK_BOTTOM,
   DOCK_BOTTOM_CSS,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
 } from './theme/dock';
+export { dockBottomPx, readSafeInsets } from './theme/insets';
 export {
   gutterLeft,
   gutterRight,
