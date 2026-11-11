@@ -7,9 +7,10 @@ import {
   ChevronRightIcon,
   CloseIcon,
   displayType,
-  DOCK_BOTTOM,
+  dockBottomPx,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
+  readSafeInsets,
   focusRing,
   IconButton,
   PlusIcon,
@@ -22,6 +23,7 @@ import {
   useBreakpointUp,
 } from '@pocket-pantry/ui';
 import { AllergenIndicator } from '../AllergenIndicator';
+import { placeVertically } from './verticalPlacement';
 import {
   useCallback,
   useId,
@@ -61,8 +63,8 @@ const GAP = 10;
 const EDGE = 12;
 /** Closest the arrow comes to the popover's corners, px. */
 const ARROW_INSET = 18;
-/** Space kept between the popover and the Dock, px. */
-const DOCK_CLEARANCE = 8;
+/** Space kept between the popover and the Dock, and between it and the top inset, px. */
+const EDGE_CLEARANCE = 8;
 
 type Position = {
   left: number;
@@ -381,19 +383,18 @@ export function MealPlanPopover({
       EDGE,
       Math.min(centre - width / 2, viewWidth - width - EDGE),
     );
-    const limit =
-      viewHeight - (DOCK_BOTTOM + dockHeight + DOCK_OVERHANG + DOCK_CLEARANCE);
-    let top = column.bottom + GAP;
-    let placement: Position['placement'] = 'below';
-    if (top + height > limit) {
-      const above = column.top - GAP - height;
-      if (above > DOCK_CLEARANCE) {
-        top = above;
-        placement = 'above';
-      } else {
-        top = Math.max(DOCK_CLEARANCE, limit - height);
-      }
-    }
+    const topLimit = readSafeInsets().top + EDGE_CLEARANCE;
+    const bottomLimit =
+      viewHeight -
+      (dockBottomPx() + dockHeight + DOCK_OVERHANG + EDGE_CLEARANCE);
+    const { top, placement } = placeVertically({
+      columnTop: column.top,
+      columnBottom: column.bottom,
+      height,
+      gap: GAP,
+      topLimit,
+      bottomLimit,
+    });
     const arrowX = Math.max(
       ARROW_INSET,
       Math.min(width - ARROW_INSET, centre - left),

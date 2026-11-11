@@ -3026,6 +3026,27 @@ describe('PantryPage', () => {
           });
         });
 
+        it('measures the Dock from the real bottom inset (34px on a Face ID iPhone)', async () => {
+          const real = window.getComputedStyle.bind(window);
+          vi.spyOn(window, 'getComputedStyle').mockImplementation(
+            (element, pseudo) =>
+              element.getAttribute('aria-hidden') === 'true' &&
+              (element as HTMLElement).style.visibility === 'hidden'
+                ? ({
+                    paddingTop: '59px',
+                    paddingBottom: '34px',
+                  } as CSSStyleDeclaration)
+                : real(element, pseudo),
+          );
+          const scrollBy = await openWithBottomAt(760);
+          await act(() => vi.advanceTimersByTimeAsync(300));
+          // 6px more of Dock than with no inset.
+          expect(scrollBy).toHaveBeenCalledWith({
+            top: 110,
+            behavior: 'smooth',
+          });
+        });
+
         it('jumps instead under reduce-motion', async () => {
           stubMotion(true);
           const scrollBy = await openWithBottomAt(760);
