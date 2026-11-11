@@ -8,6 +8,7 @@ import {
 } from '../../lib/recipeReads';
 import { MAX_PASTED_TEXT_LENGTH } from '../../lib/linkRecipe';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { stubViewport } from '../../test/viewport';
 import {
   FromTextSheet,
   type FromTextPrefill,
@@ -237,7 +238,15 @@ describe('"From text" sheet', () => {
   });
 
   describe('opened from a failed link read', () => {
+    it('on a phone, leaves the field unfocused so the keyboard stays down', async () => {
+      setup({ prefill: { site: 'example.com', replaces: 1 } });
+      const sheet = screen.getByRole('dialog', { name: 'From text' });
+      await waitFor(() => expect(sheet).toHaveFocus());
+      expect(field()).not.toHaveFocus();
+    });
+
     it('names the site, focuses the field and replaces that read', async () => {
+      stubViewport(1024);
       const user = userEvent.setup({ delay: null });
       setup({ unreadable: true });
       recipeReads.submit(

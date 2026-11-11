@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FOCUS_PAUSE_MS } from '../../lib/camera';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { stubScreen } from '../../test/screen';
 import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
 import { ScanPage } from './ScanPage';
 import {
@@ -101,6 +102,39 @@ describe('The shutter on the Scan page', () => {
     fireEvent.click(shutter());
     await flush();
     expect(scans()).toHaveLength(1);
+  });
+
+  it('a hold on a tablet in landscape aims at the guide, centred left of the rail, not at the fixed point', async () => {
+    stubScreen({
+      width: 820,
+      height: 1180,
+      viewport: { width: 1180, height: 820 },
+    });
+    renderScan();
+    press();
+    await advance(301);
+    const [point] = fakeCamera.focusPoints;
+    // Clear area: left of the 168 px rail, between the 52 px top bar and the bottom edge.
+    expect(point?.x).toBeCloseTo((1180 - 168) / 2 / 1180, 2);
+    expect(point?.y).toBeCloseTo((52 + 820) / 2 / 820, 2);
+  });
+
+  it('a hold on a phone turned to 90 aims at the guide centre as a fraction of the rotated-back frame', async () => {
+    // Window 844 x 390, so the frame is 390 x 844; footer layout, no insets: the clear area runs
+    // from the 52 px top bar to 144 px (footer) + 20 px (floor under it) above the bottom edge,
+    // and the guide sits 14 px above its middle.
+    stubScreen({
+      width: 390,
+      height: 844,
+      angle: 90,
+      viewport: { width: 844, height: 390 },
+    });
+    renderScan();
+    press();
+    await advance(301);
+    const [point] = fakeCamera.focusPoints;
+    expect(point?.x).toBeCloseTo(0.5, 2);
+    expect(point?.y).toBeCloseTo((52 + (844 - 164 - 52) / 2 - 14) / 844, 2);
   });
 
   it('where single-shot focus is missing, a hold is the steady pause, then the Scan', async () => {

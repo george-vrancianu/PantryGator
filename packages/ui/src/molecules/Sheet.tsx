@@ -37,7 +37,8 @@ export type SheetProps = {
   /**
    * The element to focus once the open transition ends. Without it, focus stays on
    * the sheet itself. Below `md` a text field is not focused (the phone keyboard
-   * would jump the sheet); focus moves only if it is still on the sheet.
+   * would jump the sheet). It never moves focus the Member has already moved to a
+   * control inside the sheet; focus left outside the sheet goes to the sheet.
    */
   initialFocus?: RefObject<HTMLElement | null>;
   /**

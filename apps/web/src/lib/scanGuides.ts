@@ -17,6 +17,12 @@ export type GuideView = {
   insets?: Insets;
   deviceClass?: DeviceClass;
   layout?: CameraLayout;
+  /**
+   * How much of the rail lies over this view (rail layout only). Defaults to the whole rail, for
+   * a feed that runs under it, as the viewfinder does today; a feed that stops short of the rail
+   * has less of it over it (0 when it ends where the rail begins), so the rail is not taken off twice.
+   */
+  railOverlap?: number;
 };
 
 /**
@@ -81,7 +87,7 @@ export function clearBox(view: GuideView): {
   return {
     left: 0,
     top,
-    width: view.width - (rail ? RAIL_WIDTH : 0),
+    width: view.width - (rail ? (view.railOverlap ?? RAIL_WIDTH) : 0),
     height: bottom - top,
   };
 }

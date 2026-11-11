@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ApiError, apiRequest } from './api';
+import { ApiError, apiRequest, isNetworkError } from './api';
 import { clearPendingTheme } from './appearance';
 import { nativeSession } from './nativeSession';
 import { siriOnDevice } from './siriOnDevice';
@@ -81,10 +81,12 @@ export function useSignOut() {
         return await apiRequest('/auth/sign-out', { method: 'POST', body: {} });
       } catch (error) {
         // In the app, offline counts as signed out here: the session is local, so sign-out never gets
-        // stuck. The server session lapses on its own. A server error still fails.
-        const offline =
-          error instanceof ApiError && error.code === 'network_error';
-        if (!(offline && nativeSession.isActive())) throw error;
+        // stuck. The server session lapses on its own. A 401 means the server no longer knows the
+        // session, so that counts as signed out too. Any other server error still fails.
+        const signedOut =
+          isNetworkError(error) ||
+          (error instanceof ApiError && error.status === 401);
+        if (!(signedOut && nativeSession.isActive())) throw error;
       }
     },
     onSuccess: async () => {

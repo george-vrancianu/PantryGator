@@ -1,5 +1,5 @@
 import { Box, tokens, usePrefersReducedMotion } from '@pocket-pantry/ui';
-import { shade, translucent } from './glass';
+import { shade, translucent } from '../../../components/camera/glass';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Rect } from '../../../lib/scanGuides';
 

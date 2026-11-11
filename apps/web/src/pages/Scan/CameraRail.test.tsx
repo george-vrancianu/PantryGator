@@ -162,9 +162,31 @@ describe('The Scan page in landscape on a tablet', () => {
       screen.getByRole('button', { name: 'How scanning works' }),
     );
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+    // It portals out of the camera's subtree, so it carries the dark Theme itself.
+    expect(
+      screen.getByRole('dialog').closest('.MuiDialog-root'),
+    ).toHaveAttribute('data-theme', 'dark');
     expect(screen.queryByTestId('info-scrim')).toBeNull();
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('keeps the footer in a landscape window under 500 px tall', () => {
+    stubScreen({ ...TABLET, viewport: { width: 1180, height: 499 } });
+    renderCamera('/scan?mode=product');
+    expect(screen.getByTestId('scan-footer')).toBeInTheDocument();
+    expect(screen.queryByTestId('scan-rail')).toBeNull();
+  });
+
+  it('drops the rail for the footer when a mounted landscape window is resized under 500 px tall', () => {
+    const s = stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    renderCamera('/scan?mode=product');
+    expect(screen.getByTestId('scan-rail')).toBeInTheDocument();
+    act(() => s.resizeViewport({ width: 1180, height: 499 }));
+    expect(screen.getByTestId('scan-footer')).toBeInTheDocument();
+    expect(screen.queryByTestId('scan-rail')).toBeNull();
+    act(() => s.resizeViewport({ width: 1180, height: 500 }));
+    expect(screen.getByTestId('scan-rail')).toBeInTheDocument();
   });
 
   it('switches between footer and rail when the tablet rotates', () => {

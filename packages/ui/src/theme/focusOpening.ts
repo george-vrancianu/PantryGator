@@ -25,7 +25,8 @@ export function isTextField(el: HTMLElement): boolean {
  * call once the open transition ends. Focus moves to `initialFocus` unless the
  * Member already moved it to a control inside the sheet. Focus still on the
  * paper, or outside it (a tap on the scrim leaves it on the body), has not been
- * moved by the Member. Below `md`, never onto a text field.
+ * moved by the Member. Below `md`, never onto a text field. When focus is
+ * outside the sheet and there is no target to take it, it goes to the paper.
  */
 export function focusOpening(
   paper: HTMLElement | null,
@@ -33,11 +34,11 @@ export function focusOpening(
   centred: boolean,
 ) {
   return () => {
-    const target = initialFocus?.current;
-    if (!target || !paper) return;
+    if (!paper) return;
     const active = document.activeElement;
     if (active && active !== paper && paper.contains(active)) return;
-    if (!centred && isTextField(target)) return;
-    target.focus();
+    const target = initialFocus?.current;
+    if (target && (centred || !isTextField(target))) target.focus();
+    else if (!paper.contains(document.activeElement)) paper.focus();
   };
 }

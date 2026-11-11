@@ -9,8 +9,8 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FocusPass } from '../../../lib/camera';
-import { BARCODE_GLYPH } from './barcodeGlyph';
-import { glassFocusRing, shade } from './glass';
+import { BARCODE_GLYPH } from '../../../components/camera/barcodeGlyph';
+import { glassFocusRing, shade } from '../../../components/camera/glass';
 
 const HAPTIC_MS = 6;
 /** How long the pointer rests on the shutter before it counts as a hold. */

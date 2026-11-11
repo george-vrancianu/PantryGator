@@ -65,12 +65,24 @@ enum SiriKeychain {
         return .found(credentials)
     }
 
-    static func clear() {
-        SecItemDelete(identity as CFDictionary)
+    /// Stores `apiOrigin` in the item and keeps the rest. Does nothing when nothing can be read.
+    static func updateApiOrigin(_ apiOrigin: String) throws {
+        guard let credentials = load() else { return }
+        try save(
+            SiriCredentials(
+                secret: credentials.secret, tokenId: credentials.tokenId,
+                memberId: credentials.memberId, apiOrigin: apiOrigin))
+    }
+
+    /// True when the item is gone: deleted, or there was none. False when the Keychain refused.
+    @discardableResult
+    static func clear() -> Bool {
+        let status = SecItemDelete(identity as CFDictionary)
+        return status == errSecSuccess || status == errSecItemNotFound
     }
 }
 
-/// Capacitor plugin `SiriKeychain`: set, clear and get. `get` never returns the secret.
+/// Capacitor plugin `SiriKeychain`: set, clear, get and updateApiOrigin. `get` never returns the secret.
 @objc(SiriKeychainPlugin)
 public class SiriKeychainPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "SiriKeychainPlugin"
@@ -79,6 +91,7 @@ public class SiriKeychainPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "set", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "clear", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "get", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateApiOrigin", returnType: CAPPluginReturnPromise),
     ]
 
     @objc func set(_ call: CAPPluginCall) {
@@ -108,6 +121,22 @@ public class SiriKeychainPlugin: CAPPlugin, CAPBridgedPlugin {
             call.resolve([:])
             return
         }
-        call.resolve(["tokenId": credentials.tokenId, "memberId": credentials.memberId])
+        call.resolve([
+            "tokenId": credentials.tokenId, "memberId": credentials.memberId,
+            "apiOrigin": credentials.apiOrigin,
+        ])
+    }
+
+    @objc func updateApiOrigin(_ call: CAPPluginCall) {
+        guard let apiOrigin = call.getString("apiOrigin") else {
+            call.reject("Must provide apiOrigin")
+            return
+        }
+        do {
+            try SiriKeychain.updateApiOrigin(apiOrigin)
+            call.resolve()
+        } catch {
+            call.reject("Could not update the API origin", nil, error)
+        }
     }
 }

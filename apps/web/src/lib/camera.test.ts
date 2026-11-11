@@ -173,6 +173,24 @@ describe('focusForScan', () => {
     },
   );
 
+  it('aims at the guide centre it is given, not the default point', async () => {
+    const { hook, applyConstraints } = await openCamera({
+      focusMode: ['manual', 'single-shot', 'continuous'],
+    });
+    vi.useFakeTimers();
+    act(() => {
+      hook.result.current.focusForScan({ x: 0.43, y: 0.53 }).cancel();
+    });
+    expect(applyConstraints).toHaveBeenNthCalledWith(1, {
+      advanced: [
+        {
+          focusMode: 'single-shot',
+          pointsOfInterest: [{ x: 0.43, y: 0.53 }],
+        },
+      ],
+    });
+  });
+
   it('aims at the centre of the guide as it is in the app, where nothing is rotated back', async () => {
     stubScreen({ width: 390, height: 844, angle: 90, native: true });
     const { hook, applyConstraints } = await openCamera({

@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CAMERA_MODES, type CameraMode } from '../../../lib/cameraMode';
+import { CAMERA_MODES, type CameraMode } from '../../lib/cameraMode';
 import { glassFocusRing, shade, translucent } from './glass';
 import { insetBottom, useCameraFrame } from './CameraFrame';
 
@@ -68,6 +68,8 @@ export function InfoSheet({
       <Dialog
         open
         centred
+        // The camera is always dark; the dialog portals out of its subtree.
+        theme="dark"
         onClose={onClose}
         title={t('info.title')}
         actions={<Button onClick={onClose}>{t('info.ok')}</Button>}

@@ -6,6 +6,7 @@ import { useState, type ReactNode, type RefObject } from 'react';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
+import type { ThemeId } from '../theme/themes';
 
 export type DialogProps = {
   open: boolean;
@@ -20,9 +21,15 @@ export type DialogProps = {
   /**
    * The element to focus once the dialog has opened. Without it, focus stays on
    * the dialog itself. Below `md` a text field is not focused (the phone keyboard
-   * would jump the dialog); focus moves only if it is still on the dialog.
+   * would jump the dialog). It never moves focus the Member has already moved to a
+   * control inside the dialog; focus left outside the dialog goes to the dialog.
    */
   initialFocus?: RefObject<HTMLElement | null>;
+  /**
+   * Force this Theme on the dialog. It portals to the end of the body, outside the Theme of the
+   * screen that opened it (the camera is always dark), so it takes that Theme from here.
+   */
+  theme?: ThemeId;
 };
 
 /**
@@ -39,6 +46,7 @@ export function Dialog({
   actions,
   centred: forceCentred = false,
   initialFocus,
+  theme,
 }: DialogProps) {
   const wide = useBreakpointUp('md');
   const centred = forceCentred || wide;
@@ -48,6 +56,7 @@ export function Dialog({
     <MuiDialog
       open={open}
       onClose={onClose}
+      data-theme={theme}
       fullWidth
       maxWidth={centred ? 'sm' : false}
       sx={

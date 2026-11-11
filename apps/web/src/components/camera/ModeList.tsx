@@ -1,7 +1,7 @@
 import { Box, tokens, visuallyHidden } from '@pocket-pantry/ui';
 import { useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CameraMode } from '../../../lib/cameraMode';
+import type { CameraMode } from '../../lib/cameraMode';
 import { glassFocusRing } from './glass';
 import {
   ModeLabel,

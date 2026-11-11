@@ -9,6 +9,8 @@ import { shutter, takeScan } from '../../test/scan';
 import { stubScreen } from '../../test/screen';
 import { IntroCameraPage } from '../Intro/IntroCameraPage';
 import { ScanPage } from './ScanPage';
+import { CameraFrame } from '../../components/camera/CameraFrame';
+import { CameraToast } from '../../components/camera/CameraToast';
 
 // On a phone on the web the camera chrome is rotated back by the opposite angle and the photo is
 // turned by the angle captured at the shutter (ADR 0037). The add-Batch camera is covered in
@@ -219,5 +221,65 @@ describe.each(cameras)('Rotate back in %s', (_name, route) => {
       expect(IMAGE_PREPARATION.product).toHaveBeenCalledOnce(),
     );
     expect(vi.mocked(IMAGE_PREPARATION.product).mock.calls[0]?.[3]).toBe(0);
+  });
+});
+
+describe('A toast in the turned camera frame', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  function renderToast() {
+    return renderWithProviders(
+      <CameraFrame>
+        <CameraToast open onClose={() => {}}>
+          Saved
+        </CameraToast>
+      </CameraFrame>,
+    );
+  }
+  const snackbar = () =>
+    screen.getByText('Saved').closest<HTMLElement>('.MuiSnackbar-root')!;
+
+  /**
+   * The frame's own rule for a Snackbar inside it, if the stylesheet has one. jsdom ignores
+   * @media and has no layout, so the placement itself cannot be measured: this pins the rule
+   * that overrides MUI's `sm` centring, found by any of the frame's classes.
+   */
+  function frameSnackbarRule(): CSSStyleRule | undefined {
+    const classes = Array.from(frame().classList);
+    for (const sheet of Array.from(document.styleSheets)) {
+      for (const rule of Array.from(sheet.cssRules)) {
+        if (
+          rule instanceof CSSStyleRule &&
+          rule.selectorText.includes('.MuiSnackbar-root') &&
+          classes.some((name) => rule.selectorText.includes(`.${name}`))
+        ) {
+          return rule;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  it.each([90, 270] as const)(
+    'sits inside the frame and is set to fill its width at %i degrees, not centred on the landscape window',
+    (angle) => {
+      const s = stubScreen({ ...PHONE });
+      renderToast();
+      act(() => s.rotate(angle));
+      expect(frame()).toContainElement(snackbar());
+      const rule = frameSnackbarRule();
+      expect(rule?.style.left).toBe('8px');
+      expect(rule?.style.right).toBe('8px');
+      expect(rule?.style.transform).toBe('none');
+    },
+  );
+
+  it('leaves the Snackbar to MUI where the frame is not turned', () => {
+    stubScreen({ ...PHONE });
+    renderToast();
+    expect(frameSnackbarRule()).toBeUndefined();
   });
 });

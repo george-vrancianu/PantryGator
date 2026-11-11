@@ -3,6 +3,9 @@ import { Capacitor } from '@capacitor/core';
 /** A screen whose shortest side is under this many CSS pixels is a phone. */
 export const PHONE_SHORTEST_SIDE = 600;
 
+/** The rail needs a window this tall (CSS px): in a shorter one its mode list is cramped, so the footer layout stays. */
+export const MIN_RAIL_HEIGHT = 500;
+
 export type DeviceClass = 'phone' | 'tablet';
 /** Where the camera chrome sits: the bottom footer, or the right rail. */
 export type CameraLayout = 'footer' | 'rail';
@@ -50,7 +53,9 @@ export function cameraOrientation(
       ? 'phone'
       : 'tablet';
   const layout: CameraLayout =
-    deviceClass === 'tablet' && input.viewportWidth > input.viewportHeight
+    deviceClass === 'tablet' &&
+    input.viewportWidth > input.viewportHeight &&
+    input.viewportHeight >= MIN_RAIL_HEIGHT
       ? 'rail'
       : 'footer';
   const turn =
@@ -81,16 +86,63 @@ export function readCameraOrientation(): CameraOrientation {
   });
 }
 
-/** Call `onChange` when the reported angle or the window size changes; returns the stop function, which removes every listener added. */
+/** The orientation and the window's size it was read at: the size the rotated-back frame is laid out from. */
+export type CameraReading = CameraOrientation & {
+  viewportWidth: number;
+  viewportHeight: number;
+};
+
+/** `readCameraOrientation` with the window's size it was read at. */
+export function readCameraReading(): CameraReading {
+  return {
+    ...readCameraOrientation(),
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+  };
+}
+
+/** Whether two readings say the same: the one definition of "nothing changed". */
+export function sameCameraReading(a: CameraReading, b: CameraReading): boolean {
+  return (
+    a.deviceClass === b.deviceClass &&
+    a.layout === b.layout &&
+    a.rotateBack === b.rotateBack &&
+    a.photoTurn === b.photoTurn &&
+    a.locksPortrait === b.locksPortrait &&
+    a.viewportWidth === b.viewportWidth &&
+    a.viewportHeight === b.viewportHeight
+  );
+}
+
+/**
+ * Call `onChange` when the reported angle or the window size changes; returns the stop function,
+ * which removes every listener added. One rotation fires `change`, `orientationchange` and
+ * `resize`, and on a device the angle can arrive before the window has its new size: so the
+ * events only schedule one animation frame, and the reading is taken in that frame. An unchanged
+ * reading tells no one.
+ */
 export function watchCameraOrientation(
-  onChange: (orientation: CameraOrientation) => void,
+  onChange: (orientation: CameraReading) => void,
 ): () => void {
-  const listener = () => onChange(readCameraOrientation());
+  let last = readCameraReading();
+  let frame: number | null = null;
+  const flush = () => {
+    frame = null;
+    const reading = readCameraReading();
+    if (sameCameraReading(last, reading)) return;
+    last = reading;
+    onChange(reading);
+  };
+  const listener = () => {
+    if (frame === null) frame = requestAnimationFrame(flush);
+  };
   const orientation = screen.orientation;
   orientation?.addEventListener('change', listener);
   window.addEventListener('orientationchange', listener);
   window.addEventListener('resize', listener);
   return () => {
+    if (frame !== null) cancelAnimationFrame(frame);
+    frame = null;
     orientation?.removeEventListener('change', listener);
     window.removeEventListener('orientationchange', listener);
     window.removeEventListener('resize', listener);

@@ -47,6 +47,14 @@ describe('Dialog opening focus', () => {
     expect(document.activeElement).toBe(dialog);
   });
 
+  it('focuses the dialog when focus is on the body and there is no target', async () => {
+    const dialog = open(true, 'none');
+    act(() => (document.activeElement as HTMLElement).blur());
+    expect(document.activeElement).toBe(document.body);
+    await entered();
+    expect(document.activeElement).toBe(dialog);
+  });
+
   it('on a phone, leaves a text field unfocused', async () => {
     const dialog = open(false, 'input');
     await entered();

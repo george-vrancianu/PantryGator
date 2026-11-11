@@ -68,8 +68,11 @@ export type CameraStatus = 'starting' | 'ready' | 'unavailable';
 export const FOCUS_TIMEOUT_MS = 1000;
 /** The steady pause where the browser cannot focus on demand (iOS Safari). */
 export const FOCUS_PAUSE_MS = 400;
-/** Where a focus pass aims, as a fraction of the video height: about the guide's centre (approximate: the feed is object-fit: cover). */
+/** Where a focus pass aims when it is not told the guide's centre (the hosts always pass it; this is the fallback for a caller that cannot), as a fraction of the video height (approximate: the feed is object-fit: cover). */
 export const FOCUS_POINT_Y = 0.44;
+
+/** A point of the camera frame as a fraction across and down it (0 to 1). */
+export type FocusPoint = { x: number; y: number };
 
 /** A focus pass started by a hold: `done` resolves once focus finishes, times out or is cancelled. */
 export type FocusPass = { done: Promise<void>; cancel: () => void };
@@ -210,87 +213,87 @@ export function useCamera() {
 
   /**
    * Gets the camera ready for a Scan. Where single-shot focus is supported it focuses on the guide
-   * centre (waiting up to 1 s) and always puts the camera back to continuous afterwards, including on cancel; elsewhere it just pauses 400 ms.
+   * centre, given as a fraction of the camera frame in the rotated-back frame (waiting up to 1 s) and always puts the camera back to continuous afterwards, including on cancel; elsewhere it just pauses 400 ms.
    * Focus failing never blocks the Scan: `done` always resolves.
    */
-  const focusForScan = useCallback((): FocusPass => {
-    const track = streamRef.current?.getVideoTracks()[0];
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let finish: () => void = () => {};
-    const done = new Promise<void>((resolve) => (finish = resolve));
-    if (!track || !focusSupportedRef.current) {
-      timer = setTimeout(finish, FOCUS_PAUSE_MS);
+  const focusForScan = useCallback(
+    (guideCentre: FocusPoint = { x: 0.5, y: FOCUS_POINT_Y }): FocusPass => {
+      const track = streamRef.current?.getVideoTracks()[0];
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let finish: () => void = () => {};
+      const done = new Promise<void>((resolve) => (finish = resolve));
+      if (!track || !focusSupportedRef.current) {
+        timer = setTimeout(finish, FOCUS_PAUSE_MS);
+        return {
+          done,
+          cancel: () => {
+            clearTimeout(timer);
+            finish();
+          },
+        };
+      }
+      let restored = false;
+      const restore = () => {
+        if (restored) return;
+        restored = true;
+        track
+          .applyConstraints({
+            advanced: [{ focusMode: 'continuous' }],
+          } as FocusConstraints)
+          .catch(() => {});
+      };
+      let settled = false;
+      let applied = false;
+      let waited = false;
+      const timers: Array<ReturnType<typeof setTimeout>> = [];
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        timers.forEach(clearTimeout);
+        finish();
+        // Not before the Scan has taken its frame, so the lens is not changing while the Scan's frame is taken.
+        setTimeout(restore, 0);
+      };
+      // `applyConstraints` resolves as soon as the settings are accepted, long before the lens has
+      // moved: so wait at least the steady pause, and at most the timeout.
+      timers.push(
+        setTimeout(() => {
+          waited = true;
+          if (applied) settle();
+        }, FOCUS_PAUSE_MS),
+        setTimeout(settle, FOCUS_TIMEOUT_MS),
+      );
+      track
+        .applyConstraints({
+          advanced: [
+            {
+              focusMode: 'single-shot',
+              // Approximate: the feed is object-fit: cover, so the guide centre in the video's own
+              // coordinates is not exactly the guide's fraction of the screen. With the screen
+              // turned, the guide (in the rotated-back frame) is at that point of the turned photo:
+              // the video's own point is that turned back.
+              pointsOfInterest: [
+                videoPoint(guideCentre, readCameraOrientation().photoTurn),
+              ],
+            },
+          ],
+        } as FocusConstraints)
+        .then(() => {
+          applied = true;
+          if (waited) settle();
+        }, settle);
       return {
         done,
         cancel: () => {
-          clearTimeout(timer);
+          settled = true;
+          timers.forEach(clearTimeout);
+          restore();
           finish();
         },
       };
-    }
-    let restored = false;
-    const restore = () => {
-      if (restored) return;
-      restored = true;
-      track
-        .applyConstraints({
-          advanced: [{ focusMode: 'continuous' }],
-        } as FocusConstraints)
-        .catch(() => {});
-    };
-    let settled = false;
-    let applied = false;
-    let waited = false;
-    const timers: Array<ReturnType<typeof setTimeout>> = [];
-    const settle = () => {
-      if (settled) return;
-      settled = true;
-      timers.forEach(clearTimeout);
-      finish();
-      // Not before the Scan has taken its frame, so the lens is not changing while the Scan's frame is taken.
-      setTimeout(restore, 0);
-    };
-    // `applyConstraints` resolves as soon as the settings are accepted, long before the lens has
-    // moved: so wait at least the steady pause, and at most the timeout.
-    timers.push(
-      setTimeout(() => {
-        waited = true;
-        if (applied) settle();
-      }, FOCUS_PAUSE_MS),
-      setTimeout(settle, FOCUS_TIMEOUT_MS),
-    );
-    track
-      .applyConstraints({
-        advanced: [
-          {
-            focusMode: 'single-shot',
-            // Approximate: the feed is object-fit: cover, so the guide centre in the video's own
-            // coordinates is not exactly (0.5, FOCUS_POINT_Y). With the screen turned, the guide
-            // (in the rotated-back frame) is at that point of the turned photo: the video's own
-            // point is that turned back.
-            pointsOfInterest: [
-              videoPoint(
-                { x: 0.5, y: FOCUS_POINT_Y },
-                readCameraOrientation().photoTurn,
-              ),
-            ],
-          },
-        ],
-      } as FocusConstraints)
-      .then(() => {
-        applied = true;
-        if (waited) settle();
-      }, settle);
-    return {
-      done,
-      cancel: () => {
-        settled = true;
-        timers.forEach(clearTimeout);
-        restore();
-        finish();
-      },
-    };
-  }, []);
+    },
+    [],
+  );
 
   /**
    * Reads barcodes from the live preview until the first one, which goes to `onCode`. Returns a

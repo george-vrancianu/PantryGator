@@ -6,7 +6,8 @@ import { vi } from 'vitest';
  * that reaches `lib/siriOnDevice` (the page, the module): it registers the mock, and a module that is
  * already loaded keeps the real one.
  *
- * - Keychain plugin: `registerPlugin('SiriKeychain')` returns `keychain`, a fake that keeps one item
+ * - Keychain plugin: `registerPlugin('SiriKeychain')` returns `keychain`, a fake (set, clear, get,
+ *   updateApiOrigin) that keeps one item
  *   in `keychain.item`. Other plugins keep their real registration.
  * - Platform: `fakeNativeIos()` spies on Capacitor so the app reports as the iOS app.
  *
@@ -25,6 +26,7 @@ export const keychain = {
   set: vi.fn(),
   clear: vi.fn(),
   get: vi.fn(),
+  updateApiOrigin: vi.fn(),
 };
 
 vi.mock('@capacitor/core', async (importOriginal) => {
@@ -53,7 +55,13 @@ export function resetSiriEnvironment() {
   keychain.get.mockReset().mockImplementation(async () => ({
     tokenId: keychain.item?.tokenId,
     memberId: keychain.item?.memberId,
+    apiOrigin: keychain.item?.apiOrigin,
   }));
+  keychain.updateApiOrigin
+    .mockReset()
+    .mockImplementation(async ({ apiOrigin }: { apiOrigin: string }) => {
+      if (keychain.item) keychain.item = { ...keychain.item, apiOrigin };
+    });
 }
 
 /** Makes the app report as the iOS app. */

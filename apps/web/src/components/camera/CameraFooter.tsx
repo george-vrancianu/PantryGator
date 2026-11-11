@@ -1,6 +1,6 @@
 import { Box, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { FOOTER_MIN_BOTTOM, SHUTTER_ROW_HEIGHT } from '../../../lib/scanGuides';
+import { FOOTER_MIN_BOTTOM, SHUTTER_ROW_HEIGHT } from '../../lib/scanGuides';
 import { glassBar, translucent } from './glass';
 import { insetBottom, insetLeft, insetRight } from './CameraFrame';
 

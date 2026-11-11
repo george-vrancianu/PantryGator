@@ -57,6 +57,21 @@ describe('The add-Batch camera in landscape on a tablet', () => {
     expect(screen.queryByTestId('info-scrim')).toBeNull();
   });
 
+  it('centres the "adds to pantry" pill on the feed, left of the rail', async () => {
+    stubScreen({ ...TABLET, viewport: LANDSCAPE });
+    await openOverlay('product');
+    const row = screen.getByTestId('adds-to-pantry').parentElement!;
+    expect(parseFloat(getComputedStyle(row).left)).toBe(0);
+    expect(getComputedStyle(row).right).toContain(`${RAIL_WIDTH}px`);
+  });
+
+  it('keeps the "adds to pantry" pill centred on the window under a footer', async () => {
+    stubScreen({ ...TABLET });
+    await openOverlay('product');
+    const row = screen.getByTestId('adds-to-pantry').parentElement!;
+    expect(parseFloat(getComputedStyle(row).right)).toBe(0);
+  });
+
   it('closes the Info dialog on Escape, not the camera', async () => {
     stubScreen({ ...TABLET, viewport: LANDSCAPE });
     await openOverlay('product');

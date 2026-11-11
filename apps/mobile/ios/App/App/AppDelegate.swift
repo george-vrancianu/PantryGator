@@ -9,9 +9,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // A Keychain item outlives deleting the app, but the session does not. On the first launch of an
         // install, drop any Siri token left by an earlier one, so Siri never posts for a signed-out app.
-        // Intents run in the app process, so this runs before them too.
-        if !UserDefaults.standard.bool(forKey: "siriKeychainInstalled") {
-            SiriKeychain.clear()
+        // Intents run in the app process, so this runs before them too. The flag is set only once the item
+        // is gone (deleted, or there was none); if the Keychain refuses, the next launch tries again.
+        if !UserDefaults.standard.bool(forKey: "siriKeychainInstalled"), SiriKeychain.clear() {
             UserDefaults.standard.set(true, forKey: "siriKeychainInstalled")
         }
         return true

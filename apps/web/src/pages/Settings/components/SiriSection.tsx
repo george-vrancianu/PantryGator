@@ -265,10 +265,13 @@ export function SiriSection() {
   const [name, setName] = useState('');
   const [revealed, setRevealed] = useState<CreatedAssistantToken | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
-  const { spokenLanguage } = usePreferredSpokenLanguage();
+  const { spokenLanguageToSend } = usePreferredSpokenLanguage();
   // The iPhone app has the commands built in. Siri has no Romanian, so only a Romanian speaker still
-  // needs the Shortcuts (their Dictate Text can be set to it). The web has no built-in commands.
-  const showSetupGuide = !siriOnDevice.isAvailable() || spokenLanguage === 'ro';
+  // needs the Shortcuts (their Dictate Text can be set to it). The web has no built-in commands. In the
+  // app the guide waits for the Preferences (`spokenLanguageToSend` is undefined until they load), so a
+  // UI Language that differs from the Spoken Language never flashes the steps in and out.
+  const showSetupGuide =
+    !siriOnDevice.isAvailable() || spokenLanguageToSend === 'ro';
   const tokens = query.data;
   const error = create.error ?? revoke.error;
 
