@@ -70,6 +70,7 @@ export {
   DOCK_OVERHANG,
 } from './theme/dock';
 export { dockBottomPx, readSafeInsets } from './theme/insets';
+export type { SafeInsets } from './theme/insets';
 export {
   gutterLeft,
   gutterRight,

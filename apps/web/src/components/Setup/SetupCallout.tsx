@@ -1,8 +1,8 @@
 import {
   Box,
+  gutterLeft,
+  gutterRight,
   radius,
-  SAFE_LEFT,
-  SAFE_RIGHT,
   shadow,
   Typography,
 } from '@pocket-pantry/ui';
@@ -31,14 +31,14 @@ export function SetupCallout({
       role={role}
       sx={{
         position: 'fixed',
-        left: SAFE_LEFT,
-        right: SAFE_RIGHT,
+        left: 0,
+        right: 0,
         bottom,
         mx: 'auto',
         width,
         zIndex,
         pointerEvents: 'none',
-        maxWidth: `calc(100% - 32px - ${SAFE_LEFT} - ${SAFE_RIGHT})`,
+        maxWidth: `calc(100% - ${gutterLeft(16)} - ${gutterRight(16)})`,
         boxSizing: 'border-box',
         px: '14px',
         py: '10px',

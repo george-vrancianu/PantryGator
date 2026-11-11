@@ -1,6 +1,7 @@
 import {
   bodyFont,
   Box,
+  palette,
   SafeAreaBand,
   SAFE_TOP,
   useForcedThemeColor,
@@ -23,7 +24,7 @@ export function IntroLook({
   useForcedThemeColor('warm');
   // The band matches the ground behind it, so the status bar reads as part of the screen.
   const groundColour =
-    ground === 'olive' ? tokens.color.accent : tokens.color.bg;
+    ground === 'olive' ? palette('pp-accent') : palette('background-default');
   return (
     <Box
       // `data-theme` and `data-ground` are also test hooks: the colours are theme variables jsdom cannot resolve.

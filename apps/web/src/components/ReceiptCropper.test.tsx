@@ -1,15 +1,21 @@
 import { screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../test/render';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
+import { renderWithProviders } from '../test/render';
 import { ReceiptCropper } from './ReceiptCropper';
 
 describe('ReceiptCropper', () => {
+  const originalCreate = URL.createObjectURL;
+  const originalRevoke = URL.revokeObjectURL;
   beforeEach(() => {
     URL.createObjectURL = vi.fn(() => 'blob:photo');
     URL.revokeObjectURL = vi.fn();
   });
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    URL.createObjectURL = originalCreate;
+    URL.revokeObjectURL = originalRevoke;
+    vi.restoreAllMocks();
+  });
 
   it('is padded by all four insets, so its instruction and buttons clear the island, notch and home indicator', () => {
     renderWithProviders(

@@ -13,8 +13,8 @@ import { VOICE_LAYER } from '../lib/voicePlacement';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import { renderWithProviders, stubApi } from '../test/render';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
+import { renderWithProviders, stubApi } from '../test/render';
 import { AppLayout } from './AppLayout';
 
 function renderAt(route: string) {

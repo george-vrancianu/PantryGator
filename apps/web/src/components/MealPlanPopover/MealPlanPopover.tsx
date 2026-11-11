@@ -15,6 +15,7 @@ import {
   PlusIcon,
   radius,
   readSafeInsets,
+  type SafeInsets,
   shadow,
   border,
   Tag,
@@ -359,7 +360,7 @@ export function MealPlanPopover({
   const dockHeight = tabletUp ? DOCK_HEIGHT.md : DOCK_HEIGHT.xs;
   const [position, setPosition] = useState<Position | null>(null);
   // Read once, and again after a resize or rotation: scrolling re-places the popover without probing the DOM.
-  const insetsRef = useRef<{ top: number; bottom: number } | null>(null);
+  const insetsRef = useRef<SafeInsets | null>(null);
   const onCloseRef = useRef(onClose);
   useLayoutEffect(() => {
     onCloseRef.current = onClose;

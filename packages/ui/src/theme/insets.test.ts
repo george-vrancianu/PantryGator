@@ -1,23 +1,35 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { dockBottomPx, readSafeInsets } from './insets';
 
-function stubInsets(paddingTop: string, paddingBottom: string) {
+function stubInsets(
+  paddingTop: string,
+  paddingBottom: string,
+  paddingLeft = '0px',
+  paddingRight = '0px',
+) {
   vi.spyOn(window, 'getComputedStyle').mockReturnValue({
     paddingTop,
     paddingBottom,
+    paddingLeft,
+    paddingRight,
   } as CSSStyleDeclaration);
 }
 
 describe('readSafeInsets', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('reads the top and bottom insets the probe resolves to', () => {
-    stubInsets('59px', '34px');
-    expect(readSafeInsets()).toEqual({ top: 59, bottom: 34 });
+  it('reads the four insets the probe resolves to', () => {
+    stubInsets('59px', '34px', '47px', '48px');
+    expect(readSafeInsets()).toEqual({
+      top: 59,
+      right: 48,
+      bottom: 34,
+      left: 47,
+    });
   });
 
   it('is 0 where env() is unknown, and leaves no probe behind', () => {
-    expect(readSafeInsets()).toEqual({ top: 0, bottom: 0 });
+    expect(readSafeInsets()).toEqual({ top: 0, right: 0, bottom: 0, left: 0 });
     expect(document.body.children).toHaveLength(0);
   });
 });
