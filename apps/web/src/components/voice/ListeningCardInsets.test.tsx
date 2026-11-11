@@ -9,8 +9,8 @@ describe('ListeningCard', () => {
     renderWithProviders(
       <ListeningCard
         starting
-        target={'pantry' as never}
-        spokenLanguage={'en' as never}
+        target="pantry"
+        spokenLanguage="en"
         level={() => 0}
       />,
     );

@@ -10,11 +10,14 @@ describe('BackgroundStrip', () => {
       <BackgroundStrip
         items={[
           {
+            kind: 'photo',
             id: 'a',
+            createdAt: 1,
+            actions: [],
             status: 'reading',
             title: 'Soup',
             detail: 'Reading',
-          } as never,
+          },
         ]}
         openSheet={() => {}}
       />,

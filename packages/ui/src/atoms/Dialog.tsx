@@ -14,6 +14,10 @@ import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
 import type { ThemeId } from '../theme/themes';
 
+/** MUI keeps 32px from each edge of a centred dialog; a landscape notch is wider. */
+const sideLeft = gutterLeft(32);
+const sideRight = gutterRight(32);
+
 export type DialogProps = {
   open: boolean;
   /** Called for Escape and a click on the backdrop. */
@@ -80,10 +84,9 @@ export function Dialog({
             ? {
                 borderRadius: radius.sheet,
                 boxShadow: shadow.float,
-                // MUI keeps 32px from each edge; a landscape notch is wider.
-                ml: gutterLeft(32),
-                mr: gutterRight(32),
-                width: `calc(100% - ${gutterLeft(32)} - ${gutterRight(32)})`,
+                ml: sideLeft,
+                mr: sideRight,
+                width: `calc(100% - ${sideLeft} - ${sideRight})`,
               }
             : {
                 m: 0,

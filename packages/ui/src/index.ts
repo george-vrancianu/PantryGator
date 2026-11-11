@@ -74,6 +74,7 @@ export {
   gutterLeft,
   gutterRight,
   plusBottomInset,
+  SAFE_BOTTOM,
   SAFE_LEFT,
   SAFE_RIGHT,
   SAFE_TOP,
