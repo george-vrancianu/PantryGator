@@ -1,5 +1,6 @@
 import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { authoredCss } from '../test/authoredCss';
 import { paintedColour } from '../test/colour';
 import { renderWithTheme as render } from '../test/render';
 import { Dock } from './Dock';
@@ -190,5 +191,17 @@ describe('Dock not teaching', () => {
         .getByRole('link', { name: 'Camera' })
         .hasAttribute('aria-disabled'),
     ).toBe(false);
+  });
+});
+
+describe('Dock safe area', () => {
+  afterEach(cleanup);
+
+  it('sits at 28px or the bottom inset, whichever is larger, and clears the side insets', () => {
+    renderDock();
+    const css = authoredCss(screen.getByRole('navigation'));
+    expect(css).toContain('bottom:max(28px, env(safe-area-inset-bottom');
+    expect(css).toContain('env(safe-area-inset-left');
+    expect(css).toContain('env(safe-area-inset-right');
   });
 });

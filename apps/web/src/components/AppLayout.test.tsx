@@ -14,6 +14,7 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { renderWithProviders, stubApi } from '../test/render';
+import { authoredCss } from '../test/stickyHeader';
 import { AppLayout } from './AppLayout';
 
 function renderAt(route: string) {
@@ -99,15 +100,19 @@ describe('AppLayout Dock', () => {
     );
   });
 
-  it('leaves 132px at the bottom of every page for the Dock and its capsule', () => {
-    const bottomPadding = () =>
-      getComputedStyle(screen.getByRole('main').parentElement as HTMLElement)
-        .paddingBottom;
+  it('leaves 132px at the bottom of every page for the Dock and its capsule, more where the home indicator is taller', () => {
+    const pageCss = () =>
+      authoredCss(screen.getByRole('main').parentElement as HTMLElement);
     const { unmount } = renderAtView('/pantry');
-    expect(bottomPadding()).toBe('132px');
+    // 104 + max(28, inset) is 132 with no inset.
+    expect(pageCss()).toContain(
+      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 104px)',
+    );
     unmount();
     renderAtView('/recipes');
-    expect(bottomPadding()).toBe('132px');
+    expect(pageCss()).toContain(
+      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 104px)',
+    );
   });
 
   it('paints the dock and its tabs from the active Theme', () => {
@@ -169,20 +174,17 @@ describe('AppLayout Voice Note host', () => {
   it('reserves room for the mic capsule above the Dock when the mic shows', async () => {
     renderAt('/pantry');
     await talkButton();
-    const page = (
-      screen.getByRole('main').parentElement as HTMLElement
-    ).className
-      .split(' ')
-      .pop() as string;
-    // jsdom drops calc() with env() from computed style, so read the injected rule text.
-    const rules = Array.from(document.styleSheets)
-      .flatMap((sheet) => Array.from(sheet.cssRules))
-      .map((rule) => rule.cssText)
-      .filter((text) => text.includes(page))
-      .join('\n');
-    // Just clear of the capsule: Dock 28 + 76 + 24 on phones, 28 + 84 + 24 from md; no chip row.
-    expect(rules).toMatch(/padding-bottom: calc\(128px \+ env\(/);
-    expect(rules).toMatch(/padding-bottom: calc\(136px \+ env\(/);
+    // jsdom drops calc() with env() from computed style, so read the authored rule text.
+    const rules = authoredCss(
+      screen.getByRole('main').parentElement as HTMLElement,
+    );
+    // Just clear of the capsule: Dock 28 + 76 + 24 on phones, 28 + 84 + 24 from md; no chip row. The 28 grows with the bottom inset.
+    expect(rules).toContain(
+      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 100px)',
+    );
+    expect(rules).toContain(
+      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 108px)',
+    );
     expect(rules).not.toMatch(/calc\(36px/);
   });
 

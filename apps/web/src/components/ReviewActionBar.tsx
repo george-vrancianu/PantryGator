@@ -1,4 +1,11 @@
-import { Box, Button, tokens } from '@pocket-pantry/ui';
+import {
+  Box,
+  Button,
+  gutterLeft,
+  gutterRight,
+  plusBottomInset,
+  tokens,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -29,7 +36,10 @@ export function ReviewActionBar({
         zIndex: 10,
         bgcolor: tokens.color.surface,
         borderTop: `1px solid ${tokens.color.line}`,
-        p: '12px 20px calc(24px + env(safe-area-inset-bottom))',
+        pt: '12px',
+        pl: gutterLeft(20),
+        pr: gutterRight(20),
+        pb: plusBottomInset(24),
       }}
     >
       <Box sx={{ display: 'flex', gap: '10px', maxWidth: 960, mx: 'auto' }}>

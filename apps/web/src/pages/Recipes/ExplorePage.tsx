@@ -1,10 +1,11 @@
 import {
   Alert,
   Box,
+  displayType,
+  plusBottomInset,
   radius,
   Spinner,
   Stack,
-  displayType,
   tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
@@ -41,7 +42,7 @@ const LIMIT = 4;
 /** Lifts a toast above the quick view's action buttons. */
 const QUICK_VIEW_TOAST_BOTTOM =
   // Sheet bottom padding 28 + explanation line(s) ~36 + gap 10 + Make a Variant 48 + gap 8 + Add 48 + 8 slack
-  'calc(186px + env(safe-area-inset-bottom, 0px))';
+  plusBottomInset(186);
 
 const SLIDE = '320ms cubic-bezier(.2,.8,.2,1)';
 

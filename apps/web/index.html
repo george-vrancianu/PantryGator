@@ -2,10 +2,10 @@
 <html lang="en" data-theme="warm">
   <head>
     <meta charset="UTF-8" />
-    <!-- No zoom: maximum-scale=1 also stops iOS zooming in on focused inputs under 16px. -->
+    <!-- viewport-fit=cover: the app draws edge to edge and pads by env(safe-area-inset-*) (ADR 0040). No zoom: maximum-scale=1 also stops iOS zooming in on focused inputs under 16px. -->
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <!-- Until the pre-paint script resolves the Theme: Warm editorial in light mode, Dark-first in dark mode. -->
     <meta
