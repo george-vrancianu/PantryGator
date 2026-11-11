@@ -3640,16 +3640,18 @@ describe('PantryPage', () => {
     describe('the Batch editor sheet', () => {
       afterEach(() => vi.useRealTimers());
 
-      it('focuses the form, and returns focus to the row on Cancel', async () => {
+      it('opens on a phone with focus on the sheet, not the amount (no keyboard), and returns focus to the row on Cancel', async () => {
         const user = userEvent.setup();
         stubManaged(stock());
         renderWithProviders(<PantryPage />);
         await user.click(await screen.findByRole('button', { name: /^Milk/ }));
         const row = batchRows()[0];
         await openEditor(user, row);
+        const dialog = screen.getByRole('dialog', { name: 'Edit Milk batch' });
+        await waitFor(() => expect(dialog).toHaveFocus());
         expect(
           screen.getByRole('textbox', { name: /Amount of Milk/ }),
-        ).toHaveFocus();
+        ).not.toHaveFocus();
         await user.click(screen.getByRole('button', { name: 'Cancel' }));
         await waitFor(() => expect(row).toHaveFocus());
       });
