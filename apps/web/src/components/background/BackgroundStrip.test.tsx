@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { renderWithProviders } from '../../test/render';
-import { authoredCss } from '../../test/stickyHeader';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { VOICE_PILL_ATTRIBUTE } from '../../lib/voiceFocus';
 import { BackgroundStrip } from './BackgroundStrip';
 

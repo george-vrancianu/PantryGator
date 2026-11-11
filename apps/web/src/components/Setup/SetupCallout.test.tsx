@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { authoredCss } from '../../test/stickyHeader';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { SetupCallout } from './SetupCallout';
 
 describe('SetupCallout', () => {

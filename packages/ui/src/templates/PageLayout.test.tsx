@@ -51,10 +51,14 @@ describe('PageLayout', () => {
   });
 
   it('draws a fixed band the height of the top inset, in the page background, over the status bar', () => {
-    const { getByTestId } = render(<PageLayout>Page</PageLayout>);
+    const { container, getByTestId } = render(<PageLayout>Page</PageLayout>);
+    const bg = 'background-color:var(--mui-palette-background-default';
     const css = authoredCss(getByTestId('safe-area-band'));
     expect(css).toContain('position:fixed');
     expect(css).toMatch(/height:\s*env\(safe-area-inset-top/);
-    expect(css).toMatch(/background-color:/);
+    expect(css).toContain(bg);
+    expect(authoredCss(container.firstElementChild as HTMLElement)).toContain(
+      bg,
+    );
   });
 });

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SafeAreaBand } from '../atoms/SafeAreaBand';
 import { DOCK_CLEARANCE } from '../theme/dock';
 import { gutterLeft, gutterRight, SAFE_TOP } from '../theme/safeArea';
+import { palette } from '../theme/themeVars';
 import { tokens } from '../theme/tokens';
 
 export type PageLayoutProps = {
@@ -27,7 +28,7 @@ export function PageLayout({
       sx={{
         minHeight: '100vh',
         boxSizing: 'border-box',
-        backgroundColor: tokens.color.bg,
+        backgroundColor: palette('background-default'),
         color: tokens.color.ink,
         pt: SAFE_TOP,
         pl: { xs: gutterLeft(20), md: gutterLeft(48) },

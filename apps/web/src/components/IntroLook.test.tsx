@@ -3,7 +3,7 @@ import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderWithProviders } from '../test/render';
-import { authoredCss } from '../test/stickyHeader';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { IntroLook } from './IntroLook';
 
 const WARM_INK = '#2B2418';
