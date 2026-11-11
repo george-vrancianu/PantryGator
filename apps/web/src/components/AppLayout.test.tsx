@@ -14,7 +14,7 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { renderWithProviders, stubApi } from '../test/render';
-import { authoredCss } from '../test/stickyHeader';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { AppLayout } from './AppLayout';
 
 function renderAt(route: string) {

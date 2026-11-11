@@ -1,13 +1,17 @@
 import Box from '@mui/material/Box';
 import { SAFE_TOP } from '../theme/safeArea';
-import { tokens } from '../theme/tokens';
+import { palette } from '../theme/themeVars';
 
 /**
  * A fixed strip the height of the top inset that covers the status bar: scrolled content goes
  * under it, and nothing tappable sits behind the island. Paint it in the colour of the screen
  * behind it (a CSS colour); it defaults to the page background.
  */
-export function SafeAreaBand({ color = tokens.color.bg }: { color?: string }) {
+export function SafeAreaBand({
+  color = palette('background-default'),
+}: {
+  color?: string;
+}) {
   return (
     <Box
       aria-hidden

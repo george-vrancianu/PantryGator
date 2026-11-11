@@ -50,6 +50,15 @@ describe('PageLayout', () => {
     expect(css).toContain('max(20px, env(safe-area-inset-right');
   });
 
+  it('paints the page and its band from the Theme background', () => {
+    const { container, getByTestId } = render(<PageLayout>Page</PageLayout>);
+    const bg = 'background-color:var(--mui-palette-background-default';
+    expect(authoredCss(container.firstElementChild as HTMLElement)).toContain(
+      bg,
+    );
+    expect(authoredCss(getByTestId('safe-area-band'))).toContain(bg);
+  });
+
   it('draws a fixed band the height of the top inset, in the page background, over the status bar', () => {
     const { getByTestId } = render(<PageLayout>Page</PageLayout>);
     const css = authoredCss(getByTestId('safe-area-band'));
