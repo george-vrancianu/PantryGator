@@ -11,6 +11,7 @@ export function readSafeInsets(): { top: number; bottom: number } {
     return { top: 0, bottom: 0 };
   const probe = document.createElement('div');
   probe.setAttribute('aria-hidden', 'true');
+  probe.setAttribute('data-safe-area-probe', '');
   probe.style.cssText = `position:fixed;visibility:hidden;pointer-events:none;width:0;height:0;padding-top:${SAFE_TOP};padding-bottom:${SAFE_BOTTOM}`;
   document.body.appendChild(probe);
   try {
@@ -26,6 +27,6 @@ export function readSafeInsets(): { top: number; bottom: number } {
   }
 }
 
-/** The Dock's real distance from the bottom edge in px: the JavaScript twin of `DOCK_BOTTOM_CSS`. */
-export const dockBottomPx = () =>
-  Math.max(DOCK_BOTTOM, readSafeInsets().bottom);
+/** The Dock's real distance from the bottom edge in px: the JavaScript twin of `DOCK_BOTTOM_CSS`. Pass insets already read to skip a second probe. */
+export const dockBottomPx = (insets: { bottom: number } = readSafeInsets()) =>
+  Math.max(DOCK_BOTTOM, insets.bottom);

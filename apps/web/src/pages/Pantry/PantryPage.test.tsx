@@ -3030,8 +3030,7 @@ describe('PantryPage', () => {
           const real = window.getComputedStyle.bind(window);
           vi.spyOn(window, 'getComputedStyle').mockImplementation(
             (element, pseudo) =>
-              element.getAttribute('aria-hidden') === 'true' &&
-              (element as HTMLElement).style.visibility === 'hidden'
+              element.hasAttribute('data-safe-area-probe')
                 ? ({
                     paddingTop: '59px',
                     paddingBottom: '34px',

@@ -10,11 +10,11 @@ import {
   dockBottomPx,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
-  readSafeInsets,
   focusRing,
   IconButton,
   PlusIcon,
   radius,
+  readSafeInsets,
   shadow,
   border,
   Tag,
@@ -358,6 +358,8 @@ export function MealPlanPopover({
   const tabletUp = useBreakpointUp('md');
   const dockHeight = tabletUp ? DOCK_HEIGHT.md : DOCK_HEIGHT.xs;
   const [position, setPosition] = useState<Position | null>(null);
+  // Read once, and again after a resize or rotation: scrolling re-places the popover without probing the DOM.
+  const insetsRef = useRef<{ top: number; bottom: number } | null>(null);
   const onCloseRef = useRef(onClose);
   useLayoutEffect(() => {
     onCloseRef.current = onClose;
@@ -383,10 +385,11 @@ export function MealPlanPopover({
       EDGE,
       Math.min(centre - width / 2, viewWidth - width - EDGE),
     );
-    const topLimit = readSafeInsets().top + EDGE_CLEARANCE;
+    const insets = (insetsRef.current ??= readSafeInsets());
+    const topLimit = insets.top + EDGE_CLEARANCE;
     const bottomLimit =
       viewHeight -
-      (dockBottomPx() + dockHeight + DOCK_OVERHANG + EDGE_CLEARANCE);
+      (dockBottomPx(insets) + dockHeight + DOCK_OVERHANG + EDGE_CLEARANCE);
     const { top, placement } = placeVertically({
       columnTop: column.top,
       columnBottom: column.bottom,
@@ -417,10 +420,14 @@ export function MealPlanPopover({
 
   useLayoutEffect(() => {
     window.addEventListener('scroll', place, { capture: true, passive: true });
-    window.addEventListener('resize', place);
+    const onResize = () => {
+      insetsRef.current = null;
+      place();
+    };
+    window.addEventListener('resize', onResize);
     return () => {
       window.removeEventListener('scroll', place, { capture: true });
-      window.removeEventListener('resize', place);
+      window.removeEventListener('resize', onResize);
     };
   }, [place]);
 

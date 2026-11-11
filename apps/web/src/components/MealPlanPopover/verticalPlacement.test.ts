@@ -22,33 +22,32 @@ describe('placeVertically', () => {
     });
   });
 
-  it('keeps the popover under the top inset when it has to be squeezed in', () => {
-    // Above would start at 60 - 10 - 200 < 0: pinned to the limit, not to the screen top.
-    const result = placeVertically({
-      ...base,
-      columnTop: 60,
-      columnBottom: 600,
-      topLimit: 67,
-    });
-    expect(result.top).toBe(500);
-    const tall = placeVertically({
-      ...base,
-      columnTop: 60,
-      columnBottom: 600,
-      height: 700,
-      topLimit: 67,
-    });
-    expect(tall.top).toBe(67);
+  it('squeezes against the Dock zone when neither side has room', () => {
+    expect(
+      placeVertically({ ...base, columnTop: 60, columnBottom: 600 }),
+    ).toEqual({ top: 500, placement: 'below' });
   });
 
-  it('does not flip above into the status bar', () => {
-    const result = placeVertically({
-      ...base,
-      columnTop: 270,
-      columnBottom: 600,
-      topLimit: 67,
-    });
-    // above would be 60, under a 67px limit: not allowed.
-    expect(result.top).toBe(500);
+  it('does not flip above into the status bar (above would be 60, limit 67)', () => {
+    expect(
+      placeVertically({
+        ...base,
+        columnTop: 270,
+        columnBottom: 600,
+        topLimit: 67,
+      }),
+    ).toEqual({ top: 500, placement: 'below' });
+  });
+
+  it('never goes above the top limit when taller than the room', () => {
+    expect(
+      placeVertically({
+        ...base,
+        columnTop: 60,
+        columnBottom: 600,
+        height: 700,
+        topLimit: 67,
+      }),
+    ).toEqual({ top: 67, placement: 'below' });
   });
 });
