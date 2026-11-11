@@ -3,6 +3,7 @@ import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderWithProviders } from '../test/render';
+import { authoredCss } from '../test/stickyHeader';
 import { IntroLook } from './IntroLook';
 
 const WARM_INK = '#2B2418';
@@ -31,6 +32,16 @@ afterEach(() => {
 });
 
 describe('IntroLook', () => {
+  it('pads the top by the safe-area inset so Intro and auth screens clear the Dynamic Island', () => {
+    renderWithProviders(
+      <IntroLook>
+        <p>Welcome</p>
+      </IntroLook>,
+    );
+    const look = screen.getByText('Welcome').parentElement!;
+    expect(authoredCss(look)).toContain('padding-top:env(safe-area-inset-top');
+  });
+
   it('paints its text in Warm ink when the device is in Dark', () => {
     writeAppearance({ theme: 'dark', matchSystem: false });
     renderWithProviders(

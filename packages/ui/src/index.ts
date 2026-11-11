@@ -71,14 +71,9 @@ export {
   DOCK_OVERHANG,
 } from './theme/dock';
 export {
-  dockBottom,
-  gutterBoth,
   gutterLeft,
   gutterRight,
   plusBottomInset,
-  SAFE_BOTTOM,
-  SAFE_LEFT,
-  SAFE_RIGHT,
   SAFE_TOP,
 } from './theme/safeArea';
 export { visuallyHidden } from './theme/visuallyHidden';

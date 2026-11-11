@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 
 /** Emotion's raw CSS for the element's own classes. jsdom's getComputedStyle drops `env()` values. */
-function authoredCss(el: HTMLElement): string {
+export function authoredCss(el: HTMLElement): string {
   const classes = el.className.split(' ').filter(Boolean);
   return Array.from(document.querySelectorAll('style[data-emotion]'))
     .map((style) => style.textContent ?? '')

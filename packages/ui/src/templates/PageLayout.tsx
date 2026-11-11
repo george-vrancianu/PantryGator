@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
+import { DOCK_CLEARANCE } from '../theme/dock';
 import { gutterLeft, gutterRight, SAFE_TOP } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
 
@@ -32,7 +33,7 @@ export function PageLayout({
         pr: { xs: gutterRight(20), md: gutterRight(48) },
         // A page sliding in from the edge must not widen the document; clip makes no scroll container, so sticky still works.
         overflowX: 'clip',
-        pb: withDock ? (dockClearance ?? '132px') : '24px',
+        pb: withDock ? (dockClearance ?? DOCK_CLEARANCE) : '24px',
       }}
     >
       {/* Covers the status bar: scrolled content goes under it, and nothing tappable sits behind the island. */}

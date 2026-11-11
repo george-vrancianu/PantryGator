@@ -9,9 +9,14 @@ describe('PageLayout', () => {
   const bottom = (container: HTMLElement) =>
     getComputedStyle(container.firstElementChild as HTMLElement).paddingBottom;
 
-  it('clears the Dock and the capsule above it by default', () => {
+  it('clears the Dock and the capsule above it by default, rising with the bottom inset (132px with none)', () => {
     const { container } = render(<PageLayout>Page</PageLayout>);
-    expect(bottom(container)).toBe('132px');
+    expect(authoredCss(container.firstElementChild as HTMLElement)).toContain(
+      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom',
+    );
+    expect(authoredCss(container.firstElementChild as HTMLElement)).toContain(
+      '+ 104px)',
+    );
   });
 
   it('reserves the given clearance instead when a row hangs above the Dock', () => {
