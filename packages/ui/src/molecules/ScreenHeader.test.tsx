@@ -2,11 +2,20 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import type { MouseEvent } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PlusIcon } from '../atoms/icons';
+import { authoredCss } from '../test/authoredCss';
 import { renderWithTheme } from '../test/render';
 import { ScreenHeader } from './ScreenHeader';
 
 describe('ScreenHeader', () => {
   afterEach(cleanup);
+
+  it('gives its 28px of top room way to the top inset instead of stacking on it', () => {
+    const { container } = renderWithTheme(<ScreenHeader title="Pantry" />);
+    const header = container.querySelector('header') as HTMLElement;
+    expect(authoredCss(header)).toContain(
+      'padding-top:max(0px, calc(28px - env(safe-area-inset-top, 0px)))',
+    );
+  });
 
   it('shows the action as the only button without `home` or `back`', () => {
     renderWithTheme(

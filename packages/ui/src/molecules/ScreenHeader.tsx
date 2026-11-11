@@ -9,6 +9,7 @@ import { BackIcon, HomeIcon } from '../atoms/icons';
 import { IconButton } from '../atoms/IconButton';
 import { ActionMenu, type ActionMenuItem } from './ActionMenu';
 import { Typography } from '../atoms/Typography';
+import { topRoomBelowInset } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
 import { radius } from '../theme/themeVars';
 
@@ -75,7 +76,8 @@ export function ScreenHeader({
         alignItems: 'center',
         gap: '12px',
         // Same box as the DashboardHeader, so every screen's header is as tall as Home's.
-        pt: '28px',
+        // The page is already padded by the top inset; this room gives way to it (ADR 0040).
+        pt: topRoomBelowInset(28),
         pb: '18px',
         boxSizing: 'content-box',
         minHeight: '54px',

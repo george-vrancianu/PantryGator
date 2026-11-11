@@ -4,7 +4,7 @@ In the iPhone app, the top of every page sat behind the clock and the Dynamic Is
 
 ## Decision
 
-- **Top.** Pages are padded by `env(safe-area-inset-top)`. A fixed band of that height, in the page background colour, covers the status bar, so scrolled content goes under the band and nothing tappable sits behind the island or the iOS edge blur. Sticky headers stick at `top: env(safe-area-inset-top)`, not at `top: 0`.
+- **Top.** Pages are padded by `env(safe-area-inset-top)`. A fixed band of that height, in the page background colour, covers the status bar, so scrolled content goes under the band and nothing tappable sits behind the island or the iOS edge blur. Sticky headers stick at `top: env(safe-area-inset-top)`, not at `top: 0`. A header's own top room (28px on the Screen and Dashboard headers) gives way to the inset instead of stacking on it: it becomes `max(0px, 28px - inset)`, so the header starts at `max(28px, inset)`. Stacked, it left the first control about 35px below the inset on an iPhone with a Dynamic Island. Pages with no header still get the full inset.
 - **Bottom.** The Dock sits at `max(28px, env(safe-area-inset-bottom))`, and everything placed above it uses the same expression, so the Dock clears the home indicator and stays lined up with the bars above it.
 - **Sides.** Page gutters are `max(20px, env(safe-area-inset-left/right))`, so iPhone landscape keeps content out from under the island.
 - **Full-screen views handle their own insets.** The Scan camera stays edge to edge and offsets its controls by the inset. Tall Sheets are capped below the top inset so their grab handle stays reachable.
