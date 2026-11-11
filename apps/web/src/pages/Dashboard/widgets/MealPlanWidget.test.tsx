@@ -976,6 +976,32 @@ describe('MealPlanWidget day popover', () => {
       expect(dialog).toHaveStyle({ top: '190px' });
     });
 
+    it('does not flip above into the status bar: it stays below, under the top inset', async () => {
+      const u = user();
+      stub(windowOf(week(3)));
+      // Above the column would start at 30, inside a 59 px Dynamic Island inset (67 with the gap).
+      stubRects(rect(180, 340, 40, 100));
+      const real = window.getComputedStyle.bind(window);
+      vi.spyOn(window, 'getComputedStyle').mockImplementation(
+        (element, pseudo) =>
+          element.hasAttribute('data-safe-area-probe')
+            ? ({
+                paddingTop: '59px',
+                paddingBottom: '0px',
+              } as CSSStyleDeclaration)
+            : real(element, pseudo),
+      );
+      renderWidget();
+
+      await u.click(
+        (await screen.findAllByRole('button', { name: /meal/ }))[0],
+      );
+      const dialog = await screen.findByRole('dialog');
+
+      expect(dialog).toHaveAttribute('data-placement', 'below');
+      expect(Number.parseFloat(dialog.style.top)).toBeGreaterThanOrEqual(67);
+    });
+
     it('stays 12 px inside the screen edge, with the arrow still on the column', async () => {
       const u = user();
       stub(windowOf(week(3)));

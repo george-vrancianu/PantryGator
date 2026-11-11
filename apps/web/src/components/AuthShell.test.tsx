@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { renderWithProviders } from '../test/render';
-import { authoredCss } from '../test/stickyHeader';
 import { AuthShell } from './AuthShell';
 
 describe('AuthShell', () => {

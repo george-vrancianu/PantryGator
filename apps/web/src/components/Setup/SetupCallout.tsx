@@ -1,4 +1,11 @@
-import { Box, radius, shadow, Typography } from '@pocket-pantry/ui';
+import {
+  Box,
+  gutterLeft,
+  gutterRight,
+  radius,
+  shadow,
+  Typography,
+} from '@pocket-pantry/ui';
 
 /** A cream card with a pointer at the bottom, aimed at the capsule below it. */
 export function SetupCallout({
@@ -31,7 +38,7 @@ export function SetupCallout({
         width,
         zIndex,
         pointerEvents: 'none',
-        maxWidth: 'calc(100% - 32px)',
+        maxWidth: `calc(100% - ${gutterLeft(16)} - ${gutterRight(16)})`,
         boxSizing: 'border-box',
         px: '14px',
         py: '10px',

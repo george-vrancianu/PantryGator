@@ -2,6 +2,8 @@ import {
   Box,
   CloseIcon,
   Gator,
+  gutterLeft,
+  gutterRight,
   color,
   palette,
   radius,
@@ -101,8 +103,8 @@ export function ListeningCard({
       role="status"
       sx={{
         position: 'fixed',
-        left: 16,
-        right: 16,
+        left: gutterLeft(16),
+        right: gutterRight(16),
         bottom: pillBottom,
         mx: 'auto',
         maxWidth: 420,

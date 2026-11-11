@@ -3,10 +3,20 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState, type ReactNode, type RefObject } from 'react';
+import {
+  gutterLeft,
+  gutterRight,
+  SAFE_LEFT,
+  SAFE_RIGHT,
+} from '../theme/safeArea';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
 import type { ThemeId } from '../theme/themes';
+
+/** MUI keeps 32px from each edge of a centred dialog; a landscape notch is wider. */
+const sideLeft = gutterLeft(32);
+const sideRight = gutterRight(32);
 
 export type DialogProps = {
   open: boolean;
@@ -71,9 +81,18 @@ export function Dialog({
         paper: {
           ref: setPaper,
           sx: centred
-            ? { borderRadius: radius.sheet, boxShadow: shadow.float }
+            ? {
+                borderRadius: radius.sheet,
+                boxShadow: shadow.float,
+                ml: sideLeft,
+                mr: sideRight,
+                width: `calc(100% - ${sideLeft} - ${sideRight})`,
+              }
             : {
                 m: 0,
+                // The sheet's surface reaches the edges; its content clears the notch.
+                pl: SAFE_LEFT,
+                pr: SAFE_RIGHT,
                 width: '100%',
                 maxHeight: '85dvh',
                 boxShadow: shadow.float,

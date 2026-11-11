@@ -1,9 +1,9 @@
-import { writeAppearance } from '@pocket-pantry/ui';
+import { palette, writeAppearance } from '@pocket-pantry/ui';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderWithProviders } from '../test/render';
-import { authoredCss } from '../test/stickyHeader';
 import { IntroLook } from './IntroLook';
 
 const WARM_INK = '#2B2418';
@@ -41,6 +41,23 @@ describe('IntroLook', () => {
     const look = screen.getByText('Welcome').parentElement!;
     expect(authoredCss(look)).toContain('padding-top:env(safe-area-inset-top');
   });
+
+  it.each([
+    ['cream', palette('background-default')],
+    ['olive', palette('pp-accent')],
+  ] as const)(
+    'draws a status-bar band in the %s ground so scrolled content never shows behind the island',
+    (ground, colour) => {
+      renderWithProviders(
+        <IntroLook ground={ground}>
+          <p>Welcome</p>
+        </IntroLook>,
+      );
+      const css = authoredCss(screen.getByTestId('safe-area-band'));
+      expect(css).toMatch(/height:\s*env\(safe-area-inset-top/);
+      expect(css).toContain(`background-color:${colour}`);
+    },
+  );
 
   it('paints its text in Warm ink when the device is in Dark', () => {
     writeAppearance({ theme: 'dark', matchSystem: false });

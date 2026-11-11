@@ -1,6 +1,8 @@
 import {
   bodyFont,
   Box,
+  palette,
+  SafeAreaBand,
   SAFE_TOP,
   useForcedThemeColor,
   tokens,
@@ -20,6 +22,9 @@ export function IntroLook({
   ground?: 'cream' | 'olive';
 }) {
   useForcedThemeColor('warm');
+  // The band matches the ground behind it, so the status bar reads as part of the screen.
+  const groundColour =
+    ground === 'olive' ? palette('pp-accent') : palette('background-default');
   return (
     <Box
       // `data-theme` and `data-ground` are also test hooks: the colours are theme variables jsdom cannot resolve.
@@ -30,13 +35,13 @@ export function IntroLook({
         boxSizing: 'border-box',
         // Every Intro and auth screen stands under this, so the first row clears the Dynamic Island (ADR 0040); screens inside size to the rest.
         pt: SAFE_TOP,
-        backgroundColor:
-          ground === 'olive' ? tokens.color.accent : tokens.color.bg,
+        backgroundColor: groundColour,
         // Resolved under this subtree's Theme: inherited text would keep the root's colour (light on cream in Dark).
         color: tokens.color.ink,
         fontFamily: bodyFont,
       }}
     >
+      <SafeAreaBand color={groundColour} />
       {children}
     </Box>
   );
