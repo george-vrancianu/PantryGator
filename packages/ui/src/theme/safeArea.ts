@@ -21,3 +21,9 @@ export const dockBottom = (px: number) => `max(${px}px, ${SAFE_BOTTOM})`;
 export const plusBottomInset = (px: number) => `calc(${px}px + ${SAFE_BOTTOM})`;
 /** The room a tall Sheet leaves above itself so its grab handle stays reachable. */
 export const sheetTopRoom = `calc(${SAFE_TOP} + 12px)`;
+/**
+ * A header's own `px` of top room, less the top inset: the room gives way to the inset instead of
+ * stacking on it, so the header starts at `max(px, inset)` inside a page padded by the inset.
+ */
+export const topRoomBelowInset = (px: number) =>
+  `max(0px, calc(${px}px - ${SAFE_TOP}))`;
