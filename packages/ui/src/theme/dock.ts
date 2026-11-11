@@ -19,8 +19,11 @@ export const DOCK_HEIGHT = { xs: 76, md: 84 } as const;
 const DOCK_GAP = DOCK_OVERHANG + 6;
 /** The Dock's CSS `bottom`: 28 px, or the device's bottom inset when that is larger (the home indicator). */
 export const DOCK_BOTTOM_CSS = dockBottom(DOCK_BOTTOM);
-/** Room above the Dock's own bottom that a page's last row needs: the Dock, its capsule's overhang, and air (104 px). */
-const DOCK_CLEARANCE_ABOVE = 104;
+/** Air between the capsule's overhang and a page's last row, px. */
+const DOCK_CLEARANCE_AIR = 10;
+/** Room above the Dock's own bottom that a page's last row needs: the phone Dock, the capsule's overhang, and air (104 px). */
+const DOCK_CLEARANCE_ABOVE =
+  DOCK_HEIGHT.xs + DOCK_OVERHANG + DOCK_CLEARANCE_AIR;
 /** PageLayout's bottom padding that keeps a page's last row clear of the Dock and its capsule (132 px with no inset). */
 export const DOCK_CLEARANCE = `calc(${DOCK_BOTTOM_CSS} + ${DOCK_CLEARANCE_ABOVE}px)`;
 /** CSS `bottom` that clears the floating Dock of the given height, measured from the Dock's own bottom. */
