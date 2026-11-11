@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
+import { gutterLeft, gutterRight, SAFE_TOP } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
 
 export type PageLayoutProps = {
@@ -12,7 +13,7 @@ export type PageLayoutProps = {
   wide?: boolean;
 };
 
-/** Page frame: 20 px gutters on phones, 48 px on wide screens, content capped at ~960 px. */
+/** Page frame: 20 px gutters on phones, 48 px on wide screens (or the side inset when larger), padded by the top inset, content capped at ~960 px. */
 export function PageLayout({
   children,
   withDock = true,
@@ -26,12 +27,29 @@ export function PageLayout({
         boxSizing: 'border-box',
         backgroundColor: tokens.color.bg,
         color: tokens.color.ink,
-        px: { xs: '20px', md: '48px' },
+        pt: SAFE_TOP,
+        pl: { xs: gutterLeft(20), md: gutterLeft(48) },
+        pr: { xs: gutterRight(20), md: gutterRight(48) },
         // A page sliding in from the edge must not widen the document; clip makes no scroll container, so sticky still works.
         overflowX: 'clip',
         pb: withDock ? (dockClearance ?? '132px') : '24px',
       }}
     >
+      {/* Covers the status bar: scrolled content goes under it, and nothing tappable sits behind the island. */}
+      <Box
+        aria-hidden
+        data-testid="safe-area-band"
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: SAFE_TOP,
+          bgcolor: tokens.color.bg,
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      />
       <Box component="main" sx={{ maxWidth: wide ? 1180 : 960, mx: 'auto' }}>
         {children}
       </Box>

@@ -1,9 +1,10 @@
 import {
   Alert,
   Box,
-  SegmentedTabs,
+  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
+  SegmentedTabs,
   Snackbar,
   Spinner,
   Stack,
@@ -202,7 +203,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
             <Box
               sx={{
                 position: 'sticky',
-                top: 0,
+                top: SAFE_TOP,
                 zIndex: 2,
                 py: '8px',
                 bgcolor: tokens.color.bg,

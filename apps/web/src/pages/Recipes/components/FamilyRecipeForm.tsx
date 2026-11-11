@@ -2,10 +2,11 @@ import {
   Alert,
   Box,
   Button,
-  SegmentedTabs,
-  Stack,
+  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
+  SegmentedTabs,
+  Stack,
   tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
@@ -224,7 +225,7 @@ export function FamilyRecipeForm({
         <Box
           sx={{
             position: 'sticky',
-            top: 0,
+            top: SAFE_TOP,
             zIndex: 2,
             py: '8px',
             bgcolor: tokens.color.bg,

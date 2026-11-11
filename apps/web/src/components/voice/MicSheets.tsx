@@ -1,14 +1,17 @@
 import {
   Box,
   Button,
+  color,
+  gutterLeft,
+  gutterRight,
   MicIcon,
   MicOffIcon,
+  palette,
+  plusBottomInset,
+  radius,
   Sheet,
   Stack,
   Typography,
-  color,
-  radius,
-  palette,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,7 +24,10 @@ const bold = { b: <b /> };
 const footerSx = {
   display: 'flex',
   gap: '12px',
-  p: '12px 16px calc(20px + env(safe-area-inset-bottom))',
+  pt: '12px',
+  pl: gutterLeft(16),
+  pr: gutterRight(16),
+  pb: plusBottomInset(20),
   borderTop: `1px solid ${palette('pp-line')}`,
   '& > :last-child': { flex: 1 },
 };

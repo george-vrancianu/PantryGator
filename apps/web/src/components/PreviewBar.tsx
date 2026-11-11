@@ -1,8 +1,11 @@
 import {
-  BranchIcon,
   Box,
+  BranchIcon,
   Button,
   CheckIcon,
+  gutterLeft,
+  gutterRight,
+  plusBottomInset,
   PlusIcon,
   tokens,
 } from '@pocket-pantry/ui';
@@ -13,7 +16,7 @@ import type { AddState } from '../lib/addToFamily';
 /** Height the bar takes, px, so the page can leave room under its content and toasts can sit above it. */
 export const PREVIEW_BAR_HEIGHT = 100;
 /** The same, as a CSS `bottom` that also clears the device's bottom inset. */
-export const PREVIEW_BAR_CLEARANCE = `calc(${PREVIEW_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))`;
+export const PREVIEW_BAR_CLEARANCE = plusBottomInset(PREVIEW_BAR_HEIGHT);
 
 type Props = {
   /** The previewed Recipe's id: Make a Variant opens `/recipes/{id}/variant/new` (a Variant branches from its Base). */
@@ -50,9 +53,10 @@ export function PreviewBar({
         zIndex: 5,
         bgcolor: tokens.color.bg,
         borderTop: `1px solid ${tokens.color.line}`,
-        px: '16px',
+        pl: gutterLeft(16),
+        pr: gutterRight(16),
         pt: '12px',
-        pb: 'calc(26px + env(safe-area-inset-bottom, 0px))',
+        pb: plusBottomInset(26),
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '10px',

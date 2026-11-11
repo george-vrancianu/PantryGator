@@ -14,6 +14,7 @@ import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
+import { sheetTopRoom } from '../theme/safeArea';
 import { palette, radius, shadow } from '../theme/themeVars';
 
 /** How long the phone sheet slides in and out, ms. */
@@ -146,8 +147,12 @@ export function Sheet({
               : {
                   m: 0,
                   width: '100%',
-                  height: size === 'tall' ? '90dvh' : 'auto',
-                  maxHeight: '90dvh',
+                  // Never taller than the screen below the top inset (ADR 0040), so the grab handle stays reachable.
+                  height:
+                    size === 'tall'
+                      ? `min(90dvh, calc(100dvh - ${sheetTopRoom}))`
+                      : 'auto',
+                  maxHeight: `min(90dvh, calc(100dvh - ${sheetTopRoom}))`,
                   borderRadius: `${radius.sheet} ${radius.sheet} 0 0`,
                 }),
           },
