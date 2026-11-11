@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
+import { SafeAreaBand } from '../atoms/SafeAreaBand';
 import { DOCK_CLEARANCE } from '../theme/dock';
 import { gutterLeft, gutterRight, SAFE_TOP } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
@@ -36,21 +37,7 @@ export function PageLayout({
         pb: withDock ? (dockClearance ?? DOCK_CLEARANCE) : '24px',
       }}
     >
-      {/* Covers the status bar: scrolled content goes under it, and nothing tappable sits behind the island. */}
-      <Box
-        aria-hidden
-        data-testid="safe-area-band"
-        sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: SAFE_TOP,
-          bgcolor: tokens.color.bg,
-          pointerEvents: 'none',
-          zIndex: 3,
-        }}
-      />
+      <SafeAreaBand />
       <Box component="main" sx={{ maxWidth: wide ? 1180 : 960, mx: 'auto' }}>
         {children}
       </Box>

@@ -3,6 +3,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState, type ReactNode, type RefObject } from 'react';
+import {
+  gutterLeft,
+  gutterRight,
+  SAFE_LEFT,
+  SAFE_RIGHT,
+} from '../theme/safeArea';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { radius, shadow } from '../theme/themeVars';
@@ -71,9 +77,19 @@ export function Dialog({
         paper: {
           ref: setPaper,
           sx: centred
-            ? { borderRadius: radius.sheet, boxShadow: shadow.float }
+            ? {
+                borderRadius: radius.sheet,
+                boxShadow: shadow.float,
+                // MUI keeps 32px from each edge; a landscape notch is wider.
+                ml: gutterLeft(32),
+                mr: gutterRight(32),
+                width: `calc(100% - ${gutterLeft(32)} - ${gutterRight(32)})`,
+              }
             : {
                 m: 0,
+                // The sheet's surface reaches the edges; its content clears the notch.
+                pl: SAFE_LEFT,
+                pr: SAFE_RIGHT,
                 width: '100%',
                 maxHeight: '85dvh',
                 boxShadow: shadow.float,
