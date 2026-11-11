@@ -1,4 +1,11 @@
-import { Box, radius, shadow, Typography } from '@pocket-pantry/ui';
+import {
+  Box,
+  radius,
+  SAFE_LEFT,
+  SAFE_RIGHT,
+  shadow,
+  Typography,
+} from '@pocket-pantry/ui';
 
 /** A cream card with a pointer at the bottom, aimed at the capsule below it. */
 export function SetupCallout({
@@ -24,14 +31,14 @@ export function SetupCallout({
       role={role}
       sx={{
         position: 'fixed',
-        left: 0,
-        right: 0,
+        left: SAFE_LEFT,
+        right: SAFE_RIGHT,
         bottom,
         mx: 'auto',
         width,
         zIndex,
         pointerEvents: 'none',
-        maxWidth: 'calc(100% - 32px)',
+        maxWidth: `calc(100% - 32px - ${SAFE_LEFT} - ${SAFE_RIGHT})`,
         boxSizing: 'border-box',
         px: '14px',
         py: '10px',

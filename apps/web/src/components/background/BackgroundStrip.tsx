@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   Gator,
+  gutterLeft,
+  gutterRight,
   palette,
   radius,
   shadow,
@@ -113,8 +115,8 @@ export function BackgroundStrip({
       onClick={open}
       sx={{
         position: 'fixed',
-        left: 16,
-        right: 16,
+        left: gutterLeft(16),
+        right: gutterRight(16),
         bottom: pillBottom,
         mx: 'auto',
         maxWidth: 420,

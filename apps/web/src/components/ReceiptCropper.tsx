@@ -1,4 +1,13 @@
-import { Box, Button, Typography, tokens } from '@pocket-pantry/ui';
+import {
+  Box,
+  Button,
+  SAFE_BOTTOM,
+  SAFE_LEFT,
+  SAFE_RIGHT,
+  SAFE_TOP,
+  Typography,
+  tokens,
+} from '@pocket-pantry/ui';
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Cropper from 'react-easy-crop';
 import { useTranslation } from 'react-i18next';
@@ -97,6 +106,11 @@ export function ReceiptCropper({
         display: 'flex',
         flexDirection: 'column',
         colorScheme: 'dark',
+        // Full screen over the PageLayout band: clear the island, the notch and the home indicator.
+        pt: SAFE_TOP,
+        pb: SAFE_BOTTOM,
+        pl: SAFE_LEFT,
+        pr: SAFE_RIGHT,
         backgroundColor: tokens.color.bg,
         color: tokens.color.ink,
       }}
