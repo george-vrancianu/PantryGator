@@ -46,6 +46,7 @@ Run from the repo root unless noted.
 - API unit: `npm run test:unit -w apps/api`.
 - API integration (needs Postgres, `npm run db:up`): `npm run test:integration -w apps/api -- <pattern>` (the script caps workers itself; `--runInBand` is only for debugging).
 - Grant Credits to a Family by hand (needs `DATABASE_URL`; never point it at a database you do not mean to change): `npm run credits:grant -w apps/api -- --family <family-uuid> --amount <positive whole number> --reason "<why>"`. Writes one `grant` Credit entry and prints the new Credit Balance; refuses a missing reason, a non-whole or non-positive amount and an unknown Family (exit 1, nothing written). Code: `apps/api/src/credits/grant/`.
+- Seed the Demo account (needs `DATABASE_URL`; the account comes only from the environment, never the code): `DEMO_EMAIL=<email> DEMO_PASSWORD=<password> npm run demo:seed -w apps/api -- [--apply] [--today YYYY-MM-DD]`. Without `--apply` it is a dry run that writes, counts and rolls back. A re-run deletes the Demo Member and Family and builds them again. It refuses an email that belongs to anyone else, and a Demo Family someone has joined. What it writes: `apps/api/src/demo/demo-plan.ts`; `apps/web/src/lib/health.demo-seed.test.ts` keeps its Pantry Health between 70 and 80.
 - Storybook: `npm run storybook -w packages/ui`.
 - Worktree create/remove helper: `scripts/worktree.sh` (see `docs/agents/worktrees-and-migrations.md`).
 - Migration-number collision check: `npm run check:migrations` (`scripts/check-migrations.mjs`).
