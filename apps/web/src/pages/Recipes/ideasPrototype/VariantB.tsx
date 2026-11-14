@@ -1,17 +1,17 @@
 /**
  * PROTOTYPE variant B, "Ask Gator": results first. Gator speaks at the top, the Ideas fill the page, and a
  * composer pinned above the Dock holds the Wish and Ask. The other options shrink to three summary chips,
- * each opening a Sheet (Ingredient picker as a checklist with Expiring Soon first, Start from, Skip).
+ * all on (checked) by default: Whole Pantry and New recipe open a Sheet, Something new toggles in place.
  */
 import {
   Box,
   Button,
   Checkbox,
+  CheckIcon,
   Chip,
   Gator,
   Sheet,
   TextField,
-  Toggle,
   Typography,
   aboveDock,
   DOCK_HEIGHT,
@@ -27,7 +27,7 @@ import {
 
 export const variantBName = 'Ask Gator (composer)';
 
-type Open = null | 'ingredients' | 'base' | 'skip';
+type Open = null | 'ingredients' | 'base';
 
 export function VariantB({ s }: { s: IdeasPrototype }) {
   const [open, setOpen] = useState<Open>(null);
@@ -98,24 +98,30 @@ export function VariantB({ s }: { s: IdeasPrototype }) {
         }}
       >
         <Box sx={{ display: 'flex', gap: 0.75, overflowX: 'auto', pb: 0.25 }}>
+          {/* A chip is on (selected, with a check) in its default state; changing it drops the check. */}
           <Chip
             label={
               s.selected.size === 0
                 ? 'Whole Pantry'
                 : `Must use ${s.selected.size}`
             }
-            selected={s.selected.size > 0}
+            icon={s.selected.size === 0 ? <CheckIcon size={16} /> : undefined}
+            selected={s.selected.size === 0}
             onClick={() => setOpen('ingredients')}
           />
           <Chip
-            label={s.base ? `From: ${s.base.title}` : 'Something new'}
-            selected={s.base !== null}
+            label={s.base ? `From: ${s.base.title}` : 'New recipe'}
+            icon={s.base ? undefined : <CheckIcon size={16} />}
+            selected={s.base === null}
             onClick={() => setOpen('base')}
           />
           <Chip
-            label={s.skipOwn ? 'Skipping mine' : 'Incl. mine'}
+            label="Something new"
+            icon={s.skipOwn ? <CheckIcon size={16} /> : undefined}
             selected={s.skipOwn}
-            onClick={() => setOpen('skip')}
+            aria-pressed={s.skipOwn}
+            title="Leave out Recipes your Family already has or can already make"
+            onClick={() => s.setSkipOwn(!s.skipOwn)}
           />
         </Box>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
@@ -221,7 +227,7 @@ export function VariantB({ s }: { s: IdeasPrototype }) {
           {[
             {
               id: '',
-              title: 'Nothing, something new',
+              title: 'New recipe',
               owner: 'catalog' as const,
             },
             ...s.startingPoints,
@@ -246,34 +252,6 @@ export function VariantB({ s }: { s: IdeasPrototype }) {
               {r.title}
             </Box>
           ))}
-        </Box>
-      </Sheet>
-
-      <Sheet
-        open={open === 'skip'}
-        onClose={() => setOpen(null)}
-        label="Skip"
-        size="content"
-        header={
-          <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
-            Options
-          </Typography>
-        }
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 2 }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={{ fontWeight: 700 }}>
-              Skip what I already have
-            </Typography>
-            <Typography sx={{ fontSize: 13, color: tokens.color.muted }}>
-              No Ideas for your Recipes or Catalog Recipes you can already make.
-            </Typography>
-          </Box>
-          <Toggle
-            checked={s.skipOwn}
-            onChange={s.setSkipOwn}
-            aria-label="Skip what I already have"
-          />
         </Box>
       </Sheet>
     </Box>
