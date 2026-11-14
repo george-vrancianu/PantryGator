@@ -31,6 +31,7 @@ import {
   NewVariantPage,
 } from './pages/Recipes/FamilyRecipePages';
 import { CookTonightPage } from './pages/Recipes/CookTonightPage';
+import { RecipeIdeasPrototypePage } from './pages/Recipes/ideasPrototype/RecipeIdeasPrototypePage';
 import {
   RecipeDetailPage,
   RecipePreviewPage,
@@ -98,6 +99,10 @@ export function App() {
               <Route path="recipes/explore" element={<ExplorePage />} />
               <Route path="recipes/new" element={<NewRecipePage />} />
               <Route path="recipes/drafts" element={<RecipeDraftsPage />} />
+              <Route
+                path="recipes/ideas-prototype"
+                element={<RecipeIdeasPrototypePage />}
+              />
               <Route
                 path="recipes/cook-tonight"
                 element={<CookTonightPage />}
