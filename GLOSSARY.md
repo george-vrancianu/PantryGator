@@ -343,11 +343,11 @@ A Member's unsaved New Recipe or new Variant, kept automatically so they can fin
 _Avoid_: Draft Recipe, unsaved recipe, draft (alone)
 
 **Recipe Ideas**:
-Asking for dishes the Pantry's Ingredients could make, optionally starting from one Recipe, offered as several Ideas to pick from. The picked Idea becomes a Recipe Draft, a new Variant when it started from a Recipe, which the Member finishes; nothing becomes a Recipe until they save it. The Ideas are made up, not read from any source, and by default leave out dishes the Family already has or the Pantry can already make from the Catalog.
+Asking for dishes the Pantry's Ingredients could make, optionally starting from one Recipe that can have a Variant made from it, offered as several Ideas to pick from. The picked Idea becomes a Recipe Draft, a new Variant when it started from a Recipe, which the Member finishes; nothing becomes a Recipe until they save it. The Ideas and the Recipe written from the picked one are made up, not read from any source, its Guidance included, which comes marked as suggested. By default the Ideas leave out dishes the Family already has or the Pantry can already make from the Catalog.
 _Avoid_: Generate recipe, Ask Gator, AI recipe, enhance, fork
 
 **Idea**:
-One dish offered by Recipe Ideas, written for the Servings the dish usually makes. It uses the Ingredients of the Pantry's unexpired Batches (every selected one, when the Member selects some), Pantry Basics, at most two named extras from outside the Pantry, and, for a new Variant, its Base Recipe's Ingredients. Expiring Soon Batches are preferred, quantities are ignored, and it never uses an Ingredient containing the Member's own or a Family Allergy unless the Member selected it. Not a Recipe and not a Recipe Draft until the Member picks it.
+One dish offered by Recipe Ideas, written for the Servings the dish usually makes, or the starting Recipe's Servings for a new Variant. It uses the Ingredients of the Pantry's unexpired Batches (every selected one, when the Member selects some), Pantry Basics, at most two named extras from outside the Pantry, and, for a new Variant, the Ingredients of the Recipe it started from. A new Variant stays recognisably that Recipe, changed in a way the Idea names. Expiring Soon Batches are preferred, quantities are ignored, and it never uses an Ingredient containing the Member's own or a Family Allergy unless the Member selected it, not even one the starting Recipe holds. Not a Recipe and not a Recipe Draft until the Member picks it.
 _Avoid_: Suggestion (a proposed Shopping Item), generated recipe
 
 **Wish**:
