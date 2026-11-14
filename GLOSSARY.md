@@ -342,6 +342,18 @@ _Avoid_: Recipe import, clip, scrape
 A Member's unsaved New Recipe or new Variant, kept automatically so they can finish it later, on any device. Private to that Member, and not a Recipe: it is never browsed, matched, planned or shopped from, only resumed or discarded. Saving it makes the Recipe and ends the Recipe Draft.
 _Avoid_: Draft Recipe, unsaved recipe, draft (alone)
 
+**Recipe Ideas**:
+Asking for dishes the Pantry's Ingredients could make, optionally starting from one Recipe, offered as several Ideas to pick from. The picked Idea becomes a Recipe Draft, a new Variant when it started from a Recipe, which the Member finishes; nothing becomes a Recipe until they save it. The Ideas are made up, not read from any source, and by default leave out dishes the Family already has or the Pantry can already make from the Catalog.
+_Avoid_: Generate recipe, Ask Gator, AI recipe, enhance, fork
+
+**Idea**:
+One dish offered by Recipe Ideas, written for the Servings the dish usually makes. It uses the Ingredients of the Pantry's unexpired Batches (every selected one, when the Member selects some), Pantry Basics, at most two named extras from outside the Pantry, and, for a new Variant, its Base Recipe's Ingredients. Expiring Soon Batches are preferred, quantities are ignored, and it never uses an Ingredient containing the Member's own or a Family Allergy unless the Member selected it. Not a Recipe and not a Recipe Draft until the Member picks it.
+_Avoid_: Suggestion (a proposed Shopping Item), generated recipe
+
+**Wish**:
+Optional short text a Member adds to Recipe Ideas to steer the Ideas and the Recipe written from the picked one, such as "vegetarian, no oven". It can only narrow what Recipe Ideas may offer, never loosen it, and it is not stored.
+_Avoid_: Note (a Voice Note or Nutrition Note), request (an Assistant Request), prompt, hint
+
 **Source Link**:
 The web page a Family Recipe was read from by Recipe from Link, kept on the Recipe and shown as where it came from, with the source language when the Recipe was translated. A Member can remove it but not change it, and a Variant made from the Recipe does not copy it.
 _Avoid_: Source Recipe (a Recipe that added a Shopping Item), origin, URL
@@ -511,7 +523,7 @@ The language a Member sees the app's own text in: menus, buttons, messages, and 
 _Avoid_: Locale, app language
 
 **Catalog Language**:
-The language a Member sees everything Admins curate and translate in: Ingredients, Categories, Aisles, Allergens, Eating Moments and Catalog Recipes. Names the AI makes up for Unmatched lines, and Plate Scan dish titles and the Recipes written from them, are in it too. Follows the UI Language until the Member sets it, so a Member can use an English UI with Romanian Ingredient names. Family Ingredients, Family Recipes and typed Shopping Items keep the one language they were written in.
+The language a Member sees everything Admins curate and translate in: Ingredients, Categories, Aisles, Allergens, Eating Moments and Catalog Recipes. Names the AI makes up for Unmatched lines, Plate Scan dish titles, Ideas, and the Recipes written from either, are in it too. Follows the UI Language until the Member sets it, so a Member can use an English UI with Romanian Ingredient names. Family Ingredients, Family Recipes and typed Shopping Items keep the one language they were written in.
 _Avoid_: Product language, name language, locale
 
 **Member Preferences**:
