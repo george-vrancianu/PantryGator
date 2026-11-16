@@ -28,3 +28,9 @@ Voice Notes are read in the background behind a strip above the Dock (ADR 0025),
 - A cancel that arrives after the AI call has answered may still count against the Link Cap.
 - The from-link endpoint now writes: every successful read leaves a Recipe Draft, kept for 30 days without an edit (ADR 0028).
 - The `/recipes/from-link` page goes away, and links to it must open the sheet instead.
+
+## Amendment (2026-11-16): the strip becomes the Gator bubble
+
+- **The shared indicator is now a draggable Gator bubble** above the Dock instead of a strip (Canopy, `docs/handoffs/canopy/handoff.md` §9). Holders, caps, Review and "nothing changes until you apply" are unchanged. Only the indicator's form changes.
+- **The bubble counts the Member's own Jobs on this device**, because the holders are in memory per device. It is hidden under Sheets and in the camera, and sits 16 above the bottom safe area on pages with no Dock.
+- **Its sheet is titled "Review"**, with the groups Ready to review, Being read and Could not be read.

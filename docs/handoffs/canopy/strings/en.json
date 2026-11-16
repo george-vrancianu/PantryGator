@@ -1,0 +1,86 @@
+{
+  "_note": "New keys for Canopy, grouped by the namespace file they belong in (dashboard.json, screenHeader.json, ...). 'queue' is a proposed block: put it where the Activity pill's strings live today. Reuse existing keys where the app already has the word (Pantry health, Match system, Import, Explore).",
+  "dashboard": {
+    "health": {
+      "scoreOf": "{{score}} of 100",
+      "lights": {
+        "expired": "Expired",
+        "soon": "Use soon",
+        "low": "Running low",
+        "fresh": "Fresh in",
+        "stale": "Stale"
+      },
+      "a11y": {
+        "name": "{{title}}: {{verdict}}, {{lights}}.",
+        "expired_one": "{{count}} expired",
+        "expired_other": "{{count}} expired",
+        "soon_one": "{{count}} to use soon",
+        "soon_other": "{{count}} to use soon",
+        "low_one": "{{count}} running low",
+        "low_other": "{{count}} running low",
+        "fresh": "new items in",
+        "stale_one": "nothing added for {{count}} day",
+        "stale_other": "nothing added for {{count}} days",
+        "allClear": "no warning lights"
+      }
+    },
+    "customise": "Customise dashboard"
+  },
+  "screenHeader": {
+    "settings": "Settings",
+    "back": "Back",
+    "more": "More"
+  },
+  "shopping": {
+    "header": {
+      "import": "Import"
+    }
+  },
+  "pantry": {
+    "header": {
+      "matchItems": "Match items",
+      "matchItemsCount_one": "Match items, {{count}} unmatched",
+      "matchItemsCount_other": "Match items, {{count}} unmatched"
+    }
+  },
+  "recipes": {
+    "header": {
+      "explore": "Explore"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "light": "Light",
+      "dark": "Dark",
+      "matchSystemHint": "Dark when the phone is in dark mode, Light otherwise",
+      "lead": "Only you see these. Light or Dark and your language follow you. Match system is set per phone."
+    }
+  },
+  "queue": {
+    "bubble": {
+      "reading_one": "Gator is working: {{count}} being read",
+      "reading_other": "Gator is working: {{count}} being read",
+      "ready_one": "{{count}} ready to review",
+      "ready_other": "{{count}} ready to review",
+      "failed_one": "{{count}} could not be read",
+      "failed_other": "{{count}} could not be read",
+      "allDone_one": "All read: {{count}} ready to review",
+      "allDone_other": "All read: {{count}} ready to review",
+      "open": "Open Review"
+    },
+    "review": {
+      "title": "Review",
+      "summary": "{{ready}} ready · {{reading}} reading · {{failed}} failed",
+      "group": {
+        "ready": "Ready to review",
+        "reading": "Being read",
+        "failed": "Could not be read"
+      },
+      "review": "Review",
+      "discard": "Discard",
+      "cancel": "Cancel reading: {{title}}",
+      "reviewAll": "Review all ({{count}})",
+      "note": "Nothing changes until you review and apply."
+    }
+  }
+}

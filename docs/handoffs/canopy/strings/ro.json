@@ -1,0 +1,95 @@
+{
+  "_note": "First pass, to be read through by a native speaker. Same keys as en.json plus _few plurals. Where the app already has a Romanian word for Expired, Use soon or Running low, use that one.",
+  "dashboard": {
+    "health": {
+      "scoreOf": "{{score}} din 100",
+      "lights": {
+        "expired": "Expirate",
+        "soon": "De folosit curând",
+        "low": "Pe terminate",
+        "fresh": "Proaspăt aduse",
+        "stale": "Nimic nou"
+      },
+      "a11y": {
+        "name": "{{title}}: {{verdict}}, {{lights}}.",
+        "expired_one": "{{count}} expirat",
+        "expired_few": "{{count}} expirate",
+        "expired_other": "{{count}} de expirate",
+        "soon_one": "{{count}} de folosit curând",
+        "soon_few": "{{count}} de folosit curând",
+        "soon_other": "{{count}} de folosit curând",
+        "low_one": "{{count}} pe terminate",
+        "low_few": "{{count}} pe terminate",
+        "low_other": "{{count}} pe terminate",
+        "fresh": "produse noi adăugate",
+        "stale_one": "nimic adăugat de {{count}} zi",
+        "stale_few": "nimic adăugat de {{count}} zile",
+        "stale_other": "nimic adăugat de {{count}} de zile",
+        "allClear": "niciun avertisment"
+      }
+    },
+    "customise": "Personalizează panoul"
+  },
+  "screenHeader": {
+    "settings": "Setări",
+    "back": "Înapoi",
+    "more": "Mai mult"
+  },
+  "shopping": {
+    "header": {
+      "import": "Importă"
+    }
+  },
+  "pantry": {
+    "header": {
+      "matchItems": "Potrivește produsele",
+      "matchItemsCount_one": "Potrivește produsele, {{count}} nepotrivit",
+      "matchItemsCount_few": "Potrivește produsele, {{count}} nepotrivite",
+      "matchItemsCount_other": "Potrivește produsele, {{count}} de nepotrivite"
+    }
+  },
+  "recipes": {
+    "header": {
+      "explore": "Explorează"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "light": "Luminos",
+      "dark": "Întunecat",
+      "matchSystemHint": "Întunecat când telefonul e în modul întunecat, Luminos în rest",
+      "lead": "Doar tu vezi acestea. Luminos sau Întunecat și limba te urmează. Potrivirea cu sistemul se setează pe fiecare telefon."
+    }
+  },
+  "queue": {
+    "bubble": {
+      "reading_one": "Gator lucrează: {{count}} se citește",
+      "reading_few": "Gator lucrează: {{count}} se citesc",
+      "reading_other": "Gator lucrează: {{count}} se citesc",
+      "ready_one": "{{count}} gata de verificat",
+      "ready_few": "{{count}} gata de verificat",
+      "ready_other": "{{count}} gata de verificat",
+      "failed_one": "{{count}} nu a putut fi citit",
+      "failed_few": "{{count}} nu au putut fi citite",
+      "failed_other": "{{count}} nu au putut fi citite",
+      "allDone_one": "Totul e citit: {{count}} gata de verificat",
+      "allDone_few": "Totul e citit: {{count}} gata de verificat",
+      "allDone_other": "Totul e citit: {{count}} gata de verificat",
+      "open": "Deschide Verificarea"
+    },
+    "review": {
+      "title": "Verificare",
+      "summary": "{{ready}} gata · {{reading}} se citesc · {{failed}} eșuate",
+      "group": {
+        "ready": "Gata de verificat",
+        "reading": "Se citesc",
+        "failed": "Nu au putut fi citite"
+      },
+      "review": "Verifică",
+      "discard": "Renunță",
+      "cancel": "Oprește citirea: {{title}}",
+      "reviewAll": "Verifică tot ({{count}})",
+      "note": "Nimic nu se schimbă până nu verifici și aplici."
+    }
+  }
+}
