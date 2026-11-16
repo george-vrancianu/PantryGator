@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  bubbleSays,
   openReady,
   mic,
   recordAndSend,
@@ -139,12 +140,10 @@ describe('Voice Notes on the Pantry page', () => {
     });
     renderInAppLayout(<PantryPage />, '/pantry');
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '1 Voice Note failed',
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await bubbleSays('1 could not be read');
+    fireEvent.click(screen.getByRole('button', { name: /Open Review/ }));
     const dialog = await screen.findByRole('dialog', {
-      name: 'In the background',
+      name: 'Review',
     });
 
     await userEvent.click(
@@ -157,18 +156,20 @@ describe('Voice Notes on the Pantry page', () => {
     expect(sent[0].get('defaultTarget')).toBe('shopping');
   });
 
-  it('keeps the voice button, the strip and a read going while a Batch is added', async () => {
+  it('keeps the voice button and a read going while a Batch is added, the bubble stepping aside', async () => {
     setup([], undefined, [], 'hangs');
     await recordAndSend({
       spokenLanguage: 'en',
       defaultTarget: 'pantry',
     });
     renderInAppLayout(<PantryPage />, '/pantry');
-    await screen.findByText(/Being read$/);
+    await screen.findByRole('button', {
+      name: 'Gator is working: 1 being read. Open Review',
+    });
 
     await userEvent.click(screen.getByRole('button', { name: 'Add batch' }));
 
-    // The sheet sits over the page: the voice button and the strip stay rendered behind its scrim.
+    // The sheet sits over the page: the voice button stays rendered behind its scrim.
     await screen.findByRole('dialog', { name: 'Add to Pantry' });
     expect(
       screen.getByRole('button', {
@@ -176,7 +177,13 @@ describe('Voice Notes on the Pantry page', () => {
         hidden: true,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Being read$/)).toBeInTheDocument();
+    // The bubble gives way to a Sheet.
+    expect(
+      screen.queryByRole('button', {
+        name: 'Gator is working: 1 being read. Open Review',
+        hidden: true,
+      }),
+    ).toBeNull();
   });
 
   it('puts the voice button on the Pantry page and records for the Pantry', async () => {

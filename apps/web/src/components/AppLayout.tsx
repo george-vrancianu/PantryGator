@@ -21,11 +21,14 @@ import { useRecipeReadsSideEffects } from './background/useRecipeReadsSideEffect
 import { useRefreshCreditsOnReads } from './background/useRefreshCreditsOnReads';
 import { VoiceHostProvider, VoiceHostSlot } from './voice/VoiceHost';
 
-/** The layout hosts the background strip itself, so it shows on Dock pages without voice configured. */
+/** The layout hosts the Gator bubble itself, so it shows on every page but the camera without voice configured. */
 const LAYOUT_VOICE_SETTINGS: VoiceNoteSettings = {
   ...APP_VOICE_SETTINGS,
   hostsStrip: false,
 };
+
+/** The camera is full-screen: the Gator bubble stays out of it. */
+const isCamera = (pathname: string) => pathname.replace(/\/$/, '') === '/scan';
 
 /** The line editor, whose tablet layout is a wide table (the overview of cards is not). */
 const isWide = (pathname: string) => pathname.startsWith('/scan/review/');
@@ -74,7 +77,14 @@ export function AppLayout() {
           <RefreshLoaderSlot />
           <VoiceHostSlot />
           <VoiceNote settings={LAYOUT_VOICE_SETTINGS} />
-          {dock.visible ? <BackgroundHost scanSession recipeReads /> : null}
+          {isCamera(pathname) ? null : (
+            <BackgroundHost
+              // The Scan Session waits for its own Review: it is not in the bubble under /scan.
+              scanSession={!pathname.startsWith('/scan')}
+              recipeReads
+              dock={dock.visible}
+            />
+          )}
           {dock.visible ? <AppDock activeKey={dock.activeKey} /> : null}
         </VoiceHostProvider>
       </RefreshProvider>

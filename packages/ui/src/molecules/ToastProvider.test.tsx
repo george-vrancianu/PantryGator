@@ -120,6 +120,50 @@ describe('Toasts', () => {
   });
 });
 
+describe('Toasts that wait for the current one', () => {
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
+
+  function Waiting() {
+    const toast = useToast();
+    return (
+      <>
+        <button onClick={() => toast.show('Undo me', { polite: true })}>
+          first
+        </button>
+        <button
+          onClick={() =>
+            toast.show('Gator says', { polite: true, waitForCurrent: true })
+          }
+        >
+          waiting
+        </button>
+      </>
+    );
+  }
+
+  it('shows at once when no toast is up', () => {
+    render(<Waiting />);
+    act(() => fireEvent.click(screen.getByText('waiting')));
+    expect(screen.getByText('Gator says')).toBeTruthy();
+  });
+
+  it('leaves the showing toast alone and shows after it ends', () => {
+    vi.useFakeTimers();
+    render(<Waiting />);
+    act(() => fireEvent.click(screen.getByText('first')));
+    act(() => fireEvent.click(screen.getByText('waiting')));
+    expect(screen.getByText('Undo me')).toBeTruthy();
+    expect(screen.queryByText('Gator says')).toBeNull();
+    act(() => {
+      vi.advanceTimersByTime(2700);
+    });
+    expect(screen.getByText('Gator says')).toBeTruthy();
+  });
+});
+
 describe('Toast hosts', () => {
   afterEach(cleanup);
 
