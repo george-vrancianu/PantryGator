@@ -394,7 +394,7 @@ describe('Explore and the preview round trip', () => {
     vi.unstubAllGlobals();
   });
 
-  it('Back from a preview uses history, keeps the badge and does not slide in again', async () => {
+  it('Back from a preview uses history, keeps the badge and has no slide', async () => {
     setup();
     const u = user();
     await u.click(
@@ -415,9 +415,8 @@ describe('Explore and the preview round trip', () => {
       .mockReturnValue({ idx: 1 });
     await u.click(screen.getByRole('link', { name: /Back/ }));
     state.mockRestore();
-    const page = await screen.findByTestId('explore-page');
+    await screen.findByRole('heading', { level: 1, name: 'Explore' });
     expect(screen.getByTestId('back-badge')).toHaveTextContent('+1');
-    expect(page).toHaveAttribute('data-motion', 'none');
   });
 
   it('Back from a preview opened directly goes to Explore, and its adds do not count', async () => {
@@ -426,23 +425,20 @@ describe('Explore and the preview round trip', () => {
     await u.click(await screen.findByRole('button', { name: 'Add to Family' }));
     await act(async () => {});
     await u.click(screen.getByRole('link', { name: /Back/ }));
-    expect(await screen.findByTestId('explore-page')).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Explore' }),
+    ).toBeVisible();
     expect(exploreAdds.get()).toBe(0);
     expect(screen.queryByTestId('back-badge')).toBeNull();
-    expect(screen.getByTestId('explore-page')).toHaveAttribute(
-      'data-motion',
-      'none',
-    );
   });
 
   it('Back after a redirect at load (a deep link) lands on Explore, not out of the app', async () => {
     setup('/recipes/soup');
     await screen.findByRole('heading', { level: 1, name: /Soup/ });
     await user().click(screen.getByRole('link', { name: /Back/ }));
-    expect(await screen.findByTestId('explore-page')).toHaveAttribute(
-      'data-motion',
-      'none',
-    );
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Explore' }),
+    ).toBeVisible();
   });
 
   it('leaving a preview for elsewhere and coming back to Explore is a fresh visit', async () => {
@@ -459,10 +455,9 @@ describe('Explore and the preview round trip', () => {
     await screen.findByRole('heading', { level: 1, name: /Soup/ });
     await u.click(screen.getByRole('link', { name: 'home' }));
     await u.click(await screen.findByRole('link', { name: 'to explore' }));
-    expect(await screen.findByTestId('explore-page')).toHaveAttribute(
-      'data-motion',
-      'in',
-    );
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Explore' }),
+    ).toBeVisible();
     expect(screen.queryByTestId('back-badge')).toBeNull();
   });
 
@@ -487,9 +482,5 @@ describe('Explore and the preview round trip', () => {
     await rowButton();
     await act(async () => {});
     expect(screen.queryByTestId('back-badge')).toBeNull();
-    expect(screen.getByTestId('explore-page')).toHaveAttribute(
-      'data-motion',
-      'in',
-    );
   });
 });

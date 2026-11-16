@@ -481,57 +481,16 @@ describe('ExplorePage Back badge', () => {
 });
 
 describe('ExplorePage Back', () => {
-  const original = window.matchMedia;
   afterEach(() => {
-    window.matchMedia = original;
     vi.unstubAllGlobals();
   });
-  const reduceMotion = (reduce: boolean) => {
-    window.matchMedia = ((query: string) => ({
-      ...original(query),
-      matches: reduce && query.includes('prefers-reduced-motion: reduce'),
-    })) as typeof window.matchMedia;
-  };
 
-  it('goes back at once under reduced motion', async () => {
-    reduceMotion(true);
+  it('goes back at once, with no slide of its own', async () => {
     setupGroups({ list: () => [base('a')] });
     await userEvent.click(
       await screen.findByRole('link', { name: 'Back to your Recipes' }),
     );
     expect(await screen.findByText('recipes page')).toBeVisible();
-  });
-
-  it('slides out first, then goes back when the animation ends', async () => {
-    reduceMotion(false);
-    setupGroups({ list: () => [base('a')] });
-    const back = await screen.findByRole('link', {
-      name: 'Back to your Recipes',
-    });
-    await userEvent.click(back);
-    expect(screen.queryByText('recipes page')).toBeNull();
-    const el = screen.getByTestId('explore-page');
-    el.dispatchEvent(new Event('animationend', { bubbles: true }));
-    expect(await screen.findByText('recipes page')).toBeVisible();
-  });
-
-  it('goes back anyway when the slide-out never ends', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    try {
-      reduceMotion(false);
-      setupGroups({ list: () => [base('a')] });
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-      await user.click(
-        await screen.findByRole('link', { name: 'Back to your Recipes' }),
-      );
-      expect(screen.queryByText('recipes page')).toBeNull();
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(450);
-      });
-      expect(await screen.findByText('recipes page')).toBeVisible();
-    } finally {
-      vi.useRealTimers();
-    }
   });
 });
 

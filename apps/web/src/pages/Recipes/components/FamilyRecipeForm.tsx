@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
@@ -24,6 +23,7 @@ import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/Brow
 import type { FamilyRecipeDocument } from '../../../lib/familyRecipes';
 import { useFamilyCatalog } from '../../../lib/familyCatalog';
 import type { GuidanceInput } from '../../../lib/adminRecipes';
+import { useScroller } from '../../../lib/scroller';
 import {
   hasGuidanceProblem,
   toGuidanceInput,
@@ -153,10 +153,11 @@ export function FamilyRecipeForm({
   const tabsId = useId();
   const [tab, setTab] = useState<EditorTab>(openTab);
   const reduceMotion = usePrefersReducedMotion();
+  const scroller = useScroller();
   const goTo = (next: EditorTab) => {
     if (next === tab) return;
     setTab(next);
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scroller.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
   useEffect(() => {
     onChange?.({ draft, guidance: guidanceDraft });
@@ -225,7 +226,7 @@ export function FamilyRecipeForm({
         <Box
           sx={{
             position: 'sticky',
-            top: SAFE_TOP,
+            top: 0,
             zIndex: 2,
             py: '8px',
             bgcolor: tokens.color.bg,

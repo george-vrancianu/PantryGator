@@ -7,11 +7,9 @@ import {
   Spinner,
   Stack,
   tokens,
-  usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { AppScreenHeader } from '../../components/AppScreenHeader';
 import { ExploreRow } from '../../components/ExploreRow';
 import { QuickViewSheet } from '../../components/QuickViewSheet';
@@ -44,28 +42,6 @@ const QUICK_VIEW_TOAST_BOTTOM =
   // Sheet bottom padding 28 + explanation line(s) ~36 + gap 10 + Make a Variant 48 + gap 8 + Add 48 + 8 slack
   plusBottomInset(186);
 
-const SLIDE = '320ms cubic-bezier(.2,.8,.2,1)';
-
-/** Slides in from the right and, on Back, out to it; no motion under reduced motion. */
-const slideSx = (leaving: boolean, enter: boolean) =>
-  ({
-    '@keyframes pp-explore-slide-in': {
-      from: { transform: 'translateX(100%)' },
-      to: { transform: 'translateX(0)' },
-    },
-    '@keyframes pp-explore-slide-out': {
-      from: { transform: 'translateX(0)' },
-      to: { transform: 'translateX(100%)' },
-    },
-    '@media (prefers-reduced-motion: no-preference)': {
-      animation: leaving
-        ? `pp-explore-slide-out ${SLIDE} forwards`
-        : enter
-          ? `pp-explore-slide-in ${SLIDE}`
-          : 'none',
-    },
-  }) as const;
-
 /**
  * Explore (`/recipes/explore`): the Catalog Base Recipes, each one tap from being added to the
  * Family. "You can make this" (Catalog Cook Tonight) comes first, then "All Recipes"; searching or
@@ -78,37 +54,14 @@ export function ExplorePage() {
     tagIds: [],
   });
   const [showHidden, setShowHidden] = useState(false);
-  const [leaving, setLeaving] = useState(false);
-  const reduceMotion = usePrefersReducedMotion();
-  const navigate = useNavigate();
-  // A native listener: React skips `animationend` where the browser (or jsdom) has no CSS animations.
-  const pageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const page = pageRef.current;
-    if (!leaving || !page) return;
-    const done = (event: Event) => {
-      if (event.target === page) navigate('/recipes');
-    };
-    page.addEventListener('animationend', done);
-    // If the animation never ends (interrupted, or no CSS animations), leave anyway.
-    const fallback = window.setTimeout(() => navigate('/recipes'), 400);
-    return () => {
-      page.removeEventListener('animationend', done);
-      window.clearTimeout(fallback);
-    };
-  }, [leaving, navigate]);
   // Net adds this visit: the Back badge. It outlives the page so that a round trip through a
   // preview keeps it; a fresh visit (not Back from a preview) starts again at 0.
   const added = useExploreAdds();
   // Returning means coming back from a preview this page opened (not merely a POP: a reload or a
-  // Back from elsewhere is a fresh visit and slides in). The reset is synchronous so no stale
-  // count paints; it is idempotent, so a double render is harmless.
-  const noSlide =
-    (useLocation().state as { noSlide?: boolean } | null)?.noSlide === true;
-  const [enter] = useState(() => {
-    if (exploreAdds.parked()) return false;
-    exploreAdds.reset();
-    return !noSlide;
+  // Back from elsewhere is a fresh visit). The reset is synchronous so no stale count paints; it is
+  // idempotent, so a double render is harmless.
+  useState(() => {
+    if (!exploreAdds.parked()) exploreAdds.reset();
   });
   const [quick, setQuick] = useState<RecipeListItem | null>(null);
   const [quickOpen, setQuickOpen] = useState(false);
@@ -191,12 +144,7 @@ export function ExplorePage() {
   );
 
   return (
-    <Box
-      sx={slideSx(leaving, enter)}
-      ref={pageRef}
-      data-testid="explore-page"
-      data-motion={leaving ? 'out' : enter ? 'in' : 'none'}
-    >
+    <>
       <AppScreenHeader
         title={t('recipes:explore.title')}
         back={{
@@ -207,11 +155,7 @@ export function ExplorePage() {
           href: '/recipes',
           badge: added,
           onClick: (event) => {
-            const plain = isPlainClick(event);
-            if (plain) exploreAdds.reset();
-            if (!plain || reduceMotion) return;
-            event.preventDefault();
-            setLeaving(true);
+            if (isPlainClick(event)) exploreAdds.reset();
           },
         }}
       />
@@ -281,7 +225,7 @@ export function ExplorePage() {
           stateOf={stateOf}
         />
       ) : null}
-    </Box>
+    </>
   );
 }
 

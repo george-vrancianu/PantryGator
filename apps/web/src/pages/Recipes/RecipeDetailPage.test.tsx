@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Locale } from '../../i18n';
 import type { RecipeDetail } from '../../lib/recipes';
 import { renderWithProviders, stubApi } from '../../test/render';
-import { expectSticksBelowTopInset } from '../../test/stickyHeader';
+import { expectSticksAtScrollerTop } from '../../test/stickyHeader';
 import { RecipeDetailPage } from './RecipeDetailPage';
 
 const entry = (
@@ -768,9 +768,9 @@ describe('RecipeDetailPage', () => {
   });
 
   describe('Tabs', () => {
-    it('sticks the tabs below the top inset, not behind the Dynamic Island', async () => {
+    it('sticks the tabs at the top of the sheet', async () => {
       setup(recipe({}));
-      expectSticksBelowTopInset(await screen.findByRole('tablist'));
+      expectSticksAtScrollerTop(await screen.findByRole('tablist'));
     });
 
     const tab = (name: string) => screen.getByRole('tab', { name });
