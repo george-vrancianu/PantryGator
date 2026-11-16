@@ -37,6 +37,12 @@ export type ToastOptions = {
   /** Announce without interrupting (a status) instead of as an alert. */
   polite?: boolean;
   /**
+   * For a notice that must not push out what the Member is reading (an Undo, a confirmation): if a
+   * toast is showing, wait for it to end and show this one next, rather than replacing it. The
+   * latest waiting notice wins. Shows at once when no toast is up.
+   */
+  waitForCurrent?: boolean;
+  /**
    * Something is waiting on this toast. Called once when the toast ends for
    * any reason (timeout, dismissed, replaced by another toast, or the provider
    * unmounting), except when the action was used.
@@ -139,10 +145,38 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   useEffect(() => settle, [settle]);
 
   const lastId = useRef(0);
+  // Whether a toast is up, and the notice waiting for it to end (`waitForCurrent`).
+  const showing = useRef(false);
+  const waiting = useRef<{ message: string; options: ToastOptions } | null>(
+    null,
+  );
+  const showRef = useRef<
+    (message: string, options?: ToastOptions) => ToastHandle
+  >(() => ({ close: () => undefined }));
+  /** The showing toast has ended: show the notice that was waiting for it, if any. */
+  const ended = useCallback(() => {
+    showing.current = false;
+    const next = waiting.current;
+    waiting.current = null;
+    if (next) showRef.current(next.message, next.options);
+  }, []);
   const show = useCallback(
     (message: string, options: ToastOptions = {}): ToastHandle => {
+      if (options.waitForCurrent && showing.current) {
+        const entry = {
+          message,
+          options: { ...options, waitForCurrent: false },
+        };
+        waiting.current = entry;
+        return {
+          close: () => {
+            if (waiting.current === entry) waiting.current = null;
+          },
+        };
+      }
       settle();
       pendingClose.current = options.onClose;
+      showing.current = true;
       const id = ++lastId.current;
       setCurrent({ ...options, message, id });
       setOpen(true);
@@ -151,14 +185,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           if (lastId.current !== id) return;
           setOpen(false);
           settle();
+          ended();
         },
       };
     },
-    [settle],
+    [settle, ended],
   );
+  useEffect(() => {
+    showRef.current = show;
+  }, [show]);
   const dismiss = useCallback(() => {
     setOpen(false);
     settle();
+    waiting.current = null;
+    showing.current = false;
   }, [settle]);
   const api = useMemo<ToastApi>(() => ({ show, dismiss }), [show, dismiss]);
 
@@ -180,6 +220,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               if (reason === 'clickaway') return;
               setOpen(false);
               settle();
+              ended();
             }}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transitionDuration={reduceMotion ? 0 : undefined}
@@ -224,6 +265,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                       pendingClose.current = undefined;
                       current.action?.onClick();
                       setOpen(false);
+                      ended();
                     }}
                     sx={(theme) => ({
                       color: themePalette(theme).pp.toastAction,

@@ -4,6 +4,7 @@ import { afterEach } from 'vitest';
 import { recipeReads } from '../lib/recipeReads';
 import { resetReads } from '../lib/scanReads';
 import { resetScanSession } from '../lib/scanSession';
+import { resetBubbleAnnouncement } from '../components/background/bubble/useBubbleAnnouncement';
 
 configure({ asyncUtilTimeout: 3000 });
 
@@ -15,6 +16,8 @@ afterEach(() => {
   resetScanSession();
   recipeReads.clear();
   resetReads();
+  // The Gator bubble remembers what it announced: each test starts with nothing said.
+  resetBubbleAnnouncement();
 });
 
 // jsdom does not implement scrolling; screens that scroll to the top just need it to exist.

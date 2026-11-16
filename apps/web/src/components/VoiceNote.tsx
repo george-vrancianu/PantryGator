@@ -90,7 +90,7 @@ function VoiceNoteControls({
         scanStripHosted={settings.hostsStrip === false}
       />
 
-      {settings.hostsStrip === false ? null : <BackgroundHost />}
+      {settings.hostsStrip === false ? null : <BackgroundHost dock={false} />}
 
       <MicSheets mic={voice.mic} target={defaultTarget} />
 

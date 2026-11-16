@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   MicrophoneError,
+  bubbleSays,
   mic,
   resetVoiceEnvironment,
   talkButton,
@@ -261,10 +262,8 @@ describe('Voice Note microphone sheets', () => {
         within(dialog).getByRole('button', { name: "I've allowed it" }),
       );
 
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '1 Voice Note failed',
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Open' }));
+      await bubbleSays('1 could not be read');
+      fireEvent.click(screen.getByRole('button', { name: /Open Review/ }));
       expect(await screen.findByRole('dialog')).toHaveTextContent(
         /cannot record audio/i,
       );

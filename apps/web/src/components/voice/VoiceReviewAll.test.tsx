@@ -132,11 +132,9 @@ describe('Review all in the Voice Inbox', () => {
     reply(1, 'second note', second);
     reply(0, 'first note', first);
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Open 2' }),
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
-    return within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    return within(await screen.findByRole('dialog', { name: 'Review' }));
   }
   function render() {
     renderWithProviders(
@@ -179,11 +177,9 @@ describe('Review all in the Voice Inbox', () => {
       ],
     );
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Open 2' }),
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     expect(sheet.queryByRole('button', { name: /Review all/ })).toBeNull();
   });
 
@@ -194,11 +190,9 @@ describe('Review all in the Voice Inbox', () => {
     reply(0, 'first note', [shop('a1', bread)]);
     reply(1, 'just chatting', []);
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Open 2' }),
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     expect(sheet.queryByRole('button', { name: /Review all/ })).toBeNull();
   });
 
@@ -211,11 +205,9 @@ describe('Review all in the Voice Inbox', () => {
     await speak(3);
     reply(2, 'third note', [shop('a3', milk)]);
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Open 3' }),
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     const dialog = await reviewAll(sheet);
     expect(dialog.getByText(/first note/)).toBeVisible();
     expect(dialog.getByText(/third note/)).toBeVisible();
@@ -262,10 +254,10 @@ describe('Review all in the Voice Inbox', () => {
     reply(0, 'first note', [shop('a1', bread)], [answer('q1', milk)]);
     reply(1, 'second note', [shop('b1', eggs)], [answer('q2', eggs)]);
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Open 2' }),
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
     const dialog = await reviewAll(
-      within(await screen.findByRole('dialog', { name: 'In the background' })),
+      within(await screen.findByRole('dialog', { name: 'Review' })),
     );
     const cards = dialog.getAllByRole('region', { name: 'Your Pantry' });
     expect(cards).toHaveLength(1);
@@ -378,9 +370,7 @@ describe('Review all in the Voice Inbox', () => {
       await sheet.findByText(/more than 50 changes for one Apply/),
     ).toBeVisible();
     expect(screen.queryByRole('dialog', { name: 'Review all' })).toBeNull();
-    expect(
-      screen.getByRole('dialog', { name: 'In the background' }),
-    ).toBeVisible();
+    expect(screen.getByRole('dialog', { name: 'Review' })).toBeVisible();
 
     // The notes can still be reviewed one by one.
     await userEvent.click(
@@ -403,10 +393,10 @@ describe('Review all in the Voice Inbox', () => {
     fireEvent.pointerUp(button);
     reply(0, 'first note', many('a', 26));
     reply(1, 'second note', many('b', 25));
-    await userEvent.click(await screen.findByRole('button', { name: /^Open/ }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
+    await userEvent.click(
+      await screen.findByRole('button', { name: /Open Review/ }),
     );
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await userEvent.click(
       await sheet.findByRole('button', { name: 'Review all (2)' }),
     );

@@ -1,14 +1,10 @@
 {
-  "title": "{{count}} in the background",
   "reading_one": "{{count}} reading",
   "reading_other": "{{count}} reading",
   "ready": "{{count}} ready",
   "failed_one": "{{count}} failed",
   "failed_other": "{{count}} failed",
   "review": "Review",
-  "open": "Open",
-  "openCount": "Open {{count}}",
-  "sheetTitle": "In the background",
   "scan": {
     "reviewSession": "Review {{title}}",
     "failedAlert_one": "{{count}} Scan failed",
@@ -58,5 +54,26 @@
     "readAgainRead": "Read the photo for {{dish}} again",
     "failedAlert_one": "{{count}} Plate Scan recipe failed",
     "failedAlert_other": "{{count}} Plate Scan recipes failed"
+  },
+  "bubble": {
+    "reading_one": "Gator is working: {{count}} being read",
+    "reading_other": "Gator is working: {{count}} being read",
+    "ready_one": "{{count}} ready to review",
+    "ready_other": "{{count}} ready to review",
+    "failed_one": "{{count}} could not be read",
+    "failed_other": "{{count}} could not be read",
+    "allDone_one": "All read: {{count}} ready to review",
+    "allDone_other": "All read: {{count}} ready to review",
+    "open": "Open Review"
+  },
+  "sheet": {
+    "title": "Review",
+    "summary": "{{ready}} ready · {{reading}} reading · {{failed}} failed",
+    "group": {
+      "ready": "Ready to review",
+      "reading": "Being read",
+      "failed": "Could not be read"
+    },
+    "note": "Nothing changes until you review and apply."
   }
 }

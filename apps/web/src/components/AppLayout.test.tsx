@@ -11,6 +11,7 @@ import {
 import { holdLongEnough, pressDown, useVoiceTimers } from '../test/voiceHold';
 import { VOICE_LAYER } from '../lib/voicePlacement';
 import { Route, Routes } from 'react-router-dom';
+import { recipeReads } from '../lib/recipeReads';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
@@ -30,6 +31,7 @@ function renderAtView(route: string) {
         <Route path="/scan" element={<p>camera</p>} />
         <Route path="/pantry" element={<p>pantry</p>} />
         <Route path="/recipes" element={<p>recipes</p>} />
+        <Route path="/recipes/new" element={<p>editor</p>} />
         <Route path="/shopping" element={<p>shopping</p>} />
         <Route path="/shopping/staples" element={<p>staples</p>} />
       </Route>
@@ -40,6 +42,31 @@ function renderAtView(route: string) {
 
 afterEach(() => {
   document.documentElement.removeAttribute('data-theme');
+});
+
+describe('AppLayout Gator bubble', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', () => new Promise<Response>(() => {}));
+    recipeReads.submit(
+      { kind: 'link', url: 'https://example.com/soup' },
+      'source',
+    );
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each(['/pantry', '/recipes/new'])(
+    'shows the bubble on %s while a Job is held',
+    async (path) => {
+      renderAt(path);
+      expect(await screen.findByTestId('gator-bubble')).toBeInTheDocument();
+    },
+  );
+
+  it('hides the bubble while the camera is open', () => {
+    renderAt('/scan');
+    expect(screen.getByText('camera')).toBeInTheDocument();
+    expect(screen.queryByTestId('gator-bubble')).not.toBeInTheDocument();
+  });
 });
 
 describe('AppLayout Dock', () => {

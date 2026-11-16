@@ -10,6 +10,7 @@ import {
   recipeReads,
 } from '../../lib/recipeReads';
 import type { RecipeFromLink } from '../../lib/linkRecipe';
+import { announcements, openBubbleSheet } from '../../test/voice';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { RecipesPage } from './RecipesPage';
 
@@ -72,24 +73,10 @@ async function submit(user: User, url = link) {
   await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
 }
 
-/** Opens the "In the background" sheet from the strip. */
-async function openStrip(user: User) {
-  await user.click(await screen.findByRole('button', { name: 'Open' }));
-  return screen.findByRole('dialog', { name: 'In the background' });
+/** Opens the Review sheet from the Gator bubble (it may be open already). */
+async function openStrip(_user: User) {
+  return openBubbleSheet();
 }
-
-const strip = () =>
-  screen.queryAllByRole('status').filter((el) => el.textContent !== '')[0];
-
-/** The strip's border as its styles declare it (jsdom cannot compute a border made of a theme variable). */
-const outline = () => {
-  const classes = Array.from(strip().parentElement!.classList);
-  return Array.from(document.styleSheets)
-    .flatMap((sheet) => Array.from(sheet.cssRules))
-    .filter((rule) => classes.some((c) => rule.cssText.includes(`.${c}`)))
-    .map((rule) => rule.cssText)
-    .join('\n');
-};
 
 beforeEach(() => recipeReads.clear());
 afterEach(() => {
@@ -105,6 +92,7 @@ describe('a link read that failed, in the background strip', () => {
     let answer: () => Response = () => failing('link.unreadable');
     const { sent } = setup(() => answer());
     await submit(user);
+    await openBubbleSheet();
     expect(await screen.findByText("Couldn't read the recipe")).toBeVisible();
     await openStrip(user);
     expect(
@@ -210,6 +198,7 @@ describe('a link read that failed, in the background strip', () => {
         await user.type(linkField(), link);
       }
       await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
+      await openBubbleSheet();
       expect(await screen.findByText(reason)).toBeVisible();
     });
   });
@@ -243,6 +232,7 @@ describe('a link read that failed, in the background strip', () => {
       setup(() => failing(code, status, { max: 20 }), { locale });
       await user.type(screen.getByLabelText(/^Link/), link);
       await user.click(screen.getByRole('button', { name: /^(Citește|Læs)/ }));
+      await openBubbleSheet();
       expect(await screen.findByText(reason)).toBeVisible();
     },
   );
@@ -259,6 +249,7 @@ describe('one automatic retry on a network error', () => {
       return Response.json(draft);
     });
     await submit(user);
+    await openBubbleSheet();
     expect(await screen.findByText('Reading a recipe link…')).toBeVisible();
     await waitFor(() => expect(sent()).toHaveLength(1));
     expect(screen.queryByText("Couldn't read the recipe")).toBeNull();
@@ -276,6 +267,7 @@ describe('one automatic retry on a network error', () => {
     await submit(user);
     await waitFor(() => expect(sent()).toHaveLength(1));
     await act(() => vi.advanceTimersByTimeAsync(RECIPE_READ_AUTO_RETRY_MS));
+    await openBubbleSheet();
     expect(await screen.findByText("Couldn't read the recipe")).toBeVisible();
     expect(screen.getByText(/could not reach the server/)).toBeVisible();
     await act(() => vi.advanceTimersByTimeAsync(RECIPE_READ_AUTO_RETRY_MS * 3));
@@ -287,6 +279,7 @@ describe('one automatic retry on a network error', () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const { sent } = setup(() => failing('link.unreadable'));
     await submit(user);
+    await openBubbleSheet();
     expect(await screen.findByText("Couldn't read the recipe")).toBeVisible();
     await act(() => vi.advanceTimersByTimeAsync(RECIPE_READ_AUTO_RETRY_MS * 3));
     expect(sent()).toHaveLength(1);
@@ -318,9 +311,7 @@ describe('"Paste text instead" on a failed row', () => {
     );
 
     const sheet = await screen.findByRole('dialog', { name: 'From text' });
-    expect(
-      screen.queryByRole('dialog', { name: 'In the background' }),
-    ).toBeNull();
+    expect(screen.queryByRole('dialog', { name: 'Review' })).toBeNull();
     const text = screen.getByLabelText(/^Recipe text/);
     // On a phone the field stays unfocused so the keyboard does not jump the sheet (ADR 0039).
     await waitFor(() => expect(sheet).toHaveFocus());
@@ -353,7 +344,9 @@ describe('"Paste text instead" on a failed row', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog', { name: 'From text' })).toBeNull(),
     );
-    expect(strip()).toHaveTextContent("Couldn't read the recipe");
+    expect(
+      await screen.findByRole('button', { name: /1 could not be read/ }),
+    ).toBeVisible();
   });
 
   it.each(['link.invalid', 'link.no_recipe', 'scan.provider_refused'])(
@@ -433,6 +426,7 @@ describe('the Link Cap', () => {
       hour: 'numeric',
       minute: '2-digit',
     }).format(Date.parse(resetsAt));
+    await openBubbleSheet();
     expect(
       await screen.findByText("Today's link reads are used up"),
     ).toBeVisible();
@@ -460,6 +454,7 @@ describe('the Link Cap', () => {
     const user = userEvent.setup({ delay: null });
     setup(() => failing('link.cap_reached', 429, params));
     await submit(user);
+    await openBubbleSheet();
     expect(await screen.findByText(message)).toBeVisible();
   });
 
@@ -477,6 +472,7 @@ describe('the Link Cap', () => {
     setup(() => failing('link.cap_reached', 429, { cap: 20 }), { locale });
     await user.type(screen.getByLabelText(/^Link/), link);
     await user.click(screen.getByRole('button', { name: /^(Citește|Læs)/ }));
+    await openBubbleSheet();
     expect(await screen.findByText(message)).toBeVisible();
   });
 
@@ -503,8 +499,10 @@ describe('the Link Cap', () => {
     await waitFor(() =>
       expect(statuses()).toEqual(['capped', 'ready', 'capped']),
     );
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '2 recipe links failed',
+    await waitFor(() =>
+      expect(announcements()).toContain(
+        '1 ready to review, 2 could not be read',
+      ),
     );
   });
 
@@ -525,7 +523,9 @@ describe('the Link Cap', () => {
     );
     // Only the first two were ever sent.
     expect(sent()).toHaveLength(2);
-    await user.click(await screen.findByRole('button', { name: 'Open' }));
+    await user.click(
+      await screen.findByRole('button', { name: /Open Review/ }),
+    );
     expect(screen.getAllByText('Out of Credits')).toHaveLength(2);
     expect(
       screen.getByRole('button', { name: 'Discard c.example' }),
@@ -552,7 +552,9 @@ describe('the Link Cap', () => {
     await waitFor(() =>
       expect(statuses()).toEqual(['capped', 'reading', 'capped']),
     );
-    await user.click(await screen.findByRole('button', { name: 'Open' }));
+    await user.click(
+      await screen.findByRole('button', { name: /Open Review/ }),
+    );
     await user.click(
       screen.getByRole('button', { name: 'Retry reading a.example' }),
     );
@@ -581,13 +583,14 @@ describe('Out of Credits', () => {
     const user = userEvent.setup({ delay: null });
     setup(outOfCredits);
     await submit(user);
+    await openBubbleSheet();
     expect(await screen.findByText('Out of Credits')).toBeVisible();
     expect(
       screen.getByText('Out of Credits. This needs 2, and your Family has 1.'),
     ).toBeVisible();
     expect(screen.queryByText(/link reads are used up/)).toBeNull();
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '1 recipe link failed',
+    await waitFor(() =>
+      expect(announcements()).toContain('1 could not be read'),
     );
   });
 
@@ -596,6 +599,7 @@ describe('Out of Credits', () => {
     setup(outOfCredits, { route: '/recipes?fromText=1' });
     await user.type(screen.getByLabelText(/^Recipe text/), 'two eggs');
     await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
+    await openBubbleSheet();
     expect(await screen.findByText('Out of Credits')).toBeVisible();
     expect(
       screen.getByText('Out of Credits. This needs 2, and your Family has 1.'),
@@ -613,40 +617,20 @@ describe('Out of Credits', () => {
     setup(outOfCredits, { locale });
     await user.type(screen.getByLabelText(/^Link/), link);
     await user.click(screen.getByRole('button', { name: /^(Citește|Læs)/ }));
+    await openBubbleSheet();
     expect(await screen.findByText(message)).toBeVisible();
   });
 });
 
-describe('the failure alert', () => {
-  it('outlines the strip and announces a failure once, not again on another page or while retrying', async () => {
+describe('the failure announcement', () => {
+  it('announces a failure once through the toast live region', async () => {
     const user = userEvent.setup({ delay: null });
-    let answer: () => Response = () => failing('link.unreadable');
-    setup(() => answer());
+    setup(() => failing('link.unreadable'));
     await submit(user);
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '1 recipe link failed',
-    );
-    expect(outline()).toMatch(/border: 2px solid/);
-
-    // Off to a page without the Dock and back: the strip remounts, the same failure is not announced again.
-    await user.click(screen.getByRole('link', { name: 'Pantry' }));
-    await user.click(
-      await screen.findByRole('link', { name: 'to the camera' }),
-    );
-    await user.click(await screen.findByRole('link', { name: 'back' }));
-    expect(await screen.findByText('pantry page')).toBeVisible();
-    expect(strip()).toHaveTextContent("Couldn't read the recipe");
-    expect(screen.queryByRole('alert')).toBeNull();
-
-    // Retrying (reading again) takes the outline away; the alert is not repeated while the sheet is open.
-    answer = () => failing('link.unreadable');
-    await openStrip(user);
-    await user.click(
-      screen.getByRole('button', { name: 'Retry reading example.com' }),
-    );
     await waitFor(() =>
-      expect(recipeReads.getState().reads[0].status).toBe('failed'),
+      expect(announcements()).toContain('1 could not be read'),
     );
+    // A polite status, not an alert.
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
@@ -654,20 +638,8 @@ describe('the failure alert', () => {
     const user = userEvent.setup({ delay: null });
     setup(() => failing('link.cap_reached', 429, { cap: 20 }));
     await submit(user);
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '1 recipe link failed',
-    );
-  });
-
-  it('does not outline the strip while reads only wait or read', async () => {
-    const user = userEvent.setup({ delay: null });
-    setup(() => new Promise<Response>(() => {}));
-    await submit(user);
-    // The strip is reachable once the sheet has finished closing.
     await waitFor(() =>
-      expect(strip()).toHaveTextContent('Reading a recipe link'),
+      expect(announcements()).toContain('1 could not be read'),
     );
-    expect(outline()).not.toMatch(/border: 2px solid/);
-    expect(screen.queryByRole('alert')).toBeNull();
   });
 });
