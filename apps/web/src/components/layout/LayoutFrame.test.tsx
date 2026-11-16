@@ -198,7 +198,7 @@ describe('Scrolling', () => {
       .getByText('Pantry content')
       .closest<HTMLElement>('[data-phase="leaving"]')!;
     expect(el.scrollTop).toBe(0);
-    expect(leaving.style.top).toBe('400px');
+    expect(leaving.style.top).toBe('-400px');
     await elapse(TRANSITION_MS);
   });
 

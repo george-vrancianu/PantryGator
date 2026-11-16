@@ -77,7 +77,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
   // The sheet jumps to the new page's position on the swap, so the page leaving is moved by the
   // difference to stay where the Member last saw it while it fades.
   const [leavingOffset, setLeavingOffset] = useState(0);
-  useSheetScroll(scroller, (from, to) => setLeavingOffset(from - to));
+  useSheetScroll(scroller, (from, to) => setLeavingOffset(to - from));
   usePullToRefresh(scroller, {
     enabled: kind === 'page',
     onRefresh: () => {
