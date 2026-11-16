@@ -8,15 +8,7 @@ import {
   tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
-import {
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { haptic } from '../../lib/haptic';
 import { layoutKindFor } from '../../lib/layoutKind';
@@ -232,21 +224,7 @@ function PageHost({
   phase: PagePhase;
   children: ReactNode;
 }) {
-  const hasScreen = useRef(false);
-  const markScreen = useCallback(() => {
-    hasScreen.current = true;
-  }, []);
-  const instance = useMemo<PageInstance>(
-    () => ({ id, phase, markScreen }),
-    [id, phase, markScreen],
-  );
-  const slots = useContext(LayoutSlotsContext)!;
-  // A page with no `Screen` (not moved over yet) closes the regions the last page had open.
-  useLayoutEffect(() => {
-    if (phase === 'leaving' || hasScreen.current) return;
-    slots.setHeight('topBar', 0);
-    slots.setHeight('header', 0);
-  }, [id, phase, slots]);
+  const instance = useMemo<PageInstance>(() => ({ id, phase }), [id, phase]);
   return (
     <PageInstanceContext value={instance}>
       <Box

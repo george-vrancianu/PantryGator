@@ -55,8 +55,6 @@ export function Screen({
 }: ScreenProps) {
   const slots = useLayoutSlots();
   const instance = usePageInstance();
-  const markScreen = instance?.markScreen;
-  useLayoutEffect(() => markScreen?.(), [markScreen]);
 
   const topBar = (
     <AppScreenHeader

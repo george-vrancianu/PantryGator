@@ -2,7 +2,7 @@ import { Alert, Box, Spinner, TextField, Typography } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { ConfirmPrompt } from '../../components/ConfirmAction';
 import { EditorForm } from '../../components/EditorForm';
 import { ExpiryField } from '../../components/ExpiryPicker';
@@ -30,13 +30,12 @@ export function NewMealPlanPage() {
   const { t } = useTranslation('mealPlans');
   const [params] = useSearchParams();
   return (
-    <>
-      <AppScreenHeader
-        title={t('newPlan')}
-        back={{ label: t('back'), href: '/meal-plans' }}
-      />
+    <Screen
+      title={t('newPlan')}
+      back={{ label: t('back'), href: '/meal-plans' }}
+    >
       <MealPlanForm start={params.get('start')} />
-    </>
+    </Screen>
   );
 }
 
@@ -47,17 +46,16 @@ export function EditMealPlanPage() {
   const today = localIso(useToday());
   const plan = useMealPlan(id, today);
   return (
-    <>
-      <AppScreenHeader
-        title={t('mealPlans:editPlan')}
-        back={{ label: t('mealPlans:back'), href: `/meal-plans/${id}` }}
-      />
+    <Screen
+      title={t('mealPlans:editPlan')}
+      back={{ label: t('mealPlans:back'), href: `/meal-plans/${id}` }}
+    >
       {plan.isPending ? <Spinner label={t('common:loading')} /> : null}
       {plan.error ? (
         <Alert>{planErrorMessage(t, i18n.language, plan.error)}</Alert>
       ) : null}
       {plan.data ? <MealPlanForm plan={plan.data} /> : null}
-    </>
+    </Screen>
   );
 }
 

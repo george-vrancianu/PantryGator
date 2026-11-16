@@ -27,8 +27,6 @@ export type PageInstance = {
   /** Stable for the page's life, to find its own wrapper among the ones a transition holds. */
   id: number;
   phase: PagePhase;
-  /** Set by a `Screen` when it mounts, so the layout can tell a page that has none (the camera aside). */
-  markScreen: () => void;
 };
 
 export const PageInstanceContext = createContext<PageInstance | undefined>(
