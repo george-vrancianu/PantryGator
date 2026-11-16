@@ -56,17 +56,34 @@
   },
   "health": {
     "title": "Pantry health",
+    "scoreOf": "{{score}} of 100",
+    "notEnough": "Not enough to judge yet",
+    "lights": {
+      "expired": "Expired",
+      "soon": "Use soon",
+      "low": "Running low",
+      "fresh": "Fresh in",
+      "nothingNew": "Nothing new"
+    },
+    "a11y": {
+      "name": "{{title}}: {{verdict}}, {{lights}}.",
+      "expired_one": "{{count}} expired",
+      "expired_other": "{{count}} expired",
+      "soon_one": "{{count}} to use soon",
+      "soon_other": "{{count}} to use soon",
+      "low_one": "{{count}} running low",
+      "low_other": "{{count}} running low",
+      "fresh": "new items in",
+      "allClear": "no warning lights",
+      "nothingNew_one": "nothing added for {{count}} day",
+      "nothingNew_other": "nothing added for {{count}} days"
+    },
     "verdict": {
       "good": "In good shape",
       "some": "A few things to sort",
       "attention": "Needs attention"
     },
-    "toDo_one": "{{count}} to do",
-    "toDo_other": "{{count}} to do",
     "nothingToDo": "Nothing to do",
-    "nothingToDoSpoken": "nothing to do",
-    "toDoLong_one": "{{count}} thing to do",
-    "toDoLong_other": "{{count}} things to do",
     "progress_one": "Add {{count}} more to the Pantry to get your score",
     "progress_other": "Add {{count}} more to the Pantry to get your score",
     "factor": {
@@ -75,9 +92,6 @@
       "dated": "Dated",
       "rotation": "Rotation"
     },
-    "factorValue": "{{name}} {{value}}",
-    "cardName": "{{title}}, {{score}}, {{verdict}}, {{todos}}",
-    "cardNameProgress": "{{title}}, {{progress}}, {{todos}}",
     "group": {
       "now": "Now",
       "week": "This week",
@@ -162,12 +176,6 @@
       "add": "Add {{name}}",
       "setDate": "Set date",
       "setDateName": "Set date for {{name}}"
-    },
-    "gator": {
-      "curious": "I'm still learning what you've got. Add a few more things and I can tell you how your Pantry is doing.",
-      "dapper": "Splendid. Everything's in date, stocked and accounted for.",
-      "hmm": "Hmm. Let's start here: {{title}}.",
-      "worried": "Let's sort this out. First up: {{title}}."
     }
   },
   "mealPlan": {

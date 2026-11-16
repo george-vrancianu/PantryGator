@@ -98,7 +98,6 @@ describe('CustomisePage', () => {
         .getAllByRole('button')
         .map((b) => b.getAttribute('aria-label')),
     ).toEqual([
-      'Add Pantry health widget',
       'Add Pantry widget',
       'Add Suggestions widget',
       'Add Cook tonight widget',

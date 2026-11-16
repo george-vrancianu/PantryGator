@@ -5,6 +5,7 @@ import {
   CalendarIcon,
   CheckIcon,
   ChevronDownIcon,
+  color,
   CookIcon,
   DeleteIcon,
   HourglassIcon,
@@ -217,20 +218,17 @@ export function HealthTodos({ state, today }: Props) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
-                p: '4px 9px 4px 7px',
-                borderRadius: '999px',
-                bgcolor: tokens.color.subtle,
-                color: tokens.color.muted,
-                fontSize: 12,
-                fontWeight: 600,
+                height: 28,
+                p: '0 9px 0 7px',
+                borderRadius: radius.tag,
+                bgcolor: tokens.color.okBg,
+                color: tokens.color.okFg,
+                fontSize: 12.5,
+                fontWeight: 700,
               }}
             >
-              <Box
-                component="span"
-                aria-hidden="true"
-                sx={{ display: 'flex', color: tokens.color.accent }}
-              >
-                <CheckIcon size={12} />
+              <Box component="span" aria-hidden="true" sx={{ display: 'flex' }}>
+                <CheckIcon size={13} />
               </Box>
               {t(`health.done.${key}`)}
             </Box>
@@ -322,18 +320,20 @@ function TodoRow({
   return (
     <Box
       component="li"
+      data-testid="todo-card"
       sx={{
-        borderTop: `1px solid ${tokens.color.divider}`,
-        '&:first-of-type': { borderTop: 0 },
+        mt: '8px',
+        p: '10px 10px 10px 12px',
+        borderRadius: radius.card,
+        bgcolor: color.cardBg,
+        border: `1px solid ${color.cardLine}`,
       }}
     >
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          minHeight: 54,
-          py: '6px',
+          gap: '12px',
         }}
       >
         <Box
@@ -349,7 +349,7 @@ function TodoRow({
             minWidth: 0,
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: '12px',
             cursor: 'pointer',
             '&:focus-visible': {
               outline: `2px solid ${tokens.color.accent}`,
@@ -362,9 +362,9 @@ function TodoRow({
             aria-hidden="true"
             sx={{
               flexShrink: 0,
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
+              width: 38,
+              height: 38,
+              borderRadius: radius.control,
               display: 'grid',
               placeItems: 'center',
               bgcolor: severity.background,
@@ -380,8 +380,8 @@ function TodoRow({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                fontSize: 14.5,
-                fontWeight: 600,
+                fontSize: 15.5,
+                fontWeight: 700,
               }}
             >
               {title}
@@ -389,12 +389,15 @@ function TodoRow({
                 <Box
                   component="span"
                   sx={{
-                    p: '1px 6px',
-                    borderRadius: '999px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    height: 18,
+                    p: '0 6px',
+                    borderRadius: radius.tag,
                     fontSize: 11,
                     fontWeight: 800,
-                    bgcolor: tokens.color.accentTint,
-                    color: tokens.color.accentOnTint,
+                    bgcolor: tokens.color.okBg,
+                    color: tokens.color.okFg,
                   }}
                 >
                   <span aria-hidden="true">+{todo.gain}</span>
@@ -422,7 +425,7 @@ function TodoRow({
               component="span"
               sx={{
                 display: 'block',
-                fontSize: 12.5,
+                fontSize: 13,
                 color: tokens.color.muted,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',

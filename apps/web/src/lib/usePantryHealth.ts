@@ -11,6 +11,7 @@ import {
   localIso,
   useBatches,
   useDeleteBatches,
+  useLastStockedAt,
   useRunningLow,
   type Batch,
 } from './pantry';
@@ -35,6 +36,8 @@ export type PantryHealthState = {
   batches: Batch[];
   staples: Staple[];
   staleThresholdDays: number;
+  /** When the Family last stocked something (ISO), or null: the fourth light. Not loaded yet reads as null. */
+  lastStockedAt: string | null;
   /**
    * Remove Batches from the Pantry with one Undo toast (ADR 0009). They leave the Health To-dos and the score
    * at once. `message` is the toast text, already translated; the new score is added to it when there is one.
@@ -55,6 +58,7 @@ export function usePantryHealth(): PantryHealthState {
   const suggestions = useSuggestions(today);
   const settings = useFamilySettings();
   const staleThresholdDays = useStaleThresholdDays();
+  const lastStocked = useLastStockedAt();
 
   const { mutateAsync: sendDeleteMany } = useDeleteBatches();
   const removal = useDeferredRemoval(['pantry'], undefined, sendDeleteMany);
@@ -123,5 +127,6 @@ export function usePantryHealth(): PantryHealthState {
     batches: stocked,
     staples: staples.data ?? [],
     staleThresholdDays,
+    lastStockedAt: lastStocked.data ?? null,
   };
 }

@@ -10,11 +10,10 @@ import {
 } from './dashboard.schemas';
 
 /**
- * Pantry health, Pantry Stock, Shopping, Meal plan, Use soon. Saved layouts are never migrated.
+ * Pantry Stock, Shopping, Meal plan, Use soon (Pantry Health lives in the header, not a Widget). Saved layouts are never migrated.
  * Fixed ids keep the default layout identical across fetches until the Member first saves.
  */
 const DEFAULT_LAYOUT: WidgetInstance[] = [
-  { id: 'default-health', type: 'health', size: 'wide' },
   { id: 'default-pantry-stock', type: 'pantry-stock', size: 'small' },
   { id: 'default-shopping', type: 'shopping', size: 'small' },
   { id: 'default-meal-plan', type: 'meal-plan', size: 'wide' },

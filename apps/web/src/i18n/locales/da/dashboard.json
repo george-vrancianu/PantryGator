@@ -56,17 +56,34 @@
   },
   "health": {
     "title": "Spisekammerets tilstand",
+    "scoreOf": "{{score}} af 100",
+    "notEnough": "Ikke nok til at vurdere endnu",
+    "lights": {
+      "expired": "Udløbet",
+      "soon": "Brug snart",
+      "low": "Ved at slippe op",
+      "fresh": "Nyt på lager",
+      "nothingNew": "Intet nyt"
+    },
+    "a11y": {
+      "name": "{{title}}: {{verdict}}, {{lights}}.",
+      "expired_one": "{{count}} udløbet",
+      "expired_other": "{{count}} udløbne",
+      "soon_one": "{{count}} skal bruges snart",
+      "soon_other": "{{count}} skal bruges snart",
+      "low_one": "{{count}} ved at slippe op",
+      "low_other": "{{count}} ved at slippe op",
+      "fresh": "nye varer er kommet til",
+      "allClear": "ingen advarsler",
+      "nothingNew_one": "intet tilføjet i {{count}} dag",
+      "nothingNew_other": "intet tilføjet i {{count}} dage"
+    },
     "verdict": {
       "good": "I god form",
       "some": "Et par ting at ordne",
       "attention": "Kræver opmærksomhed"
     },
-    "toDo_one": "{{count}} at gøre",
-    "toDo_other": "{{count}} at gøre",
     "nothingToDo": "Intet at gøre",
-    "nothingToDoSpoken": "intet at gøre",
-    "toDoLong_one": "{{count}} ting at gøre",
-    "toDoLong_other": "{{count}} ting at gøre",
     "progress_one": "Tilføj {{count}} mere til spisekammeret for at få din score",
     "progress_other": "Tilføj {{count}} mere til spisekammeret for at få din score",
     "factor": {
@@ -75,9 +92,6 @@
       "dated": "Datomærket",
       "rotation": "Omsætning"
     },
-    "factorValue": "{{name}} {{value}}",
-    "cardName": "{{title}}, {{score}}, {{verdict}}, {{todos}}",
-    "cardNameProgress": "{{title}}, {{progress}}, {{todos}}",
     "group": {
       "now": "Nu",
       "week": "Denne uge",
@@ -162,12 +176,6 @@
       "add": "Tilføj {{name}}",
       "setDate": "Sæt dato",
       "setDateName": "Sæt dato for {{name}}"
-    },
-    "gator": {
-      "curious": "Jeg er stadig ved at lære, hvad du har. Læg et par ting mere ind, så kan jeg fortælle, hvordan det går med dit spisekammer.",
-      "dapper": "Fremragende. Alt er inden for datoen, på lager, og der er styr på det hele.",
-      "hmm": "Hmm. Lad os starte her: {{title}}.",
-      "worried": "Lad os få styr på det. Først: {{title}}."
     }
   },
   "mealPlan": {

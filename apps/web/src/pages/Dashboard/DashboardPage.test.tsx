@@ -45,6 +45,72 @@ describe('DashboardPage', () => {
     ]);
   });
 
+  describe('Pantry Health', () => {
+    function stubHealth(layout: unknown) {
+      const { fetchMock } = stubApi({
+        'GET /api/dashboard-layout': () => Response.json(layout),
+        'GET /api/settings/family': () =>
+          Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+        'GET /api/pantry': () => Response.json({ batches: [], runningLow: [] }),
+        'GET /api/pantry/last-stocked': () =>
+          Response.json({ lastStockedAt: null }),
+        'GET /api/staples': () => Response.json({ staples: [] }),
+        'GET /api/shopping-list/suggestions': () =>
+          Response.json({
+            staples: [],
+            usedUp: [],
+            runningLow: [],
+            expired: [],
+            dismissed: [],
+          }),
+        'GET /api/shopping-list': () =>
+          Response.json({
+            id: 'l',
+            groups: [],
+            summary: { remaining: 0, checked: 0 },
+          }),
+      });
+      vi.stubGlobal('fetch', fetchMock);
+    }
+
+    it('shows the dial and lights in the header, not as a Widget', async () => {
+      stubHealth({ widgets: [{ id: 'a', type: 'budget', size: 'small' }] });
+
+      renderInAppLayout(<DashboardPage />, '/');
+
+      const cluster = await screen.findByRole('button', {
+        name: 'Pantry health: Not enough to judge yet, no warning lights.',
+      });
+      expect(cluster.closest('[data-region="header"]')).not.toBeNull();
+      expect(
+        screen
+          .getAllByRole('region')
+          .map((region) => region.getAttribute('aria-label')),
+      ).toEqual(['Budget']);
+    });
+
+    it('loads a stored layout that still holds a health Widget without it', async () => {
+      stubHealth({
+        widgets: [
+          { id: 'h', type: 'health', size: 'wide' },
+          { id: 'a', type: 'budget', size: 'small' },
+        ],
+      });
+
+      renderInAppLayout(<DashboardPage />, '/');
+
+      await screen.findByRole('region', { name: 'Budget' });
+      expect(
+        screen
+          .getAllByRole('region')
+          .map((region) => region.getAttribute('aria-label')),
+      ).toEqual(['Budget']);
+      expect(
+        screen.getAllByRole('button', { name: /^Pantry health: / }),
+      ).toHaveLength(1);
+    });
+  });
+
   it.each([
     [390, 'repeat(2, minmax(0, 1fr))'],
     [768, 'repeat(3, minmax(0, 1fr))'],
@@ -166,6 +232,19 @@ describe('DashboardPage header', () => {
     const { fetchMock, calls } = stubApi({
       'GET /api/dashboard-layout': layout,
       'GET /api/pantry': () => Response.json({ batches: [] }),
+      // Pantry Health in the header reads these too, and a refresh refetches them.
+      'GET /api/pantry/last-stocked': () =>
+        Response.json({ lastStockedAt: null }),
+      'GET /api/settings/family': () =>
+        Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+      'GET /api/shopping-list/suggestions': () =>
+        Response.json({
+          staples: [],
+          usedUp: [],
+          runningLow: [],
+          expired: [],
+          dismissed: [],
+        }),
       'GET /api/shopping-list': () =>
         Response.json({
           id: 'l',

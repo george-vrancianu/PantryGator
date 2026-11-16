@@ -31,6 +31,8 @@ export const radius = {
   btn: pp('r-btn'),
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
+  /** Small labelled pills: the gain pill and the done pills. */
+  tag: pp('r-tag'),
   /** Tags and pill buttons: round in every Theme. */
   pill: '999px',
 } as const;
@@ -78,6 +80,29 @@ export const canopy = {
   /** The 1px inner highlight on a header chip. */
   chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
 } as const;
+
+/** Pantry Health on the Canopy: the dial's band ends and the lamps' windows and lit colours (always on the dark header). */
+export const healthDial = {
+  bad: pp('dial-bad'),
+  good: pp('dial-good'),
+} as const;
+
+export const healthLamp = {
+  expired: pp('lamp-expired'),
+  soon: pp('lamp-soon'),
+  low: pp('lamp-low'),
+  fresh: pp('lamp-fresh'),
+  stale: pp('lamp-stale'),
+  window: pp('lamp-window'),
+  windowOff: pp('lamp-window-off'),
+  /** The lamp case's corner radius. */
+  radius: '7px',
+  /** The recess shadow inside an unlit or lit window. */
+  windowShadow: 'inset 0 1px 3px rgba(0,0,0,.5)',
+} as const;
+
+/** Bar and meter tracks. */
+export const segOff = pp('seg-off');
 
 /** The Dock (Canopy handoff section 3.5): the bar, its tabs, the gold mark and the mic / camera rocker. */
 export const dock = {

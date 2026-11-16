@@ -63,7 +63,6 @@ describe('Dashboard layout (integration)', () => {
 
     const widgets = (body as { widgets: Widget[] }).widgets;
     expect(widgets.map(({ type, size }) => ({ type, size }))).toEqual([
-      { type: 'health', size: 'wide' },
       { type: 'pantry-stock', size: 'small' },
       { type: 'shopping', size: 'small' },
       { type: 'meal-plan', size: 'wide' },
@@ -87,17 +86,29 @@ describe('Dashboard layout (integration)', () => {
     expect(body).toEqual({ widgets: layout });
   });
 
-  it('accepts a Pantry health Widget in a saved layout', async () => {
-    const { cookie } = await signUp('Dina');
-    const layout = [
-      { id: 'h', type: 'health', size: 'small' },
-      { id: 'w', type: 'health', size: 'wide' },
-    ];
+  it('drops a stored Pantry health Widget when the layout is read', async () => {
+    const { cookie, userId } = await signUp('Dina');
+    await database.insert(dashboardLayouts).values({
+      userId,
+      widgets: [
+        { id: 'h', type: 'health', size: 'wide' },
+        { id: 'b', type: 'budget', size: 'small' },
+      ],
+    });
 
-    await call('put', cookie).send({ widgets: layout }).expect(200);
     const body = (await call('get', cookie).expect(200)).body as unknown;
 
-    expect(body).toEqual({ widgets: layout });
+    expect(body).toEqual({
+      widgets: [{ id: 'b', type: 'budget', size: 'small' }],
+    });
+  });
+
+  it('no longer accepts a Pantry health Widget in a saved layout', async () => {
+    const { cookie } = await signUp('Dora');
+
+    await call('put', cookie)
+      .send({ widgets: [{ id: 'h', type: 'health', size: 'wide' }] })
+      .expect(400);
   });
 
   it('replaces the previous layout, including an emptied Dashboard', async () => {
@@ -130,7 +141,7 @@ describe('Dashboard layout (integration)', () => {
 
     const body = (await call('get', other.cookie).expect(200)).body as unknown;
 
-    expect((body as { widgets: Widget[] }).widgets).toHaveLength(5);
+    expect((body as { widgets: Widget[] }).widgets).toHaveLength(4);
   });
 
   it('drops the retired Quick Scan Widget from a saved layout', async () => {
