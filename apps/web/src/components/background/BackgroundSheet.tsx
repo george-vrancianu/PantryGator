@@ -7,7 +7,6 @@ import {
   Typography,
   palette,
   radius,
-  tokens,
 } from '@pocket-pantry/ui';
 import { useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -108,9 +107,9 @@ export function BackgroundSheet({
           borderRadius: radius.control,
           backgroundColor:
             item.status === 'failed'
-              ? tokens.color.urgentBg
+              ? palette('error-light')
               : palette('background-paper'),
-          color: item.status === 'failed' ? tokens.color.urgentFg : undefined,
+          color: item.status === 'failed' ? palette('error-main') : undefined,
           fontWeight: 700,
         }}
       >
@@ -195,8 +194,7 @@ export function BackgroundSheet({
               overflow: 'hidden',
               display: 'grid',
               placeItems: 'center',
-              background:
-                'radial-gradient(circle at 50% 40%, #3A6E50, #173323)',
+              background: 'var(--pp-bubble-face)',
             }}
           >
             <Gator

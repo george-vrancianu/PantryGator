@@ -16,6 +16,7 @@ vi.mock('@pocket-pantry/ui', async (importOriginal) => ({
     }, [bottom]),
 }));
 import { renderWithProviders } from '../../../test/render';
+import { stubMatchMedia } from '../../../test/viewport';
 import { announcements } from '../../../test/voice';
 import type { BackgroundItem, BackgroundStatus } from '../backgroundItem';
 import { PLACEMENT_KEY } from './bubblePlacement';
@@ -108,7 +109,7 @@ describe('GatorBubble states', () => {
     expect(screen.getByTestId('badge-reading')).toHaveTextContent('2');
     const arcs = screen.getAllByTestId('bubble-arc');
     expect(arcs).toHaveLength(1);
-    expect(arcs[0]).toHaveAttribute('data-colour', '#E8CB7C');
+    expect(arcs[0]).toHaveAttribute('data-colour', 'var(--pp-gold)');
   });
 
   it('Some ready: gold count ready, grey count reading, gold and cream ring', () => {
@@ -121,7 +122,7 @@ describe('GatorBubble states', () => {
     expect(screen.getByTestId('badge-reading')).toHaveTextContent('1');
     expect(
       screen.getAllByTestId('bubble-arc').map((a) => a.dataset.colour),
-    ).toEqual(['#E8CB7C', '#F4F7F1']);
+    ).toEqual(['var(--pp-gold)', 'var(--pp-bubble-grey-bg)']);
     expect(
       screen.getByRole('button', { name: /2 ready to review\. Open Review/ }),
     ).toBeInTheDocument();
@@ -136,7 +137,7 @@ describe('GatorBubble states', () => {
     expect(screen.getByTestId('badge-done')).toHaveTextContent('2');
     const arcs = screen.getAllByTestId('bubble-arc');
     expect(arcs).toHaveLength(1);
-    expect(arcs[0]).toHaveAttribute('data-colour', '#1C6A43');
+    expect(arcs[0]).toHaveAttribute('data-colour', 'var(--pp-bubble-green-bg)');
     expect(
       screen.getByRole('button', {
         name: 'All read: 2 ready to review. Open Review',
@@ -154,7 +155,7 @@ describe('GatorBubble states', () => {
     expect(screen.getByTestId('badge-failed')).toHaveTextContent('1');
     expect(
       screen.getAllByTestId('bubble-arc').map((a) => a.dataset.colour),
-    ).toEqual(['#E8CB7C', '#F0693A']);
+    ).toEqual(['var(--pp-gold)', 'var(--pp-bubble-ring-red)']);
     expect(
       screen.getByRole('button', {
         name: '1 ready to review, 1 could not be read. Open Review',
@@ -247,7 +248,7 @@ describe('GatorBubble placement', () => {
     expect(window.localStorage.getItem(PLACEMENT_KEY)).toBeNull();
   });
 
-  it('bounds its height by the header input and rests above the Dock or the bottom inset', () => {
+  it('bounds its height by the header input and rests 16 above the Dock or the bottom inset', () => {
     const view = show([job('a', 'reading')], vi.fn(), true);
     const css = (el: HTMLElement) => authoredCss(el);
     const dockCss = css(screen.getByTestId('gator-bubble'));
@@ -259,6 +260,23 @@ describe('GatorBubble placement', () => {
     expect(plainCss).toContain('safe-area-inset-bottom');
     expect(plainCss).toContain('16px');
     expect(plainCss).not.toContain('92px');
+  });
+});
+
+describe('GatorBubble accessibility', () => {
+  it('draws the Theme focus ring when focused by keyboard', () => {
+    show([job('a', 'reading')]);
+    expect(authoredCss(bubble()!)).toContain(':focus-visible');
+  });
+
+  it('does not scale while held when motion is reduced', () => {
+    stubMatchMedia((query) => query.includes('prefers-reduced-motion'));
+    show([job('a', 'reading')]);
+    const button = bubble()!;
+    fireEvent.pointerDown(button, { pointerId: 1, clientX: 350, clientY: 520 });
+    fireEvent.pointerMove(button, { pointerId: 1, clientX: 100, clientY: 400 });
+    expect(getComputedStyle(button).transform).toContain('scale(1)');
+    expect(getComputedStyle(button).transform).not.toContain('scale(1.12)');
   });
 });
 
@@ -338,6 +356,28 @@ describe('GatorBubble announcements', () => {
     first.unmount();
     show([job('a', 'reading')]);
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  it('keeps the All done label up until the state changes', () => {
+    show([job('a', 'ready'), job('b', 'ready')]);
+    act(() => {
+      vi.advanceTimersByTime(LABEL_MS * 4);
+    });
+    expect(screen.getByTestId('gator-bubble-label')).toHaveTextContent(
+      'All read: 2 ready to review',
+    );
+    change([job('a', 'ready'), job('b', 'reading')]);
+    act(() => {
+      vi.advanceTimersByTime(LABEL_MS);
+    });
+    expect(screen.queryByTestId('gator-bubble-label')).not.toBeInTheDocument();
+  });
+
+  it('does not announce again when only a count the sentence leaves out changes', () => {
+    show([job('a', 'ready'), job('b', 'reading')]);
+    const before = announcements().length;
+    change([job('a', 'ready'), job('b', 'reading'), job('c', 'reading')]);
+    expect(announcements()).toHaveLength(before);
   });
 
   it('slides a label out for 3 seconds on each state change', () => {

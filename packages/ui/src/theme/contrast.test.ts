@@ -45,6 +45,10 @@ const PAIRS: ReadonlyArray<[text: Key, fill: Key]> = [
   ['gold-ink', 'gold'],
   ['ink-2', 'card-bg'],
   ['ink-2', 'surface'],
+  // The Gator bubble's count badges (gold uses gold-ink on gold, above).
+  ['bubble-grey-fg', 'bubble-grey-bg'],
+  ['bubble-green-fg', 'bubble-green-bg'],
+  ['bubble-red-fg', 'bubble-red-bg'],
   // Not covered here: pairs with a gradient or rgba side cannot go through
   // this hex-only test: `hero-*` on `hero-bg`, `dock-on` / `dock-off` on
   // `dock-bg`, `cap-ink` on `cap-bg`, and `canopy-muted`. Add them when a

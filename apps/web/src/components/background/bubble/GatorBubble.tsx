@@ -1,6 +1,7 @@
 import {
   Box,
   CheckIcon,
+  focusRing,
   Gator,
   gutterLeft,
   gutterRight,
@@ -8,6 +9,7 @@ import {
   DOCK_BOTTOM_CSS,
   DOCK_HEIGHT,
   SAFE_TOP,
+  shadow,
   useAnySheetOpen,
   useToastFloor,
   usePrefersReducedMotion,
@@ -58,18 +60,19 @@ const DRAG_SCALE = 1.12;
 /** A bubble resting this far above its lowest spot or less is in the toasts' way, px. */
 const TOAST_BAND = 56;
 
-const INK = '#101511';
+/** The bubble's own Theme tokens (`--pp-bubble-*`), the same in both Themes. */
+const bv = (name: string) => `var(--pp-bubble-${name})`;
 const BADGE = {
-  grey: { bg: '#F4F7F1', fg: '#141A16' },
-  gold: { bg: '#E8CB7C', fg: '#2A2105' },
-  green: { bg: '#1C6A43', fg: '#FFFFFF' },
-  red: { bg: '#B93A14', fg: '#FFFFFF' },
+  grey: { bg: bv('grey-bg'), fg: bv('grey-fg') },
+  gold: { bg: 'var(--pp-gold)', fg: 'var(--pp-gold-ink)' },
+  green: { bg: bv('green-bg'), fg: bv('green-fg') },
+  red: { bg: bv('red-bg'), fg: bv('red-fg') },
 } as const;
 const RING_COLOUR = {
-  gold: '#E8CB7C',
-  cream: '#F4F7F1',
-  red: '#F0693A',
-  green: '#1C6A43',
+  gold: 'var(--pp-gold)',
+  cream: bv('grey-bg'),
+  red: bv('ring-red'),
+  green: bv('green-bg'),
 } as const;
 
 const MOOD: Record<BubbleState, 'thinking' | 'happy' | 'worried'> = {
@@ -107,7 +110,7 @@ function Badge({
         display: 'grid',
         placeItems: 'center',
         borderRadius: 10,
-        border: `2px solid ${INK}`,
+        border: `2px solid ${bv('ink')}`,
         backgroundColor: BADGE[tone].bg,
         color: BADGE[tone].fg,
         fontSize: 11.5,
@@ -158,7 +161,7 @@ function Ring({ summary, spin }: { summary: BubbleSummary; spin: boolean }) {
         cy={BUBBLE_SIZE / 2}
         r={r}
         fill="none"
-        stroke="rgba(244,247,241,.14)"
+        style={{ stroke: bv('ring-track') }}
         strokeWidth={3}
       />
       <Box
@@ -184,7 +187,7 @@ function Ring({ summary, spin }: { summary: BubbleSummary; spin: boolean }) {
             cy={BUBBLE_SIZE / 2}
             r={r}
             fill="none"
-            stroke={arc.colour}
+            style={{ stroke: arc.colour }}
             strokeWidth={3}
             strokeLinecap="round"
             pathLength={1}
@@ -364,7 +367,7 @@ export function GatorBubble({
               position: 'absolute',
               inset: 0,
               borderRadius: '50%',
-              border: '1.5px dashed rgba(20,30,22,.42)',
+              border: `1.5px dashed ${bv('origin')}`,
             }}
           />
         ) : null}
@@ -382,11 +385,11 @@ export function GatorBubble({
               alignItems: 'center',
               whiteSpace: 'nowrap',
               borderRadius: '8px',
-              background: 'linear-gradient(180deg, #262F29, #121814)',
-              color: '#FFFFFF',
+              background: bv('disc'),
+              color: bv('green-fg'),
               fontSize: 13.5,
               fontWeight: 700,
-              boxShadow: '0 2px 4px rgba(10,16,12,.35)',
+              boxShadow: bv('shadow-label'),
               animation: reduceMotion
                 ? 'none'
                 : `${left ? 'pp-bubble-label-l' : 'pp-bubble-label-r'} 220ms cubic-bezier(.2,.8,.2,1)`,
@@ -429,16 +432,15 @@ export function GatorBubble({
             border: 'none',
             borderRadius: '50%',
             cursor: dragging ? 'grabbing' : 'pointer',
-            background: allDone
-              ? 'linear-gradient(180deg, #F5E0A2 0%, #D9B85C 100%)'
-              : 'linear-gradient(180deg, #262F29, #121814)',
+            background: allDone ? 'var(--pp-key-bg)' : bv('disc'),
             boxShadow: dragging
-              ? '0 4px 8px rgba(10,16,12,.4), 0 22px 32px -8px rgba(10,16,12,.75)'
+              ? bv('shadow-drag')
               : allDone
-                ? '0 0 0 6px rgba(232,203,124,.35), 0 2px 4px rgba(10,16,12,.35), 0 14px 24px -8px rgba(10,16,12,.65)'
-                : '0 2px 4px rgba(10,16,12,.35), 0 14px 24px -8px rgba(10,16,12,.65)',
+                ? bv('shadow-done')
+                : shadow.float,
+            ...focusRing,
             transform: dragging
-              ? `translate(${drag.dx}px, ${drag.dy}px) scale(${DRAG_SCALE})`
+              ? `translate(${drag.dx}px, ${drag.dy}px) scale(${reduceMotion ? 1 : DRAG_SCALE})`
               : 'none',
             transition:
               dragging || reduceMotion ? 'none' : 'transform 180ms ease',
@@ -457,9 +459,7 @@ export function GatorBubble({
               overflow: 'hidden',
               display: 'grid',
               placeItems: 'center',
-              background: allDone
-                ? '#FBF3DA'
-                : 'radial-gradient(circle at 50% 40%, #3A6E50, #173323)',
+              background: allDone ? bv('face-done') : bv('face'),
             }}
           >
             <Gator
