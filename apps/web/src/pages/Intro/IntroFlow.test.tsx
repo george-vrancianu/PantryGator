@@ -82,7 +82,7 @@ describe('the Intro flow', () => {
       await screen.findByRole('button', { name: /Skip, take me to the app/ }),
     );
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
 
     // The rows left on "Same" are not in the body, so they store nothing.
