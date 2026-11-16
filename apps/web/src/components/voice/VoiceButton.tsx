@@ -161,7 +161,7 @@ export function VoiceButton({
                 justifyContent: 'center',
                 p: 0,
                 border: 0,
-                borderRadius: 'var(--pp-r-cap) var(--pp-r-cap) 0 0',
+                borderRadius: `${radius.cap} ${radius.cap} 0 0`,
                 backgroundColor: armed
                   ? `color-mix(in srgb, ${palette('text-primary')} 55%, ${color.cardBg})`
                   : active

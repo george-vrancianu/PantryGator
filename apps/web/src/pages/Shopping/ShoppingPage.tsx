@@ -70,7 +70,7 @@ export function ShoppingPage() {
   }, [groupCount]);
   // A tile that opened a sheet unmounts once the sheet fills the list: put focus back on the
   // header "+" / the header's Import button instead of leaving it on <body>.
-  const importPill = useRef<HTMLButtonElement>(null);
+  const importButton = useRef<HTMLButtonElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
   const opener = useRef<Element | null>(null);
   const refocusIfOpenerGone = (
@@ -114,7 +114,7 @@ export function ShoppingPage() {
         title={t('shopping:title')}
         secondary={
           <HeaderButton
-            ref={importPill}
+            ref={importButton}
             icon={<ImportIcon size={18} />}
             onClick={(event) => openApply(event.currentTarget)}
           >
@@ -183,7 +183,7 @@ export function ShoppingPage() {
         <ApplyTemplatesSheet
           open={applyOpen}
           onClose={() => setApplyOpen(false)}
-          onExited={() => refocusIfOpenerGone(importPill)}
+          onExited={() => refocusIfOpenerGone(importButton)}
         />
         <SaveTemplateSheet open={saveOpen} onClose={() => setSaveOpen(false)} />
       </Screen>

@@ -141,6 +141,11 @@ describe('The Canopy look', () => {
     expect(css(screen.getByText('Mon 16'))).toContain('var(--pp-canopy-muted)');
   });
 
+  it('draws no fade on an editor, where the Dock is hidden and the last field must scroll clear', () => {
+    renderRoutes('/recipes/new');
+    expect(screen.queryByTestId('sheet-fade')).toBeNull();
+  });
+
   it('draws the fade and canopy in no layout for the camera', () => {
     renderRoutes('/scan');
     expect(screen.queryByTestId('sheet-fade')).toBeNull();

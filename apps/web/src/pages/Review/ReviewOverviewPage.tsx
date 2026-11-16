@@ -6,7 +6,7 @@ import {
   CameraIcon,
   CloseIcon,
   ImagePlusIcon,
-  Link,
+  HeaderButton,
   Typography,
   tokens,
   nestedRadius,
@@ -569,7 +569,11 @@ export function ReviewOverviewPage({
             ? t('overview.stillReading', { count: reading + uncropped })
             : t('overview.allRead'),
         ].join(' · ')}
-        secondary={<Link href={cameraPath}>{t('overview.camera')}</Link>}
+        secondary={
+          <HeaderButton href={cameraPath} icon={<CameraIcon />}>
+            {t('overview.camera')}
+          </HeaderButton>
+        }
       />
       {allRead ? (
         <GatorBanner

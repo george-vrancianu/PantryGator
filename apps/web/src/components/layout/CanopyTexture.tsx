@@ -1,4 +1,4 @@
-import { Box, usePrefersReducedMotion } from '@pocket-pantry/ui';
+import { Box, canopy, usePrefersReducedMotion } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
@@ -204,7 +204,7 @@ export function CanopyTexture() {
                 component="i"
                 sx={{
                   ...wideSx,
-                  background: 'var(--pp-tex-glint)',
+                  background: canopy.texGlint,
                   WebkitMaskImage: `url(${t.glintTile})`,
                   maskImage: `url(${t.glintTile})`,
                   WebkitMaskSize: `${t.width}px ${t.height}px`,

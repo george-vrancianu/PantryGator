@@ -49,8 +49,8 @@ export type DockCapsuleProps = {
   /**
    * Teaching mode (the Intro): light one half and dim the other. The lit half stays the real control
    * (the camera link, or whatever `micSlot` receives) and gets the butter fill and the pulse ring; the
-   * dimmed half is `aria-disabled`, out of the tab order and does nothing. The capsule's ring turns
-   * cream, as a ring in the page colour would vanish on the olive ground.
+   * dimmed half is `aria-disabled`, out of the tab order and does nothing. The capsule keeps its own
+   * gold fill.
    */
   teach?: DockTeach;
   /**
@@ -60,7 +60,7 @@ export type DockCapsuleProps = {
   micLabel?: string;
   /**
    * Non-blocking teach: light one half (butter fill, pulse ring) and leave everything else as it is.
-   * Nothing is dimmed or disabled, the capsule's ring keeps the page colour, and the Dock's tabs stay
+   * Nothing is dimmed or disabled, and the Dock's tabs stay
    * usable (do not set the Dock's `teaching`). `teach` wins if both are set.
    */
   highlight?: DockTeach;
@@ -68,7 +68,7 @@ export type DockCapsuleProps = {
 
 /**
  * The Mic/Camera capsule over the Dock's middle slot: the mic on top, the camera below, a
- * hairline between, overhanging the bar by 18 px at the top and bottom. Without a mic it shrinks
+ * hairline between, overhanging the bar by 13 px at the top and bottom. Without a mic it shrinks
  * to a camera button inside the bar.
  */
 export function DockCapsule({

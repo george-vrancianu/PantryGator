@@ -273,6 +273,21 @@ describe('Shopping Template screens', () => {
     );
   });
 
+  it('leaves for the templates through Back and the gold Done key, as it saves as it goes', async () => {
+    statefulTemplate([milk]);
+    renderEditor();
+
+    await screen.findByRole('group', { name: 'Milk' });
+    expect(screen.getByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      '/shopping/templates',
+    );
+    expect(screen.getByRole('link', { name: 'Done' })).toHaveAttribute(
+      'href',
+      '/shopping/templates',
+    );
+  });
+
   it('renames', async () => {
     const { calls } = statefulTemplate([milk]);
     renderEditor();

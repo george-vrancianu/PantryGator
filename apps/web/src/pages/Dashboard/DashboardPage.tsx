@@ -7,7 +7,7 @@ import {
   Link,
   SettingsIcon,
   Spinner,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '../../components/layout/Screen';
@@ -90,10 +90,10 @@ export function DashboardPage() {
               justifyContent: 'center',
               gap: '7px',
               minHeight: 44,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               fontSize: 13,
               fontWeight: 700,
-              '&:hover': { color: tokens.color.ink },
+              '&:hover': { color: palette('text-primary') },
             }}
           >
             <CustomiseIcon size={16} />

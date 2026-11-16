@@ -109,7 +109,11 @@ export function ScreenHeader({
           {back.badge ? <BackBadge count={back.badge} /> : null}
         </Box>
       ) : home ? (
-        <IconButton label={home.label} href={home.href ?? '/'}>
+        <IconButton
+          label={home.label}
+          href={home.href ?? '/'}
+          tone={onCanopy ? 'canopyChip' : undefined}
+        >
           <HomeIcon size={20} />
         </IconButton>
       ) : null}

@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  Link,
   ListRow,
   SwipeRow,
   type SwipeRowHandle,
@@ -63,7 +62,19 @@ export function TemplateEditorPage() {
   }
 
   return (
-    <Screen title={template.data?.name ?? t('templates:title')}>
+    <Screen
+      title={template.data?.name ?? t('templates:title')}
+      back={{
+        label: t('templates:editor.back'),
+        href: '/shopping/templates',
+      }}
+      // The editor saves as you go, so its gold key is Done: it leaves for the list.
+      primary={{
+        label: t('templates:editor.done'),
+        text: t('templates:editor.done'),
+        href: '/shopping/templates',
+      }}
+    >
       {template.isPending ? <Spinner label={t('common:loading')} /> : null}
       {template.error ? (
         <Alert>{translateApiError(t, template.error)}</Alert>
@@ -259,7 +270,6 @@ function Editor({
           })
         }
       />
-      <Link href="/shopping/templates">{t('templates:editor.back')}</Link>
     </Stack>
   );
 }

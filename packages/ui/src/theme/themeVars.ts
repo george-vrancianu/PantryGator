@@ -52,6 +52,8 @@ export const shadow = {
 export const canopy = {
   /** The header's gradient; paint it with `background`. */
   bg: pp('canopy-bg'),
+  /** The solid behind the header (overscroll, safe areas). */
+  base: pp('canopy-base'),
   ink: pp('canopy-ink'),
   muted: pp('canopy-muted'),
   /** The working sheet's gradient; paint it with `background`. */
@@ -71,6 +73,8 @@ export const canopy = {
   keyShadow: pp('shadow-key'),
   goldInk: pp('gold-ink'),
   gold: pp('gold'),
+  /** The glint copy of the texture. */
+  texGlint: pp('tex-glint'),
   /** The 1px inner highlight on a header chip. */
   chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
 } as const;

@@ -148,7 +148,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
             zIndex: 0,
             background: canopy.bg,
             // Solid fallback where the gradient is not painted.
-            backgroundColor: 'var(--pp-canopy-base)',
+            backgroundColor: canopy.base,
             color: canopy.ink,
             pb: `${CANOPY_TO_SHEET + CANOPY_UNDER_SHEET}px`,
             // The header content sits above the texture.
@@ -256,21 +256,23 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
           </ScrollerProvider>
           <RefreshLoaderSlot anchor="sheet" />
         </Box>
-        <Box
-          data-testid="sheet-fade"
-          aria-hidden
-          sx={{
-            position: 'fixed',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: `${SHEET_FADE_HEIGHT}px`,
-            // Under the Dock (10), over the sheet.
-            zIndex: 2,
-            pointerEvents: 'none',
-            background: canopy.sheetFade,
-          }}
-        />
+        {withDock ? (
+          <Box
+            data-testid="sheet-fade"
+            aria-hidden
+            sx={{
+              position: 'fixed',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: `${SHEET_FADE_HEIGHT}px`,
+              // Under the Dock (10), over the sheet.
+              zIndex: 2,
+              pointerEvents: 'none',
+              background: canopy.sheetFade,
+            }}
+          />
+        ) : null}
       </Box>
     </LayoutSlotsContext>
   );

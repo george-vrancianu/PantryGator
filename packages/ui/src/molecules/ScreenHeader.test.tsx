@@ -50,6 +50,16 @@ describe('ScreenHeader', () => {
     ).toBe('/');
   });
 
+  it('draws Home as the Canopy chip on the Canopy', () => {
+    renderWithTheme(
+      <ScreenHeader title="Customise" home={{ label: 'Home' }} onCanopy />,
+    );
+
+    expect(authoredCss(screen.getByRole('link', { name: 'Home' }))).toContain(
+      'var(--pp-canopy-chip)',
+    );
+  });
+
   it('opens a menu when the action has items', async () => {
     renderWithTheme(
       <ScreenHeader
