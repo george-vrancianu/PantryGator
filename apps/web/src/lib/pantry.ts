@@ -317,6 +317,20 @@ export function useRunningLow() {
 }
 
 /**
+ * When the Family last stocked something, for the Pantry Health lights: the later of its Stock history and the
+ * newest Batch, used-up and Unmatched ones included; null when never. Keyed under `['pantry']`, so every change
+ * to the Pantry refreshes it.
+ */
+export function useLastStockedAt() {
+  return useQuery({
+    queryKey: [...pantryQueryKey, 'last-stocked'],
+    queryFn: () =>
+      apiRequest<{ lastStockedAt: string | null }>('/pantry/last-stocked'),
+    select: (body) => body.lastStockedAt,
+  });
+}
+
+/**
  * Set or clear the running low flag on an Ingredient. The cache is changed at once, so every row of
  * the Ingredient, in every Location section, shows the new state; a failed save undoes that one
  * Ingredient's flag, leaving any other toggle made in the meantime as it is.

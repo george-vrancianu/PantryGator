@@ -15,9 +15,10 @@ import { translateApiError } from '../../i18n/translateApiError';
 import { useDashboardLayout } from '../../lib/dashboard';
 import { greetingKeyForHour } from '../../lib/greeting';
 import { useGridColumns } from '../../lib/layoutColumns';
+import { PantryHealthCluster } from './components/PantryHealthCluster';
 import { WIDGET_REGISTRY } from './widgets/registry';
 
-/** The Dashboard: date, greeting, Settings in the top bar, the Member's grid of Widgets and the Customise link under them. */
+/** The Dashboard: date, greeting, Settings in the top bar, Pantry Health in the header, the Member's grid of Widgets and the Customise link under them. */
 export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
   const layout = useDashboardLayout();
@@ -34,6 +35,7 @@ export function DashboardPage() {
     <Screen
       title={t(`greeting.${greetingKeyForHour(now.getHours())}`)}
       status={date}
+      header={<PantryHealthCluster />}
       secondary={
         <HeaderButton href="/settings" icon={<SettingsIcon size={18} />}>
           {t('screenHeader:settings')}
