@@ -167,8 +167,7 @@ describe('Refresh mark on a tab root', () => {
       await gate;
       return Response.json({ batches: [batch] });
     });
-    const content = () =>
-      getComputedStyle(screen.getByRole('banner').nextElementSibling!);
+    const content = () => getComputedStyle(screen.getByTestId('sheet-content'));
     expect(content().opacity).toBe('1');
     tap();
     tap();
@@ -420,7 +419,7 @@ describe('Refresh state follows the screen', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Refreshing…');
     fireEvent.click(screen.getByRole('link', { name: 'Go on' }));
     await settle();
-    const content = screen.getByText('Shopping content');
+    const content = screen.getByTestId('sheet-content');
     expect(getComputedStyle(content).opacity).toBe('1');
     release();
     await elapse(MIN_BUSY_MS + REFRESH_LOADER_RETRACT_MS);
@@ -508,7 +507,7 @@ describe('Refresh state follows the screen', () => {
     fireEvent.click(screen.getByRole('link', { name: 'Go on' }));
     await settle();
     await elapse(10000);
-    const content = screen.getByText('Pantry content');
+    const content = screen.getByTestId('sheet-content');
     expect(getComputedStyle(content).opacity).toBe('1');
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
   });

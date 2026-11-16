@@ -101,8 +101,7 @@ describe('AppLayout Dock', () => {
   });
 
   it('leaves 132px at the bottom of every page for the Dock and its capsule, more where the home indicator is taller', () => {
-    const pageCss = () =>
-      authoredCss(screen.getByRole('main').parentElement as HTMLElement);
+    const pageCss = () => authoredCss(screen.getByRole('main'));
     const { unmount } = renderAtView('/pantry');
     // 104 + max(28, inset) is 132 with no inset.
     expect(pageCss()).toContain(
@@ -175,9 +174,7 @@ describe('AppLayout Voice Note host', () => {
     renderAt('/pantry');
     await talkButton();
     // jsdom drops calc() with env() from computed style, so read the authored rule text.
-    const rules = authoredCss(
-      screen.getByRole('main').parentElement as HTMLElement,
-    );
+    const rules = authoredCss(screen.getByRole('main'));
     // Just clear of the capsule: Dock 28 + 76 + 24 on phones, 28 + 84 + 24 from md; no chip row. The 28 grows with the bottom inset.
     expect(rules).toContain(
       'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 100px)',
