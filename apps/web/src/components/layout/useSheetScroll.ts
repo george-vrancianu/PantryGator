@@ -14,7 +14,15 @@ const RESTORE_WAIT_MS = 1500;
  * Only a change of path moves the sheet: a query-string change leaves it where it is.
  * A restore waits for the page to grow tall enough, so content that loads after the swap still lands.
  */
-export function useSheetScroll(scroller: HTMLElement | null) {
+export function useSheetScroll(
+  scroller: HTMLElement | null,
+  /** Called after a move to another path with where the sheet was and where it now is. */
+  onSwap?: (from: number, to: number) => void,
+) {
+  const swapped = useRef(onSwap);
+  useLayoutEffect(() => {
+    swapped.current = onSwap;
+  });
   const { pathname, key } = useLocation();
   const navigationType = useNavigationType();
   const byKey = useRef(new Map<string, number>());
@@ -45,7 +53,9 @@ export function useSheetScroll(scroller: HTMLElement | null) {
         : isTabRoot(pathname)
           ? (byTab.current.get(pathname) ?? 0)
           : 0;
+    const from = scroller.scrollTop;
     scrollElementTo(scroller, { top: target });
+    swapped.current?.(from, scroller.scrollTop);
     wanted.current =
       scroller.scrollTop === target
         ? null

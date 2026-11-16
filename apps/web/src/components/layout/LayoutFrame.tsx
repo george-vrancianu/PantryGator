@@ -5,7 +5,6 @@ import {
   gutterRight,
   palette,
   SAFE_TOP,
-  tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
@@ -75,7 +74,10 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
     setHeights((h) => (h[region] === height ? h : { ...h, [region]: height }));
   }, []);
 
-  useSheetScroll(scroller);
+  // The sheet jumps to the new page's position on the swap, so the page leaving is moved by the
+  // difference to stay where the Member last saw it while it fades.
+  const [leavingOffset, setLeavingOffset] = useState(0);
+  useSheetScroll(scroller, (from, to) => setLeavingOffset(from - to));
   usePullToRefresh(scroller, {
     enabled: kind === 'page',
     onRefresh: () => {
@@ -122,7 +124,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
           overflow: 'hidden',
           boxSizing: 'border-box',
           backgroundColor: palette('background-default'),
-          color: tokens.color.ink,
+          color: palette('text-primary'),
         }}
       >
         <Box
@@ -158,11 +160,11 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
                 overflowY: 'auto',
                 overflowX: 'hidden',
                 overscrollBehavior: 'contain',
-                // Sticky elements inside stick at the top of this scroller.
                 WebkitOverflowScrolling: 'touch',
               }}
             >
               <RefreshDimmed>
+                {/* Sticky elements inside stick at the top of this scroller. */}
                 <Box
                   component="main"
                   sx={{
@@ -198,7 +200,12 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
                     }}
                   >
                     {pages.map(({ page, phase }) => (
-                      <PageHost key={page.id} id={page.id} phase={phase}>
+                      <PageHost
+                        key={page.id}
+                        id={page.id}
+                        phase={phase}
+                        offset={phase === 'leaving' ? leavingOffset : 0}
+                      >
                         {page.element}
                       </PageHost>
                     ))}
@@ -218,10 +225,13 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
 function PageHost({
   id,
   phase,
+  offset,
   children,
 }: {
   id: number;
   phase: PagePhase;
+  /** How far down the page is moved, in px: the leaving page keeps its place while the sheet jumps. */
+  offset: number;
   children: ReactNode;
 }) {
   const instance = useMemo<PageInstance>(() => ({ id, phase }), [id, phase]);
@@ -231,6 +241,7 @@ function PageHost({
         data-phase={phase === 'idle' ? undefined : phase}
         aria-hidden={phase === 'leaving' ? true : undefined}
         inert={phase === 'leaving'}
+        style={offset ? { top: offset } : undefined}
       >
         {children}
       </Box>

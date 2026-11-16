@@ -189,6 +189,19 @@ describe('Scrolling', () => {
     await elapse(TRANSITION_MS);
   };
 
+  it('keeps the outgoing page where it was while it fades, though the sheet jumps', async () => {
+    renderRoutes('/pantry');
+    const el = sheet();
+    scrollSheetTo(el, 400);
+    fireEvent.click(screen.getByRole('link', { name: 'to /recipes/1' }));
+    const leaving = screen
+      .getByText('Pantry content')
+      .closest<HTMLElement>('[data-phase="leaving"]')!;
+    expect(el.scrollTop).toBe(0);
+    expect(leaving.style.top).toBe('400px');
+    await elapse(TRANSITION_MS);
+  });
+
   it('restores a tab root to where it was left, however it is reached', async () => {
     renderRoutes('/pantry');
     const el = sheet();
@@ -252,6 +265,35 @@ describe('Pull to refresh', () => {
     const el = sheet();
     scrollSheetTo(el, 50);
     act(() => pull(el, { to: 200 }));
+    expect(refetch).not.toHaveBeenCalled();
+  });
+
+  it('leaves a horizontal swipe alone: no refresh and no preventDefault', async () => {
+    const { queryClient } = await openAt('/pantry');
+    const refetch = vi.spyOn(queryClient, 'refetchQueries');
+    const move = pull(sheet(), { from: 100, to: 180, fromX: 300, toX: 100 });
+    expect(move.defaultPrevented).toBe(false);
+    expect(refetch).not.toHaveBeenCalled();
+  });
+
+  it('prevents the browser default once a pull is clearly vertical', async () => {
+    await openAt('/pantry');
+    const move = pull(sheet(), { to: 200 });
+    expect(move.defaultPrevented).toBe(true);
+  });
+
+  it('does not start from inside an inner scroller that is scrolled down', async () => {
+    const { queryClient } = await openAt('/pantry');
+    const refetch = vi.spyOn(queryClient, 'refetchQueries');
+    const el = sheet();
+    const inner = document.createElement('div');
+    inner.style.overflowY = 'auto';
+    Object.defineProperty(inner, 'scrollHeight', { value: 500 });
+    Object.defineProperty(inner, 'clientHeight', { value: 100 });
+    inner.scrollTop = 40;
+    el.firstElementChild!.appendChild(inner);
+    const move = pull(el, { to: 200, target: inner });
+    expect(move.defaultPrevented).toBe(false);
     expect(refetch).not.toHaveBeenCalled();
   });
 

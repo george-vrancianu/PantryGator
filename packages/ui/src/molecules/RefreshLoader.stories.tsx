@@ -23,6 +23,23 @@ export const Busy: Story = { args: { state: 'busy' } };
 /** The warning mark and a shake, then it tucks away after about a second. */
 export const Failed: Story = { args: { state: 'failed' } };
 
+/** Anchored to the sheet rather than the viewport: it drops from the top of the clipped, positioned box it sits in. */
+export const SheetAnchor: Story = {
+  args: { state: 'busy', anchor: 'sheet' },
+  render: (args) => (
+    <div
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        height: 240,
+        border: '1px dashed currentColor',
+      }}
+    >
+      <RefreshLoader {...args} />
+    </div>
+  ),
+};
+
 function Cycle() {
   const [state, setState] = useState<RefreshLoaderProps['state']>('idle');
   return (

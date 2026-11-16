@@ -97,24 +97,42 @@ export function scrollSheetTo(el: HTMLElement, top: number) {
   el.scrollTop = top;
 }
 
-/** Touch events for a pull-to-refresh: down at `from`, move through `to`, optionally release. */
+/**
+ * Touch events for a pull-to-refresh: down at `from` (and `fromX`), move through `to` (and `toX`),
+ * optionally release. `target` is where the touch lands (default the scroller). Returns the move event.
+ */
 export function pull(
   el: Element,
   {
     from = 100,
     to,
+    fromX = 50,
+    toX = 50,
     release = true,
-  }: { from?: number; to: number; release?: boolean },
+    target = el,
+  }: {
+    from?: number;
+    to: number;
+    fromX?: number;
+    toX?: number;
+    release?: boolean;
+    target?: Element;
+  },
 ) {
-  const touch = (y: number) => ({ touches: [{ clientX: 50, clientY: y }] });
-  el.dispatchEvent(
-    Object.assign(new Event('touchstart', { bubbles: true }), touch(from)),
-  );
-  el.dispatchEvent(
+  const touch = (x: number, y: number) => ({
+    touches: [{ clientX: x, clientY: y }],
+  });
+  target.dispatchEvent(
     Object.assign(
-      new Event('touchmove', { bubbles: true, cancelable: true }),
-      touch(to),
+      new Event('touchstart', { bubbles: true }),
+      touch(fromX, from),
     ),
   );
-  if (release) el.dispatchEvent(new Event('touchend', { bubbles: true }));
+  const move = Object.assign(
+    new Event('touchmove', { bubbles: true, cancelable: true }),
+    touch(toX, to),
+  );
+  target.dispatchEvent(move);
+  if (release) target.dispatchEvent(new Event('touchend', { bubbles: true }));
+  return move;
 }

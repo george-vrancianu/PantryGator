@@ -7,16 +7,22 @@
  */
 export type LayoutKind = 'camera' | 'editor' | 'page';
 
+/** A Recipe editor's route: New, Make a Variant (`variant/new`) and Edit. */
+export function isRecipeEditor(pathname: string): boolean {
+  const [, section = '', second = '', third, fourth] = pathname.split('/');
+  return (
+    section === 'recipes' &&
+    (second === 'new' ||
+      (third === 'edit' && fourth === undefined) ||
+      (third === 'variant' && fourth === 'new'))
+  );
+}
+
 export function layoutKindFor(pathname: string): LayoutKind {
   const [, section = '', second = '', third, fourth] = pathname.split('/');
   if (section === 'scan') return second === '' ? 'camera' : 'editor';
-  if (section === 'recipes') {
-    const editor =
-      second === 'new' ||
-      (third === 'edit' && fourth === undefined) ||
-      (third === 'variant' && fourth === 'new');
-    return editor ? 'editor' : 'page';
-  }
+  if (section === 'recipes')
+    return isRecipeEditor(pathname) ? 'editor' : 'page';
   if (section === 'meal-plans') {
     return second === 'new' || (third === 'edit' && fourth === undefined)
       ? 'editor'
