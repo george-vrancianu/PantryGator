@@ -27,6 +27,10 @@ export const radius = {
   dock: pp('r-dock'),
   /** Sheets and dialogs: one step rounder than the Theme's cards. */
   sheet: `calc(${pp('r-card')} + 8px)`,
+  /** Header buttons and the gold key. */
+  btn: pp('r-btn'),
+  /** The Dock's mic / camera rocker. */
+  cap: pp('r-cap'),
   /** Tags and pill buttons: round in every Theme. */
   pill: '999px',
 } as const;
@@ -67,6 +71,28 @@ export const canopy = {
   keyShadow: pp('shadow-key'),
   goldInk: pp('gold-ink'),
   gold: pp('gold'),
+  /** The 1px inner highlight on a header chip. */
+  chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
+} as const;
+
+/** The Dock (Canopy handoff section 3.5): the bar, its tabs, the gold mark and the mic / camera rocker. */
+export const dock = {
+  /** The bar's gradient; paint it with `background`. */
+  bg: pp('dock-bg'),
+  line: pp('dock-line'),
+  shadow: pp('shadow-dock'),
+  /** Active tab icon and label. */
+  on: pp('dock-on'),
+  /** Inactive tab icon and label. */
+  off: pp('dock-off'),
+  /** The active tab's mark. */
+  mark: pp('gold'),
+  /** The rocker's gold gradient; paint it with `background`. */
+  capBg: pp('cap-bg'),
+  capLine: pp('cap-line'),
+  capShadow: pp('shadow-cap'),
+  capInk: pp('cap-ink'),
+  capDivider: pp('cap-div'),
 } as const;
 
 export const border = {

@@ -161,7 +161,7 @@ export function VoiceButton({
                 justifyContent: 'center',
                 p: 0,
                 border: 0,
-                borderRadius: `${radius.pill} ${radius.pill} 0 0`,
+                borderRadius: 'var(--pp-r-cap) var(--pp-r-cap) 0 0',
                 backgroundColor: armed
                   ? `color-mix(in srgb, ${palette('text-primary')} 55%, ${color.cardBg})`
                   : active
@@ -183,9 +183,9 @@ export function VoiceButton({
           >
             {voice.recording ? <ProgressBar startedAt={startedAt} /> : null}
             {voice.mic.blocked ? (
-              <MicOffIcon size={26} />
+              <MicOffIcon size={24} />
             ) : (
-              <MicIcon size={26} />
+              <MicIcon size={24} />
             )}
           </Box>
         </>,

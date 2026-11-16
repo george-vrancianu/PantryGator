@@ -1,7 +1,7 @@
 import ButtonBase from '@mui/material/ButtonBase';
 import type { MouseEventHandler, ReactNode, Ref } from 'react';
 import { tokens } from '../theme/tokens';
-import { canopy } from '../theme/themeVars';
+import { canopy, radius } from '../theme/themeVars';
 
 export type HeaderButtonProps = {
   /** The visible label, which is also the accessible name. */
@@ -46,7 +46,7 @@ export function HeaderButton({
         gap: '7px',
         p: '0 12px 0 11px',
         flexShrink: 0,
-        borderRadius: '8px',
+        borderRadius: radius.btn,
         fontFamily: 'inherit',
         fontSize: 13.5,
         fontWeight: 700,
@@ -63,7 +63,7 @@ export function HeaderButton({
               backgroundColor: canopy.chip,
               color: canopy.ink,
               border: `1px solid ${canopy.chipLine}`,
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,.08)',
+              boxShadow: canopy.chipHighlight,
             }),
         '&:hover': { filter: 'brightness(1.08)' },
         '&.Mui-disabled': { opacity: 0.5 },

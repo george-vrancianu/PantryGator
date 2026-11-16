@@ -197,11 +197,67 @@ describe('Dock not teaching', () => {
 describe('Dock safe area', () => {
   afterEach(cleanup);
 
-  it('sits at 28px or the bottom inset, whichever is larger, and clears the side insets', () => {
+  it('sits at 26px or the bottom inset, whichever is larger, and clears the side insets', () => {
     renderDock();
     const css = authoredCss(screen.getByRole('navigation'));
-    expect(css).toContain('bottom:max(28px, env(safe-area-inset-bottom');
+    expect(css).toContain('bottom:max(26px, env(safe-area-inset-bottom');
     expect(css).toContain('env(safe-area-inset-left');
     expect(css).toContain('env(safe-area-inset-right');
+  });
+});
+
+describe('Dock in the Canopy look', () => {
+  afterEach(cleanup);
+
+  const marks = () => document.querySelectorAll('[data-active-mark]');
+
+  function renderBar(activeKey?: string) {
+    return render(
+      <Dock
+        label="Main"
+        items={items}
+        activeKey={activeKey}
+        centre={
+          <DockCapsule
+            cameraLabel="Camera"
+            cameraHref="/scan"
+            micSlot={() => undefined}
+          />
+        }
+      />,
+    );
+  }
+
+  it('puts the gold mark on the active tab only', () => {
+    renderBar('Pantry');
+    expect(marks()).toHaveLength(1);
+    expect(
+      screen
+        .getByRole('link', { name: 'Pantry' })
+        .querySelector('[data-active-mark]'),
+    ).not.toBeNull();
+  });
+
+  it('shows no mark when no tab is active (Settings)', () => {
+    renderBar(undefined);
+    expect(marks()).toHaveLength(0);
+    expect(document.querySelector('[aria-current]')).toBeNull();
+  });
+
+  it('draws the bar 66 high with the 1fr 1fr 66px 1fr 1fr columns and the 58 wide rocker', () => {
+    renderBar('Home');
+    const bar = authoredCss(screen.getByRole('navigation'));
+    expect(bar).toContain('height:66px');
+    expect(bar).toContain('66px');
+    expect(bar).toContain('border-radius:var(--pp-r-dock)');
+    const rocker = authoredCss(
+      document.querySelector<HTMLElement>('[data-dock-capsule]')!,
+    );
+    expect(rocker).toContain('width:58px');
+    expect(rocker).toContain('var(--pp-cap-bg)');
+    expect(rocker).toContain('var(--pp-shadow-cap)');
+    expect(
+      screen.getByRole('link', { name: 'Camera' }).getAttribute('href'),
+    ).toBe('/scan');
   });
 });

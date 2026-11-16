@@ -37,12 +37,12 @@ describe('readSafeInsets', () => {
 describe('dockBottomPx', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('is 28 with no inset, and the inset when it is larger (Face ID)', () => {
-    expect(dockBottomPx()).toBe(28);
+  it('is 26 with no inset, and the inset when it is larger (Face ID)', () => {
+    expect(dockBottomPx()).toBe(26);
     expect(dockBottomPx({ bottom: 34 })).toBe(34);
     stubInsets('0px', '34px');
     expect(dockBottomPx()).toBe(34);
     stubInsets('0px', '20px');
-    expect(dockBottomPx()).toBe(28);
+    expect(dockBottomPx()).toBe(26);
   });
 });

@@ -1,7 +1,7 @@
 import MuiIconButton from '@mui/material/IconButton';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { tokens } from '../theme/tokens';
-import { canopy } from '../theme/themeVars';
+import { canopy, radius } from '../theme/themeVars';
 
 export type IconButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -103,7 +103,7 @@ export function IconButton({
       backgroundColor: canopy.chip,
       color: canopy.ink,
       border: `1px solid ${canopy.chipLine}`,
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,.08)',
+      boxShadow: canopy.chipHighlight,
       '&:hover': { backgroundColor: canopy.chip, filter: 'brightness(1.15)' },
     },
     key: {
@@ -128,7 +128,7 @@ export function IconButton({
         height: size,
         flexShrink: 0,
         ...(tone === 'canopyChip' || tone === 'key'
-          ? { borderRadius: '8px' }
+          ? { borderRadius: radius.btn }
           : {}),
         ...toneStyles,
         ...(ariaDisabled ? { opacity: 0.35, cursor: 'default' } : {}),
