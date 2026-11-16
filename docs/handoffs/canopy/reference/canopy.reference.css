@@ -1,0 +1,170 @@
+/* Canopy — reference CSS for the header texture, its glint, the sheet, and the health motion.
+   Values are copied from prototype.html. Class names here are suggestions; the prototype uses
+   pgC-* names with inline styles. Asset paths are relative to this zip.
+
+   Markup:
+     <header class="canopy">
+       <div class="canopy-texture" data-texture="home" aria-hidden="true">
+         <div class="canopy-texture__base"><i></i></div>
+         <div class="canopy-texture__glint"><i></i></div>
+       </div>
+       …header content (position: relative)…
+     </header>
+     <main class="canopy-sheet">…</main>
+*/
+
+/* ---------------------------------------------------------------- header + sheet */
+
+.canopy {
+  position: relative;
+  overflow: hidden;
+  background: var(--canopy-bg);
+  color: var(--canopy-ink);
+  /* The header runs 40 px under the sheet so the green shows behind the sheet's rounded corners. */
+  padding-bottom: 40px;
+}
+
+.canopy-sheet {
+  position: relative;
+  margin-top: -40px;
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0; /* 18px */
+  background: var(--sheet-bg);
+  box-shadow: var(--shadow-sheet);
+  padding: 18px 16px 0;
+}
+
+/* Lists dissolve under the Dock: a 170 px gradient pinned to the bottom of the screen, under the Dock. */
+.canopy-sheet__fade {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 170px;
+  pointer-events: none;
+  background: var(--sheet-fade);
+}
+
+/* ---------------------------------------------------------------- page texture */
+
+.canopy-texture {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Strongest top-right, fading towards the text. */
+  -webkit-mask-image: linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+  mask-image: linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.canopy-texture__base,
+.canopy-texture__glint {
+  position: absolute;
+  inset: 0;
+}
+
+/* Both layers hold one child that is 240 px wider than the header, so the Pantry shelves can slide. */
+.canopy-texture__base > i,
+.canopy-texture__glint > i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: -240px;
+  bottom: 0;
+}
+
+/* 1. The texture itself: cream line art (--tex-ink is baked into the SVG tiles) at 17 %. */
+.canopy-texture__base {
+  opacity: 0.17;
+}
+
+/* 2. The glint: a soft-gold copy of the same lines, visible only through a slanted window that crosses
+      the header. The green background is never lightened; only the lines catch the light. */
+.canopy-texture__glint {
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);
+  mask-image: linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);
+  -webkit-mask-size: 46% 100%;
+  mask-size: 46% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 62% 0; /* resting place when motion is off */
+  mask-position: 62% 0;
+  animation: canopy-glint 10s ease-in-out -3s infinite;
+}
+
+.canopy-texture__glint > i {
+  background: var(--tex-glint); /* #F6E7B4 */
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* Crosses in 6 s, rests 4 s. */
+@keyframes canopy-glint {
+  0% { -webkit-mask-position: -150% 0; mask-position: -150% 0; }
+  60% { -webkit-mask-position: 250% 0; mask-position: 250% 0; }
+  100% { -webkit-mask-position: 250% 0; mask-position: 250% 0; }
+}
+
+/* Per page: tile, tile size, and the extra opacity on the inner layer. */
+.canopy-texture[data-texture='home'] .canopy-texture__base > i { background-image: url(../assets/textures/tex-home.svg); background-size: 112px 112px; opacity: 0.8; }
+.canopy-texture[data-texture='home'] .canopy-texture__glint > i { -webkit-mask-image: url(../assets/textures/tex-home.svg); mask-image: url(../assets/textures/tex-home.svg); -webkit-mask-size: 112px 112px; mask-size: 112px 112px; opacity: 0.8; }
+
+.canopy-texture[data-texture='shopping'] .canopy-texture__base > i { background-image: url(../assets/textures/tex-shopping.svg); background-size: 72px 72px; opacity: 0.72; }
+.canopy-texture[data-texture='shopping'] .canopy-texture__glint > i { -webkit-mask-image: url(../assets/textures/tex-shopping.svg); mask-image: url(../assets/textures/tex-shopping.svg); -webkit-mask-size: 72px 72px; mask-size: 72px 72px; opacity: 0.72; }
+
+.canopy-texture[data-texture='pantry'] .canopy-texture__base > i { background-image: url(../assets/textures/tex-pantry.svg); background-size: 240px 132px; opacity: 1; }
+.canopy-texture[data-texture='pantry'] .canopy-texture__glint > i { -webkit-mask-image: url(../assets/textures/tex-pantry.svg); mask-image: url(../assets/textures/tex-pantry.svg); -webkit-mask-size: 240px 132px; mask-size: 240px 132px; opacity: 1; }
+
+/* Gingham: the glint uses the line-only tile so it lights the lines, not the filled squares. */
+.canopy-texture[data-texture='recipes'] .canopy-texture__base > i { background-image: url(../assets/textures/tex-recipes.svg); background-size: 44px 44px; opacity: 0.9; }
+.canopy-texture[data-texture='recipes'] .canopy-texture__glint > i { -webkit-mask-image: url(../assets/textures/tex-recipes-lines.svg); mask-image: url(../assets/textures/tex-recipes-lines.svg); -webkit-mask-size: 44px 44px; mask-size: 44px 44px; opacity: 0.9; }
+
+/* Pantry only: the shelves slide one tile (240 px) to the left every 70 s. */
+.canopy-texture[data-texture='pantry'] .canopy-texture__base > i,
+.canopy-texture[data-texture='pantry'] .canopy-texture__glint > i {
+  animation: canopy-slide 70s linear infinite;
+}
+
+@keyframes canopy-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-240px, 0, 0); }
+}
+
+/* ---------------------------------------------------------------- Pantry health motion */
+
+/* The needle's resting angle is set on its parent; this plays once when the Home header appears:
+   drop back, swing up, overshoot by 5°, settle. */
+.pgC-needle {
+  animation: canopy-needle 2s cubic-bezier(0.3, 0.9, 0.3, 1) 1;
+}
+
+@keyframes canopy-needle {
+  0% { transform: rotate(0deg); }
+  14% { transform: rotate(-46deg); }
+  62% { transform: rotate(5deg); }
+  82% { transform: rotate(-1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Unlit lamps flash once and fade back to 20 %, like a dashboard lamp check. */
+.pgC-bulb {
+  animation: canopy-bulb 2.4s ease-out 1;
+}
+
+@keyframes canopy-bulb {
+  0% { opacity: 0.2; }
+  10% { opacity: 0.85; }
+  42% { opacity: 0.85; }
+  100% { opacity: 0.2; }
+}
+
+/* ---------------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .canopy-texture__glint,
+  .canopy-texture__base > i,
+  .canopy-texture__glint > i,
+  .pgC-needle,
+  .pgC-bulb {
+    animation: none;
+  }
+}

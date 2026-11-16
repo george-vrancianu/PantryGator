@@ -1,5 +1,7 @@
 # The screen header holds only the screen's add action; the Dock carries navigation
 
+> Superseded by [ADR 0042](0042-the-top-bar-holds-one-labelled-action-and-one-key.md).
+
 The Pantry, the Shopping List and Recipes each put their add button somewhere different: the Pantry's `+` was the header action, Shopping's `+` sat in the summary card with Import in the header, and Recipes' `+` menu sat in the header's trailing slot. Every sub-screen header also carried a Home button on the left and, since #531, a Settings gear on the right. The Dock (ADR 0021) already has a Home tab, so the header Home button repeats it, and three buttons crowd a phone header.
 
 ## Decision

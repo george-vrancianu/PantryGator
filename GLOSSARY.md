@@ -154,6 +154,14 @@ _Avoid_: Stock, Staples (as a Health Factor)
 A set of Batches or Ingredients that lower Pantry Health and that one action fixes, such as the Expired Batches to toss or the missing Staples to add. Derived at read time, never stored; a dismissed Suggestion never appears in one.
 _Avoid_: Task, alert, issue
 
+**Fresh in**:
+The state of a Pantry whose newest stocking, of any Batch, was today or in the two days before. Derived at read time, never stored.
+_Avoid_: New, recent
+
+**Nothing new**:
+The state of a Pantry where nothing has been stocked for 14 days or more. The opposite end from Fresh in; says nothing about expiry.
+_Avoid_: Stale (Stale Threshold is about expiry), idle, inactive
+
 **Forgotten**:
 A Batch with no expiry date that has been in its Location longer than that Location's limit. Giving it an expiry date means it is no longer Forgotten. Derived at read time, never stored.
 _Avoid_: Stale, old, unchecked
@@ -543,9 +551,9 @@ The notice on a Recipe that contains an Allergy: stronger when a required Ingred
 _Avoid_: Alert, allergy badge
 
 **Theme**:
-The app's look, one of Warm editorial (`warm`, the default), Minimal crisp (`minimal`) and Dark-first (`dark`). A Member Preference, so it follows the Member across devices.
-_Avoid_: Skin, colour scheme (MUI's mechanism behind a Theme), mode
+The app's look, Light (`light`, the default) or Dark (`dark`). A Member Preference, so it follows the Member across devices.
+_Avoid_: Skin, colour scheme (MUI's mechanism behind a Theme), mode, Warm editorial, Minimal crisp, Dark-first (the retired Themes)
 
 **Match system**:
-A per-device switch that makes the app follow the device's dark mode: Dark-first in dark mode, the Member's chosen light Theme in light mode (Warm editorial if they chose Dark-first). Stored on the device, not a Member Preference.
+A per-device switch that makes the app follow the device's dark mode: Dark when the device is dark, Light otherwise. Stored on the device, not a Member Preference.
 _Avoid_: Auto theme, system theme

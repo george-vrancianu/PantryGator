@@ -1,0 +1,86 @@
+{
+  "_note": "First pass, to be read through by a native speaker. Same keys as en.json. Where the app already has a Danish word for Expired, Use soon or Running low, use that one.",
+  "dashboard": {
+    "health": {
+      "scoreOf": "{{score}} af 100",
+      "lights": {
+        "expired": "Udløbet",
+        "soon": "Brug snart",
+        "low": "Ved at slippe op",
+        "fresh": "Nyt på lager",
+        "stale": "Intet nyt"
+      },
+      "a11y": {
+        "name": "{{title}}: {{verdict}}, {{lights}}.",
+        "expired_one": "{{count}} udløbet",
+        "expired_other": "{{count}} udløbne",
+        "soon_one": "{{count}} skal bruges snart",
+        "soon_other": "{{count}} skal bruges snart",
+        "low_one": "{{count}} ved at slippe op",
+        "low_other": "{{count}} ved at slippe op",
+        "fresh": "nye varer er kommet til",
+        "stale_one": "intet tilføjet i {{count}} dag",
+        "stale_other": "intet tilføjet i {{count}} dage",
+        "allClear": "ingen advarsler"
+      }
+    },
+    "customise": "Tilpas oversigten"
+  },
+  "screenHeader": {
+    "settings": "Indstillinger",
+    "back": "Tilbage",
+    "more": "Mere"
+  },
+  "shopping": {
+    "header": {
+      "import": "Importér"
+    }
+  },
+  "pantry": {
+    "header": {
+      "matchItems": "Match varer",
+      "matchItemsCount_one": "Match varer, {{count}} uden match",
+      "matchItemsCount_other": "Match varer, {{count}} uden match"
+    }
+  },
+  "recipes": {
+    "header": {
+      "explore": "Udforsk"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "light": "Lys",
+      "dark": "Mørk",
+      "matchSystemHint": "Mørk, når telefonen er i mørk tilstand, ellers Lys",
+      "lead": "Kun du ser disse. Lys eller Mørk og dit sprog følger dig. Følg systemet indstilles pr. telefon."
+    }
+  },
+  "queue": {
+    "bubble": {
+      "reading_one": "Gator arbejder: {{count}} læses",
+      "reading_other": "Gator arbejder: {{count}} læses",
+      "ready_one": "{{count}} klar til gennemsyn",
+      "ready_other": "{{count}} klar til gennemsyn",
+      "failed_one": "{{count}} kunne ikke læses",
+      "failed_other": "{{count}} kunne ikke læses",
+      "allDone_one": "Alt er læst: {{count}} klar til gennemsyn",
+      "allDone_other": "Alt er læst: {{count}} klar til gennemsyn",
+      "open": "Åbn Gennemsyn"
+    },
+    "review": {
+      "title": "Gennemsyn",
+      "summary": "{{ready}} klar · {{reading}} læses · {{failed}} mislykket",
+      "group": {
+        "ready": "Klar til gennemsyn",
+        "reading": "Læses",
+        "failed": "Kunne ikke læses"
+      },
+      "review": "Gennemse",
+      "discard": "Kassér",
+      "cancel": "Stop læsning: {{title}}",
+      "reviewAll": "Gennemse alle ({{count}})",
+      "note": "Intet ændres, før du har gennemset og anvendt."
+    }
+  }
+}

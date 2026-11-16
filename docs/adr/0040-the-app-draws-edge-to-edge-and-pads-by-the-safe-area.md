@@ -14,3 +14,9 @@ In the iPhone app, the top of every page sat behind the clock and the Dynamic Is
 
 - **Native `contentInset: 'always'`**, so iOS shrinks the webview below the status bar. Rejected: the camera could no longer draw under the island, the web app in Safari and Android would still need its own handling, and the existing `env()` code would stay at 0.
 - **A fixed top padding for iPhones only.** Rejected: it guesses at heights that differ by model and orientation, and misses Android edge-to-edge (Android 15+).
+
+## Amendment (2026-11-16): the Canopy covers the status bar
+
+- **On pages in the shared layout, the Canopy is the top band.** Its green runs under the status bar and its content starts at `safe-area-inset-top + 6`. The fixed band in the page background colour is no longer drawn there, because content now scrolls inside the working sheet and never passes under the status bar (Canopy, `docs/handoffs/canopy/handoff.md` §3).
+- **Sticky elements inside the sheet stick at `top: 0` of the sheet's scroller**, not at the top inset.
+- **Full-screen views (the Scan camera) and Sheets are unchanged.** Intro and sign-in pages draw the Canopy the same way, without the shared layout.
