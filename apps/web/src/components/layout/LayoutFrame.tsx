@@ -27,6 +27,7 @@ import { CanopyTexture } from './CanopyTexture';
 import { FADE_MS, HEIGHT_EASING, TRANSITION_MS } from './timing';
 import { usePageTransition, type Page } from './usePageTransition';
 import { usePullToRefresh } from './usePullToRefresh';
+import { useBubbleTopBound } from './useBubbleTopBound';
 import { useSheetScroll } from './useSheetScroll';
 
 const gutters = {
@@ -79,6 +80,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
 
   const [topBarEl, setTopBarEl] = useState<HTMLElement | null>(null);
   const [headerEl, setHeaderEl] = useState<HTMLElement | null>(null);
+  useBubbleTopBound(kind === 'camera' ? null : headerEl, topBarEl);
   const [scroller, setScroller] = useState<HTMLElement | null>(null);
   const [heights, setHeights] = useState({ topBar: 0, header: 0 });
   const setHeight = useCallback((region: LayoutRegion, height: number) => {

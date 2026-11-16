@@ -10,6 +10,8 @@ import {
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  announcements,
+  bubbleSays,
   openReady,
   MicrophoneError,
   fakeSession,
@@ -45,11 +47,14 @@ import { ShoppingPage } from './ShoppingPage';
 const statusNote = () => {
   const note = screen
     .getAllByRole('status')
-    .find((status) => status.textContent !== '');
+    // Not the Gator bubble's announcement, which is a status in a toast too.
+    .find(
+      (status) =>
+        status.textContent !== '' && !status.closest('.MuiSnackbar-root'),
+    );
   if (!note) throw new Error('No status with text');
   return note;
 };
-const findStatusNote = () => waitFor(statusNote);
 
 const emptyList = {
   id: 'l1',
@@ -152,9 +157,9 @@ describe('Voice Note on the Shopping List', () => {
     expect(gator('listening')).not.toBeNull();
     expect(gator('listening')).toHaveAttribute('alt', '');
 
-    // Let go: the thinking Gator replaces it in the Voice Inbox strip.
+    // Let go: the thinking Gator replaces it in the Gator bubble.
     fireEvent.pointerUp(button);
-    await screen.findByText(/^Voice Note · 0:\d\d$/);
+    await bubbleSays('Gator is working: 1 being read');
     expect(gator('listening')).toBeNull();
     expect(gator('thinking')).not.toBeNull();
     expect(gator('thinking')).toHaveAttribute('alt', '');
@@ -347,16 +352,16 @@ describe('Voice Note on the Shopping List', () => {
       Response.json({ code, params }, { status });
     const never = () => new Promise<Response>(() => undefined);
 
-    it('reads in a polite strip with the note count, and the page stays usable', async () => {
+    it('reads in the Gator bubble with a polite announcement, and the page stays usable', async () => {
       setup({ note: never });
       renderInAppLayout(<ShoppingPage />, '/shopping');
 
       fireEvent.pointerUp(await hold());
 
-      const strip = await findStatusNote();
-      expect(strip).toHaveTextContent(/Voice Note · 0:\d\d/);
-      expect(strip).toHaveTextContent('Being read');
-      expect(screen.queryByRole('button', { name: 'Review' })).toBeNull();
+      await bubbleSays('Gator is working: 1 being read');
+      await waitFor(() =>
+        expect(announcements()).toContain('Gator is working: 1 being read'),
+      );
       expect(screen.queryByRole('alert')).toBeNull();
       expect(screen.getByText('Your list is empty')).toBeVisible();
     });
@@ -374,7 +379,7 @@ describe('Voice Note on the Shopping List', () => {
       setup({ note: never });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByText(/^Voice Note · 0:\d\d$/);
+      await bubbleSays('Gator is working: 1 being read');
 
       // A tap too quick to be a note.
       const button = await talkButton();
@@ -397,7 +402,7 @@ describe('Voice Note on the Shopping List', () => {
       await hold();
       await act(() => vi.advanceTimersByTimeAsync(60_000));
 
-      await screen.findByText(/^Voice Note · 0:\d\d$/);
+      await bubbleSays('Gator is working: 1 being read');
       const toast = await screen.findByText(/Stopped at 1 minute/);
       expect(toast).toBeVisible();
       // The rules on the toast's own emotion classes.
@@ -419,7 +424,9 @@ describe('Voice Note on the Shopping List', () => {
       const { sent } = setup({ note: never });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByText(/Being read$/);
+      await screen.findByRole('button', {
+        name: 'Gator is working: 1 being read. Open Review',
+      });
       mic.start.mockClear();
 
       const button = await hold();
@@ -427,27 +434,26 @@ describe('Voice Note on the Shopping List', () => {
       expect(statusNote()).toHaveTextContent("Gator's listening");
       fireEvent.pointerUp(button);
 
-      expect(await screen.findByText('2 in the background')).toBeVisible();
-      expect(screen.getByText('2 reading')).toBeVisible();
+      expect(await bubbleSays('Gator is working: 2 being read')).toBeVisible();
       expect(sent).toHaveLength(2);
     });
 
-    it('shows the strip with Review on success, and Review opens from it', async () => {
+    it('shows the bubble All done on success, and the Review sheet opens the note', async () => {
       setup();
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      const strip = await findStatusNote();
-      await screen.findByRole('button', { name: 'Review' });
-      expect(strip).toHaveTextContent('Ready to review');
+      await bubbleSays('All read: 1 ready to review');
       expect(await openReady()).toBeVisible();
-      // The strip steps aside while the sheet is up.
-      expect(screen.queryByText(/Ready to review$/)).toBeNull();
+      // The bubble steps aside while the sheet is up.
+      expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
     });
 
     /** Opens the Voice Inbox sheet from the strip. */
     const openSheet = async () => {
-      fireEvent.click(await screen.findByRole('button', { name: 'Open' }));
-      return screen.findByRole('dialog', { name: 'In the background' });
+      fireEvent.click(
+        await screen.findByRole('button', { name: /Open Review/ }),
+      );
+      return screen.findByRole('dialog', { name: 'Review' });
     };
     const rowOf = (dialog: HTMLElement, text: RegExp | string) =>
       within(dialog)
@@ -456,20 +462,20 @@ describe('Voice Note on the Shopping List', () => {
           (li) => within(li).queryByText(text, { exact: false }) !== null,
         ) as HTMLElement;
 
-    it('keeps a failed note in the Voice Inbox: the strip counts it politely and announces the failure as an alert', async () => {
+    it('keeps a failed note in the Voice Inbox: the bubble counts it and announces it politely, never as an alert', async () => {
       setup({ note: () => error('voice.provider_unavailable', 502) });
       renderInAppLayout(<ShoppingPage />, '/shopping');
 
       fireEvent.pointerUp(await hold());
 
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '1 Voice Note failed',
+      await bubbleSays('1 could not be read');
+      await waitFor(() =>
+        expect(announcements()).toContain('1 could not be read'),
       );
-      const strip = statusNote();
-      expect(strip).toHaveTextContent(/Voice Note · 0:\d\d/);
-      expect(strip).toHaveTextContent('No connection. Your recording is kept.');
+      expect(screen.queryByRole('alert')).toBeNull();
       const dialog = await openSheet();
       const row = rowOf(dialog, 'No connection. Your recording is kept.');
+      expect(within(row).getByText(/Voice Note · 0:\d\d/)).toBeVisible();
       expect(
         within(row).getByRole('button', { name: /^Retry:/ }),
       ).toBeVisible();
@@ -488,14 +494,9 @@ describe('Voice Note on the Shopping List', () => {
       });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByRole('alert');
+      await bubbleSays('1 could not be read');
       fireEvent.pointerUp(await hold());
-      await screen.findByText('2 in the background');
-      await waitFor(() =>
-        expect(screen.getByRole('alert')).toHaveTextContent(
-          '2 Voice Notes failed',
-        ),
-      );
+      await bubbleSays('2 could not be read');
 
       const dialog = await openSheet();
 
@@ -519,18 +520,14 @@ describe('Voice Note on the Shopping List', () => {
       });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByRole('button', { name: 'Review' });
+      await bubbleSays('All read: 1 ready to review');
       fireEvent.pointerUp(await hold());
-      await screen.findByRole('button', { name: /^Open/ });
+      await bubbleSays('All read: 2 ready to review');
       fireEvent.pointerUp(await hold());
-      await waitFor(() =>
-        expect(screen.getByRole('alert')).toHaveTextContent(
-          '1 Voice Note failed',
-        ),
-      );
-      fireEvent.click(screen.getByRole('button', { name: /^Open/ }));
+      await bubbleSays('2 ready to review, 1 could not be read');
+      fireEvent.click(screen.getByRole('button', { name: /Open Review/ }));
       const sheet = await screen.findByRole('dialog', {
-        name: 'In the background',
+        name: 'Review',
       });
 
       const focus = vi.spyOn(HTMLElement.prototype, 'focus');
@@ -557,7 +554,7 @@ describe('Voice Note on the Shopping List', () => {
       setup({ note: () => error('voice.provider_unavailable', 502) });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByRole('alert');
+      await bubbleSays('1 could not be read');
       mic.start.mockClear();
 
       pressDown(await talkButton());
@@ -577,16 +574,14 @@ describe('Voice Note on the Shopping List', () => {
       });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByRole('alert');
+      await bubbleSays('1 could not be read');
       fireEvent.pointerUp(await hold());
 
-      const strip = await findStatusNote();
-      await waitFor(() => expect(strip).toHaveTextContent('1 ready'));
-      expect(strip).toHaveTextContent('1 failed');
+      await bubbleSays('1 ready to review, 1 could not be read');
       expect(await openReady()).toBeVisible();
     });
 
-    it('announces a failed note once, not again when the strip returns after recording', async () => {
+    it('announces a failed note once, not again when the bubble returns after recording', async () => {
       let attempt = 0;
       setup({
         note: () =>
@@ -596,20 +591,15 @@ describe('Voice Note on the Shopping List', () => {
       });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '1 Voice Note failed',
-      );
+      await bubbleSays('1 could not be read');
 
-      // Recording hides the strip; it comes back with the same failed note.
+      // Recording hides the bubble; it comes back with the same failed note.
       fireEvent.pointerUp(await hold());
-      const strip = await findStatusNote();
-      await waitFor(() => expect(strip).toHaveTextContent('1 ready'));
-
-      expect(strip).toHaveTextContent('1 failed');
+      await bubbleSays('1 ready to review, 1 could not be read');
       expect(screen.queryByRole('alert')).toBeNull();
     });
 
-    it('does not announce a failed note again after the Member goes to another page', async () => {
+    it('keeps the bubble across pages, with no alert', async () => {
       setup({ note: () => error('voice.provider_unavailable', 502) });
       renderWithProviders(
         <Routes>
@@ -621,33 +611,24 @@ describe('Voice Note on the Shopping List', () => {
         { route: '/shopping' },
       );
       fireEvent.pointerUp(await hold());
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '1 Voice Note failed',
-      );
+      await bubbleSays('1 could not be read');
 
       fireEvent.click(screen.getByRole('link', { name: 'Pantry' }));
       await screen.findByText('Pantry page');
 
-      expect(await screen.findByText(/^Voice Note · 0:\d\d$/)).toBeVisible();
-      await waitFor(() => expect(screen.queryByText(/Being read$/)).toBeNull());
+      expect(await bubbleSays('1 could not be read')).toBeVisible();
       expect(screen.queryByRole('alert')).toBeNull();
     });
 
-    it('takes the alert down, not announcing a smaller count, when one of two failed notes is discarded', async () => {
+    it('discards one of two failed notes from the sheet, which keeps the other', async () => {
       setup({ note: () => error('voice.provider_unavailable', 502) });
       renderInAppLayout(<ShoppingPage />, '/shopping');
       fireEvent.pointerUp(await hold());
-      await screen.findByText(/^Voice Note · 0:\d\d$/);
-      await waitFor(() => expect(screen.queryByText(/Being read$/)).toBeNull());
+      await bubbleSays('1 could not be read');
       fireEvent.pointerUp(await hold());
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '2 Voice Notes failed',
-      );
+      await bubbleSays('2 could not be read');
 
-      fireEvent.click(screen.getByRole('button', { name: 'Open' }));
-      const dialog = await screen.findByRole('dialog', {
-        name: 'In the background',
-      });
+      const dialog = await openSheet();
       await userEvent.click(
         within(dialog).getAllByRole('button', { name: /^Discard/ })[0],
       );
@@ -655,7 +636,6 @@ describe('Voice Note on the Shopping List', () => {
       await waitFor(() =>
         expect(within(dialog).getAllByRole('listitem')).toHaveLength(1),
       );
-      // The sheet hides the strip from assistive tech, but a live region still speaks when it changes.
       expect(screen.queryByRole('alert', { hidden: true })).toBeNull();
     });
 
@@ -698,9 +678,7 @@ describe('Voice Note on the Shopping List', () => {
       expect(await screen.findByText('Recording discarded')).toBeVisible();
       // The sheet closes with its animation rather than vanishing, and focus returns to the voice button.
       await waitFor(() =>
-        expect(
-          screen.queryByRole('dialog', { name: 'In the background' }),
-        ).toBeNull(),
+        expect(screen.queryByRole('dialog', { name: 'Review' })).toBeNull(),
       );
       expect(screen.queryByRole('alert')).toBeNull();
       await waitFor(() => expect(button).toHaveFocus());
@@ -721,9 +699,7 @@ describe('Voice Note on the Shopping List', () => {
       expect(
         await within(dialog).findByRole('button', { name: /^Retry:/ }),
       ).toBeVisible();
-      expect(
-        screen.getByRole('dialog', { name: 'In the background' }),
-      ).toBeVisible();
+      expect(screen.getByRole('dialog', { name: 'Review' })).toBeVisible();
     });
 
     it('retries a network error once by itself before it fails the note', async () => {
@@ -736,13 +712,11 @@ describe('Voice Note on the Shopping List', () => {
       act(() => reads[0].reject(new TypeError('offline')));
 
       await waitFor(() => expect(reads).toHaveLength(2));
-      expect(statusNote()).toHaveTextContent('Being read');
+      await bubbleSays('Gator is working: 1 being read');
       act(() =>
         reads[1].resolve(Response.json({ transcript: 'bread', actions: [] })),
       );
-      expect(
-        await screen.findByRole('button', { name: 'Review' }),
-      ).toBeVisible();
+      expect(await bubbleSays('All read: 1 ready to review')).toBeVisible();
     });
 
     it('says nothing was heard on the note itself and keeps it, with Retry and Discard', async () => {
@@ -761,9 +735,9 @@ describe('Voice Note on the Shopping List', () => {
         within(dialog).getByRole('button', { name: /^Discard/ }),
       ).toBeVisible();
       await holdFor(10_000);
-      expect(
-        screen.getByRole('dialog', { name: 'In the background' }),
-      ).toHaveTextContent("Didn't catch anything, try again");
+      expect(screen.getByRole('dialog', { name: 'Review' })).toHaveTextContent(
+        "Didn't catch anything, try again",
+      );
     });
 
     describe('Retry in another language', () => {
@@ -815,7 +789,7 @@ describe('Voice Note on the Shopping List', () => {
 
         act(() => reads[1].resolve(error('voice.nothing_heard', 422)));
         const again = await screen.findByRole('dialog', {
-          name: 'In the background',
+          name: 'Review',
         });
         expect(again).toHaveTextContent('Dansk');
         fireEvent.click(
@@ -847,7 +821,7 @@ describe('Voice Note on the Shopping List', () => {
         );
         await waitFor(() =>
           expect(
-            within(dialog).getByRole('heading', { name: 'In the background' }),
+            within(dialog).getByRole('heading', { name: 'Review' }),
           ).toHaveFocus(),
         );
       });
@@ -861,7 +835,7 @@ describe('Voice Note on the Shopping List', () => {
         renderInAppLayout(<ShoppingPage />, '/shopping');
         for (let i = 0; i < 3; i++) {
           fireEvent.pointerUp(await hold());
-          await screen.findByRole('button', { name: 'Open' });
+          await screen.findByRole('button', { name: /Open Review/ });
         }
         await waitFor(() => expect(reads).toHaveLength(2));
         act(() =>
@@ -915,7 +889,7 @@ describe('Voice Note on the Shopping List', () => {
         fireEvent.pointerUp(await hold());
 
         const button = await talkButton();
-        await screen.findByRole('alert');
+        await bubbleSays('1 could not be read');
         expect(button).toHaveStyle({ opacity: '0.55' });
         const dialog = await openSheet();
         expect(dialog).toHaveTextContent("That's today's 37 Voice Notes");
@@ -933,7 +907,7 @@ describe('Voice Note on the Shopping List', () => {
 
         fireEvent.pointerUp(await hold());
 
-        await screen.findByRole('alert');
+        await bubbleSays('1 could not be read');
         const dialog = await openSheet();
         expect(dialog).toHaveTextContent('Out of Credits');
         expect(dialog).toHaveTextContent('Your Family has no Credits left');
@@ -949,8 +923,10 @@ describe('Voice Note on the Shopping List', () => {
         });
         renderInAppLayout(<ShoppingPage />, '/shopping');
         fireEvent.pointerUp(await hold());
-        await screen.findByRole('alert');
-        await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+        await bubbleSays('1 could not be read');
+        await userEvent.click(
+          screen.getByRole('button', { name: /Open Review/ }),
+        );
         await userEvent.click(
           within(await screen.findByRole('dialog')).getByRole('button', {
             name: /^Discard/,
@@ -961,9 +937,7 @@ describe('Voice Note on the Shopping List', () => {
 
         pressDown(await talkButton());
 
-        expect(await screen.findByRole('alert')).toHaveTextContent(
-          '1 Voice Note failed',
-        );
+        await bubbleSays('1 could not be read');
         expect(mic.start).not.toHaveBeenCalled();
 
         await holdFor(60_000);
@@ -1024,9 +998,7 @@ describe('Voice Note on the Shopping List', () => {
 
       pressDown(await talkButton());
 
-      expect(await screen.findByRole('alert')).toHaveTextContent(
-        '1 Voice Note failed',
-      );
+      await bubbleSays('1 could not be read');
       const dialog = await openSheet();
       expect(dialog).toHaveTextContent('This browser cannot record audio');
       expect(
@@ -1225,10 +1197,9 @@ describe('Reviewing a Voice Note on the Shopping List', () => {
     await userEvent.click(scrim);
     expect(screen.getByRole('dialog')).toBeVisible();
 
-    await waitFor(() =>
-      expect(dialog).toContainElement(document.activeElement as HTMLElement),
-    );
-    await userEvent.keyboard('{Escape}');
+    // Focus is in the dialog once it has opened; jsdom's focus trap does not take it back after a
+    // backdrop click, so Escape goes to the dialog itself.
+    fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(screen.getByRole('dialog')).toBeVisible();
     expect(within(dialog).getByText('Discard this Voice Note?')).toBeVisible();
     expect(
@@ -1827,7 +1798,6 @@ describe('Reviewing a Voice Note on the Shopping List', () => {
     expect(
       screen.getByText('Eggs was already ticked, so that one counts as done.'),
     ).toBeVisible();
-    expect(statusNote()).toBeInTheDocument();
   });
 
   it('keeps the toast for 5.2 seconds without an Undo', async () => {

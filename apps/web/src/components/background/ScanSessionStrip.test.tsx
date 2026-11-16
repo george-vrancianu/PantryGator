@@ -1,5 +1,8 @@
 // The fake voice environment registers its mocks, so it comes before anything that reaches the microphone.
 import {
+  announcements,
+  closeBubbleSheet,
+  openBubbleSheet,
   resetVoiceEnvironment,
   stubVoiceFetch,
   talkButton,
@@ -14,7 +17,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
+import { dispatchScanSession } from '../../lib/scanSession';
 import type { CameraMode } from '../../lib/cameraMode';
 import { renderWithProviders, stubApi } from '../../test/render';
 import {
@@ -76,28 +79,12 @@ function renderAt(route = '/shopping') {
   );
 }
 
-// The layout's refresh loader keeps an empty status region of its own on every screen.
-const strip = () => {
-  const filled = screen
-    .queryAllByRole('status')
-    .filter((el) => el.textContent !== '');
-  expect(filled.length).toBeLessThanOrEqual(1);
-  return filled[0];
-};
+/** The Gator bubble, when it is up. */
+const bubble = () => screen.queryByTestId('gator-bubble');
+const bubbleNamed = (sentence: string) =>
+  screen.findByRole('button', { name: `${sentence}. Open Review` });
 
-/** The strip's border as its styles declare it (jsdom cannot compute a border made of a theme variable). */
-const outline = () => {
-  const classes = Array.from(strip().parentElement!.classList);
-  const rules = Array.from(document.styleSheets).flatMap((sheet) =>
-    Array.from(sheet.cssRules),
-  );
-  return rules
-    .filter((rule) => classes.some((c) => rule.cssText.includes(`.${c}`)))
-    .map((rule) => rule.cssText)
-    .join('\n');
-};
-
-describe('the Scan Session in the background strip', () => {
+describe('the Scan Session in the Gator bubble', () => {
   beforeEach(() => {
     const { fetchMock } = stubApi({
       'GET /api/voice/config': () => Response.json({ configured: false }),
@@ -108,44 +95,48 @@ describe('the Scan Session in the background strip', () => {
 
   it('shows nothing while the Scan Session holds no Scan, however voice is configured', () => {
     renderAt();
-    expect(strip()).toBeUndefined();
+    expect(bubble()).toBeNull();
   });
 
   it('shows after the Member leaves the camera, and is hidden on it', async () => {
     seed('a', 'receipt', 'reading');
     renderAt('/scan');
-    expect(strip()).toBeUndefined();
+    expect(bubble()).toBeNull();
 
     await userEvent.click(screen.getByRole('link', { name: 'back' }));
-    expect(strip()).toHaveTextContent('1 receipt');
-    expect(strip()).toHaveTextContent('1 reading');
+    expect(await bubbleNamed('Gator is working: 1 being read')).toBeVisible();
+    const sheet = within(await openBubbleSheet());
+    expect(sheet.getByText('1 receipt')).toBeVisible();
+    expect(sheet.getByText('1 reading')).toBeVisible();
   });
 
   it('is hidden on the Review overview', () => {
     seed('a', 'receipt');
     renderAt('/scan/review');
     expect(screen.getByText('review overview')).toBeVisible();
-    expect(strip()).toBeUndefined();
+    expect(bubble()).toBeNull();
   });
 
   it("is hidden on a Scan's line editor", () => {
     seed('a', 'receipt');
     renderAt('/scan/review/a');
     expect(screen.getByText('line editor')).toBeVisible();
-    expect(strip()).toBeUndefined();
+    expect(bubble()).toBeNull();
   });
 
-  it('is one item however many Scans it holds, with its read and reading summary', () => {
+  it('is one Job however many Scans it holds, with its read and reading summary in its row', async () => {
     seed('a', 'receipt');
     seed('b', 'receipt');
     seed('c', 'receipt', 'reading');
     renderAt();
-    expect(strip()).toHaveTextContent('3 receipts');
-    expect(strip()).toHaveTextContent('2 read · 1 reading');
-    expect(screen.queryByText(/in the background/)).toBeNull();
+    expect(await bubbleNamed('Gator is working: 1 being read')).toBeVisible();
+    const sheet = within(await openBubbleSheet());
+    expect(sheet.getAllByRole('listitem')).toHaveLength(1);
+    expect(sheet.getByText('3 receipts')).toBeVisible();
+    expect(sheet.getByText('2 read · 1 reading')).toBeVisible();
   });
 
-  it('is a photo item unless every Scan is a receipt, and leaves out barcode lookups and uncropped receipts', () => {
+  it('is a photo item unless every Scan is a receipt, and leaves out barcode lookups and uncropped receipts', async () => {
     seed('a', 'receipt');
     seed('b', 'product');
     seed('code', 'barcode', 'reading');
@@ -161,21 +152,18 @@ describe('the Scan Session in the background strip', () => {
       }),
     );
     renderAt();
-    expect(strip()).toHaveTextContent('2 photos');
-    expect(strip()).toHaveTextContent('2 read');
+    const sheet = within(await openBubbleSheet());
+    expect(sheet.getByText('2 photos')).toBeVisible();
+    expect(sheet.getByText('2 read')).toBeVisible();
   });
 
-  it('opens the Review overview when tapped, reading or read', async () => {
+  it('opens the Review overview from its row, reading or read', async () => {
     seed('a', 'receipt', 'reading');
     renderAt();
-    await userEvent.click(strip());
-    expect(await screen.findByText('review overview')).toBeVisible();
-  });
-
-  it('opens the Review overview from its button once every Scan is read', async () => {
-    seed('a', 'product');
-    renderAt();
-    await userEvent.click(screen.getByRole('button', { name: 'Review' }));
+    const sheet = within(await openBubbleSheet());
+    await userEvent.click(
+      sheet.getByRole('button', { name: 'Review 1 receipt' }),
+    );
     expect(await screen.findByText('review overview')).toBeVisible();
   });
 
@@ -183,59 +171,32 @@ describe('the Scan Session in the background strip', () => {
     ['failed', 'error'],
     ['capped', 'cap'],
   ] as const)(
-    'outlines the strip as a failure when a Scan is %s',
-    (_name, outcome) => {
+    'shows Could not read when a Scan is %s',
+    async (_name, outcome) => {
       seed('a', 'receipt');
       seed('b', 'receipt', outcome);
       renderAt();
-      expect(strip()).toHaveTextContent('1 read · 1 failed');
-      expect(outline()).toMatch(/border: 2px solid/);
+      expect(await bubbleNamed('1 could not be read')).toBeVisible();
+      expect(screen.getByTestId('gator-bubble')).toHaveAttribute(
+        'data-state',
+        'couldNotRead',
+      );
+      const sheet = within(await openBubbleSheet());
+      expect(sheet.getByText('1 read · 1 failed')).toBeVisible();
     },
   );
 
-  it('announces a failure once as an alert, and not again when the host remounts', async () => {
+  it('announces a failure through the toast live region, as a status and not an alert', async () => {
     seed('a', 'receipt');
     seed('b', 'receipt', 'error');
     seed('c', 'receipt', 'error');
     renderAt('/scan');
     await userEvent.click(screen.getByRole('link', { name: 'back' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '2 Scans failed',
+    await bubbleNamed('1 could not be read');
+    await waitFor(() =>
+      expect(announcements()).toContain('1 could not be read'),
     );
-
-    // Off to the camera and back: the host remounts, the same failures are not announced again.
-    await userEvent.click(screen.getByRole('link', { name: 'to the camera' }));
-    await userEvent.click(screen.getByRole('link', { name: 'back' }));
-    expect(strip()).toHaveTextContent('2 failed');
     expect(screen.queryByRole('alert')).toBeNull();
-  });
-
-  it('takes the alert down when the Member changes page, and does not announce it again', async () => {
-    seed('a', 'receipt');
-    renderAt();
-    seed('b', 'receipt', 'error');
-    expect(await screen.findByRole('alert')).toHaveTextContent('1 Scan failed');
-
-    await userEvent.click(screen.getByRole('link', { name: 'to the pantry' }));
-    expect(strip()).toHaveTextContent('1 failed');
-    expect(screen.queryByRole('alert')).toBeNull();
-
-    await userEvent.click(screen.getByRole('link', { name: 'to shopping' }));
-    expect(strip()).toHaveTextContent('1 failed');
-    expect(screen.queryByRole('alert')).toBeNull();
-  });
-
-  it('announces the first failures of a new Session after the previous Session alert', async () => {
-    seed('a', 'receipt', 'error');
-    seed('b', 'receipt', 'error');
-    renderAt();
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      '2 Scans failed',
-    );
-    // The Session ends (Review saved it, or the Member signed out) and a new one fails once.
-    act(() => resetScanSession());
-    seed('c', 'receipt', 'error');
-    expect(await screen.findByRole('alert')).toHaveTextContent('1 Scan failed');
   });
 
   it('buzzes once when the last reading Scan is read while the Member is on a Dock page', async () => {
@@ -254,33 +215,36 @@ describe('the Scan Session in the background strip', () => {
     seed('a', 'receipt');
     renderAt('/scan');
     await userEvent.click(screen.getByRole('link', { name: 'back' }));
-    expect(strip()).toHaveTextContent('1 read');
+    expect(await bubbleNamed('All read: 1 ready to review')).toBeVisible();
     expect(vibrate).not.toHaveBeenCalled();
   });
 
-  it('has no failure outline while every Scan reads or is read', () => {
-    seed('a', 'receipt');
-    seed('b', 'receipt', 'reading');
-    renderAt();
-    expect(outline()).not.toMatch(/border: 2px solid/);
-  });
-
-  it('rests as the dark pill with a happy Gator once all are read', () => {
+  it('turns gold with a happy Gator once all are read', async () => {
     seed('a', 'receipt');
     renderAt();
-    expect(
-      strip().parentElement!.querySelector('img[data-mood]'),
-    ).toHaveAttribute('data-mood', 'happy');
+    const button = await bubbleNamed('All read: 1 ready to review');
+    expect(button.querySelector('img[data-mood]')).toHaveAttribute(
+      'data-mood',
+      'happy',
+    );
+    expect(screen.getByTestId('gator-bubble')).toHaveAttribute(
+      'data-state',
+      'allDone',
+    );
   });
 
-  it('shows the reading art while Scans are read', async () => {
+  it('keeps a thinking Gator while Scans are read', async () => {
     seed('a', 'receipt', 'reading');
     renderAt();
-    expect(strip().parentElement!.querySelector('svg')).not.toBeNull();
+    const button = await bubbleNamed('Gator is working: 1 being read');
+    expect(button.querySelector('img[data-mood]')).toHaveAttribute(
+      'data-mood',
+      'thinking',
+    );
   });
 });
 
-describe('the Scan Session and Voice Notes in the strip', () => {
+describe('the Scan Session and Voice Notes in the bubble', () => {
   let fake: ReturnType<typeof stubVoiceFetch>;
   beforeEach(() => {
     useVoiceTimers();
@@ -305,18 +269,14 @@ describe('the Scan Session and Voice Notes in the strip', () => {
     await waitFor(() => expect(fake.reads).toHaveLength(1));
   }
 
-  it('counts the Scan Session once beside a Voice Note, with the general summary and Open', async () => {
+  it('counts the Scan Session once beside a Voice Note, in the general summary', async () => {
     seed('a', 'receipt', 'reading');
     seed('b', 'receipt', 'reading');
     renderAt();
     await speak();
-    expect(await screen.findByText('2 in the background')).toBeVisible();
-    expect(strip()).toHaveTextContent('2 reading');
+    expect(await bubbleNamed('Gator is working: 2 being read')).toBeVisible();
 
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
-    const sheet = await screen.findByRole('dialog', {
-      name: 'In the background',
-    });
+    const sheet = await openBubbleSheet();
     expect(sheet.querySelectorAll('li')).toHaveLength(2);
     expect(sheet).toHaveTextContent('2 receipts');
   });
@@ -325,10 +285,7 @@ describe('the Scan Session and Voice Notes in the strip', () => {
     seed('a', 'receipt', 'reading');
     renderAt();
     await speak();
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
-    const sheet = await screen.findByRole('dialog', {
-      name: 'In the background',
-    });
+    const sheet = await openBubbleSheet();
     const row = Array.from(sheet.querySelectorAll('li')).find((li) =>
       li.textContent?.includes('1 receipt'),
     )!;
@@ -339,15 +296,17 @@ describe('the Scan Session and Voice Notes in the strip', () => {
     expect(await screen.findByText('review overview')).toBeVisible();
   });
 
-  // Pins today's choice (inherited from the Voice Inbox strip, still waiting for a human decision):
-  // with exactly one ready item among several, the strip button opens that item rather than the sheet.
-  it('with one ready item among several, the button is Review and opens that item', async () => {
+  it('with one ready item among several, the Review sheet lists it under Ready to review', async () => {
     seed('a', 'receipt');
     renderAt();
     await speak();
-    expect(await screen.findByText('2 in the background')).toBeVisible();
-    await userEvent.click(screen.getByRole('button', { name: 'Review' }));
+    expect(await bubbleNamed('1 ready to review')).toBeVisible();
+    const sheet = within(await openBubbleSheet());
+    await userEvent.click(
+      sheet.getByRole('button', { name: 'Review 1 receipt' }),
+    );
     expect(await screen.findByText('review overview')).toBeVisible();
+    await closeBubbleSheet();
   });
 });
 

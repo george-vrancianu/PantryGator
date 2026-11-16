@@ -1,5 +1,4 @@
 {
-  "title": "{{count}} în fundal",
   "reading_one": "{{count}} se citește",
   "reading_few": "{{count}} se citesc",
   "reading_other": "{{count}} se citesc",
@@ -8,9 +7,6 @@
   "failed_few": "{{count}} eșuate",
   "failed_other": "{{count}} de eșuate",
   "review": "Verificare",
-  "open": "Deschide",
-  "openCount": "Deschide {{count}}",
-  "sheetTitle": "În fundal",
   "scan": {
     "reviewSession": "Verificare {{title}}",
     "failedAlert_one": "{{count}} scanare a eșuat",
@@ -66,5 +62,30 @@
     "failedAlert_one": "{{count}} rețetă din poza farfuriei a eșuat",
     "failedAlert_few": "{{count}} rețete din poze cu farfurii au eșuat",
     "failedAlert_other": "{{count}} de rețete din poze cu farfurii au eșuat"
+  },
+  "bubble": {
+    "reading_one": "Gator lucrează: {{count}} se citește",
+    "reading_few": "Gator lucrează: {{count}} se citesc",
+    "reading_other": "Gator lucrează: {{count}} se citesc",
+    "ready_one": "{{count}} gata de verificat",
+    "ready_few": "{{count}} gata de verificat",
+    "ready_other": "{{count}} gata de verificat",
+    "failed_one": "{{count}} nu a putut fi citit",
+    "failed_few": "{{count}} nu au putut fi citite",
+    "failed_other": "{{count}} nu au putut fi citite",
+    "allDone_one": "Totul e citit: {{count}} gata de verificat",
+    "allDone_few": "Totul e citit: {{count}} gata de verificat",
+    "allDone_other": "Totul e citit: {{count}} gata de verificat",
+    "open": "Deschide Verificarea"
+  },
+  "sheet": {
+    "title": "Verificare",
+    "summary": "{{ready}} gata · {{reading}} se citesc · {{failed}} eșuate",
+    "group": {
+      "ready": "Gata de verificat",
+      "reading": "Se citesc",
+      "failed": "Nu au putut fi citite"
+    },
+    "note": "Nimic nu se schimbă până nu verifici și aplici."
   }
 }

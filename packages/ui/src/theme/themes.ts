@@ -133,6 +133,23 @@ export interface ThemeTokens {
   'lamp-window-off': string;
   'dial-bad': string;
   'dial-good': string;
+  // the Gator bubble: the same in both Themes
+  'bubble-ink': string;
+  'bubble-grey-bg': string;
+  'bubble-grey-fg': string;
+  'bubble-green-bg': string;
+  'bubble-green-fg': string;
+  'bubble-red-bg': string;
+  'bubble-red-fg': string;
+  'bubble-ring-red': string;
+  'bubble-ring-track': string;
+  'bubble-origin': string;
+  'bubble-disc': string;
+  'bubble-face': string;
+  'bubble-face-done': string;
+  'bubble-shadow-drag': string;
+  'bubble-shadow-done': string;
+  'bubble-shadow-label': string;
 }
 
 export interface ThemeMeta {
@@ -269,6 +286,24 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'lamp-window-off': '#0D2016', // unlit lamp window
     'dial-bad': '#E8744D', // health dial on the header: red tip
     'dial-good': '#E8CB7C', // health dial on the header: full end
+    'bubble-ink': '#101511',
+    'bubble-grey-bg': '#F4F7F1',
+    'bubble-grey-fg': '#141A16',
+    'bubble-green-bg': '#1C6A43',
+    'bubble-green-fg': '#FFFFFF',
+    'bubble-red-bg': '#B93A14',
+    'bubble-red-fg': '#FFFFFF',
+    'bubble-ring-red': '#F0693A',
+    'bubble-ring-track': 'rgba(244,247,241,.14)',
+    'bubble-origin': 'rgba(20,30,22,.42)',
+    'bubble-disc': 'linear-gradient(180deg, #262F29, #121814)',
+    'bubble-face': 'radial-gradient(circle at 50% 40%, #3A6E50, #173323)',
+    'bubble-face-done': '#FBF3DA',
+    'bubble-shadow-drag':
+      '0 4px 8px rgba(10,16,12,.4), 0 22px 32px -8px rgba(10,16,12,.75)',
+    'bubble-shadow-done':
+      '0 0 0 6px rgba(232,203,124,.35), 0 2px 4px rgba(10,16,12,.35), 0 14px 24px -8px rgba(10,16,12,.65)',
+    'bubble-shadow-label': '0 2px 4px rgba(10,16,12,.35)',
   },
   dark: {
     bg: '#101511', // flat fallback under the sheet gradient (its lower stop)
@@ -397,6 +432,24 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'lamp-window-off': '#0D2016', // unlit lamp window
     'dial-bad': '#E8744D', // health dial on the header: red tip
     'dial-good': '#E8CB7C', // health dial on the header: full end
+    'bubble-ink': '#101511',
+    'bubble-grey-bg': '#F4F7F1',
+    'bubble-grey-fg': '#141A16',
+    'bubble-green-bg': '#1C6A43',
+    'bubble-green-fg': '#FFFFFF',
+    'bubble-red-bg': '#B93A14',
+    'bubble-red-fg': '#FFFFFF',
+    'bubble-ring-red': '#F0693A',
+    'bubble-ring-track': 'rgba(244,247,241,.14)',
+    'bubble-origin': 'rgba(20,30,22,.42)',
+    'bubble-disc': 'linear-gradient(180deg, #262F29, #121814)',
+    'bubble-face': 'radial-gradient(circle at 50% 40%, #3A6E50, #173323)',
+    'bubble-face-done': '#FBF3DA',
+    'bubble-shadow-drag':
+      '0 4px 8px rgba(10,16,12,.4), 0 22px 32px -8px rgba(10,16,12,.75)',
+    'bubble-shadow-done':
+      '0 0 0 6px rgba(232,203,124,.35), 0 2px 4px rgba(10,16,12,.35), 0 14px 24px -8px rgba(10,16,12,.65)',
+    'bubble-shadow-label': '0 2px 4px rgba(10,16,12,.35)',
   },
 };
 

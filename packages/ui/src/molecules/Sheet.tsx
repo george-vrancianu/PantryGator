@@ -9,6 +9,7 @@ import {
   type RefObject,
 } from 'react';
 import { Box } from '../atoms/Layout';
+import { useRegisterOpenSheet } from './openSheets';
 import { useToastHost } from './ToastProvider';
 import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
@@ -104,6 +105,7 @@ export function Sheet({
   // Only while open: a toast raised as the sheet closes must not sit in the
   // paper that is sliding away.
   useToastHost(open ? paper : null);
+  useRegisterOpenSheet(open);
   const focusInitial = focusOpening(paper, initialFocus, centred);
   const skipRestore = useSkipTextRestore(open, centred);
   return (

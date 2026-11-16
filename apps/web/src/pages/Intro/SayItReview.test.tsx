@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // The fake voice environment registers its mocks, so it comes before anything that reaches the microphone.
 import {
+  bubbleSays,
+  openBubbleSheet,
   openReady,
   mic,
   resetVoiceEnvironment,
@@ -183,7 +185,11 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     expect(mic.request).not.toHaveBeenCalled();
     fireEvent.pointerUp(button);
 
-    expect(await screen.findByText(/Ready to review$/)).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'All read: 1 ready to review. Open Review',
+      }),
+    ).toBeVisible();
     expect(screen.queryByRole('dialog')).toBeNull();
     const review = await openReady({ name: "Here's what I heard" });
     expect(sent[0].get('defaultTarget')).toBe('pantry');
@@ -398,7 +404,11 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
       routes: { 'POST /api/voice': () => new Promise<Response>(() => {}) },
     });
     await record();
-    expect(await screen.findByText(/Being read$/)).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Gator is working: 1 being read. Open Review',
+      }),
+    ).toBeVisible();
     expect(screen.queryByText('Hold the mic, talk, let go')).toBeNull();
   });
 
@@ -415,7 +425,9 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     const user = userEvent.setup();
     expect(screen.getByRole('link', { name: 'Skip' })).toBeVisible();
     await record();
-    await screen.findByText(/Being read$/);
+    await screen.findByRole('button', {
+      name: 'Gator is working: 1 being read. Open Review',
+    });
     expect(screen.queryByRole('link', { name: 'Skip' })).toBeNull();
 
     await user.click(screen.getByRole('button', { name: 'Skip' }));
@@ -427,7 +439,11 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(screen.getByRole('button', { name: 'Skip' })).toHaveFocus();
     expect(where()).toBe('/intro/say-it');
-    expect(screen.getByText(/Being read$/)).toBeVisible();
+    expect(
+      screen.getByRole('button', {
+        name: 'Gator is working: 1 being read. Open Review',
+      }),
+    ).toBeVisible();
 
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     await user.click(screen.getByRole('button', { name: 'Confirm' }));
@@ -458,8 +474,8 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     });
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     await screen.findByRole('link', { name: 'Customise dashboard' });
-    expect(screen.queryByText(/Ready to review$/)).toBeNull();
-    expect(screen.queryByText(/Being read$/)).toBeNull();
+    expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
   });
 
   it('keeps a note that cannot be read in the Voice Inbox with Retry and Discard', async () => {
@@ -471,17 +487,14 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     });
     const user = userEvent.setup();
     await record();
-    expect(await screen.findByText(/^Voice Note · 0:\d\d$/)).toBeVisible();
-    await waitFor(() => expect(screen.queryByText(/Being read$/)).toBeNull());
+    expect(await bubbleSays('1 could not be read')).toBeVisible();
     expect(
       screen.queryByRole('dialog', { name: "Here's what I heard" }),
     ).toBeNull();
     expect(where()).toBe('/intro/say-it');
 
-    await user.click(screen.getByRole('button', { name: 'Open' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     expect(sheet.getByRole('button', { name: /^Retry:/ })).toBeVisible();
     expect(sheet.getByRole('button', { name: /^Discard/ })).toBeVisible();
   });
@@ -489,6 +502,8 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
   it('keeps a note that heard nothing until it is retried or discarded', async () => {
     await openSayIt({ transcript: '', actions: [] });
     await record();
+    expect(await bubbleSays('1 could not be read')).toBeVisible();
+    await openBubbleSheet();
     expect(await screen.findByText(/^Voice Note · 0:\d\d$/)).toBeVisible();
     expect(
       await screen.findByText(/Didn't catch anything, try again/),
@@ -521,21 +536,18 @@ describe('Setup 2: the Voice Cap', () => {
       },
     });
     await record();
-    expect(await screen.findByText(/^Voice Note · 0:\d\d$/)).toBeVisible();
-    await waitFor(() => expect(screen.queryByText(/Being read$/)).toBeNull());
+    expect(await bubbleSays('1 could not be read')).toBeVisible();
 
     // The next press is refused up front, as in the app: no Listening card, the cap in the Voice Inbox.
     const button = await talkButton();
     pressDown(button);
     await holdLongEnough();
     fireEvent.pointerUp(button);
-    await screen.findByText('2 failed');
+    await bubbleSays('2 could not be read');
     await userEvent
       .setup()
-      .click(screen.getByRole('button', { name: /^Open/ }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+      .click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     expect(sheet.getAllByText(/today's 30 Voice Notes/).length).toBeGreaterThan(
       0,
     );
@@ -688,9 +700,11 @@ describe('Setup 2: several Voice Notes', () => {
   async function twoReady(applies: unknown[]) {
     const setup = await openSayIt(undefined, undefined, twoNotes(applies));
     await record();
-    await screen.findByText(/Ready to review$/);
+    await screen.findByRole('button', {
+      name: 'All read: 1 ready to review. Open Review',
+    });
     await record();
-    await screen.findByText('2 ready');
+    await bubbleSays('All read: 2 ready to review');
     return setup;
   }
 
@@ -698,10 +712,8 @@ describe('Setup 2: several Voice Notes', () => {
     await twoReady([RICE_APPLIED, EGGS_APPLIED]);
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole('button', { name: 'Open 2' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await user.click(sheet.getAllByRole('button', { name: /^Review:/ })[1]);
     const first = await screen.findByRole('dialog', {
       name: "Here's what I heard",
@@ -714,7 +726,7 @@ describe('Setup 2: several Voice Notes', () => {
     expect(await screen.findByText('1 thing in your Pantry')).toBeVisible();
     expect(where()).toBe('/intro/say-it');
 
-    await user.click(await screen.findByRole('button', { name: 'Review' }));
+    await openReady({ name: "Here's what I heard" });
     const second = await screen.findByRole('dialog', {
       name: "Here's what I heard",
     });
@@ -740,10 +752,8 @@ describe('Setup 2: several Voice Notes', () => {
     ]);
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole('button', { name: 'Open 2' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await user.click(sheet.getByRole('button', { name: 'Review all (2)' }));
     const review = await screen.findByRole('dialog', {
       name: "Here's what I heard",
@@ -774,10 +784,8 @@ describe('Setup 2: several Voice Notes', () => {
       },
     ]);
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: 'Open 2' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await user.click(sheet.getByRole('button', { name: 'Review all (2)' }));
     const review = await screen.findByRole('dialog', {
       name: "Here's what I heard",
@@ -797,10 +805,8 @@ describe('Setup 2: several Voice Notes', () => {
   it('moves on when the rest is discarded after something was applied', async () => {
     await twoReady([RICE_APPLIED]);
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: 'Open 2' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await user.click(sheet.getAllByRole('button', { name: /^Review:/ })[1]);
     const first = await screen.findByRole('dialog', {
       name: "Here's what I heard",
@@ -810,7 +816,7 @@ describe('Setup 2: several Voice Notes', () => {
     );
     await screen.findByText('1 thing in your Pantry');
 
-    await user.click(await screen.findByRole('button', { name: 'Review' }));
+    await openReady({ name: "Here's what I heard" });
     const second = await screen.findByRole('dialog', {
       name: "Here's what I heard",
     });
@@ -833,10 +839,8 @@ describe('Setup 2: several Voice Notes', () => {
       },
     ]);
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: 'Open 2' }));
-    const sheet = within(
-      await screen.findByRole('dialog', { name: 'In the background' }),
-    );
+    await user.click(screen.getByRole('button', { name: /Open Review/ }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Review' }));
     await user.click(sheet.getAllByRole('button', { name: /^Review:/ })[1]);
     const first = await screen.findByRole('dialog', {
       name: "Here's what I heard",
@@ -850,7 +854,7 @@ describe('Setup 2: several Voice Notes', () => {
       ).toHaveLength(1),
     );
 
-    await user.click(await screen.findByRole('button', { name: 'Review' }));
+    await openReady({ name: "Here's what I heard" });
     const second = await screen.findByRole('dialog', {
       name: "Here's what I heard",
     });
@@ -866,26 +870,16 @@ describe('Setup 2: several Voice Notes', () => {
     const { calls } = await twoReady([]);
     const user = userEvent.setup();
     for (const remaining of [2, 1]) {
-      const strip = screen.getByRole('button', {
-        name: remaining === 2 ? 'Open 2' : 'Review',
+      const review = within(await openBubbleSheet());
+      await user.click(
+        review.getAllByRole('button', { name: /^Review:/ })[
+          remaining === 2 ? 1 : 0
+        ],
+      );
+      const note = await screen.findByRole('dialog', {
+        name: "Here's what I heard",
       });
-      await user.click(strip);
-      const review = await screen.findByRole('dialog', {
-        name: remaining === 2 ? 'In the background' : "Here's what I heard",
-      });
-      if (remaining === 2) {
-        await user.click(
-          within(review).getAllByRole('button', { name: /^Review:/ })[1],
-        );
-        const note = await screen.findByRole('dialog', {
-          name: "Here's what I heard",
-        });
-        await user.click(within(note).getByRole('button', { name: 'Discard' }));
-      } else {
-        await user.click(
-          within(review).getByRole('button', { name: 'Discard' }),
-        );
-      }
+      await user.click(within(note).getByRole('button', { name: 'Discard' }));
       await user.click(await screen.findByRole('button', { name: 'Discard' }));
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     }
@@ -924,7 +918,9 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     await openSayIt();
     const user = userEvent.setup();
     await record();
-    await screen.findByText(/Ready to review$/);
+    await screen.findByRole('button', {
+      name: 'All read: 1 ready to review. Open Review',
+    });
     await user.click(screen.getByRole('button', { name: 'Next' }));
 
     expect(
@@ -935,14 +931,20 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     expect(where()).toBe('/intro/all-set');
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     await screen.findByRole('link', { name: 'Customise dashboard' });
-    expect(await screen.findByText(/Ready to review$/)).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'All read: 1 ready to review. Open Review',
+      }),
+    ).toBeVisible();
   });
 
   it('Skip with a ready note asks first: Cancel keeps it, Confirm drops it and moves on', async () => {
     await openSayIt();
     const user = userEvent.setup();
     await record();
-    await screen.findByText(/Ready to review$/);
+    await screen.findByRole('button', {
+      name: 'All read: 1 ready to review. Open Review',
+    });
 
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(
@@ -952,7 +954,11 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(screen.queryByText(/applied yet/)).toBeNull();
-    expect(screen.getByText(/Ready to review$/)).toBeVisible();
+    expect(
+      screen.getByRole('button', {
+        name: 'All read: 1 ready to review. Open Review',
+      }),
+    ).toBeVisible();
     expect(where()).toBe('/intro/say-it');
 
     await user.click(screen.getByRole('button', { name: 'Skip' }));
@@ -964,7 +970,7 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     await screen.findByRole('link', { name: 'Customise dashboard' });
-    expect(screen.queryByText(/Ready to review$/)).toBeNull();
+    expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
   });
 
   it('names the number of notes that would be lost', async () => {
@@ -975,9 +981,11 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     await openSayIt(riceNote);
     const user = userEvent.setup();
     await record();
-    await screen.findByText(/Ready to review$/);
+    await screen.findByRole('button', {
+      name: 'All read: 1 ready to review. Open Review',
+    });
     await record();
-    await screen.findByText('2 ready');
+    await bubbleSays('All read: 2 ready to review');
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(
       screen.getByText(

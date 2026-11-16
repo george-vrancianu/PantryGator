@@ -402,3 +402,33 @@ describe('Pull to refresh', () => {
     await elapse(1000);
   });
 });
+
+describe('The Gator bubble bound', () => {
+  const bound = () =>
+    document.documentElement.style.getPropertyValue('--gator-bubble-top');
+
+  it('is the bottom of the header on :root, and is cleared on leaving the layout', () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        const bottom = this.closest('[data-region="header"]') ? 132 : 40;
+        return {
+          bottom,
+          top: 0,
+          left: 0,
+          right: 0,
+          width: 0,
+          height: 0,
+        } as DOMRect;
+      },
+    );
+    const view = renderRoutes('/pantry');
+    expect(bound()).toBe('132px');
+    view.unmount();
+    expect(bound()).toBe('');
+  });
+
+  it('is cleared while the camera is open', () => {
+    renderRoutes('/scan');
+    expect(bound()).toBe('');
+  });
+});
