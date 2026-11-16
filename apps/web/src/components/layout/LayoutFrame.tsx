@@ -23,6 +23,7 @@ import {
   type PageInstance,
   type PagePhase,
 } from './layoutContext';
+import { CanopyTexture } from './CanopyTexture';
 import { FADE_MS, HEIGHT_EASING, TRANSITION_MS } from './timing';
 import { usePageTransition, type Page } from './usePageTransition';
 import { usePullToRefresh } from './usePullToRefresh';
@@ -148,8 +149,12 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
             backgroundColor: 'var(--pp-canopy-base)',
             color: canopy.ink,
             pb: `${CANOPY_TO_SHEET + CANOPY_UNDER_SHEET}px`,
+            // The header content sits above the texture.
+            '& > [data-region]': { position: 'relative' },
+            overflow: 'hidden',
           }}
         >
+          <CanopyTexture />
           <Box
             data-region="top-bar"
             sx={{
