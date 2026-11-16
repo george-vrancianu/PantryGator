@@ -6,6 +6,11 @@ import {
   ClockIcon,
   CookIcon,
   HourglassIcon,
+  LampExpiredIcon,
+  LampFreshIcon,
+  LampLowIcon,
+  LampNothingNewIcon,
+  LampSoonIcon,
   PulseIcon,
   CopyIcon,
   CalendarDaysIcon,
@@ -171,4 +176,22 @@ describe('icons', () => {
     expect(svg.getAttribute('aria-hidden')).toBe('true');
     expect(svg.getAttribute('stroke-width')).toBe('2');
   });
+
+  it.each([
+    ['Expired', LampExpiredIcon],
+    ['Use soon', LampSoonIcon],
+    ['Running low', LampLowIcon],
+    ['Fresh in', LampFreshIcon],
+    ['Nothing new', LampNothingNewIcon],
+  ])(
+    'draw the %s light as a decorative glyph that takes a lighter stroke',
+    (_, Glyph) => {
+      const { container } = render(<Glyph size={22} strokeWidth={1.7} />);
+      const svg = container.querySelector('svg')!;
+      expect(svg.getAttribute('aria-hidden')).toBe('true');
+      expect(svg.getAttribute('width')).toBe('22');
+      expect(svg.getAttribute('stroke-width')).toBe('1.7');
+      expect(svg.querySelectorAll('path, rect').length).toBeGreaterThan(0);
+    },
+  );
 });

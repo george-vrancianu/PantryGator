@@ -31,6 +31,8 @@ export const radius = {
   btn: pp('r-btn'),
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
+  /** Small labelled pills: the gain pill and the done pills. */
+  tag: pp('r-tag'),
   /** Tags and pill buttons: round in every Theme. */
   pill: '999px',
 } as const;
