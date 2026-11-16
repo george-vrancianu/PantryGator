@@ -216,6 +216,11 @@ const PLAIN_WORDS: Record<string, string> = {
   note: 'plain word; Voice Note and Nutrition Note are canonical and not matched',
   product: 'packaged goods in Product Scan copy, not an Ingredient',
   save: 'plain verb for keeping a form ("Save Recipe"); avoided only as the name of Add to Family',
+  new: 'plain adjective ("New Tip", "Generate a new code"); avoided only as the name of the Fresh in light',
+  recent:
+    'plain adjective ("recent searches"); avoided only as the name of the Fresh in light',
+  request:
+    'plain noun/verb ("Suggest Guidance requests"); avoided only as a name for a Wish (an Assistant Request)',
 };
 
 /** Exceptions found when the broad whitelist was narrowed: term, reason, keys. */
