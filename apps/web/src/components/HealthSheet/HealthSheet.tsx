@@ -4,6 +4,7 @@ import {
   displayType,
   IconButton,
   PulseIcon,
+  radius,
   segOff,
   Sheet,
   tokens,
@@ -160,7 +161,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
                       sx={{
                         flex: 1,
                         height: 6,
-                        borderRadius: '3px',
+                        borderRadius: radius.tag,
                         background: segOff,
                         overflow: 'hidden',
                       }}
@@ -172,7 +173,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
                           display: 'block',
                           height: '100%',
                           width: `${value}%`,
-                          borderRadius: '3px',
+                          borderRadius: radius.tag,
                           bgcolor: VERDICT_COLOR[verdictOf(value)],
                         }}
                       />

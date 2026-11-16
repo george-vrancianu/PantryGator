@@ -95,6 +95,10 @@ export const healthLamp = {
   stale: pp('lamp-stale'),
   window: pp('lamp-window'),
   windowOff: pp('lamp-window-off'),
+  /** The lamp case's corner radius. */
+  radius: '7px',
+  /** The recess shadow inside an unlit or lit window. */
+  windowShadow: 'inset 0 1px 3px rgba(0,0,0,.5)',
 } as const;
 
 /** Bar and meter tracks. */

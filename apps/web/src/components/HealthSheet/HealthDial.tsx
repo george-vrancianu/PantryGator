@@ -3,7 +3,7 @@ import {
   canopy,
   color,
   healthDial,
-  tokens,
+  palette,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { dialAngle } from '../../lib/healthLights';
@@ -40,13 +40,13 @@ const PALETTES: Record<'canopy' | 'sheet', Palette> = {
     hubRing: canopy.base,
   },
   sheet: {
-    bad: tokens.color.urgentFg,
+    bad: palette('error-main'),
     mid: color.lineStrong,
-    good: tokens.color.accent,
-    tick: mix(tokens.color.ink, 40, 'transparent'),
-    needle: tokens.color.ink,
-    hub: tokens.color.accent,
-    hubRing: tokens.color.surface,
+    good: palette('pp-accent'),
+    tick: mix(palette('text-primary'), 40, 'transparent'),
+    needle: palette('text-primary'),
+    hub: palette('pp-accent'),
+    hubRing: palette('background-paper'),
   },
 };
 

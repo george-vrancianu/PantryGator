@@ -92,8 +92,8 @@ export function HealthLamp({ light, size = 40, check = false }: Props) {
         flex: 'none',
         boxSizing: 'border-box',
         display: 'block',
-        borderRadius: '7px',
-        boxShadow: `inset 0 1px 3px ${mix('black', 50)}`,
+        borderRadius: healthLamp.radius,
+        boxShadow: healthLamp.windowShadow,
         background: healthLamp.windowOff,
         border: `1px solid ${mix(canopy.ink, 9)}`,
       }}
