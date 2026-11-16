@@ -61,3 +61,78 @@ export function trackScrolling() {
     },
   };
 }
+
+/**
+ * jsdom does not scroll. This gives `el` a working `scrollTop` (plus `scrollTo` and `scrollBy`, which move it)
+ * that fires a `scroll` event when it changes, as a browser does, and a `scrollHeight` of `height` so
+ * content that is too short clamps a restore. Use it on the layout's sheet (`getByTestId('sheet-scroller')`).
+ * Setting `scrollTop` directly is a scroll like the Member's; `scrollSheetTo` is the same, spelled out.
+ */
+export function makeScrollable(el: HTMLElement, { height = 10_000 } = {}) {
+  let top = 0;
+  const move = (next: number) => {
+    const clamped = Math.max(0, Math.min(next, height));
+    if (clamped === top) return;
+    top = clamped;
+    el.dispatchEvent(new Event('scroll'));
+  };
+  Object.defineProperty(el, 'scrollTop', {
+    configurable: true,
+    get: () => top,
+    set: move,
+  });
+  Object.defineProperty(el, 'scrollHeight', {
+    configurable: true,
+    get: () => height,
+  });
+  el.scrollTo = ((options: ScrollToOptions) =>
+    move(options.top ?? top)) as typeof el.scrollTo;
+  el.scrollBy = ((options: ScrollToOptions) =>
+    move(top + (options.top ?? 0))) as typeof el.scrollBy;
+  return el;
+}
+
+/** Scrolls a `makeScrollable` element to `top`, firing `scroll`. */
+export function scrollSheetTo(el: HTMLElement, top: number) {
+  el.scrollTop = top;
+}
+
+/**
+ * Touch events for a pull-to-refresh: down at `from` (and `fromX`), move through `to` (and `toX`),
+ * optionally release. `target` is where the touch lands (default the scroller). Returns the move event.
+ */
+export function pull(
+  el: Element,
+  {
+    from = 100,
+    to,
+    fromX = 50,
+    toX = 50,
+    release = true,
+    target = el,
+  }: {
+    from?: number;
+    to: number;
+    fromX?: number;
+    toX?: number;
+    release?: boolean;
+    target?: Element;
+  },
+) {
+  const touch = (x: number, y: number) => ({
+    touches: [{ clientX: x, clientY: y }],
+  });
+  target.dispatchEvent(
+    Object.assign(
+      new Event('touchstart', { bubbles: true }),
+      touch(fromX, from),
+    ),
+  );
+  const move = Object.assign(
+    new Event('touchmove', { bubbles: true, cancelable: true }),
+    touch(toX, to),
+  );
+  target.dispatchEvent(move);
+  if (release) target.dispatchEvent(new Event('touchend', { bubbles: true }));
+  return move;
+}

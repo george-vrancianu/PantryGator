@@ -1,7 +1,6 @@
 import {
   Alert,
   Box,
-  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
@@ -19,8 +18,9 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { useAddToFamily } from '../../lib/addToFamily';
+import { useScroller } from '../../lib/scroller';
 import { exploreAdds } from '../../lib/exploreAdds';
 import { isPlainClick } from '../../lib/isPlainClick';
 import { familyRecipeHref, recipeHref } from '../../lib/recipeHref';
@@ -105,10 +105,11 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
   const tabsId = useId();
   const [tab, setTab] = useState<DetailTab>('ingredients');
   const reduceMotion = usePrefersReducedMotion();
+  const scroller = useScroller();
   const openTab = (next: DetailTab) => {
     if (next === tab) return;
     setTab(next);
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scroller.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
   const fromExplore =
     (useLocation().state as { fromExplore?: boolean } | null)?.fromExplore ===
@@ -138,7 +139,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
     if (!isPlainClick(event)) return;
     event.preventDefault();
     if (hasHistory) navigate(-1);
-    else navigate('/recipes/explore', { state: { noSlide: true } });
+    else navigate('/recipes/explore');
   };
   const addState = recipe
     ? addToFamily.stateOf({
@@ -160,7 +161,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
   return (
     <>
       {preview ? (
-        <AppScreenHeader
+        <Screen
           back={{
             label: t('recipes:back'),
             href: '/recipes/explore',
@@ -203,7 +204,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
             <Box
               sx={{
                 position: 'sticky',
-                top: SAFE_TOP,
+                top: 0,
                 zIndex: 2,
                 py: '8px',
                 bgcolor: tokens.color.bg,

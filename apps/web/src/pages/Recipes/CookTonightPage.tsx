@@ -1,7 +1,7 @@
 import { Alert, Box, Spinner, Stack } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
 import { translateApiError } from '../../i18n/translateApiError';
 import {
@@ -29,7 +29,7 @@ export function CookTonightPage() {
   const cards = cookTonight.data?.cards ?? [];
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={t('recipes:cookTonightPage.title')}
         back={{ label: t('recipes:back'), href: '/recipes' }}
       />

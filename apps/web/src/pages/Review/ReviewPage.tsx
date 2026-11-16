@@ -9,7 +9,7 @@ import {
 import { useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { MatchDialog } from '../../components/MatchDialog';
 import { ReviewActionBar } from '../../components/ReviewActionBar';
 import { ReviewCounters } from './components/ReviewCounters';
@@ -75,8 +75,7 @@ export function ReviewPage({
   if (screen.tickFailures) {
     const { missing, changed, other } = screen.tickFailures;
     return (
-      <>
-        <AppScreenHeader title={t('saved.title')} titleRef={focusHeading} />
+      <Screen title={t('saved.title')} titleRef={focusHeading}>
         <Stack spacing={2}>
           <Alert severity="warning">
             <Stack component="ul" spacing={0.5} sx={{ m: 0, pl: 2 }}>
@@ -91,7 +90,7 @@ export function ReviewPage({
           </Alert>
           <Button onClick={screen.toPantry}>{t('saved.toPantry')}</Button>
         </Stack>
-      </>
+      </Screen>
     );
   }
 
@@ -173,12 +172,11 @@ export function ReviewPage({
 
   if (wide) {
     return (
-      <>
-        <AppScreenHeader
-          title={t('title')}
-          subtitle={subtitle}
-          trailing={read === 0 ? null : <ReviewCounterChips {...counts} />}
-        />
+      <Screen
+        title={t('title')}
+        status={subtitle}
+        secondary={read === 0 ? null : <ReviewCounterChips {...counts} />}
+      >
         {read === 0 ? (
           <Stack spacing={2}>
             <Typography color="text.secondary">{t('empty')}</Typography>
@@ -220,13 +218,12 @@ export function ReviewPage({
             />
           </>
         )}
-      </>
+      </Screen>
     );
   }
 
   return (
-    <>
-      <AppScreenHeader title={t('title')} subtitle={subtitle} />
+    <Screen title={t('title')} status={subtitle}>
       {read === 0 ? (
         <Stack spacing={2}>
           <Typography color="text.secondary">{t('empty')}</Typography>
@@ -245,6 +242,6 @@ export function ReviewPage({
           />
         </Box>
       )}
-    </>
+    </Screen>
   );
 }

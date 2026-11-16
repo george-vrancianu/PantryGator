@@ -19,7 +19,7 @@ import { UNDO_WINDOW_MS } from '../../lib/useDeferredRemoval';
 import { stubRowLayout } from '../../test/layout';
 import { stubMatchMedia, stubViewport } from '../../test/viewport';
 import { renderWithProviders, stubApi } from '../../test/render';
-import { expectSticksBelowTopInset } from '../../test/stickyHeader';
+import { expectSticksAtScrollerTop } from '../../test/stickyHeader';
 import { useRecipe } from '../../lib/recipes';
 import type { RecipeTag } from '../../lib/tags';
 import {
@@ -282,10 +282,10 @@ const openGuidance = async (user: ReturnType<typeof userEvent.setup>) => {
 describe('NewRecipePage with a supplied draft', () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  it('sticks the editor tabs below the top inset', async () => {
+  it('sticks the editor tabs at the top of the sheet', async () => {
     setup(newRecipeWith(sourced), {});
     await screen.findByLabelText(/^Title/);
-    expectSticksBelowTopInset(screen.getByRole('tablist'));
+    expectSticksAtScrollerTop(screen.getByRole('tablist'));
   });
 
   it('opens filled from the draft and requires Servings before saving', async () => {

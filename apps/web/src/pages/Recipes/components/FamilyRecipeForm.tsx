@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
@@ -24,6 +23,7 @@ import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/Brow
 import type { FamilyRecipeDocument } from '../../../lib/familyRecipes';
 import { useFamilyCatalog } from '../../../lib/familyCatalog';
 import type { GuidanceInput } from '../../../lib/adminRecipes';
+import { useScroller } from '../../../lib/scroller';
 import {
   hasGuidanceProblem,
   toGuidanceInput,
@@ -31,7 +31,7 @@ import {
 } from '../../../lib/guidanceDraft';
 import type { MomentOption } from '../../../components/recipeEditor/GuidanceFields';
 import { GuidanceCard } from './GuidanceCard';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { RecipeLinesSection } from '../../../components/recipeEditor/RecipeLinesSection';
 import { FamilyDetailsBasics } from './FamilyDetailsBasics';
@@ -153,10 +153,11 @@ export function FamilyRecipeForm({
   const tabsId = useId();
   const [tab, setTab] = useState<EditorTab>(openTab);
   const reduceMotion = usePrefersReducedMotion();
+  const scroller = useScroller();
   const goTo = (next: EditorTab) => {
     if (next === tab) return;
     setTab(next);
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scroller.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
   useEffect(() => {
     onChange?.({ draft, guidance: guidanceDraft });
@@ -204,13 +205,13 @@ export function FamilyRecipeForm({
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={header.title}
         titleRef={header.titleRef}
         back={header.back}
         subline={header.subline}
         truncateTitle
-        trailing={
+        secondary={
           <Button
             size="sm"
             shape="pill"
@@ -225,7 +226,7 @@ export function FamilyRecipeForm({
         <Box
           sx={{
             position: 'sticky',
-            top: SAFE_TOP,
+            top: 0,
             zIndex: 2,
             py: '8px',
             bgcolor: tokens.color.bg,

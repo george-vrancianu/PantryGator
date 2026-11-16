@@ -7,7 +7,7 @@ import type { CookTonightCard } from '../../lib/cookTonight';
 import type { RecipeListItem } from '../../lib/recipes';
 import type { RecipeTag } from '../../lib/tags';
 import { renderWithProviders, stubApi } from '../../test/render';
-import { expectSticksBelowTopInset } from '../../test/stickyHeader';
+import { expectSticksAtScrollerTop } from '../../test/stickyHeader';
 import { stubMotion } from '../../test/viewport';
 import { RecipesPage } from './RecipesPage';
 
@@ -623,9 +623,9 @@ describe('RecipesPage', () => {
   });
 
   describe('search and Tag filter', () => {
-    it('pins the search below the top inset while the list scrolls', async () => {
+    it('pins the search to the top of the sheet while the list scrolls', async () => {
       setup(() => [omelette]);
-      expectSticksBelowTopInset(await tagsButton());
+      expectSticksAtScrollerTop(await tagsButton());
     });
 
     it('has a Tags button beside the search and no chip rows or Clear chip', async () => {
