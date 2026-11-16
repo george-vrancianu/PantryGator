@@ -9,7 +9,7 @@ import {
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { ConfirmPrompt } from '../../../components/ConfirmAction';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { useArchiveFamilyRecipe } from '../../../lib/familyRecipes';
@@ -29,8 +29,7 @@ export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
   const menuButton = useRef<HTMLButtonElement>(null);
   const back = { label: t('recipes:back'), href: '/recipes' };
   // No Recipe yet (loading, not found): keep a title so the screen has an H1.
-  if (!recipe)
-    return <AppScreenHeader back={back} title={t('recipes:title')} />;
+  if (!recipe) return <Screen back={back} title={t('recipes:title')} />;
 
   const own = recipe.owner === 'family' && !recipe.archived;
   // A Variant's parent is a Catalog Base Recipe. A Family Base gets one only
@@ -63,9 +62,9 @@ export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         back={back}
-        trailing={
+        secondary={
           own ? (
             <ActionMenu
               buttonRef={menuButton}

@@ -10,7 +10,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { ExploreRow } from '../../components/ExploreRow';
 import { QuickViewSheet } from '../../components/QuickViewSheet';
 import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
@@ -145,7 +145,7 @@ export function ExplorePage() {
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={t('recipes:explore.title')}
         back={{
           label:

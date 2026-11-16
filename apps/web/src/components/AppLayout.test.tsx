@@ -121,17 +121,19 @@ describe('AppLayout Dock', () => {
     );
     renderAt('/pantry');
     const dock = screen.getByRole('navigation');
-    expect(paintedColour(dock, 'background-color')).toBe('RGBA(25,33,28,.9)');
+    expect(paintedColour(dock, 'background-color')).toBe(
+      'LINEAR-GRADIENT(180DEG,#2E3832 0%,#1C231F 100%)',
+    );
 
     const active = screen.getByRole('link', { current: 'page' });
-    expect(paintedColour(active, 'background-color')).toBe('#1F3A2A');
-    expect(paintedColour(active, 'color')).toBe('#A9EDBD');
+    expect(paintedColour(active, 'background-color')).toBe('#1C3327');
+    expect(paintedColour(active, 'color')).toBe('#A8E6C0');
 
     const inactive = screen.getByRole('link', { name: /shopping/i });
     expect(paintedColour(inactive, 'background-color')).toBe(
       'RGBA(0, 0, 0, 0)',
     );
-    expect(paintedColour(inactive, 'color')).toBe('#97A69B');
+    expect(paintedColour(inactive, 'color')).toBe('#9DA89F');
   });
 });
 

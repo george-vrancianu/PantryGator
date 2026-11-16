@@ -22,7 +22,7 @@ import {
   noBasePick,
   type BaseRecipeOption,
 } from '../../components/BaseRecipePicker';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { RemovableSourceLink, isSourceLink } from '../../components/SourceLink';
 import { translateApiError } from '../../i18n/translateApiError';
 import {
@@ -120,7 +120,7 @@ export function NewRecipePage() {
   if (route.error || route.loading) {
     return (
       <>
-        <AppScreenHeader
+        <Screen
           title={t('recipes:family.newRecipeHeading')}
           back={{ label: t('recipes:back'), href: '/recipes' }}
         />
@@ -409,7 +409,7 @@ export function NewVariantPage() {
   if (route.error || route.loading) {
     return (
       <>
-        <AppScreenHeader title={title} />
+        <Screen title={title} />
         {route.error ? (
           <Alert>{translateApiError(t, route.error)}</Alert>
         ) : (
@@ -479,13 +479,13 @@ function NewVariantContent({
     <>
       {draft.error ? (
         <>
-          <AppScreenHeader title={t('recipes:family.newHeading')} />
+          <Screen title={t('recipes:family.newHeading')} />
           <Alert>{translateApiError(t, draft.error)}</Alert>
         </>
       ) : null}
       {!ready && !draft.error ? (
         <>
-          <AppScreenHeader title={t('recipes:family.newHeading')} />
+          <Screen title={t('recipes:family.newHeading')} />
           <Spinner label={t('common:loading')} />
         </>
       ) : null}
@@ -657,10 +657,7 @@ export function EditFamilyRecipePage() {
   if (!recipe || recipe.archived) {
     return (
       <>
-        <AppScreenHeader
-          title={recipe?.title ?? t('recipes:title')}
-          back={back}
-        />
+        <Screen title={recipe?.title ?? t('recipes:title')} back={back} />
         <Stack spacing={3}>
           {query.error ? (
             <Alert>{translateApiError(t, query.error)}</Alert>

@@ -17,6 +17,8 @@ export type ScreenProps = {
   status?: string;
   /** Back on the left of sub-screens. */
   back?: ScreenHeaderProps['back'];
+  /** A second line under the title (a sub-screen's context, e.g. the Recipe being edited). Ignored on tab roots, as in `AppScreenHeader`. The Home button needs no prop: it shows by itself where the Dock is hidden. */
+  subline?: ReactNode;
   /** The secondary action, before the primary key. */
   secondary?: ReactNode;
   /** The primary key (the gold `+`). */
@@ -41,6 +43,7 @@ export type ScreenProps = {
 export function Screen({
   title,
   status,
+  subline,
   back,
   secondary,
   primary,
@@ -59,6 +62,7 @@ export function Screen({
     <AppScreenHeader
       title={title}
       subtitle={status}
+      subline={subline}
       back={back}
       trailing={secondary}
       action={primary}

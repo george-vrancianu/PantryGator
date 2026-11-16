@@ -12,7 +12,7 @@ import {
 import { useId, useRef, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
 import { translateApiError } from '../../i18n/translateApiError';
 import { cardFor, indexCards, useCookTonight } from '../../lib/cookTonight';
@@ -177,10 +177,10 @@ export function RecipesPage() {
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={t('recipes:title')}
-        trailing={<ExplorePill />}
-        action={{
+        secondary={<ExplorePill />}
+        primary={{
           label: t('recipes:add'),
           icon: <PlusIcon size={20} />,
           buttonRef: addButton,

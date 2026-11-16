@@ -31,7 +31,7 @@ import {
 } from '../../../lib/guidanceDraft';
 import type { MomentOption } from '../../../components/recipeEditor/GuidanceFields';
 import { GuidanceCard } from './GuidanceCard';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { RecipeLinesSection } from '../../../components/recipeEditor/RecipeLinesSection';
 import { FamilyDetailsBasics } from './FamilyDetailsBasics';
@@ -205,13 +205,13 @@ export function FamilyRecipeForm({
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={header.title}
         titleRef={header.titleRef}
         back={header.back}
         subline={header.subline}
         truncateTitle
-        trailing={
+        secondary={
           <Button
             size="sm"
             shape="pill"

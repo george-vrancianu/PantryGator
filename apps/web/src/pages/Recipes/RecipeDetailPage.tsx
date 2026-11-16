@@ -18,7 +18,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { useAddToFamily } from '../../lib/addToFamily';
 import { useScroller } from '../../lib/scroller';
 import { exploreAdds } from '../../lib/exploreAdds';
@@ -161,7 +161,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
   return (
     <>
       {preview ? (
-        <AppScreenHeader
+        <Screen
           back={{
             label: t('recipes:back'),
             href: '/recipes/explore',
