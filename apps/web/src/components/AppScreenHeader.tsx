@@ -18,6 +18,7 @@ type Props = Pick<
   | 'trailing'
   | 'titleRef'
   | 'back'
+  | 'onCanopy'
 >;
 
 /** The screen header; Home shows only where the Dock is hidden, since the Dock carries Home everywhere else. */
@@ -30,6 +31,7 @@ export function AppScreenHeader({
   trailing,
   titleRef,
   back,
+  onCanopy,
 }: Props) {
   const { t } = useTranslation('screenHeader');
   const { pathname } = useLocation();
@@ -50,6 +52,7 @@ export function AppScreenHeader({
       trailing={trailing}
       titleRef={titleRef}
       back={back}
+      onCanopy={onCanopy}
     />
   );
 }

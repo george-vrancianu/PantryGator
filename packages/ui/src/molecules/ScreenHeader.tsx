@@ -11,7 +11,7 @@ import { ActionMenu, type ActionMenuItem } from './ActionMenu';
 import { Typography } from '../atoms/Typography';
 import { topRoomBelowInset } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
-import { radius } from '../theme/themeVars';
+import { canopy, radius } from '../theme/themeVars';
 
 export type ScreenHeaderAction = {
   /** Accessible name of the icon-only button. */
@@ -53,6 +53,8 @@ export type ScreenHeaderProps = {
   };
   /** Makes the title programmatically focusable, so a screen can move focus to it. Needs `title`. */
   titleRef?: Ref<HTMLHeadingElement>;
+  /** Drawn on the Canopy: the title and status in the Canopy's ink, a 44px title row, no room of its own above or below (the layout supplies it). */
+  onCanopy?: boolean;
 };
 
 /** Sub-screen header: optional Back or Home button, H1 title, optional trailing content (e.g. counter chips), one action button. */
@@ -67,6 +69,7 @@ export function ScreenHeader({
   trailing,
   titleRef,
   back,
+  onCanopy,
 }: ScreenHeaderProps) {
   return (
     <Box
@@ -77,10 +80,14 @@ export function ScreenHeader({
         gap: '12px',
         // Same box as the DashboardHeader, so every screen's header is as tall as Home's.
         // The page is already padded by the top inset; this room gives way to it (ADR 0040).
-        pt: topRoomBelowInset(28),
-        pb: '18px',
+        ...(onCanopy
+          ? { pt: 0, pb: 0, minHeight: '44px' }
+          : {
+              pt: topRoomBelowInset(28),
+              pb: '18px',
+              minHeight: '54px',
+            }),
         boxSizing: 'content-box',
-        minHeight: '54px',
       }}
     >
       {back ? (
@@ -109,6 +116,15 @@ export function ScreenHeader({
             tabIndex={titleRef ? -1 : undefined}
             sx={{
               outline: 'none',
+              ...(onCanopy
+                ? {
+                    color: canopy.ink,
+                    fontSize: 25,
+                    lineHeight: 1,
+                    fontWeight: 800,
+                    letterSpacing: '-0.035em',
+                  }
+                : {}),
               overflowWrap: 'break-word',
               ...(truncateTitle
                 ? {
@@ -124,7 +140,12 @@ export function ScreenHeader({
         ) : null}
         {subtitle ? (
           <Typography
-            sx={{ fontSize: 13, color: tokens.color.muted, mt: '2px' }}
+            sx={{
+              fontSize: 13,
+              color: onCanopy ? canopy.muted : tokens.color.muted,
+              mt: onCanopy ? '6px' : '2px',
+              ...(onCanopy ? { lineHeight: 1, fontWeight: 500 } : {}),
+            }}
           >
             {subtitle}
           </Typography>
@@ -133,7 +154,7 @@ export function ScreenHeader({
           <Box
             sx={{
               fontSize: 12.5,
-              color: tokens.color.muted,
+              color: onCanopy ? canopy.muted : tokens.color.muted,
               mt: '2px',
               minHeight: '1.4em',
             }}

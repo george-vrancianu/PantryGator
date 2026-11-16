@@ -44,6 +44,22 @@ export const shadow = {
   segment: pp('shadow-seg'),
 } as const;
 
+/** The Canopy (the green header band) and the working sheet it sits behind (Canopy handoff section 3). */
+export const canopy = {
+  /** The header's gradient; paint it with `background`. */
+  bg: pp('canopy-bg'),
+  ink: pp('canopy-ink'),
+  muted: pp('canopy-muted'),
+  /** The working sheet's gradient; paint it with `background`. */
+  sheetBg: pp('sheet-bg'),
+  /** Upward shadow onto the Canopy plus a 1px inner highlight. */
+  sheetShadow: pp('shadow-sheet'),
+  /** The 170px gradient under the Dock, so lists dissolve. */
+  sheetFade: pp('sheet-fade'),
+  /** The working sheet's top corners. */
+  sheetRadius: pp('r-sheet'),
+} as const;
+
 export const border = {
   width: pp('bw'),
   field: pp('bw-field'),

@@ -1,5 +1,6 @@
 import {
   Box,
+  canopy,
   DOCK_CLEARANCE,
   gutterLeft,
   gutterRight,
@@ -28,9 +29,18 @@ import { usePullToRefresh } from './usePullToRefresh';
 import { useSheetScroll } from './useSheetScroll';
 
 const gutters = {
-  pl: { xs: gutterLeft(20), md: gutterLeft(48) },
-  pr: { xs: gutterRight(20), md: gutterRight(48) },
+  pl: { xs: gutterLeft(16), md: gutterLeft(48) },
+  pr: { xs: gutterRight(16), md: gutterRight(48) },
 };
+
+/** The Canopy runs this far under the sheet, so its green shows behind the sheet's rounded corners. */
+const CANOPY_UNDER_SHEET = 40;
+/** Room between the last header element and the sheet's top edge. */
+const CANOPY_TO_SHEET = 24;
+/** The sheet's top room, above the first block. */
+const SHEET_TOP_PADDING = 18;
+/** The gradient pinned to the bottom of the screen under the Dock. */
+const SHEET_FADE_HEIGHT = 170;
 
 type Props = {
   /** `useOutlet()`: the matched page. */
@@ -128,27 +138,49 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
         }}
       >
         <Box
-          data-region="top-bar"
-          sx={{ flexShrink: 0, pt: SAFE_TOP, ...gutters, zIndex: 2 }}
+          data-region="canopy"
+          sx={{
+            flexShrink: 0,
+            position: 'relative',
+            zIndex: 0,
+            background: canopy.bg,
+            // Solid fallback where the gradient is not painted.
+            backgroundColor: 'var(--pp-canopy-base)',
+            color: canopy.ink,
+            pb: `${CANOPY_TO_SHEET + CANOPY_UNDER_SHEET}px`,
+          }}
         >
           <Box
-            ref={setTopBarEl}
-            sx={{ ...regionSx(transitioning), height: heights.topBar }}
-          />
-        </Box>
-        <Box data-region="header" sx={{ flexShrink: 0, ...gutters, zIndex: 2 }}>
-          <Box
-            ref={setHeaderEl}
-            sx={{ ...regionSx(transitioning), height: heights.header }}
-          />
+            data-region="top-bar"
+            sx={{
+              pt: `calc(${SAFE_TOP} + 6px)`,
+              ...gutters,
+            }}
+          >
+            <Box
+              ref={setTopBarEl}
+              sx={{ ...regionSx(transitioning), height: heights.topBar }}
+            />
+          </Box>
+          <Box data-region="header" sx={gutters}>
+            <Box
+              ref={setHeaderEl}
+              sx={{ ...regionSx(transitioning), height: heights.header }}
+            />
+          </Box>
         </Box>
         <Box
           data-region="sheet"
           sx={{
             position: 'relative',
+            zIndex: 1,
             flex: 1,
             minHeight: 0,
             overflow: 'hidden',
+            mt: `-${CANOPY_UNDER_SHEET}px`,
+            background: canopy.sheetBg,
+            borderRadius: `${canopy.sheetRadius} ${canopy.sheetRadius} 0 0`,
+            boxShadow: canopy.sheetShadow,
           }}
         >
           <ScrollerProvider element={scroller}>
@@ -170,6 +202,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
                   sx={{
                     boxSizing: 'border-box',
                     ...gutters,
+                    pt: `${SHEET_TOP_PADDING}px`,
                     pb: withDock ? (dockClearance ?? DOCK_CLEARANCE) : '24px',
                   }}
                 >
@@ -216,6 +249,21 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
           </ScrollerProvider>
           <RefreshLoaderSlot anchor="sheet" />
         </Box>
+        <Box
+          data-testid="sheet-fade"
+          aria-hidden
+          sx={{
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: `${SHEET_FADE_HEIGHT}px`,
+            // Under the Dock (10), over the sheet.
+            zIndex: 2,
+            pointerEvents: 'none',
+            background: canopy.sheetFade,
+          }}
+        />
       </Box>
     </LayoutSlotsContext>
   );

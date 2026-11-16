@@ -69,6 +69,7 @@ export function Screen({
       action={primary}
       truncateTitle={truncateTitle}
       titleRef={titleRef}
+      onCanopy={!!slots && !!instance}
     />
   );
 

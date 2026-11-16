@@ -6,6 +6,7 @@ export { useForcedThemeColor } from './theme/useForcedThemeColor';
 export {
   bodyFont,
   border,
+  canopy,
   color,
   displayType,
   nestedRadius,
