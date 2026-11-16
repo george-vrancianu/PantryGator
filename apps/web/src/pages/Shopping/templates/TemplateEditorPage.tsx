@@ -22,7 +22,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { ConfirmAction } from '../../../components/ConfirmAction';
 import { AmountSheet, type Amount } from '../../../components/AmountSheet';
 import { formatRowAmount } from '../../../lib/amount';
@@ -52,20 +52,18 @@ export function TemplateEditorPage() {
 
   if (applying) {
     return (
-      <>
-        <AppScreenHeader title={t('templates:title')} />
+      <Screen title={t('templates:title')}>
         <ApplyTemplatePicker
           templateId={id}
           onDone={() => setApplying(false)}
           onCancel={() => setApplying(false)}
         />
-      </>
+      </Screen>
     );
   }
 
   return (
-    <>
-      <AppScreenHeader title={template.data?.name ?? t('templates:title')} />
+    <Screen title={template.data?.name ?? t('templates:title')}>
       {template.isPending ? <Spinner label={t('common:loading')} /> : null}
       {template.error ? (
         <Alert>{translateApiError(t, template.error)}</Alert>
@@ -77,7 +75,7 @@ export function TemplateEditorPage() {
           onApply={() => setApplying(true)}
         />
       ) : null}
-    </>
+    </Screen>
   );
 }
 

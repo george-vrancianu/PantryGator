@@ -8,6 +8,12 @@ export type RefreshLoaderProps = {
   state: 'idle' | 'busy' | 'done' | 'failed';
   /** What the screen reader hears; nothing is shown in words. */
   labels: { busy: string; done: string; failed: string };
+  /**
+   * `viewport` (default) drops from the top of the screen, below the top inset. `sheet` drops from the top
+   * of the nearest positioned ancestor (the working sheet, which clips it), so it comes out from under the
+   * Canopy and lands on the sheet.
+   */
+  anchor?: 'viewport' | 'sheet';
 };
 
 /** How long the disc takes to tuck back up; the mark's re-entrance waits for it. */
@@ -19,7 +25,11 @@ export const REFRESH_LOADER_FAILED_MS = 1100;
  * The screen refresh as a round disc that drops from the top of the app with a spinning accent arc,
  * then tucks back up. It carries no words: a visually hidden polite live region announces them.
  */
-export function RefreshLoader({ state, labels }: RefreshLoaderProps) {
+export function RefreshLoader({
+  state,
+  labels,
+  anchor = 'viewport',
+}: RefreshLoaderProps) {
   const reduceMotion = usePrefersReducedMotion();
   // A failure shows briefly, then the disc tucks away like a success; the words stay with the state.
   const [failedShown, setFailedShown] = useState(state === 'failed');
@@ -48,7 +58,7 @@ export function RefreshLoader({ state, labels }: RefreshLoaderProps) {
         data-testid="refresh-loader"
         data-shown={down}
         sx={{
-          position: 'fixed',
+          position: anchor === 'sheet' ? 'absolute' : 'fixed',
           top: 0,
           left: '50%',
           // Above the page and the raised Dock, below sheets and dialogs (MUI modal 1300).
@@ -67,7 +77,10 @@ export function RefreshLoader({ state, labels }: RefreshLoaderProps) {
       >
         <Box
           sx={{
-            mt: 'calc(env(safe-area-inset-top, 0px) + 14px)',
+            mt:
+              anchor === 'sheet'
+                ? '14px'
+                : 'calc(env(safe-area-inset-top, 0px) + 14px)',
             width: 44,
             height: 44,
             borderRadius: '50%',

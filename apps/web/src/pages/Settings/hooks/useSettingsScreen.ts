@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useScroller } from '../../../lib/scroller';
 
 export type SettingsTab = 'you' | 'family';
 
@@ -14,18 +15,19 @@ const tabFrom = (value: string | null): SettingsTab =>
 export function useSettingsScreen() {
   const [params, setParams] = useSearchParams();
   const tab = tabFrom(params.get('tab'));
+  const scroller = useScroller();
 
   const offsets = useRef<Partial<Record<SettingsTab, number>>>({});
   const shown = useRef(tab);
   useLayoutEffect(() => {
     if (shown.current === tab) return;
     shown.current = tab;
-    window.scrollTo({ top: offsets.current[tab] ?? 0 });
-  }, [tab]);
+    scroller.scrollTo({ top: offsets.current[tab] ?? 0 });
+  }, [tab, scroller]);
 
   const selectTab = (next: SettingsTab) => {
     if (next === tab) return;
-    offsets.current[tab] = window.scrollY;
+    offsets.current[tab] = scroller.top();
     const updated = new URLSearchParams(params);
     updated.set('tab', next);
     // Replace, not push: Back still leaves Settings rather than stepping between tabs.

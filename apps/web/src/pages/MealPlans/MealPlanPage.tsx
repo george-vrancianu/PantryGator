@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import {
   dayLabel,
   shortWeekday,
@@ -116,31 +116,30 @@ export function MealPlanPage() {
   };
 
   return (
-    <>
-      <AppScreenHeader
-        title={view ? planTitle(view, language) : t('mealPlans:title')}
-        subtitle={
-          view
-            ? [
-                view.name ? dateRange(view, language) : null,
-                t('mealPlans:dayCount', { count: view.days }),
-                t('mealPlans:servings', { count: view.servings }),
-              ]
-                .filter(Boolean)
-                .join(' · ')
-            : undefined
-        }
-        back={{ label: t('mealPlans:back'), href: '/meal-plans' }}
-        action={
-          view
-            ? {
-                label: t('mealPlans:editPlan'),
-                icon: <MoreIcon size={20} />,
-                href: `/meal-plans/${view.id}/edit`,
-              }
-            : undefined
-        }
-      />
+    <Screen
+      title={view ? planTitle(view, language) : t('mealPlans:title')}
+      status={
+        view
+          ? [
+              view.name ? dateRange(view, language) : null,
+              t('mealPlans:dayCount', { count: view.days }),
+              t('mealPlans:servings', { count: view.servings }),
+            ]
+              .filter(Boolean)
+              .join(' · ')
+          : undefined
+      }
+      back={{ label: t('mealPlans:back'), href: '/meal-plans' }}
+      primary={
+        view
+          ? {
+              label: t('mealPlans:editPlan'),
+              icon: <MoreIcon size={20} />,
+              href: `/meal-plans/${view.id}/edit`,
+            }
+          : undefined
+      }
+    >
       {plan.isPending ? <Spinner label={t('common:loading')} /> : null}
       {plan.error ? (
         <Alert>{planErrorMessage(t, language, plan.error)}</Alert>
@@ -228,7 +227,7 @@ export function MealPlanPage() {
           />
         </Stack>
       ) : null}
-    </>
+    </Screen>
   );
 }
 

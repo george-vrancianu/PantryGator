@@ -101,8 +101,7 @@ describe('AppLayout Dock', () => {
   });
 
   it('leaves 132px at the bottom of every page for the Dock and its capsule, more where the home indicator is taller', () => {
-    const pageCss = () =>
-      authoredCss(screen.getByRole('main').parentElement as HTMLElement);
+    const pageCss = () => authoredCss(screen.getByRole('main'));
     const { unmount } = renderAtView('/pantry');
     // 104 + max(28, inset) is 132 with no inset.
     expect(pageCss()).toContain(
@@ -122,17 +121,19 @@ describe('AppLayout Dock', () => {
     );
     renderAt('/pantry');
     const dock = screen.getByRole('navigation');
-    expect(paintedColour(dock, 'background-color')).toBe('RGBA(25,33,28,.9)');
+    expect(paintedColour(dock, 'background-color')).toBe(
+      'LINEAR-GRADIENT(180DEG,#2E3832 0%,#1C231F 100%)',
+    );
 
     const active = screen.getByRole('link', { current: 'page' });
-    expect(paintedColour(active, 'background-color')).toBe('#1F3A2A');
-    expect(paintedColour(active, 'color')).toBe('#A9EDBD');
+    expect(paintedColour(active, 'background-color')).toBe('#1C3327');
+    expect(paintedColour(active, 'color')).toBe('#A8E6C0');
 
     const inactive = screen.getByRole('link', { name: /shopping/i });
     expect(paintedColour(inactive, 'background-color')).toBe(
       'RGBA(0, 0, 0, 0)',
     );
-    expect(paintedColour(inactive, 'color')).toBe('#97A69B');
+    expect(paintedColour(inactive, 'color')).toBe('#9DA89F');
   });
 });
 
@@ -175,9 +176,7 @@ describe('AppLayout Voice Note host', () => {
     renderAt('/pantry');
     await talkButton();
     // jsdom drops calc() with env() from computed style, so read the authored rule text.
-    const rules = authoredCss(
-      screen.getByRole('main').parentElement as HTMLElement,
-    );
+    const rules = authoredCss(screen.getByRole('main'));
     // Just clear of the capsule: Dock 28 + 76 + 24 on phones, 28 + 84 + 24 from md; no chip row. The 28 grows with the bottom inset.
     expect(rules).toContain(
       'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 100px)',

@@ -58,7 +58,7 @@ describe('Say it in the Add to Pantry sheet', () => {
     );
     expect(screen.getByText(/two litres of milk/)).toBeInTheDocument();
     expect(paintedColour(litMic()!, 'background-color').toUpperCase()).toBe(
-      '#F0C96B',
+      '#E8CB7C',
     );
     // Nothing else is disabled.
     expect(
@@ -138,7 +138,7 @@ describe('Say it in the Add to Pantry sheet', () => {
     await screen.findByRole('link', { name: 'Camera' });
     expect(callout()).not.toBeInTheDocument();
     expect(paintedColour(litMic()!, 'background-color').toUpperCase()).not.toBe(
-      '#F0C96B',
+      '#E8CB7C',
     );
   });
 

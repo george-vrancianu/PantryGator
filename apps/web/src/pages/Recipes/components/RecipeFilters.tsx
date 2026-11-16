@@ -3,7 +3,6 @@ import {
   color,
   InputAdornment,
   radius,
-  SAFE_TOP,
   SearchIcon,
   TagChip,
   TagIcon,
@@ -46,7 +45,7 @@ export function RecipeFilters({ value, onChange, searchLabel, tags }: Props) {
     <Box
       sx={{
         position: 'sticky',
-        top: SAFE_TOP,
+        top: 0,
         zIndex: 2,
         bgcolor: tokens.color.bg,
         ml: bleedSx.ml,

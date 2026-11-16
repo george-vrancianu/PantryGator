@@ -5,8 +5,8 @@ import { dockStateFor } from '../lib/dockState';
 import { useOptionalRefreshScreen } from '../lib/refresh';
 import { RefreshMark } from './RefreshMark';
 
-/** Dock tabs whose root screen carries the refresh mark (the Dashboard's header is its own). */
-const REFRESH_ROOTS = ['/pantry', '/shopping', '/recipes'];
+/** Dock tabs whose root screen carries the refresh mark: Home (`''`, the path minus its slash), Pantry, Shopping, Recipes. */
+const REFRESH_ROOTS = ['', '/pantry', '/shopping', '/recipes'];
 
 type Props = Pick<
   ScreenHeaderProps,

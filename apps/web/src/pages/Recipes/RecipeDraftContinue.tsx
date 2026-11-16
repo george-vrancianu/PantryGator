@@ -2,7 +2,7 @@ import { Box, Button, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { formatDate } from '../../lib/dateFormat';
 import { localIso } from '../../lib/pantry';
 import {
@@ -61,7 +61,7 @@ export function RecipeDraftContinue({
   if (offered === null) {
     return (
       <>
-        <AppScreenHeader title={title} />
+        <Screen title={title} />
         <Spinner label={t('common:loading')} />
       </>
     );
@@ -70,7 +70,7 @@ export function RecipeDraftContinue({
 
   return (
     <>
-      <AppScreenHeader title={title} />
+      <Screen title={title} />
       <Stack spacing={2}>
         <Typography variant="h2" component="h2">
           {t('recipes:drafts.continueTitle')}
