@@ -35,7 +35,7 @@ describe('Meal Plans pages in the layout', () => {
       '[data-region="top-bar"]',
     )!;
     expect(
-      await within(topBar).findByRole('link', { name: /meal plans/i }),
+      await within(topBar).findByRole('link', { name: 'Back' }),
     ).toHaveAttribute('href', '/meal-plans');
   });
 });

@@ -99,7 +99,7 @@ describe('AdminSectionPage Recipes section', () => {
       screen.getByRole('heading', { name: 'Edit Catalog Tag Italian' }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    await user.click(screen.getByRole('link', { name: /Catalog/ }));
+    await user.click(screen.getByRole('link', { name: 'Back' }));
 
     await user.click(
       await screen.findByRole('button', { name: /^Eating Moments/ }),
@@ -111,7 +111,7 @@ describe('AdminSectionPage Recipes section', () => {
       screen.getByRole('heading', { name: 'Edit Eating Moment Lunch' }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    await user.click(screen.getByRole('link', { name: /Catalog/ }));
+    await user.click(screen.getByRole('link', { name: 'Back' }));
 
     await user.click(
       await screen.findByRole('button', { name: /^Catalog Recipes/ }),

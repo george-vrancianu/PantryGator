@@ -16,7 +16,10 @@ export function AdminPage() {
   const waiting = useReviewCounts().total;
 
   return (
-    <Screen title={t('admin:title')}>
+    <Screen
+      title={t('admin:title')}
+      back={{ label: t('screenHeader:back'), href: '/settings' }}
+    >
       <Stack spacing={3}>
         {screen.error ? <Alert>{screen.error}</Alert> : null}
         {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}

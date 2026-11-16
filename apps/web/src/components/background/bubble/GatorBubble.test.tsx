@@ -253,13 +253,13 @@ describe('GatorBubble placement', () => {
     const css = (el: HTMLElement) => authoredCss(el);
     const dockCss = css(screen.getByTestId('gator-bubble'));
     expect(dockCss).toContain('--gator-bubble-top');
-    expect(dockCss).toContain('92px');
+    expect(dockCss).toContain('82px');
     view.unmount();
     show([job('a', 'reading')], vi.fn(), false);
     const plainCss = css(screen.getByTestId('gator-bubble'));
     expect(plainCss).toContain('safe-area-inset-bottom');
     expect(plainCss).toContain('16px');
-    expect(plainCss).not.toContain('92px');
+    expect(plainCss).not.toContain('82px');
   });
 });
 

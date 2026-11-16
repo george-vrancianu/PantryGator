@@ -223,7 +223,7 @@ describe('Catalog index', () => {
     await user.click(await screen.findByRole('button', { name: /^Aisles/ }));
     expect(location()).toBe('/admin/aisles');
     expect(await screen.findByText('Produce')).toBeInTheDocument();
-    await user.click(screen.getByRole('link', { name: /Catalog/ }));
+    await user.click(screen.getByRole('link', { name: 'Back' }));
     expect(location()).toBe('/admin?tab=catalog');
   });
 

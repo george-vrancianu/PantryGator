@@ -1,5 +1,5 @@
 import { onlineManager } from '@tanstack/react-query';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PantryPage } from '../pages/Pantry/PantryPage';
@@ -13,6 +13,7 @@ import {
   stubApi,
 } from '../test/render';
 import { stubMatchMedia } from '../test/viewport';
+import { makeScrollable, pull } from '../test/scroll';
 import { AppScreenHeader } from './AppScreenHeader';
 
 const batch = {
@@ -82,8 +83,11 @@ const elapse = (ms: number) =>
 const finish = () => elapse(MIN_BUSY_MS);
 const loaderShown = () =>
   screen.getByTestId('refresh-loader').getAttribute('data-shown');
+/** Pulls the sheet down from its top, as a Member does to refresh. */
 const tap = () =>
-  fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+  act(() => {
+    pull(makeScrollable(screen.getByTestId('sheet-scroller')), { to: 200 });
+  });
 const gets = (calls: Array<{ key: string }>) =>
   calls.filter((c) => c.key === 'GET /api/pantry').length;
 
@@ -92,7 +96,7 @@ async function openPantry(locale: 'en' | 'ro' | 'da' = 'en') {
   await settle();
 }
 
-describe('Refresh mark on a tab root', () => {
+describe('Pull to refresh on a tab root', () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -149,7 +153,7 @@ describe('Refresh mark on a tab root', () => {
     );
   });
 
-  it('repeats the screen requests on a tap', async () => {
+  it('repeats the screen requests on a pull', async () => {
     const calls = stubPantry(() => Response.json({ batches: [batch] }));
     await openPantry();
     const before = gets(calls);
@@ -158,7 +162,7 @@ describe('Refresh mark on a tab root', () => {
     expect(gets(calls)).toBe(before + 1);
   });
 
-  it('sends no second round of requests for a tap while busy, and dims the content meanwhile', async () => {
+  it('sends no second round of requests for a pull while busy, and dims the content meanwhile', async () => {
     stubPantry(() => Response.json({ batches: [batch] }));
     await openPantry();
     let release!: () => void;
@@ -198,37 +202,6 @@ describe('Refresh mark on a tab root', () => {
     expect(screen.getByRole('status')).not.toBeEmptyDOMElement();
     await elapse(1);
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
-  });
-
-  it("re-enters the mark's head once the loader is back up after a successful refresh, not after a failed one", async () => {
-    const motion = () =>
-      screen
-        .getByRole('button', { name: 'Refresh' })
-        .getAttribute('data-motion');
-    stubPantry(() => Response.json({ batches: [batch] }));
-    await openPantry();
-    await elapse(1300);
-    stubPantry(() =>
-      Response.json({ code: 'boom', params: {} }, { status: 500 }),
-    );
-    tap();
-    await settle();
-    expect(motion()).toBe('tap');
-    await elapse(900);
-    expect(motion()).toBe('idle');
-    await elapse(1300);
-    expect(motion()).toBe('idle');
-    await elapse(2700);
-    stubPantry(() => Response.json({ batches: [batch] }));
-    tap();
-    await settle();
-    expect(motion()).toBe('tap');
-    await elapse(900);
-    expect(motion()).toBe('idle');
-    await elapse(MIN_BUSY_MS + REFRESH_LOADER_RETRACT_MS - 900 - 1);
-    expect(motion()).toBe('idle');
-    await elapse(1);
-    expect(motion()).toBe('reentrance');
   });
 
   it('stays busy until every query has settled, even when one fails at once', async () => {
@@ -286,60 +259,58 @@ describe('Refresh mark on a tab root', () => {
   });
 
   it.each([
-    ['ro', 'Reîmprospătează', 'Se reîmprospătează…', 'Actualizat chiar acum'],
-    ['da', 'Opdater', 'Opdaterer…', 'Opdateret lige nu'],
-  ] as const)(
-    'names the button and says the status in %s',
-    async (locale, name, busy, done) => {
-      stubPantry(() => Response.json({ batches: [] }));
-      await openPantry(locale);
-      let release!: () => void;
-      const gate = new Promise<void>((resolve) => (release = resolve));
-      stubPantry(async () => {
-        await gate;
-        return Response.json({ batches: [] });
-      });
-      fireEvent.click(screen.getByRole('button', { name }));
-      const status = screen.getByRole('status');
-      expect(status).toHaveTextContent(busy);
-      release();
-      await finish();
-      expect(screen.getByRole('status')).toHaveTextContent(done);
-    },
-  );
+    ['ro', 'Se reîmprospătează…', 'Actualizat chiar acum'],
+    ['da', 'Opdaterer…', 'Opdateret lige nu'],
+  ] as const)('says the status in %s', async (locale, busy, done) => {
+    stubPantry(() => Response.json({ batches: [] }));
+    await openPantry(locale);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    stubPantry(async () => {
+      await gate;
+      return Response.json({ batches: [] });
+    });
+    tap();
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent(busy);
+    release();
+    await finish();
+    expect(screen.getByRole('status')).toHaveTextContent(done);
+  });
 
   it.each([
-    [
-      'ro',
-      'Reîmprospătează',
-      'Nu s-a putut reîmprospăta · se afișează ce aveai',
-    ],
-    ['da', 'Opdater', 'Kunne ikke opdatere · viser det, du havde'],
-  ] as const)('says the failure line in %s', async (locale, name, failed) => {
+    ['ro', 'Nu s-a putut reîmprospăta · se afișează ce aveai'],
+    ['da', 'Kunne ikke opdatere · viser det, du havde'],
+  ] as const)('says the failure line in %s', async (locale, failed) => {
     stubPantry(() => Response.json({ batches: [] }));
     await openPantry(locale);
     stubPantry(() =>
       Response.json({ code: 'boom', params: {} }, { status: 500 }),
     );
-    fireEvent.click(screen.getByRole('button', { name }));
+    tap();
     await finish();
     expect(screen.getByRole('status')).toHaveTextContent(failed);
   });
 });
 
-describe('Refresh mark placement', () => {
+describe('No header carries a refresh mark', () => {
   afterEach(() => vi.unstubAllGlobals());
 
   it.each([
-    ['/pantry', true],
-    ['/shopping', true],
-    ['/recipes', true],
-    ['/meal-plans', false],
-    ['/settings', false],
-    ['/recipes/new', false],
-  ])('%s: mark shown is %s', (path, shown) => {
+    '/',
+    '/pantry',
+    '/shopping',
+    '/recipes',
+    '/meal-plans',
+    '/settings',
+  ])('%s: no Refresh button or logo in the header', (path) => {
     renderInAppLayout(<AppScreenHeader title="Title" />, path);
-    expect(!!screen.queryByRole('button', { name: 'Refresh' })).toBe(shown);
+    expect(
+      screen.queryByRole('button', { name: 'Refresh' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole('banner')).queryByRole('img'),
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -428,62 +399,6 @@ describe('Refresh state follows the screen', () => {
     expect(loaderShown()).toBe('false');
   });
 
-  it("does not re-enter the next screen's mark for a run done on the screen just left", async () => {
-    vi.stubGlobal(
-      'fetch',
-      stubApi({
-        ...creditsRoute,
-        'GET /api/voice/config': () => Response.json({ configured: true }),
-        'GET /api/staples': () => Response.json({ staples: [] }),
-        'GET /api/settings/preferences': () => Response.json({}),
-      }).fetchMock,
-    );
-    openTwoScreens();
-    await elapse(1300);
-    tap();
-    await finish();
-    expect(screen.getByRole('status')).toHaveTextContent('Updated just now');
-    fireEvent.click(screen.getByRole('link', { name: 'Go on' }));
-    await settle();
-    expect(screen.getByText('Shopping content')).toBeInTheDocument();
-    await elapse(REFRESH_LOADER_RETRACT_MS + 100);
-    expect(
-      screen
-        .getByRole('button', { name: 'Refresh' })
-        .getAttribute('data-motion'),
-    ).not.toBe('reentrance');
-  });
-
-  it('plays one re-entrance, for the newer run, when the Member taps again while the loader tucks up', async () => {
-    vi.stubGlobal(
-      'fetch',
-      stubApi({
-        ...creditsRoute,
-        'GET /api/voice/config': () => Response.json({ configured: true }),
-        'GET /api/staples': () => Response.json({ staples: [] }),
-        'GET /api/settings/preferences': () => Response.json({}),
-      }).fetchMock,
-    );
-    openTwoScreens();
-    await elapse(1300);
-    const motion = () =>
-      screen
-        .getByRole('button', { name: 'Refresh' })
-        .getAttribute('data-motion');
-    tap();
-    await elapse(900);
-    // Done at 700 ms; the second tap lands at 900 ms, while the loader tucks up. Its Tap motion ends at 1800 ms.
-    tap();
-    await elapse(1000);
-    // The second run is done at 1600 ms; its re-entrance waits for the tuck, until 1980 ms.
-    expect(loaderShown()).toBe('false');
-    expect(motion()).toBe('idle');
-    await elapse(MIN_BUSY_MS + REFRESH_LOADER_RETRACT_MS - 1000 - 1);
-    expect(motion()).toBe('idle');
-    await elapse(1);
-    expect(motion()).toBe('reentrance');
-  });
-
   it('comes back idle and at full opacity after a round trip begun while busy', async () => {
     let release!: () => void;
     const gate = new Promise<void>((resolve) => (release = resolve));
@@ -538,22 +453,26 @@ describe('Refresh state follows the screen', () => {
   });
 });
 
-describe('Tab-root header controls beside the mark', () => {
+describe('Tab-root header controls', () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  it('keeps the Pantry add button', () => {
+  it('keeps the Pantry add key, with no mark and no secondary action', () => {
     vi.stubGlobal('fetch', stubApi({}).fetchMock);
     renderInAppLayout(<PantryPage />, '/pantry');
-    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Refresh' }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Add batch' }),
     ).toBeInTheDocument();
   });
 
-  it('keeps the Recipes Explore pill and add button', () => {
+  it('keeps the Recipes Explore button and add key', () => {
     vi.stubGlobal('fetch', stubApi({}).fetchMock);
     renderInAppLayout(<RecipesPage />, '/recipes');
-    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Refresh' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Explore' })).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Add a Recipe' }),

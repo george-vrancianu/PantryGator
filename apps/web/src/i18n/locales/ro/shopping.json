@@ -91,7 +91,6 @@
     "button": "Importă",
     "title": "Importă",
     "close": "Închide",
-    "aria": "Importă dintr-un șablon",
     "hint": "Bifează șabloane întregi sau deschide unul ca să alegi liniile. Poți combina mai multe.",
     "section": "Șabloanele tale · {{count}}",
     "manage": "Gestionează",

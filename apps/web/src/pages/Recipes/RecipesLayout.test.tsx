@@ -43,7 +43,7 @@ describe('Recipes pages in the layout', () => {
       '[data-region="top-bar"]',
     )!;
     expect(
-      await within(topBar).findByRole('link', { name: /recipes/i }),
+      await within(topBar).findByRole('link', { name: 'Back' }),
     ).toHaveAttribute('href', '/recipes');
   });
 });

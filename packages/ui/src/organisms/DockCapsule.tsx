@@ -9,7 +9,7 @@ import {
 } from '../theme/dock';
 import { focusRing } from '../theme/focusRing';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
-import { color, palette, radius, shadow } from '../theme/themeVars';
+import { dock, radius } from '../theme/themeVars';
 import { tokens } from '../theme/tokens';
 
 /** The half of the capsule a teaching Dock lights. */
@@ -49,8 +49,8 @@ export type DockCapsuleProps = {
   /**
    * Teaching mode (the Intro): light one half and dim the other. The lit half stays the real control
    * (the camera link, or whatever `micSlot` receives) and gets the butter fill and the pulse ring; the
-   * dimmed half is `aria-disabled`, out of the tab order and does nothing. The capsule's ring turns
-   * cream, as a ring in the page colour would vanish on the olive ground.
+   * dimmed half is `aria-disabled`, out of the tab order and does nothing. The capsule keeps its own
+   * gold fill.
    */
   teach?: DockTeach;
   /**
@@ -60,7 +60,7 @@ export type DockCapsuleProps = {
   micLabel?: string;
   /**
    * Non-blocking teach: light one half (butter fill, pulse ring) and leave everything else as it is.
-   * Nothing is dimmed or disabled, the capsule's ring keeps the page colour, and the Dock's tabs stay
+   * Nothing is dimmed or disabled, and the Dock's tabs stay
    * usable (do not set the Dock's `teaching`). `teach` wins if both are set.
    */
   highlight?: DockTeach;
@@ -68,7 +68,7 @@ export type DockCapsuleProps = {
 
 /**
  * The Mic/Camera capsule over the Dock's middle slot: the mic on top, the camera below, a
- * hairline between, overhanging the bar by 18 px at the top and bottom. Without a mic it shrinks
+ * hairline between, overhanging the bar by 13 px at the top and bottom. Without a mic it shrinks
  * to a camera button inside the bar.
  */
 export function DockCapsule({
@@ -94,12 +94,12 @@ export function DockCapsule({
           flex: 1,
           width: '100%',
           color: 'inherit',
-          borderRadius: radius.pill,
+          borderRadius: radius.cap,
         },
         // With a mic above, only the bottom corners are round.
         micSlot
           ? {
-              borderRadius: `0 0 ${radius.pill} ${radius.pill}`,
+              borderRadius: `0 0 ${radius.cap} ${radius.cap}`,
             }
           : {},
         litHalf === 'camera' ? lit(pulse) : {},
@@ -107,7 +107,7 @@ export function DockCapsule({
         focusRing,
       ]}
     >
-      <CameraIcon size={micSlot ? 22 : 24} />
+      <CameraIcon size={24} />
     </ButtonBase>
   );
   return (
@@ -122,14 +122,13 @@ export function DockCapsule({
         width: micSlot ? CAPSULE_WIDTH : CAPSULE_CAMERA_ONLY_WIDTH,
         display: 'flex',
         flexDirection: 'column',
-        borderRadius: radius.pill,
-        bgcolor: 'pp.accent',
-        color: color.accentInk,
-        boxShadow: shadow.float,
-        // A ring in the page colour cuts the capsule out of the bar; cream (3 px) on the olive Intro ground.
-        outline: teach
-          ? `3px solid ${color.cardBg}`
-          : `4px solid ${palette('background-default')}`,
+        borderRadius: radius.cap,
+        background: dock.capBg,
+        border: `1px solid ${dock.capLine}`,
+        boxSizing: 'border-box',
+        color: dock.capInk,
+        boxShadow: dock.capShadow,
+        '& svg': { strokeWidth: 1.7 },
       }}
     >
       {micSlot ? (
@@ -142,11 +141,11 @@ export function DockCapsule({
               tabIndex={-1}
               onClick={(event) => event.preventDefault()}
               sx={[
-                { flex: 1, borderRadius: `${radius.pill} ${radius.pill} 0 0` },
+                { flex: 1, borderRadius: `${radius.cap} ${radius.cap} 0 0` },
                 dimmed,
               ]}
             >
-              <MicIcon size={26} />
+              <MicIcon size={24} />
             </ButtonBase>
           ) : (
             <Box
@@ -156,7 +155,7 @@ export function DockCapsule({
                   flex: 1,
                   display: 'flex',
                   position: 'relative',
-                  borderRadius: `${radius.pill} ${radius.pill} 0 0`,
+                  borderRadius: `${radius.cap} ${radius.cap} 0 0`,
                 },
                 litHalf === 'mic' ? lit(pulse) : {},
               ]}
@@ -166,9 +165,8 @@ export function DockCapsule({
             aria-hidden
             sx={{
               height: '1px',
-              mx: '12px',
-              bgcolor: 'currentColor',
-              opacity: 0.35,
+              mx: '13px',
+              bgcolor: dock.capDivider,
             }}
           />
         </>

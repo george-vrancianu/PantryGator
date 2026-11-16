@@ -6,6 +6,7 @@ export { useForcedThemeColor } from './theme/useForcedThemeColor';
 export {
   bodyFont,
   border,
+  canopy,
   color,
   displayType,
   nestedRadius,
@@ -105,6 +106,7 @@ export {
   type InputAdornmentProps,
 } from './atoms/InputAdornment';
 export { IconButton, type IconButtonProps } from './atoms/IconButton';
+export { HeaderButton, type HeaderButtonProps } from './atoms/HeaderButton';
 export { Box, Stack, type BoxProps, type StackProps } from './atoms/Layout';
 export { Link, type LinkProps } from './atoms/Link';
 export { ProgressBar, type ProgressBarProps } from './atoms/ProgressBar';

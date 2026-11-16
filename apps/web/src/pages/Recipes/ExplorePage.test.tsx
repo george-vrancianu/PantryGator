@@ -459,9 +459,7 @@ describe('ExplorePage Back badge', () => {
   it('counts net adds on Back, counts down on Undo and hides at 0', async () => {
     setupGroups({ list: () => [base('b')] });
     const user = userEvent.setup();
-    expect(
-      await screen.findByRole('link', { name: 'Back to your Recipes' }),
-    ).toBeVisible();
+    expect(await screen.findByRole('link', { name: 'Back' })).toBeVisible();
     expect(screen.queryByTestId('back-badge')).toBeNull();
     await user.click(
       await screen.findByRole('button', { name: 'Add b to your Recipes' }),
@@ -474,9 +472,7 @@ describe('ExplorePage Back badge', () => {
     expect(screen.getByTestId('back-badge')).toHaveTextContent('+1');
     await user.click(screen.getByRole('button', { name: 'Undo' }));
     await waitFor(() => expect(screen.queryByTestId('back-badge')).toBeNull());
-    expect(
-      screen.getByRole('link', { name: 'Back to your Recipes' }),
-    ).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Back' })).toBeVisible();
   });
 });
 
@@ -487,9 +483,7 @@ describe('ExplorePage Back', () => {
 
   it('goes back at once, with no slide of its own', async () => {
     setupGroups({ list: () => [base('a')] });
-    await userEvent.click(
-      await screen.findByRole('link', { name: 'Back to your Recipes' }),
-    );
+    await userEvent.click(await screen.findByRole('link', { name: 'Back' }));
     expect(await screen.findByText('recipes page')).toBeVisible();
   });
 });

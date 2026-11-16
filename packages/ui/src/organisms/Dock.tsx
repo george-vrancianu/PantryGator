@@ -8,7 +8,7 @@ import {
   DOCK_PADDING,
 } from '../theme/dock';
 import { gutterBoth } from '../theme/safeArea';
-import { border, radius, shadow } from '../theme/themeVars';
+import { dock, radius } from '../theme/themeVars';
 
 export type DockEntry = {
   key: string;
@@ -35,9 +35,9 @@ export type DockProps = {
 };
 
 /**
- * The floating bottom navigation. Sizes from pocket-pantry-handoff sections 5
- * and 9; colours, border, radius and shadow follow the Theme
- * (docs/handoffs/themes/handoff.md section 4).
+ * The floating bottom navigation, in the Canopy look (docs/handoffs/canopy/handoff.md section 3.5):
+ * a near-black bar, five columns (the middle one 66 px for the rocker), a gold mark under the active
+ * tab. Colours, border, radius and shadow follow the Theme.
  */
 export function Dock({
   label,
@@ -70,20 +70,15 @@ export function Dock({
         mx: 'auto',
         width: `calc(100% - 2 * ${gutterBoth(16)})`,
         maxWidth: { sm: 480, md: 520 },
-        height: DOCK_HEIGHT,
+        height: DOCK_HEIGHT.xs,
         boxSizing: 'border-box',
         p: `${DOCK_PADDING}px`,
         display: 'grid',
         gridTemplateColumns: `repeat(2, minmax(0, 1fr)) ${DOCK_CENTRE_WIDTH}px repeat(2, minmax(0, 1fr))`,
-        gap: { xs: '4px', md: '6px' },
-        bgcolor: 'pp.dockBg',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderWidth: border.width,
-        borderStyle: 'solid',
-        borderColor: 'pp.line',
+        background: dock.bg,
+        border: `1px solid ${dock.line}`,
         borderRadius: radius.dock,
-        boxShadow: shadow.float,
+        boxShadow: dock.shadow,
       }}
     >
       {items.slice(0, 2).map(tab)}

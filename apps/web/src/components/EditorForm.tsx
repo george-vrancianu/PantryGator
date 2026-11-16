@@ -33,6 +33,8 @@ type Props = {
   /** Replace Save / Saving… on the submit button. */
   saveLabel?: string;
   savingLabel?: string;
+  /** The page's top bar carries Save, so the form draws no Save / Cancel row (an editor page, ADR 0042). */
+  hideActions?: boolean;
   children: ReactNode;
 };
 
@@ -54,6 +56,7 @@ export function EditorForm({
   deleteSlot,
   saveLabel,
   savingLabel,
+  hideActions,
   children,
 }: Props) {
   const { t } = useTranslation(['admin', 'errors']);
@@ -115,11 +118,13 @@ export function EditorForm({
       ) : null}
       {error ? <Alert>{errorText ?? translateApiError(t, error)}</Alert> : null}
       {children}
-      {sheet
-        ? sheet.footer
-          ? createPortal(actions, sheet.footer)
-          : null
-        : actions}
+      {hideActions
+        ? null
+        : sheet
+          ? sheet.footer
+            ? createPortal(actions, sheet.footer)
+            : null
+          : actions}
       {onDelete ? (
         <ConfirmAction
           variant="ghost"

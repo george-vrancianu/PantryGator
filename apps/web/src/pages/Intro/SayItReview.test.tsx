@@ -247,7 +247,7 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(where()).toBe('/');
     expect(preferenceSaves(calls)).toEqual([{ introDone: true }]);
@@ -473,7 +473,7 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
       for (let i = 0; i < 20; i += 1) await Promise.resolve();
     });
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
-    await screen.findByRole('link', { name: 'Customise dashboard' });
+    await screen.findByRole('link', { name: 'Settings' });
     expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
     expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
   });
@@ -930,7 +930,7 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     ).toBeInTheDocument();
     expect(where()).toBe('/intro/all-set');
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
-    await screen.findByRole('link', { name: 'Customise dashboard' });
+    await screen.findByRole('link', { name: 'Settings' });
     expect(
       await screen.findByRole('button', {
         name: 'All read: 1 ready to review. Open Review',
@@ -969,7 +969,7 @@ describe('Setup 2: Next and the Skip that asks first', () => {
       ),
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
-    await screen.findByRole('link', { name: 'Customise dashboard' });
+    await screen.findByRole('link', { name: 'Settings' });
     expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
   });
 

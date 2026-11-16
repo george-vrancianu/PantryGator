@@ -240,7 +240,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(where()).toBe('/');
     expect(preferenceSaves(calls)).toEqual([{ introDone: true }]);
@@ -444,7 +444,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(preferenceSaves(calls)).toEqual([{ introDone: true }]);
   });

@@ -147,7 +147,6 @@
       "guidance": "The Recipe's Guidance was not saved: {{reason}}"
     },
     "viewRecipe": "View the Recipe",
-    "moreActions": "More actions",
     "tips": {
       "newHint": "Add tips to steps after saving the Recipe.",
       "variantHint": "Copied tips stay with their steps; add your own after saving the Variant.",

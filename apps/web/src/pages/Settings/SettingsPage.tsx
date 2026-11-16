@@ -17,7 +17,10 @@ export function SettingsPage() {
   const { tab, selectTab } = useSettingsScreen();
 
   return (
-    <Screen title={t('title')}>
+    <Screen
+      title={t('title')}
+      back={{ label: t('screenHeader:back'), href: '/' }}
+    >
       <Box sx={{ mb: 2 }}>
         <SegmentedTabs<SettingsTab>
           label={t('tabs.label')}

@@ -86,7 +86,6 @@
     "button": "Import",
     "title": "Import",
     "close": "Close",
-    "aria": "Import from a template",
     "hint": "Tick whole templates, or open one to choose lines. You can mix several.",
     "section": "Your templates · {{count}}",
     "manage": "Manage",

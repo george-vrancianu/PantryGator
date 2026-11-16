@@ -98,9 +98,9 @@ function fact(label: string): HTMLElement {
   return definition;
 }
 
-/** Opens the "More actions" menu on a Family Recipe. */
+/** Opens the "More" menu on a Family Recipe. */
 async function openMenu(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(await screen.findByRole('button', { name: 'More actions' }));
+  await user.click(await screen.findByRole('button', { name: 'More' }));
   return screen.findByRole('menu');
 }
 
@@ -236,7 +236,7 @@ describe('RecipeDetailPage', () => {
     it('offers no header action on an archived Recipe', async () => {
       setup(recipe({ id: 'g', owner: 'family', archived: true }));
       await screen.findByText('This Recipe is archived.');
-      expect(screen.queryByRole('button', { name: 'More actions' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'More' })).toBeNull();
       expect(screen.queryByRole('link', { name: 'Make a Variant' })).toBeNull();
       expect(screen.queryByRole('link', { name: 'Edit' })).toBeNull();
     });
@@ -1039,7 +1039,7 @@ describe('RecipeDetailPage', () => {
         }),
       );
       const button = await screen.findByRole('button', {
-        name: 'More actions',
+        name: 'More',
       });
       expect(button).toHaveAttribute('aria-haspopup', 'menu');
       expect(screen.queryByRole('menu')).toBeNull();
@@ -1078,7 +1078,7 @@ describe('RecipeDetailPage', () => {
       const user = userEvent.setup();
       setup(recipe({ id: 'g', owner: 'family' }));
       const button = await screen.findByRole('button', {
-        name: 'More actions',
+        name: 'More',
       });
       button.focus();
       await user.keyboard('{Enter}');
@@ -1096,16 +1096,14 @@ describe('RecipeDetailPage', () => {
       expect(await screen.findByText('Edit page')).toBeInTheDocument();
     });
 
-    it('returns focus to the "More actions" button when Delete is cancelled', async () => {
+    it('returns focus to the "More" button when Delete is cancelled', async () => {
       const user = userEvent.setup();
       setup(recipe({ id: 'g', owner: 'family' }));
       const menu = await openMenu(user);
       await user.click(within(menu).getByRole('menuitem', { name: 'Delete' }));
       await user.click(await screen.findByRole('button', { name: 'Cancel' }));
       await vi.waitFor(() =>
-        expect(
-          screen.getByRole('button', { name: 'More actions' }),
-        ).toHaveFocus(),
+        expect(screen.getByRole('button', { name: 'More' })).toHaveFocus(),
       );
     });
 
@@ -1183,9 +1181,7 @@ describe('RecipeDetailPage', () => {
         .getByText(/Gran’s herbs/)
         .closest('li')!;
       expect(await within(row).findByText('Missing')).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'More actions' }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'More' })).toBeInTheDocument();
     });
 
     it('hides Make a Variant in the menu of a Family Base Recipe', async () => {

@@ -116,7 +116,7 @@ describe('ShoppingPage', () => {
     vi.unstubAllGlobals();
   });
 
-  it('puts Add items alone in the header and Import in the summary card', async () => {
+  it('puts Import and then Add items in the top bar, and no Import in the summary card', async () => {
     stubShopping();
     renderWithProviders(<ShoppingPage />);
 
@@ -124,22 +124,14 @@ describe('ShoppingPage', () => {
     expect(
       within(header)
         .getAllByRole('button')
-        .map((b) => b.getAttribute('aria-label')),
-    ).toEqual(['Add items']);
-    // The pill sits beside the count: their nearest shared box is the card, not the page.
-    const pill = await screen.findByRole('button', {
-      name: 'Import from a template',
-    });
-    const row = screen.getByText('1 to buy').parentElement;
-    const bar = screen.getByRole('progressbar');
-    // The bar runs the card's full width under that row, not beside the pill.
-    expect(row?.contains(bar)).toBe(false);
-    let card = row?.parentElement ?? null;
+        .map((b) => b.textContent || b.getAttribute('aria-label')),
+    ).toEqual(['Import', 'Add items']);
+    const count = await screen.findByText('1 to buy');
+    const bar = screen.getByRole('progressbar', { name: 'Shopping progress' });
+    let card = count.parentElement;
     while (card && !card.contains(bar)) card = card.parentElement;
-    expect(card?.contains(pill)).toBe(true);
-    expect(card?.contains(header)).toBe(false);
     expect(
-      within(header).queryByRole('button', { name: 'Import from a template' }),
+      within(card as HTMLElement).queryByRole('button', { name: 'Import' }),
     ).toBeNull();
   });
 

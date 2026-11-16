@@ -18,7 +18,10 @@ export function FamilyPage() {
   const isHouseholdOfOne = family?.members.length === 1;
 
   return (
-    <Screen title={t('family:title')}>
+    <Screen
+      title={t('family:title')}
+      back={{ label: t('screenHeader:back'), href: '/settings' }}
+    >
       <Stack spacing={3}>
         {screen.error ? <Alert>{screen.error}</Alert> : null}
         {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}

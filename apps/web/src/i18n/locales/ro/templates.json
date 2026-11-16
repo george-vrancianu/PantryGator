@@ -41,11 +41,10 @@
   },
   "editor": {
     "name": "Nume",
-    "rename": "Redenumește",
     "delete": "Șterge șablonul",
     "deleteConfirm": "Ștergi acest șablon pentru toată familia?",
     "empty": "Încă nu are linii. Adaugă mai jos ce îți trebuie.",
-    "back": "Înapoi la șabloane",
-    "apply": "Adaugă în listă"
+    "apply": "Adaugă în listă",
+    "save": "Salvează"
   }
 }

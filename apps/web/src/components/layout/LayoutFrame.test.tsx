@@ -1,4 +1,5 @@
 import { act, fireEvent, screen } from '@testing-library/react';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '../../test/render';
@@ -68,6 +69,87 @@ beforeEach(() => {
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+});
+
+describe('The Canopy look', () => {
+  const css = (el: Element) => authoredCss(el as HTMLElement);
+  const canopy = () => document.querySelector('[data-region="canopy"]')!;
+
+  it('holds the top bar and header on one full-width canopy that runs under the sheet', () => {
+    renderRoutes('/pantry');
+    expect(canopy().querySelector('[data-region="top-bar"]')).not.toBeNull();
+    expect(canopy().querySelector('[data-region="header"]')).not.toBeNull();
+    expect(css(canopy())).toContain('var(--pp-canopy-bg)');
+    expect(css(canopy())).toContain('var(--pp-canopy-ink)');
+    // 24 of room under the last element, then 40 under the sheet's rounded corners.
+    expect(css(canopy())).toContain('padding-bottom:64px');
+  });
+
+  it('starts the title row 6 below the status bar and pads the content 16', () => {
+    renderRoutes('/pantry');
+    const topBar = document.querySelector('[data-region="top-bar"]')!;
+    expect(css(topBar)).toContain(
+      'padding-top:calc(env(safe-area-inset-top, 0px) + 6px)',
+    );
+    expect(css(topBar)).toContain('max(16px, env(safe-area-inset-left, 0px))');
+  });
+
+  it('draws the sheet over the canopy: sheet colour, rounded top, shadow, pulled up 40', () => {
+    renderRoutes('/pantry');
+    const sheetRegion = document.querySelector('[data-region="sheet"]')!;
+    expect(css(sheetRegion)).toContain('var(--pp-sheet-bg)');
+    expect(css(sheetRegion)).toContain('var(--pp-shadow-sheet)');
+    expect(css(sheetRegion)).toContain('margin-top:-40px');
+    expect(css(sheetRegion)).toMatch(
+      /border-radius:var\(--pp-r-sheet\) var\(--pp-r-sheet\) 0 0/,
+    );
+  });
+
+  it('pins a 170px fade to the bottom of the screen that lets taps through', () => {
+    renderRoutes('/pantry');
+    const fade = screen.getByTestId('sheet-fade');
+    expect(fade).toHaveAttribute('aria-hidden', 'true');
+    expect(css(fade)).toContain('position:fixed');
+    expect(css(fade)).toContain('height:170px');
+    expect(css(fade)).toContain('var(--pp-sheet-fade)');
+    expect(css(fade)).toContain('pointer-events:none');
+  });
+
+  it('puts the fade under the Dock', () => {
+    renderRoutes('/pantry');
+    const fade = screen.getByTestId('sheet-fade');
+    const dock = screen.getByRole('navigation');
+    expect(Number(getComputedStyle(fade).zIndex)).toBeLessThan(
+      Number(getComputedStyle(dock).zIndex),
+    );
+  });
+
+  it('draws the page title and status in the canopy colours', () => {
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route
+            path="/"
+            element={<Screen title="Morning" status="Mon 16" />}
+          />
+        </Route>
+      </Routes>,
+    );
+    expect(css(screen.getByRole('heading', { name: 'Morning' }))).toContain(
+      'var(--pp-canopy-ink)',
+    );
+    expect(css(screen.getByText('Mon 16'))).toContain('var(--pp-canopy-muted)');
+  });
+
+  it('draws no fade on an editor, where the Dock is hidden and the last field must scroll clear', () => {
+    renderRoutes('/recipes/new');
+    expect(screen.queryByTestId('sheet-fade')).toBeNull();
+  });
+
+  it('draws the fade and canopy in no layout for the camera', () => {
+    renderRoutes('/scan');
+    expect(screen.queryByTestId('sheet-fade')).toBeNull();
+  });
 });
 
 describe('The layout regions', () => {
