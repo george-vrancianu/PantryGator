@@ -205,6 +205,87 @@ describe('Recently Stocked (integration)', () => {
     expect(ro.ingredients[0].name).toBe('Lapte');
   });
 
+  describe('last stocked (Pantry Health lights)', () => {
+    const lastStocked = async (cookie: string) =>
+      (await api('get', cookie, '/pantry/last-stocked').expect(200)).body as {
+        lastStockedAt: string | null;
+      };
+
+    it('is null for a Family with no Batches', async () => {
+      const cookie = await signUp();
+      expect(await lastStocked(cookie)).toEqual({ lastStockedAt: null });
+    });
+
+    it('counts a Batch that was stocked and then used up', async () => {
+      const cookie = await signUp();
+      const real = Date.now();
+      const gone = await after(0, () =>
+        addBatch(cookie, { ingredientId: milk }),
+      );
+      await after(20 * MINUTE, () =>
+        api('delete', cookie, `/pantry/batches/${gone.id}`).expect(204),
+      );
+
+      const { lastStockedAt } = await lastStocked(cookie);
+      expect(lastStockedAt).not.toBeNull();
+      expect(
+        Math.abs(new Date(lastStockedAt as string).getTime() - real),
+      ).toBeLessThan(MINUTE);
+    });
+
+    it('counts an Unmatched Batch, which Stock history does not track', async () => {
+      const cookie = await signUp();
+      const real = Date.now();
+      await after(0, () => addBatch(cookie, { ingredientId: milk }));
+      await after(5 * MINUTE, () =>
+        addBatch(cookie, { rawName: 'Grandma special sauce' }),
+      );
+
+      const { lastStockedAt } = await lastStocked(cookie);
+      expect(
+        Math.abs(
+          new Date(lastStockedAt as string).getTime() - (real + 5 * MINUTE),
+        ),
+      ).toBeLessThan(MINUTE);
+    });
+
+    it('takes the later of Stock history and the newest Batch', async () => {
+      const cookie = await signUp();
+      const real = Date.now();
+      await after(0, () =>
+        addBatch(cookie, { rawName: 'Grandma special sauce' }),
+      );
+      const stocked = await after(3 * MINUTE, () =>
+        addBatch(cookie, { ingredientId: milk }),
+      );
+      await after(30 * MINUTE, () =>
+        api('delete', cookie, `/pantry/batches/${stocked.id}`).expect(204),
+      );
+
+      // The used-up Batch is newer than the Unmatched one still in the Pantry.
+      const { lastStockedAt } = await lastStocked(cookie);
+      expect(
+        Math.abs(
+          new Date(lastStockedAt as string).getTime() - (real + 3 * MINUTE),
+        ),
+      ).toBeLessThan(MINUTE);
+    });
+
+    it('is scoped to the Family', async () => {
+      const mine = await signUp();
+      const theirs = await signUp();
+      await addBatch(mine, { ingredientId: milk });
+      expect(await lastStocked(theirs)).toEqual({ lastStockedAt: null });
+    });
+
+    it('requires a signed-in Member', async () => {
+      await request(app.getHttpServer())
+        .get('/api/pantry/last-stocked')
+        .set('origin', TEST_ORIGIN)
+        .expect(401);
+    });
+  });
+
   it('requires a signed-in Member', async () => {
     await request(app.getHttpServer())
       .get('/api/pantry/recently-stocked')

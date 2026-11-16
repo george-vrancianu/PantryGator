@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq, max, sql } from 'drizzle-orm';
 import { catalogScope } from '../catalog/catalog-scope';
 import { CatalogSearchService } from '../catalog/catalog-search.service';
 import type { CatalogLocale } from '../catalog/catalog.schemas';
@@ -58,5 +58,27 @@ export class RecentlyStockedService {
           ]
         : [];
     });
+  }
+
+  /**
+   * When the Family last put something in the Pantry, for the Pantry Health lights: the later of the newest
+   * Stock history entry (catches Batches already used up) and the newest Batch's `createdAt` (catches Unmatched
+   * Batches, which Stock history does not track). null when neither exists.
+   */
+  async lastStockedAt(memberId: string): Promise<string | null> {
+    const familyId = await this.settings.familyIdOf(memberId);
+    const [fromHistory] = await this.database
+      .select({ at: max(ingredientStockHistory.lastStockedAt) })
+      .from(ingredientStockHistory)
+      .where(eq(ingredientStockHistory.familyId, familyId));
+    const [fromBatches] = await this.database
+      .select({ at: max(batches.createdAt) })
+      .from(batches)
+      .where(eq(batches.familyId, familyId));
+    const times = [fromHistory?.at, fromBatches?.at].filter(
+      (at): at is Date => at instanceof Date,
+    );
+    if (times.length === 0) return null;
+    return new Date(Math.max(...times.map((at) => at.getTime()))).toISOString();
   }
 }
