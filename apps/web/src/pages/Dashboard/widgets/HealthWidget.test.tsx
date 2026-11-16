@@ -1605,54 +1605,51 @@ describe('HealthWidget', () => {
     });
   });
 
-  describe.each(['warm', 'minimal', 'dark'] as const)(
-    'in the %s Theme',
-    (theme) => {
-      // The open sheet prints dates ("since Tue"); a fixed day keeps the snapshots stable.
-      beforeEach(() => {
-        vi.useFakeTimers({ toFake: ['Date'] });
-        vi.setSystemTime(new Date('2026-10-15T12:00:00'));
-      });
-      afterEach(() => {
-        vi.useRealTimers();
-      });
+  describe.each(['light', 'dark'] as const)('in the %s Theme', (theme) => {
+    // The open sheet prints dates ("since Tue"); a fixed day keeps the snapshots stable.
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-10-15T12:00:00'));
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
 
-      async function render(size: 'wide' | 'small') {
-        localStorage.setItem(
-          'pp.appearance',
-          JSON.stringify({ theme, matchSystem: false }),
-        );
-        stub(tenBatchPantry());
-        stubMotion(true);
-        const result = renderWithProviders(
-          <HealthWidget size={size} columns={2} />,
-        );
-        const card = await screen.findByRole('button', {
-          name: /^Pantry health, 91/,
-        });
-        return { ...result, card };
-      }
-
-      it('looks the same wide', async () => {
-        const { card } = await render('wide');
-        expect(snapshotOf(card)).toMatchSnapshot();
+    async function render(size: 'wide' | 'small') {
+      localStorage.setItem(
+        'pp.appearance',
+        JSON.stringify({ theme, matchSystem: false }),
+      );
+      stub(tenBatchPantry());
+      stubMotion(true);
+      const result = renderWithProviders(
+        <HealthWidget size={size} columns={2} />,
+      );
+      const card = await screen.findByRole('button', {
+        name: /^Pantry health, 91/,
       });
+      return { ...result, card };
+    }
 
-      it('looks the same small', async () => {
-        const { card } = await render('small');
-        expect(snapshotOf(card)).toMatchSnapshot();
-      });
+    it('looks the same wide', async () => {
+      const { card } = await render('wide');
+      expect(snapshotOf(card)).toMatchSnapshot();
+    });
 
-      it('looks the same as an open sheet', async () => {
-        const { card } = await render('wide');
-        await userEvent.setup().click(card);
-        const sheet = await screen.findByRole('dialog', {
-          name: 'Pantry health',
-        });
-        expect(snapshotOf(sheet)).toMatchSnapshot();
+    it('looks the same small', async () => {
+      const { card } = await render('small');
+      expect(snapshotOf(card)).toMatchSnapshot();
+    });
+
+    it('looks the same as an open sheet', async () => {
+      const { card } = await render('wide');
+      await userEvent.setup().click(card);
+      const sheet = await screen.findByRole('dialog', {
+        name: 'Pantry health',
       });
-    },
-  );
+      expect(snapshotOf(sheet)).toMatchSnapshot();
+    });
+  });
 });
 
 describe('HealthWidget Gator', () => {

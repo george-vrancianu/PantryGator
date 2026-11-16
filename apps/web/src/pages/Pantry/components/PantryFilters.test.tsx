@@ -6,9 +6,8 @@ import { PantryFilters } from './PantryFilters';
 
 /** The handoff's chip `on` pair: accent-on-tint text on the accent tint. */
 const CHIP_ON = {
-  warm: { text: '#4A5722', fill: '#E6EAD2' },
-  minimal: { text: '#176040', fill: '#E1F2E8' },
-  dark: { text: '#A9EDBD', fill: '#1F3A2A' },
+  light: { text: '#1C5B3B', fill: '#E2F0E7' },
+  dark: { text: '#A8E6C0', fill: '#1C3327' },
 } as const;
 
 describe('PantryFilters', () => {

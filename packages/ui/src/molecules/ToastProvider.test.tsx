@@ -43,18 +43,18 @@ describe('Toasts', () => {
     };
   };
 
-  it('is dark ink with a butter action in Warm editorial', () => {
-    const { toast, action } = showIn('warm');
-    expect(paintedColour(toast, 'background-color')).toBe('#2B2418');
-    expect(paintedColour(toast, 'color')).toBe('#FBF8F1');
-    expect(paintedColour(action, 'color')).toBe('#F0C96B');
+  it('is dark ink with a butter action in Light', () => {
+    const { toast, action } = showIn('light');
+    expect(paintedColour(toast, 'background-color')).toBe('#141A16');
+    expect(paintedColour(toast, 'color')).toBe('#F4F7F1');
+    expect(paintedColour(action, 'color')).toBe('#E8CB7C');
   });
 
-  it('is a light toast in Dark-first', () => {
+  it('is a light toast in Dark', () => {
     const { toast, action } = showIn('dark');
-    expect(paintedColour(toast, 'background-color')).toBe('#ECF2EC');
-    expect(paintedColour(toast, 'color')).toBe('#0F1512');
-    expect(paintedColour(action, 'color')).toBe('#1E7A4E');
+    expect(paintedColour(toast, 'background-color')).toBe('#EEF2ED');
+    expect(paintedColour(toast, 'color')).toBe('#101511');
+    expect(paintedColour(action, 'color')).toBe('#1C6A43');
   });
 
   it('dismiss() closes the showing toast and runs its onClose', () => {
@@ -114,7 +114,7 @@ describe('Toasts', () => {
   });
 
   it('takes the Theme control radius and float shadow', () => {
-    const { toast } = showIn('minimal');
+    const { toast } = showIn('light');
     expect(getComputedStyle(toast).borderRadius).toBe('var(--pp-r-ctl)');
     expect(getComputedStyle(toast).boxShadow).toBe('var(--pp-shadow-float)');
   });

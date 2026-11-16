@@ -121,17 +121,13 @@
   "build": "Versiunea {{build}}",
   "appearance": {
     "title": "Aspect",
-    "warm": "Cald editorial",
-    "minimal": "Minimal clar",
-    "dark": "Întâi întunecat",
+    "light": "Luminos",
+    "dark": "Întunecat",
     "matchSystem": "Urmează sistemul",
-    "matchSystemHint": "Întâi întunecat când telefonul este în modul întunecat, altfel tema ta luminoasă",
-    "usedInDark": "Folosită în modul întunecat",
-    "usedInLight": "Folosită în modul luminos",
-    "syncedOnDevice": "Tema a fost salvată pe acest telefon. O vom sincroniza când ești online.",
-    "lightOnlyToast": "{{name}} apare când telefonul este în modul luminos.",
-    "darkEverywhereToast": "Întâi întunecat peste tot. Urmează sistemul este dezactivat."
+    "matchSystemHint": "Întunecat când telefonul e în modul întunecat, Luminos în rest",
+    "syncedOnDevice": "Tema a fost salvată pe acest telefon. O vom sincroniza când ești online."
   },
+
   "scope": {
     "device": "Pe acest telefon",
     "you": "Doar tu",

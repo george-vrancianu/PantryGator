@@ -118,7 +118,7 @@ describe('Setup 2, Say it', () => {
     await openSayIt();
     await screen.findByText('Hold the mic, talk, let go');
     expect(document.querySelector('[data-ground="olive"]')).not.toBeNull();
-    expect(document.querySelector('[data-theme="warm"]')).not.toBeNull();
+    expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
   });
 
   describe('when the server cannot transcribe', () => {

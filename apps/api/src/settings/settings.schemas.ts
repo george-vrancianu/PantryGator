@@ -14,8 +14,25 @@ export const expiryOverrideBody = z.object({
 export type ExpiryOverrideBody = z.infer<typeof expiryOverrideBody>;
 
 /** The Theme ids a Member can choose: the UI package's THEME_IDS (packages/ui/src/theme/themeIds.test.ts fails if they drift). */
-export const THEME_IDS = ['warm', 'minimal', 'dark'] as const;
+export const THEME_IDS = ['light', 'dark'] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
+
+/**
+ * Maps a stored or sent Theme id to a current one: `warm` and `minimal` (the
+ * pre-Canopy Themes) become `light`, with no cut-off. Anything else is `null`.
+ */
+export function normalizeTheme(value: unknown): ThemeId | null {
+  if (value === 'dark') return 'dark';
+  if (value === 'light' || value === 'warm' || value === 'minimal') {
+    return 'light';
+  }
+  return null;
+}
+
+/** A Theme id as sent: a current one or a pre-Canopy one, always stored as a current one. */
+const themeBody = z
+  .enum(['light', 'dark', 'warm', 'minimal'])
+  .transform((value): ThemeId => normalizeTheme(value) ?? 'light');
 
 /** A partial save: whatever is omitted keeps its stored value. An empty body has nothing to update and is rejected. */
 export const updatePreferencesBody = z
@@ -27,7 +44,7 @@ export const updatePreferencesBody = z
     scanLanguage: z.enum(SCAN_LANGUAGES).nullable().optional(),
     /** A Spoken Language (Scan Languages list), or `null` for "Same as UI Language". */
     spokenLanguage: z.enum(SCAN_LANGUAGES).nullable().optional(),
-    theme: z.enum(THEME_IDS).optional(),
+    theme: themeBody.optional(),
     hideRecipesWithAllergies: z.boolean().optional(),
     /** The Member reached the Dashboard from the Intro. Only `true` is accepted: the Intro is never undone. */
     introDone: z.literal(true).optional(),

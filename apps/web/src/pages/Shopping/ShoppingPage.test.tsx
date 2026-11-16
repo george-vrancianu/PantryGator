@@ -522,9 +522,9 @@ describe('ShoppingPage', () => {
 
     it('greys the icon when the item is checked', async () => {
       await show([item({ id: 'x', ingredientId: PARMESAN_ID, checked: true })]);
-      // Greyed to the active Theme's muted ink (Warm editorial by default).
+      // Greyed to the active Theme's muted ink (Light by default).
       expect(paintedColour(rowIcon(/^Item/)!.parentElement!, 'color')).toBe(
-        THEMES.warm.muted,
+        THEMES.light.muted,
       );
     });
   });
