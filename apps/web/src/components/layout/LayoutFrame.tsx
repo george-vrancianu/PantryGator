@@ -1,5 +1,5 @@
-import Box from '@mui/material/Box';
 import {
+  Box,
   DOCK_CLEARANCE,
   gutterLeft,
   gutterRight,

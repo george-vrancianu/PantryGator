@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box';
+import { Box } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useRefreshScreen } from '../lib/refresh';
 

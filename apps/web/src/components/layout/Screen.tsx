@@ -1,5 +1,8 @@
-import Box from '@mui/material/Box';
-import type { ScreenHeaderAction, ScreenHeaderProps } from '@pocket-pantry/ui';
+import {
+  Box,
+  type ScreenHeaderAction,
+  type ScreenHeaderProps,
+} from '@pocket-pantry/ui';
 import { useLayoutEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AppScreenHeader } from '../AppScreenHeader';
