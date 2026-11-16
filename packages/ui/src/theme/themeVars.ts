@@ -79,6 +79,25 @@ export const canopy = {
   chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
 } as const;
 
+/** Pantry Health on the Canopy: the dial's band ends and the lamps' windows and lit colours (always on the dark header). */
+export const healthDial = {
+  bad: pp('dial-bad'),
+  good: pp('dial-good'),
+} as const;
+
+export const healthLamp = {
+  expired: pp('lamp-expired'),
+  soon: pp('lamp-soon'),
+  low: pp('lamp-low'),
+  fresh: pp('lamp-fresh'),
+  stale: pp('lamp-stale'),
+  window: pp('lamp-window'),
+  windowOff: pp('lamp-window-off'),
+} as const;
+
+/** Bar and meter tracks. */
+export const segOff = pp('seg-off');
+
 /** The Dock (Canopy handoff section 3.5): the bar, its tabs, the gold mark and the mic / camera rocker. */
 export const dock = {
   /** The bar's gradient; paint it with `background`. */
