@@ -1,6 +1,5 @@
 import type { StorageManager } from '@mui/material/styles';
 import {
-  lightTheme,
   readAppearance,
   subscribeAppearance,
   type Appearance,
@@ -22,7 +21,7 @@ function slotOf(key: string): Slot {
  * own mode logic reproduces `resolveTheme`.
  */
 function slotValue(slot: Slot, appearance: Appearance): string {
-  if (slot === 'light') return lightTheme(appearance);
+  if (slot === 'light') return 'light';
   if (slot === 'dark') return 'dark';
   return appearance.matchSystem
     ? 'system'

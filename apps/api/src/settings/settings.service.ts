@@ -33,7 +33,7 @@ import {
 } from './family-allergies';
 import { loadMemberAllergenIds } from './member-allergies';
 import {
-  THEME_IDS,
+  normalizeTheme,
   type AllergiesView,
   type CategoryOptionsView,
   type ExpiryOverrideView,
@@ -221,7 +221,7 @@ export class SettingsService {
       .limit(1);
     if (!row) throw new ApiException(401, 'auth.unauthenticated');
     const locale = CATALOG_LOCALES.find((l) => l === row.locale) ?? null;
-    const theme = THEME_IDS.find((t) => t === row.theme) ?? null;
+    const theme = normalizeTheme(row.theme);
     return {
       locale,
       catalogLanguage:

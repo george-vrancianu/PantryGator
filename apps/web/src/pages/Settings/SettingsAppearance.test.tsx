@@ -75,7 +75,7 @@ async function signOutInline() {
 }
 
 const themeTiles = async () =>
-  within(await screen.findByRole('radiogroup', { name: 'Appearance' }));
+  within(await screen.findByRole('group', { name: 'Appearance' }));
 
 /** Lets timers (React Query hands results to observers on one) and their follow-up renders run. */
 const advance = (ms: number) => act(() => vi.advanceTimersByTimeAsync(ms));
@@ -90,91 +90,114 @@ describe('Settings Appearance', () => {
     vi.unstubAllGlobals();
   });
 
-  it('offers the three Themes as a radiogroup with the chosen one checked', async () => {
+  it('offers Light and Dark as tiles, with the chosen one pressed', async () => {
     stubSystemScheme(false);
-    store({ theme: 'minimal', matchSystem: false });
-    stubPreferences({ locale: null, theme: 'minimal' });
+    store({ theme: 'dark', matchSystem: false });
+    stubPreferences({ locale: null, theme: 'dark' });
     renderSettings();
 
     const tiles = await themeTiles();
-    expect(tiles.getAllByRole('radio').map((r) => r.textContent)).toEqual([
-      'AaWarm editorial',
-      'AaMinimal crisp',
-      'AaDark-first',
+    expect(tiles.getAllByRole('button').map((r) => r.textContent)).toEqual([
+      'Light',
+      'Dark',
     ]);
-    expect(tiles.getByRole('radio', { name: 'Minimal crisp' })).toHaveAttribute(
-      'aria-checked',
+    expect(tiles.getByRole('button', { name: 'Dark' })).toHaveAttribute(
+      'aria-pressed',
       'true',
     );
-    expect(
-      tiles.getByRole('radio', { name: 'Warm editorial' }),
-    ).toHaveAttribute('aria-checked', 'false');
+    expect(tiles.getByRole('button', { name: 'Light' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it.each([
-    { theme: 'minimal', matchSystem: false, systemDark: true, root: 'minimal' },
-    { theme: 'dark', matchSystem: false, systemDark: false, root: 'dark' },
-    { theme: 'minimal', matchSystem: true, systemDark: true, root: 'dark' },
-    { theme: 'minimal', matchSystem: true, systemDark: false, root: 'minimal' },
+    {
+      theme: 'light',
+      matchSystemAfter: false,
+      systemDark: true,
+      root: 'light',
+    },
+    { theme: 'dark', matchSystemAfter: false, systemDark: false, root: 'dark' },
   ])(
-    'chosen $theme with Match system $matchSystem in system dark $systemDark resolves to $root',
-    async ({ theme, matchSystem, systemDark, root }) => {
+    'tapping $theme with Match system on in system dark $systemDark shows $root, turns Match system off and saves it',
+    async ({ theme, matchSystemAfter, systemDark, root }) => {
       stubSystemScheme(systemDark);
-      store({ theme: 'warm', matchSystem: !matchSystem });
-      stubPreferences({ locale: null, theme: 'warm' });
+      store({ theme: 'light', matchSystem: true });
+      const calls = stubPreferences({ locale: null, theme: 'light' });
       renderSettings();
 
       await userEvent.click(
-        screen.getByRole('switch', { name: 'Match system' }),
-      );
-      await userEvent.click(
-        (await themeTiles()).getByRole('radio', {
-          name: { minimal: 'Minimal crisp', dark: 'Dark-first' }[theme],
+        (await themeTiles()).getByRole('button', {
+          name: theme === 'dark' ? 'Dark' : 'Light',
         }),
       );
 
       expect(rootTheme()).toBe(root);
-      expect(stored()).toEqual({ theme, matchSystem });
+      expect(stored()).toEqual({ theme, matchSystem: matchSystemAfter });
+      expect(
+        screen.getByRole('switch', { name: 'Match system' }),
+      ).toHaveAttribute('aria-checked', 'false');
+      await vi.waitFor(() =>
+        expect(calls).toContainEqual(
+          expect.objectContaining({ body: { theme } }),
+        ),
+      );
     },
   );
 
-  it('keeps showing the chosen light Theme with Match system on, and marks Dark-first as used in dark mode', async () => {
-    stubSystemScheme(true);
-    store({ theme: 'minimal', matchSystem: false });
-    stubPreferences({ locale: null, theme: 'minimal' });
+  it('selects the tile of the Theme in use while Match system is on', async () => {
+    const system = stubSystemScheme(true);
+    store({ theme: 'light', matchSystem: true });
+    stubPreferences({ locale: null, theme: 'light' });
     renderSettings();
 
     const tiles = await themeTiles();
-    expect(screen.queryByText('Used in dark mode')).not.toBeInTheDocument();
+    expect(rootTheme()).toBe('dark');
+    expect(tiles.getByRole('button', { name: 'Dark' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(tiles.getByRole('button', { name: 'Light' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    act(() => system.setDark(false));
+    expect(tiles.getByRole('button', { name: 'Light' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('follows the device: Dark in system dark, Light otherwise, with Match system turned on', async () => {
+    stubSystemScheme(true);
+    store({ theme: 'light', matchSystem: false });
+    stubPreferences({ locale: null, theme: 'light' });
+    renderSettings();
+    await themeTiles();
+    expect(rootTheme()).toBe('light');
 
     await userEvent.click(screen.getByRole('switch', { name: 'Match system' }));
 
     expect(rootTheme()).toBe('dark');
-    expect(tiles.getByRole('radio', { name: 'Minimal crisp' })).toHaveAttribute(
-      'aria-checked',
-      'true',
-    );
-    const dark = tiles.getByRole('radio', { name: 'Dark-first' });
-    expect(dark).toHaveAccessibleDescription('Used in dark mode');
-    // The tile itself carries the note (spec #243: the Dark-first tile reads it).
-    expect(dark).toContainElement(screen.getByText('Used in dark mode'));
+    expect(stored()).toEqual({ theme: 'light', matchSystem: true });
   });
 
   it('keeps Match system on the device: toggling it saves nothing on the Member', async () => {
     stubSystemScheme(false);
-    store({ theme: 'warm', matchSystem: true });
-    const calls = stubPreferences({ locale: null, theme: 'warm' });
+    store({ theme: 'light', matchSystem: true });
+    const calls = stubPreferences({ locale: null, theme: 'light' });
     renderSettings();
 
     const toggle = await screen.findByRole('switch', { name: 'Match system' });
     expect(toggle).toHaveAttribute('aria-checked', 'true');
     expect(toggle).toHaveAccessibleDescription(
-      'Dark-first when the phone is in dark mode, your light theme otherwise',
+      'Dark when the phone is in dark mode, Light otherwise',
     );
     await userEvent.click(toggle);
 
     expect(toggle).toHaveAttribute('aria-checked', 'false');
-    expect(stored()).toEqual({ theme: 'warm', matchSystem: false });
+    expect(stored()).toEqual({ theme: 'light', matchSystem: false });
     expect(calls.map((c) => c.key)).not.toContain(
       'PUT /api/settings/preferences',
     );
@@ -182,196 +205,60 @@ describe('Settings Appearance', () => {
 
   it('follows a system dark/light change while open, with Match system on', async () => {
     const system = stubSystemScheme(false);
-    store({ theme: 'minimal', matchSystem: true });
-    stubPreferences({ locale: null, theme: 'minimal' });
+    store({ theme: 'light', matchSystem: true });
+    stubPreferences({ locale: null, theme: 'light' });
     renderSettings();
     await themeTiles();
-    expect(rootTheme()).toBe('minimal');
+    expect(rootTheme()).toBe('light');
 
     act(() => system.setDark(true));
     expect(rootTheme()).toBe('dark');
     act(() => system.setDark(false));
-    expect(rootTheme()).toBe('minimal');
-  });
-
-  it('moves between Themes with the arrow keys, applying each', async () => {
-    stubSystemScheme(false);
-    store({ theme: 'warm', matchSystem: false });
-    const calls = stubPreferences({ locale: null, theme: 'warm' });
-    renderSettings();
-
-    const tiles = await themeTiles();
-    const warm = tiles.getByRole('radio', { name: 'Warm editorial' });
-    expect(warm).toHaveAttribute('tabindex', '0');
-    expect(tiles.getByRole('radio', { name: 'Dark-first' })).toHaveAttribute(
-      'tabindex',
-      '-1',
-    );
-
-    warm.focus();
-    await userEvent.keyboard('{ArrowRight}');
-    const minimal = tiles.getByRole('radio', { name: 'Minimal crisp' });
-    expect(minimal).toHaveFocus();
-    expect(minimal).toHaveAttribute('aria-checked', 'true');
-    expect(rootTheme()).toBe('minimal');
-
-    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}');
-    const dark = tiles.getByRole('radio', { name: 'Dark-first' });
-    expect(dark).toHaveFocus();
-    expect(rootTheme()).toBe('dark');
-    await vi.waitFor(() =>
-      expect(calls).toContainEqual(
-        expect.objectContaining({ body: { theme: 'dark' } }),
-      ),
-    );
-  });
-
-  it('applies each Theme of an arrow-key burst at once but saves only the latest after the save in flight', async () => {
-    stubSystemScheme(false);
-    store({ theme: 'warm', matchSystem: false });
-    const calls = stubPreferences({ locale: null, theme: 'warm' });
-    const stubbed = globalThis.fetch;
-    const held: Array<() => void> = [];
-    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
-      if (init?.method !== 'PUT') return stubbed(input, init);
-      return new Promise<Response>((resolve) => {
-        held.push(() => resolve(stubbed(input, init)));
-      });
-    });
-    renderSettings();
-    const saved = () =>
-      calls
-        .filter((c) => c.key === 'PUT /api/settings/preferences')
-        .map((c) => c.body);
-
-    const tiles = await themeTiles();
-    tiles.getByRole('radio', { name: 'Warm editorial' }).focus();
-    await userEvent.keyboard('{ArrowRight}');
-    expect(rootTheme()).toBe('minimal');
-    await userEvent.keyboard('{ArrowRight}');
-    expect(rootTheme()).toBe('dark');
-    await userEvent.keyboard('{ArrowLeft}');
-    expect(rootTheme()).toBe('minimal');
-    await userEvent.keyboard('{ArrowRight}');
-    expect(rootTheme()).toBe('dark');
-
-    await vi.waitFor(() => expect(held).toHaveLength(1));
-    held[0]();
-    await vi.waitFor(() => expect(held).toHaveLength(2));
-    held[1]();
-    await vi.waitFor(() =>
-      expect(saved()).toEqual([{ theme: 'minimal' }, { theme: 'dark' }]),
-    );
-    expect(rootTheme()).toBe('dark');
+    expect(rootTheme()).toBe('light');
   });
 
   it('applies a different Theme saved on the Member when preferences load', async () => {
     stubSystemScheme(false);
-    store({ theme: 'warm', matchSystem: false });
-    stubPreferences({ locale: null, theme: 'minimal' });
+    store({ theme: 'light', matchSystem: false });
+    stubPreferences({ locale: null, theme: 'dark' });
     renderSettings();
 
-    await vi.waitFor(() => expect(rootTheme()).toBe('minimal'));
-    expect(stored()).toEqual({ theme: 'minimal', matchSystem: false });
+    await vi.waitFor(() => expect(rootTheme()).toBe('dark'));
+    expect(stored()).toEqual({ theme: 'dark', matchSystem: false });
   });
+
+  it.each(['warm', 'minimal'])(
+    'reads a %s Theme saved on the Member as Light',
+    async (savedTheme) => {
+      stubSystemScheme(false);
+      store({ theme: 'dark', matchSystem: false });
+      stubPreferences({ locale: null, theme: savedTheme });
+      renderSettings();
+
+      await vi.waitFor(() => expect(rootTheme()).toBe('light'));
+      expect(stored()).toEqual({ theme: 'light', matchSystem: false });
+    },
+  );
 
   it('falls back to the default Theme when the Member never chose one', async () => {
     stubSystemScheme(false);
-    store({ theme: 'minimal', matchSystem: false });
+    store({ theme: 'dark', matchSystem: false });
     stubPreferences({ locale: null, theme: null });
     renderSettings();
 
-    await vi.waitFor(() => expect(rootTheme()).toBe('warm'));
-    expect(stored()).toEqual({ theme: 'warm', matchSystem: false });
+    await vi.waitFor(() => expect(rootTheme()).toBe('light'));
+    expect(stored()).toEqual({ theme: 'light', matchSystem: false });
   });
 
-  describe('the Theme and Match system rules', () => {
-    it('applies a light Theme picked with Match system on in a dark phone as a toast only, changing nothing visible', async () => {
-      stubSystemScheme(true);
-      store({ theme: 'warm', matchSystem: true });
-      stubPreferences({ locale: null, theme: 'warm' });
-      renderSettings();
-
-      await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
-      );
-
-      expect(
-        await screen.findByText(
-          'Minimal crisp shows when the phone is in light mode.',
-        ),
-      ).toBeInTheDocument();
-      expect(rootTheme()).toBe('dark');
-      expect(stored()).toEqual({ theme: 'minimal', matchSystem: true });
-    });
-
-    it('turns Match system off when Dark-first is picked with it on, and says so', async () => {
-      stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: true });
-      const calls = stubPreferences({ locale: null, theme: 'warm' });
-      renderSettings();
-
-      await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Dark-first' }),
-      );
-
-      expect(
-        await screen.findByText('Dark-first everywhere. Match system is off.'),
-      ).toBeInTheDocument();
-      expect(stored()).toEqual({ theme: 'dark', matchSystem: false });
-      expect(rootTheme()).toBe('dark');
-      expect(
-        screen.getByRole('switch', { name: 'Match system' }),
-      ).toHaveAttribute('aria-checked', 'false');
-      await vi.waitFor(() =>
-        expect(calls).toContainEqual(
-          expect.objectContaining({ body: { theme: 'dark' } }),
-        ),
-      );
-    });
-
-    it('switches the Theme to Warm editorial when Match system is turned on while Dark-first is chosen', async () => {
-      stubSystemScheme(false);
-      store({ theme: 'dark', matchSystem: false });
-      const calls = stubPreferences({ locale: null, theme: 'dark' });
-      renderSettings();
-
-      await userEvent.click(
-        await screen.findByRole('switch', { name: 'Match system' }),
-      );
-
-      expect(stored()).toEqual({ theme: 'warm', matchSystem: true });
-      expect(rootTheme()).toBe('warm');
-      expect(
-        (await themeTiles()).getByRole('radio', { name: 'Warm editorial' }),
-      ).toHaveAttribute('aria-checked', 'true');
-      await vi.waitFor(() =>
-        expect(calls).toContainEqual(
-          expect.objectContaining({ body: { theme: 'warm' } }),
-        ),
-      );
-    });
-
-    it('marks the light Theme in use as used in light mode while Match system is on', async () => {
-      stubSystemScheme(false);
-      store({ theme: 'minimal', matchSystem: true });
-      stubPreferences({ locale: null, theme: 'minimal' });
-      renderSettings();
-
-      const tiles = await themeTiles();
-      expect(
-        tiles.getByRole('radio', { name: 'Minimal crisp' }),
-      ).toHaveAccessibleDescription('Used in light mode');
-    });
-
+  describe('saving', () => {
     it('shows a sync toast and keeps the chosen Theme on screen when the save fails', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
-      stubPreferences({ locale: null, theme: 'warm' }, { online: false });
+      store({ theme: 'light', matchSystem: false });
+      stubPreferences({ locale: null, theme: 'light' }, { online: false });
       renderSettings();
 
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
 
       expect(
@@ -380,9 +267,9 @@ describe('Settings Appearance', () => {
         ),
       ).toBeInTheDocument();
       expect(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
-      ).toHaveAttribute('aria-checked', 'true');
-      expect(rootTheme()).toBe('minimal');
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(rootTheme()).toBe('dark');
     });
   });
 
@@ -392,20 +279,20 @@ describe('Settings Appearance', () => {
 
     it('keeps an unsaved device choice over the server value on the next load, and re-sends it', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
+      store({ theme: 'light', matchSystem: false });
       const network = { online: false };
-      const calls = stubPreferences({ locale: null, theme: 'warm' }, network);
+      const calls = stubPreferences({ locale: null, theme: 'light' }, network);
       const { unmount } = renderSettings();
 
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
       await vi.waitFor(() =>
         expect(calls.map((c) => c.key)).toContain(
           'PUT /api/settings/preferences (failed)',
         ),
       );
-      expect(rootTheme()).toBe('minimal');
+      expect(rootTheme()).toBe('dark');
       unmount();
       network.online = true;
 
@@ -414,21 +301,21 @@ describe('Settings Appearance', () => {
       await themeTiles();
       await vi.waitFor(() =>
         expect(saves(calls)).toEqual([
-          expect.objectContaining({ body: { theme: 'minimal' } }),
+          expect.objectContaining({ body: { theme: 'dark' } }),
         ]),
       );
-      expect(rootTheme()).toBe('minimal');
-      expect(stored()).toEqual({ theme: 'minimal', matchSystem: false });
+      expect(rootTheme()).toBe('dark');
+      expect(stored()).toEqual({ theme: 'dark', matchSystem: false });
     });
 
     it('re-sends a failed save when the device comes back online, and then follows the server again', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
+      store({ theme: 'light', matchSystem: false });
       const network = { online: false };
-      const calls = stubPreferences({ locale: null, theme: 'warm' }, network);
+      const calls = stubPreferences({ locale: null, theme: 'light' }, network);
       const { unmount } = renderSettings();
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Dark-first' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
       await vi.waitFor(() =>
         expect(calls.map((c) => c.key)).toContain(
@@ -451,21 +338,21 @@ describe('Settings Appearance', () => {
       unmount();
 
       // Synced, so the Member's Theme from another device applies on the next load.
-      stubPreferences({ locale: null, theme: 'minimal' });
+      stubPreferences({ locale: null, theme: 'dark' });
       renderSettings();
-      await vi.waitFor(() => expect(rootTheme()).toBe('minimal'));
+      await vi.waitFor(() => expect(rootTheme()).toBe('dark'));
     });
 
     it('does not carry an unsynced Theme over to the next Member after sign-out', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
+      store({ theme: 'light', matchSystem: false });
       const network = { online: false };
-      const calls = stubPreferences({ locale: null, theme: 'warm' }, network, {
+      const calls = stubPreferences({ locale: null, theme: 'light' }, network, {
         id: 'member-a',
       });
       const first = renderSettings();
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
       await vi.waitFor(() =>
         expect(calls.map((c) => c.key)).toContain(
@@ -491,10 +378,10 @@ describe('Settings Appearance', () => {
 
     it('ignores an unsynced Theme that another Member chose on this device', async () => {
       stubSystemScheme(false);
-      store({ theme: 'minimal', matchSystem: false });
+      store({ theme: 'dark', matchSystem: false });
       localStorage.setItem(
         'pp.appearance.unsynced',
-        JSON.stringify({ memberId: 'member-a', theme: 'minimal' }),
+        JSON.stringify({ memberId: 'member-a', theme: 'dark' }),
       );
       const calls = stubPreferences(
         { locale: null, theme: 'dark' },
@@ -510,8 +397,8 @@ describe('Settings Appearance', () => {
 
     it('sends a newer choice made while a failing save was in flight', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
-      const calls = stubPreferences({ locale: null, theme: 'warm' });
+      store({ theme: 'light', matchSystem: false });
+      const calls = stubPreferences({ locale: null, theme: 'light' });
       const stubbed = globalThis.fetch;
       let puts = 0;
       let failFirst = () => {};
@@ -526,25 +413,23 @@ describe('Settings Appearance', () => {
       renderSettings();
 
       const tiles = await themeTiles();
-      await userEvent.click(
-        tiles.getByRole('radio', { name: 'Minimal crisp' }),
-      );
+      await userEvent.click(tiles.getByRole('button', { name: 'Dark' }));
       await vi.waitFor(() => expect(puts).toBe(1));
-      await userEvent.click(tiles.getByRole('radio', { name: 'Dark-first' }));
+      await userEvent.click(tiles.getByRole('button', { name: 'Light' }));
       await act(async () => failFirst());
 
       await vi.waitFor(() =>
         expect(saves(calls)).toContainEqual(
-          expect.objectContaining({ body: { theme: 'dark' } }),
+          expect.objectContaining({ body: { theme: 'light' } }),
         ),
       );
     });
 
     it('drops a save that settles after sign-out instead of writing it to the next session', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
+      store({ theme: 'light', matchSystem: false });
       const calls = stubPreferences(
-        { locale: null, theme: 'warm' },
+        { locale: null, theme: 'light' },
         undefined,
         {
           id: 'member-a',
@@ -556,13 +441,13 @@ describe('Settings Appearance', () => {
         if (init?.method !== 'PUT') return stubbed(input, init);
         return new Promise<Response>((resolve) => {
           settlePut = () =>
-            resolve(Response.json({ locale: 'ro', theme: 'minimal' }));
+            resolve(Response.json({ locale: 'ro', theme: 'dark' }));
         });
       });
       const { queryClient, i18n } = renderSettings();
 
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
       await signOutInline();
       await vi.waitFor(() =>
@@ -571,7 +456,7 @@ describe('Settings Appearance', () => {
       // Member B signs in on the device and picks the same Theme before A's save settles.
       localStorage.setItem(
         'pp.appearance.unsynced',
-        JSON.stringify({ memberId: 'member-b', theme: 'minimal' }),
+        JSON.stringify({ memberId: 'member-b', theme: 'dark' }),
       );
       queryClient.setQueryData(['session'], {
         user: { id: 'member-b', name: 'b', email: 'b@x.io' },
@@ -584,14 +469,14 @@ describe('Settings Appearance', () => {
       // The mounted You tab may read preferences again for the new session; A's answer is not it.
       expect(
         queryClient.getQueryData(['settings', 'preferences']),
-      ).not.toMatchObject({ locale: 'ro', theme: 'minimal' });
+      ).not.toMatchObject({ locale: 'ro', theme: 'dark' });
       expect(i18n.language).not.toBe('ro');
     });
 
     it('keeps a Theme chosen before preferences load when they arrive with the old value', async () => {
       stubSystemScheme(false);
-      store({ theme: 'warm', matchSystem: false });
-      const calls = stubPreferences({ locale: null, theme: 'warm' });
+      store({ theme: 'light', matchSystem: false });
+      const calls = stubPreferences({ locale: null, theme: 'light' });
       const stubbed = globalThis.fetch;
       let loadPreferences = () => {};
       vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
@@ -602,13 +487,13 @@ describe('Settings Appearance', () => {
         // Answers with what the server held before the save below.
         return new Promise<Response>((resolve) => {
           loadPreferences = () =>
-            resolve(Response.json({ locale: null, theme: 'warm' }));
+            resolve(Response.json({ locale: null, theme: 'light' }));
         });
       });
       renderSettings();
 
       await userEvent.click(
-        (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+        (await themeTiles()).getByRole('button', { name: 'Dark' }),
       );
       await vi.waitFor(() => expect(saves(calls)).toHaveLength(1));
       await act(async () => {
@@ -617,8 +502,8 @@ describe('Settings Appearance', () => {
         await vi.advanceTimersByTimeAsync(50);
       });
 
-      expect(rootTheme()).toBe('minimal');
-      expect(stored()).toEqual({ theme: 'minimal', matchSystem: false });
+      expect(rootTheme()).toBe('dark');
+      expect(stored()).toEqual({ theme: 'dark', matchSystem: false });
     });
   });
 });

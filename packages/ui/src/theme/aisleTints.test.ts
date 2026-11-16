@@ -32,7 +32,7 @@ describe('Aisle tints', () => {
     }
   });
 
-  it("uses the shopping handoff's dark pairs in Dark-first and leaves Minimal's light pairs", () => {
+  it("uses the shopping handoff's dark pairs in Dark and keeps the light pairs in Light", () => {
     expect(AISLE_TINTS.dark.produce).toEqual({ bg: '#1F3A2A', fg: '#9FE0B4' });
     expect(AISLE_TINTS.dark.bakery).toEqual({ bg: '#3A3118', fg: '#F2CF72' });
     expect(AISLE_TINTS.dark.dairy).toEqual({ bg: '#1D2C38', fg: '#9CC3E3' });
@@ -40,23 +40,13 @@ describe('Aisle tints', () => {
     expect(AISLE_TINTS.dark.pantry).toEqual({ bg: '#26312A', fg: '#B9C7BC' });
     expect(AISLE_TINTS.dark.frozen).toEqual({ bg: '#232842', fg: '#AEB9EA' });
     expect(AISLE_TINTS.dark.drinks).toEqual({ bg: '#33243A', fg: '#D7B3DF' });
-    expect(AISLE_TINTS.minimal.produce).toEqual({
+    expect(AISLE_TINTS.light.produce).toEqual({
       bg: '#DDEBE2',
       fg: '#2E6A4D',
     });
   });
 
-  it('gives Warm its own handoff backgrounds, readable at 4.5:1', () => {
-    expect(AISLE_TINTS.warm.produce.bg).toBe('#DFE7CF');
-    expect(AISLE_TINTS.warm.bakery.bg).toBe('#F3E4BF');
-    expect(AISLE_TINTS.warm).not.toEqual(AISLE_TINTS.minimal);
-    for (const name of AISLE_TINT_NAMES) {
-      const { bg, fg } = AISLE_TINTS.warm[name];
-      expect(contrast(bg, fg), name).toBeGreaterThanOrEqual(4.5);
-    }
-  });
-
-  it('keeps the groups apart in Dark-first: no two share a tint', () => {
+  it('keeps the groups apart in Dark: no two share a tint', () => {
     const backgrounds = AISLE_TINT_NAMES.map((n) => AISLE_TINTS.dark[n].bg);
     expect(new Set(backgrounds).size).toBe(AISLE_TINT_NAMES.length);
   });

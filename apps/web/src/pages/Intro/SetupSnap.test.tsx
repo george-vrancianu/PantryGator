@@ -113,6 +113,6 @@ describe('Setup 1, Snap', () => {
     await openSnap();
     expect(document.querySelector('[data-ground="olive"]')).not.toBeNull();
     expect(document.querySelector('[data-ground="cream"]')).toBeNull();
-    expect(document.querySelector('[data-theme="warm"]')).not.toBeNull();
+    expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
   });
 });

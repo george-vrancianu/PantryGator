@@ -1,6 +1,6 @@
 import {
   SYSTEM_DARK_QUERY,
-  isThemeId,
+  migrateTheme,
   readAppearance,
   subscribeAppearance,
   writeAppearance,
@@ -8,7 +8,7 @@ import {
   type ThemeId,
 } from '@pocket-pantry/ui';
 import { useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { apiRequest } from './api';
 import { sessionQueryKey, type Session } from './session';
 import { preferencesQueryKey, type MemberPreferences } from './settings';
@@ -48,8 +48,9 @@ export function readPendingTheme(queryClient: QueryClient): ThemeId | null {
     const pending: unknown = JSON.parse(raw);
     if (typeof pending !== 'object' || pending === null) return null;
     const { memberId, theme } = pending as Record<string, unknown>;
-    return memberId === sessionMemberId(queryClient) && isThemeId(theme)
-      ? theme
+    // A Theme saved before Canopy (`warm`, `minimal`) reads as `light`.
+    return memberId === sessionMemberId(queryClient)
+      ? migrateTheme(theme)
       : null;
   } catch {
     return null;
@@ -165,40 +166,6 @@ export function useChooseTheme() {
   };
 }
 
-/**
- * What tapping a Theme tile does to the device's appearance (handoff §3.1):
- * Dark-first with Match system on turns Match system off; a light Theme while
- * Match system is on and the phone is dark changes nothing visible, which the
- * notice says.
- */
-export function pickThemeOutcome(
-  current: Appearance,
-  theme: ThemeId,
-  systemDark: boolean,
-): { next: Appearance; notice?: 'lightOnly' | 'darkEverywhere' } {
-  if (theme === 'dark') {
-    return {
-      next: { theme, matchSystem: false },
-      notice: current.matchSystem ? 'darkEverywhere' : undefined,
-    };
-  }
-  return {
-    next: { theme, matchSystem: current.matchSystem },
-    notice: current.matchSystem && systemDark ? 'lightOnly' : undefined,
-  };
-}
-
-/** Turning Match system on while Dark-first is chosen switches the Theme to Warm editorial. */
-export function setMatchSystemOutcome(
-  current: Appearance,
-  matchSystem: boolean,
-): Appearance {
-  if (matchSystem && current.theme === 'dark') {
-    return { theme: 'warm', matchSystem: true };
-  }
-  return { ...current, matchSystem };
-}
-
 /** Whether the phone's system is in dark mode right now. */
 export function systemPrefersDark(): boolean {
   try {
@@ -206,4 +173,21 @@ export function systemPrefersDark(): boolean {
   } catch {
     return false;
   }
+}
+
+/** Whether the phone's system is in dark mode, kept current while the app is open. */
+export function useSystemDark(): boolean {
+  return useSyncExternalStore(
+    (onChange) => {
+      try {
+        const query = window.matchMedia(SYSTEM_DARK_QUERY);
+        query.addEventListener('change', onChange);
+        return () => query.removeEventListener('change', onChange);
+      } catch {
+        return () => undefined;
+      }
+    },
+    systemPrefersDark,
+    () => false,
+  );
 }

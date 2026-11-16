@@ -1,14 +1,20 @@
 /**
- * The three Themes, copied verbatim from the "Themes & icons" handoff
- * (docs/handoffs/themes/themes.ts) so future handoffs can be diffed against it.
- * Every Theme defines the same keys. This flat record is the single source of
- * truth: the MUI colour schemes, the `--pp-*` variables and the pre-paint
- * script are all built from it. One deliberate difference: `ThemeMeta` has no
- * `fonts.google` query, because the fonts are self-hosted (fonts.css).
+ * The two Themes, Light and Dark, from the Canopy handoff
+ * (docs/handoffs/canopy/tokens.canopy.ts) so future handoffs can be diffed
+ * against it. Every Theme defines the same keys. This flat record is the
+ * single source of truth: the MUI colour schemes, the `--pp-*` variables and
+ * the pre-paint script are all built from it. Deliberate differences from the
+ * handoff file: `ThemeMeta` has no `fonts.google` query (the fonts are
+ * self-hosted, fonts.css), the `pg-*` ingredient hues of the reading art stay
+ * (the handoff dropped them), and `applyTheme` is not copied (the MUI provider
+ * writes the variables). `resolveTheme` lives in appearance.ts.
  */
 
-export const THEME_IDS = ['warm', 'minimal', 'dark'] as const;
+export const THEME_IDS = ['light', 'dark'] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
+
+/** The three ids the app stored before Canopy. */
+export type LegacyThemeId = 'warm' | 'minimal' | 'dark';
 
 export interface ThemeTokens {
   bg: string;
@@ -66,6 +72,67 @@ export interface ThemeTokens {
   body: string;
   'display-w': string;
   'display-ls': string;
+  // new with Canopy
+  'ink-2': string;
+  deco: string;
+  'canopy-bg': string;
+  'canopy-base': string;
+  'canopy-ink': string;
+  'canopy-muted': string;
+  'canopy-line': string;
+  'canopy-chip': string;
+  'canopy-chip-line': string;
+  'canopy-field': string;
+  'canopy-field-line': string;
+  'shadow-canopy-field': string;
+  gold: string;
+  'gold-ink': string;
+  'tex-ink': string;
+  'tex-glint': string;
+  'sheet-bg': string;
+  'shadow-sheet': string;
+  'sheet-fade': string;
+  scrim: string;
+  'well-bg': string;
+  'shadow-well': string;
+  'box-bg': string;
+  'shadow-box': string;
+  'btn-bg': string;
+  'btn-line': string;
+  'key-bg': string;
+  'key-line': string;
+  'shadow-key': string;
+  'hero-bg': string;
+  'hero-line': string;
+  'shadow-hero': string;
+  'hero-ink': string;
+  'hero-num': string;
+  'hero-muted': string;
+  'seg-off': string;
+  'seg-mid': string;
+  'star-fill': string;
+  'dock-line': string;
+  'shadow-dock': string;
+  'dock-on': string;
+  'dock-off': string;
+  'cap-bg': string;
+  'cap-line': string;
+  'shadow-cap': string;
+  'cap-ink': string;
+  'cap-div': string;
+  'r-sheet': string;
+  'r-btn': string;
+  'r-cap': string;
+  'r-tag': string;
+  'lamp-expired': string;
+  'lamp-soon': string;
+  'lamp-low': string;
+  'lamp-fresh': string;
+  'lamp-stale': string;
+  'lamp-window': string;
+  'lamp-window-off': string;
+  'dial-bad': string;
+  'dial-good': string;
 }
 
 export interface ThemeMeta {
@@ -75,192 +142,278 @@ export interface ThemeMeta {
 }
 
 export const THEMES: Record<ThemeId, ThemeTokens> = {
-  warm: {
-    bg: '#F3EDE1',
-    surface: '#FBF8F1',
-    subtle: '#F6F1E6',
-    ink: '#2B2418',
-    muted: '#766A58',
-    line: '#E6DCCB',
-    'line-strong': '#D6C9B2',
-    divider: '#EFE7D8',
-    chip: '#EAE1CF',
-    accent: '#5F6F2E',
-    'accent-ink': '#FFFFFF',
-    'accent-tint': '#E6EAD2',
-    'accent-on-tint': '#4A5722',
-    primary: '#5F6F2E',
-    'primary-ink': '#FFFFFF',
-    butter: '#F0C96B',
-    'butter-ink': '#4A3608',
-    'pg-tomato': '#D5684A',
-    'pg-carrot': '#E09A3B',
-    'pg-leaf': '#6F9B4C',
-    'urgent-bg': '#F8DED1',
-    'urgent-fg': '#A8431C',
-    'soon-bg': '#F6E5BE',
-    'soon-fg': '#704E00',
-    'ok-bg': '#E6EAD2',
-    'ok-fg': '#4A5722',
-    box: '#C2B49A',
-    star: '#C6882A',
-    'card-bg': '#FBF8F1',
-    'card-line': '#E9E0CF',
-    'field-bg': '#FFFDF8',
-    'seg-on': '#FBF8F1',
-    'seg-on-ink': '#2B2418',
-    'toast-bg': '#2B2418',
-    'toast-ink': '#FBF8F1',
-    'toast-action': '#F0C96B',
-    'dock-bg': 'rgba(251,248,241,.94)',
-    bezel: '#2B2418',
-    bw: '1px',
-    'bw-field': '1.5px',
-    'r-card': '16px',
-    'r-ctl': '12px',
-    'r-chip': '999px',
-    'r-fab': '50%',
-    'r-dock': '22px',
-    'r-box': '7px',
-    'shadow-card':
-      '0 1px 2px rgba(60,40,10,.06), 0 8px 24px -12px rgba(60,40,10,.18)',
-    'shadow-btn': '0 4px 12px rgba(95,111,46,.28)',
-    'shadow-float': '0 14px 34px -10px rgba(60,40,10,.28)',
-    'shadow-seg': '0 1px 2px rgba(60,40,10,.14)',
-    display: "'Fraunces',Georgia,'Times New Roman',serif",
-    body: "'Instrument Sans',ui-sans-serif,system-ui,sans-serif",
-    'display-w': '600',
-    'display-ls': '-0.015em',
-  },
-  minimal: {
-    bg: '#FAFAF8',
+  light: {
+    bg: '#EDECE5', // flat fallback under the sheet gradient (its lower stop)
     surface: '#FFFFFF',
-    subtle: '#F3F4F1',
-    ink: '#141614',
-    muted: '#6B716B',
-    line: '#E7E9E4',
-    'line-strong': '#CDD1CA',
-    divider: '#EEF0EB',
-    chip: '#EEF0EB',
-    accent: '#1E7A4E',
+    subtle: '#E8E7DF', // recessed fill; same as well-bg
+    ink: '#141A16',
+    muted: '#586159',
+    line: 'rgba(20,30,22,.09)',
+    'line-strong': 'rgba(20,30,22,.20)',
+    divider: 'rgba(20,30,22,.09)',
+    chip: '#E8E7DF', // icon tiles and neutral chips
+    accent: '#1C6A43',
     'accent-ink': '#FFFFFF',
-    'accent-tint': '#E1F2E8',
-    'accent-on-tint': '#176040',
-    primary: '#141614',
+    'accent-tint': '#E2F0E7',
+    'accent-on-tint': '#1C5B3B',
+    primary: '#1C6A43', // flat fallback of btn-bg
     'primary-ink': '#FFFFFF',
-    butter: '#F5E1A4',
-    'butter-ink': '#5A4200',
+    butter: '#E8CB7C', // gold badge fill
+    'butter-ink': '#2A2105',
     'pg-tomato': '#D5684A',
     'pg-carrot': '#E09A3B',
     'pg-leaf': '#6F9B4C',
-    'urgent-bg': '#FDE8E2',
-    'urgent-fg': '#B33A1E',
-    'soon-bg': '#FBF0CC',
-    'soon-fg': '#7A5600',
-    'ok-bg': '#EEF0EB',
-    'ok-fg': '#4D534D',
-    box: '#B9BEB8',
-    star: '#D1A21C',
+    'urgent-bg': '#FBE5DB',
+    'urgent-fg': '#A53A12',
+    'soon-bg': '#F6EBC9',
+    'soon-fg': '#775600',
+    'ok-bg': '#E2F0E7',
+    'ok-fg': '#1C5B3B',
+    box: '#9EA69D', // tick box border
+    star: '#B8912F', // Staple star outline
     'card-bg': '#FFFFFF',
-    'card-line': '#E7E9E4',
-    'field-bg': '#FFFFFF',
-    'seg-on': '#141614',
-    'seg-on-ink': '#FFFFFF',
-    'toast-bg': '#141614',
-    'toast-ink': '#FFFFFF',
-    'toast-action': '#9BE0B8',
-    'dock-bg': 'rgba(255,255,255,.96)',
-    bezel: '#141614',
+    'card-line': 'rgba(20,30,22,.10)',
+    'field-bg': '#E8E7DF', // fields are recessed wells
+    'seg-on': '#FFFFFF',
+    'seg-on-ink': '#141A16',
+    'toast-bg': '#141A16', // derived (inverse surface, as today)
+    'toast-ink': '#F4F7F1', // derived
+    'toast-action': '#E8CB7C', // derived
+    'dock-bg': 'linear-gradient(180deg, #262F29 0%, #121814 100%)',
+    bezel: '#0A0E0B', // derived (prototype frames only)
     bw: '1px',
-    'bw-field': '1px',
-    'r-card': '12px',
-    'r-ctl': '10px',
-    'r-chip': '8px',
-    'r-fab': '12px',
-    'r-dock': '16px',
-    'r-box': '6px',
-    'shadow-card': 'none',
-    'shadow-btn': 'none',
-    'shadow-float': '0 8px 24px rgba(20,22,20,.10)',
-    'shadow-seg': 'none',
+    'bw-field': '0px', // fields have no border; the edge comes from shadow-well
+    'r-card': '8px',
+    'r-ctl': '6px',
+    'r-chip': '5px', // segments and filter chips; tags use r-tag
+    'r-fab': '8px', // the gold "+" key button
+    'r-dock': '12px',
+    'r-box': '4px',
+    'shadow-card':
+      '0 1px 1px rgba(20,30,22,.05), 0 10px 20px -12px rgba(20,30,22,.32)',
+    'shadow-btn':
+      'inset 0 1px 0 rgba(255,255,255,.28), 0 1px 2px rgba(20,30,22,.3), 0 12px 20px -10px rgba(20,90,55,.9)',
+    'shadow-float':
+      '0 2px 4px rgba(10,16,12,.35), 0 14px 24px -8px rgba(10,16,12,.65)', // bubble, popovers
+    'shadow-seg':
+      '0 1px 2px rgba(10,16,12,.25), 0 6px 10px -6px rgba(10,16,12,.45)',
     display: "'Schibsted Grotesk',ui-sans-serif,system-ui,sans-serif",
     body: "'Figtree',ui-sans-serif,system-ui,sans-serif",
-    'display-w': '700',
-    'display-ls': '-0.025em',
+    'display-w': '800',
+    'display-ls': '-0.035em',
+    // ---- new with Canopy ----
+    'ink-2': '#2B332D', // second ink: icons in tiles, unselected chip text
+    deco: '#A3AAA1', // decorative grey: empty star, strike-through line
+    'canopy-bg':
+      'radial-gradient(95% 85% at 100% 0%, #336649 0%, rgba(51,102,73,0) 64%), linear-gradient(165deg, #1F4631 0%, #133022 56%, #0D2217 100%)', // the green header
+    'canopy-base': '#0D2217', // solid behind the header (overscroll, safe areas)
+    'canopy-ink': '#F4F7F1',
+    'canopy-muted': 'rgba(244,247,241,.76)',
+    'canopy-line': 'rgba(255,255,255,.14)',
+    'canopy-chip': 'rgba(255,255,255,.09)', // header buttons
+    'canopy-chip-line': 'rgba(255,255,255,.14)',
+    'canopy-field': 'rgba(3,14,8,.34)', // search field and tracks inside the header
+    'canopy-field-line': 'rgba(255,255,255,.13)',
+    'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',
+    gold: '#E8CB7C',
+    'gold-ink': '#2A2105',
+    'tex-ink': '#F4F7F1', // page texture lines
+    'tex-glint': '#F6E7B4', // the glint copy of the texture
+    'sheet-bg': 'linear-gradient(180deg, #F8F7F2 0%, #EDECE5 100%)', // working sheet and bottom sheets
+    'shadow-sheet': '0 -16px 32px -12px rgba(3,14,8,.6), inset 0 1px 0 #FFFFFF',
+    'sheet-fade':
+      'linear-gradient(180deg, rgba(237,236,229,0) 0%, rgba(237,236,229,.94) 58%, #EDECE5 100%)', // lists dissolve under the Dock
+    scrim: 'rgba(5,14,9,.58)', // behind bottom sheets
+    'well-bg': '#E8E7DF',
+    'shadow-well':
+      'inset 0 1px 2px rgba(20,30,22,.18), inset 0 0 0 1px rgba(20,30,22,.05)',
+    'box-bg': '#F4F3EE', // empty tick box
+    'shadow-box': 'inset 0 1px 2px rgba(20,30,22,.16)',
+    'btn-bg': 'linear-gradient(180deg, #2A8257 0%, #1A6540 100%)', // primary button
+    'btn-line': 'rgba(6,36,20,.6)',
+    'key-bg': 'linear-gradient(180deg, #F5E0A2 0%, #D9B85C 100%)', // gold key button
+    'key-line': 'rgba(70,52,0,.55)',
+    'shadow-key':
+      'inset 0 1px 0 rgba(255,255,255,.65), 0 2px 3px rgba(3,14,8,.4), 0 12px 20px -8px rgba(3,14,8,.7)',
+    'hero-bg': 'linear-gradient(160deg, #222B25 0%, #0F1411 100%)', // the Shopping tile on Home
+    'hero-line': '#0A0E0B',
+    'shadow-hero':
+      'inset 0 1px 0 rgba(255,255,255,.12), 0 1px 2px rgba(10,16,12,.3), 0 16px 24px -14px rgba(10,16,12,.85)',
+    'hero-ink': '#F4F7F1',
+    'hero-num': '#E8CB7C',
+    'hero-muted': 'rgba(244,247,241,.8)',
+    'seg-off': 'rgba(20,30,22,.12)', // bar and meter tracks
+    'seg-mid': '#7DB596', // second segment of the Pantry stock bar
+    'star-fill': '#D9B85C',
+    'dock-line': 'rgba(255,255,255,.09)',
+    'shadow-dock':
+      'inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(10,16,12,.35), 0 16px 26px -10px rgba(10,16,12,.65), 0 36px 54px -18px rgba(10,16,12,.75)',
+    'dock-on': '#FFFFFF',
+    'dock-off': 'rgba(244,247,241,.68)',
+    'cap-bg': 'linear-gradient(180deg, #F5E0A2 0%, #D6B458 100%)', // the mic / camera rocker
+    'cap-line': 'rgba(70,52,0,.6)',
+    'shadow-cap':
+      'inset 0 1px 0 rgba(255,255,255,.7), 0 2px 3px rgba(10,16,12,.45), 0 12px 20px -8px rgba(10,16,12,.7)',
+    'cap-ink': '#2A2105',
+    'cap-div': 'rgba(42,33,5,.28)',
+    'r-sheet': '18px',
+    'r-btn': '8px', // primary buttons and header controls
+    'r-cap': '10px',
+    'r-tag': '3px',
+    'lamp-expired': '#FF7A5C', // Pantry health lights (always on the dark header)
+    'lamp-soon': '#F2C14E',
+    'lamp-low': '#F2C14E',
+    'lamp-fresh': '#86E0A6',
+    'lamp-stale': '#B9CBD6',
+    'lamp-window': '#0B1C13', // lit lamp window
+    'lamp-window-off': '#0D2016', // unlit lamp window
+    'dial-bad': '#E8744D', // health dial on the header: red tip
+    'dial-good': '#E8CB7C', // health dial on the header: full end
   },
   dark: {
-    bg: '#0F1512',
-    surface: '#19211C',
-    subtle: '#1F2922',
-    ink: '#ECF2EC',
-    muted: '#97A69B',
-    line: '#26312A',
-    'line-strong': '#36433A',
-    divider: '#27322B',
-    chip: '#26312A',
-    accent: '#8FE0A8',
-    'accent-ink': '#0B1A10',
-    'accent-tint': '#1F3A2A',
-    'accent-on-tint': '#A9EDBD',
-    primary: '#8FE0A8',
-    'primary-ink': '#0B1A10',
-    butter: '#3D3418',
-    'butter-ink': '#F2CF72',
+    bg: '#101511', // flat fallback under the sheet gradient (its lower stop)
+    surface: '#1E2621',
+    subtle: '#0D120F', // recessed fill; same as well-bg
+    ink: '#EEF2ED',
+    muted: '#9DA89F',
+    line: 'rgba(255,255,255,.07)',
+    'line-strong': 'rgba(255,255,255,.16)',
+    divider: 'rgba(255,255,255,.07)',
+    chip: '#0D120F', // icon tiles and neutral chips
+    accent: '#7FD3A0',
+    'accent-ink': '#06140B',
+    'accent-tint': '#1C3327',
+    'accent-on-tint': '#A8E6C0',
+    primary: '#1C6A43', // derived
+    'primary-ink': '#FFFFFF',
+    butter: '#E8CB7C', // gold badge fill
+    'butter-ink': '#2A2105',
     'pg-tomato': '#E07A5C',
     'pg-carrot': '#EBAA4C',
     'pg-leaf': '#86B562',
-    'urgent-bg': '#3F241B',
-    'urgent-fg': '#FFA27E',
-    'soon-bg': '#3A3118',
-    'soon-fg': '#F2CF72',
-    'ok-bg': '#26312A',
-    'ok-fg': '#B9C7BC',
-    box: '#4A574E',
-    star: '#F2CF72',
-    'card-bg': '#19211C',
-    'card-line': 'transparent',
-    'field-bg': '#111915',
-    'seg-on': '#2A3730',
-    'seg-on-ink': '#ECF2EC',
-    'toast-bg': '#ECF2EC',
-    'toast-ink': '#0F1512',
-    'toast-action': '#1E7A4E',
-    'dock-bg': 'rgba(25,33,28,.9)',
-    bezel: '#050807',
+    'urgent-bg': '#3A2118',
+    'urgent-fg': '#FFAB8E',
+    'soon-bg': '#352C13',
+    'soon-fg': '#EDD084',
+    'ok-bg': '#1C3327',
+    'ok-fg': '#A8E6C0',
+    box: '#5F6A62', // tick box border
+    star: '#E8CB7C', // derived
+    'card-bg': '#1E2621',
+    'card-line': 'rgba(255,255,255,.07)',
+    'field-bg': '#0D120F', // fields are recessed wells
+    'seg-on': '#1E2621', // derived
+    'seg-on-ink': '#EEF2ED',
+    'toast-bg': '#EEF2ED', // derived (inverse surface, as today)
+    'toast-ink': '#101511', // derived
+    'toast-action': '#1C6A43', // derived
+    'dock-bg': 'linear-gradient(180deg, #2E3832 0%, #1C231F 100%)',
+    bezel: '#050807', // derived (prototype frames only)
     bw: '1px',
-    'bw-field': '1px',
-    'r-card': '18px',
-    'r-ctl': '14px',
-    'r-chip': '999px',
-    'r-fab': '16px',
-    'r-dock': '24px',
-    'r-box': '7px',
+    'bw-field': '0px', // fields have no border; the edge comes from shadow-well
+    'r-card': '8px',
+    'r-ctl': '6px',
+    'r-chip': '5px', // segments and filter chips; tags use r-tag
+    'r-fab': '8px', // the gold "+" key button
+    'r-dock': '12px',
+    'r-box': '4px',
     'shadow-card':
-      '0 1px 0 rgba(255,255,255,.04) inset, 0 10px 30px -12px rgba(0,0,0,.6)',
-    'shadow-btn': '0 6px 18px rgba(143,224,168,.25)',
-    'shadow-float': '0 16px 40px rgba(0,0,0,.55)',
-    'shadow-seg': '0 1px 0 rgba(255,255,255,.06) inset',
-    display: "'Sora',ui-sans-serif,system-ui,sans-serif",
-    body: "'Albert Sans',ui-sans-serif,system-ui,sans-serif",
-    'display-w': '600',
-    'display-ls': '-0.02em',
+      'inset 0 1px 0 rgba(255,255,255,.05), 0 12px 22px -12px rgba(0,0,0,.85)',
+    'shadow-btn':
+      'inset 0 1px 0 rgba(255,255,255,.28), 0 1px 2px rgba(20,30,22,.3), 0 12px 20px -10px rgba(20,90,55,.9)',
+    'shadow-float':
+      '0 2px 4px rgba(0,0,0,.5), 0 14px 24px -8px rgba(0,0,0,.85)', // derived
+    'shadow-seg': '0 1px 2px rgba(0,0,0,.5), 0 6px 10px -6px rgba(0,0,0,.7)', // derived
+    display: "'Schibsted Grotesk',ui-sans-serif,system-ui,sans-serif",
+    body: "'Figtree',ui-sans-serif,system-ui,sans-serif",
+    'display-w': '800',
+    'display-ls': '-0.035em',
+    // ---- new with Canopy ----
+    'ink-2': '#D0D8D1', // second ink: icons in tiles, unselected chip text
+    deco: '#5F6A62', // decorative grey: empty star, strike-through line
+    'canopy-bg':
+      'radial-gradient(95% 85% at 100% 0%, #234A35 0%, rgba(35,74,53,0) 64%), linear-gradient(165deg, #132B1E 0%, #0B1A12 56%, #060F0A 100%)', // the green header
+    'canopy-base': '#060F0A', // derived
+    'canopy-ink': '#F4F7F1',
+    'canopy-muted': 'rgba(244,247,241,.76)',
+    'canopy-line': 'rgba(255,255,255,.14)',
+    'canopy-chip': 'rgba(255,255,255,.09)', // header buttons
+    'canopy-chip-line': 'rgba(255,255,255,.14)',
+    'canopy-field': 'rgba(3,14,8,.34)', // search field and tracks inside the header
+    'canopy-field-line': 'rgba(255,255,255,.13)',
+    'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',
+    gold: '#E8CB7C',
+    'gold-ink': '#2A2105',
+    'tex-ink': '#F4F7F1', // page texture lines
+    'tex-glint': '#F6E7B4', // the glint copy of the texture
+    'sheet-bg': 'linear-gradient(180deg, #181E1A 0%, #101511 100%)', // working sheet and bottom sheets
+    'shadow-sheet':
+      '0 -16px 32px -12px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08)',
+    'sheet-fade':
+      'linear-gradient(180deg, rgba(16,21,17,0) 0%, rgba(16,21,17,.94) 58%, #101511 100%)', // lists dissolve under the Dock
+    scrim: 'rgba(5,14,9,.58)', // behind bottom sheets
+    'well-bg': '#0D120F',
+    'shadow-well':
+      'inset 0 1px 2px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.05)',
+    'box-bg': '#0D120F', // empty tick box
+    'shadow-box': 'inset 0 1px 2px rgba(0,0,0,.6)',
+    'btn-bg': 'linear-gradient(180deg, #2A8257 0%, #1A6540 100%)', // primary button
+    'btn-line': 'rgba(6,36,20,.6)',
+    'key-bg': 'linear-gradient(180deg, #F5E0A2 0%, #D9B85C 100%)', // gold key button
+    'key-line': 'rgba(70,52,0,.55)',
+    'shadow-key':
+      'inset 0 1px 0 rgba(255,255,255,.65), 0 2px 3px rgba(3,14,8,.4), 0 12px 20px -8px rgba(3,14,8,.7)',
+    'hero-bg': 'linear-gradient(160deg, #F1DA98 0%, #CDAA50 100%)', // the Shopping tile on Home
+    'hero-line': 'rgba(0,0,0,.5)',
+    'shadow-hero':
+      'inset 0 1px 0 rgba(255,255,255,.55), 0 16px 24px -14px rgba(0,0,0,.9)',
+    'hero-ink': '#221A03',
+    'hero-num': '#221A03',
+    'hero-muted': 'rgba(34,26,3,.84)',
+    'seg-off': 'rgba(255,255,255,.12)', // bar and meter tracks
+    'seg-mid': '#4E9A6B', // second segment of the Pantry stock bar
+    'star-fill': '#E8CB7C', // derived
+    'dock-line': 'rgba(255,255,255,.11)',
+    'shadow-dock':
+      'inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(0,0,0,.5), 0 16px 26px -10px rgba(0,0,0,.85), 0 36px 54px -18px rgba(0,0,0,.95)',
+    'dock-on': '#FFFFFF',
+    'dock-off': 'rgba(244,247,241,.68)',
+    'cap-bg': 'linear-gradient(180deg, #F5E0A2 0%, #D6B458 100%)', // the mic / camera rocker
+    'cap-line': 'rgba(70,52,0,.6)',
+    'shadow-cap':
+      'inset 0 1px 0 rgba(255,255,255,.7), 0 2px 3px rgba(10,16,12,.45), 0 12px 20px -8px rgba(10,16,12,.7)',
+    'cap-ink': '#2A2105',
+    'cap-div': 'rgba(42,33,5,.28)',
+    'r-sheet': '18px',
+    'r-btn': '8px', // primary buttons and header controls
+    'r-cap': '10px',
+    'r-tag': '3px',
+    'lamp-expired': '#FF7A5C', // Pantry health lights (always on the dark header)
+    'lamp-soon': '#F2C14E',
+    'lamp-low': '#F2C14E',
+    'lamp-fresh': '#86E0A6',
+    'lamp-stale': '#B9CBD6',
+    'lamp-window': '#0B1C13', // lit lamp window
+    'lamp-window-off': '#0D2016', // unlit lamp window
+    'dial-bad': '#E8744D', // health dial on the header: red tip
+    'dial-good': '#E8CB7C', // health dial on the header: full end
   },
 };
 
 export const THEME_META: Record<ThemeId, ThemeMeta> = {
-  warm: {
-    id: 'warm',
-    name: 'Warm editorial',
-    scheme: 'light',
-  },
-  minimal: {
-    id: 'minimal',
-    name: 'Minimal crisp',
-    scheme: 'light',
-  },
-  dark: {
-    id: 'dark',
-    name: 'Dark-first',
-    scheme: 'dark',
-  },
+  light: { id: 'light', name: 'Light', scheme: 'light' },
+  dark: { id: 'dark', name: 'Dark', scheme: 'dark' },
 };
+
+/**
+ * Maps any stored or sent Theme id to a Canopy one: `warm` and `minimal`
+ * (the pre-Canopy Themes) become `light`, `dark` stays `dark`. There is no
+ * cut-off; an unknown value is `null`.
+ */
+export function migrateTheme(stored: unknown): ThemeId | null {
+  if (stored === 'dark') return 'dark';
+  if (stored === 'light' || stored === 'warm' || stored === 'minimal') {
+    return 'light';
+  }
+  return null;
+}

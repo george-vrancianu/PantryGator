@@ -19,7 +19,7 @@ const decorative = (svg: string) =>
   svg.replace(/\s+role="img"/, '').replace(/\s+aria-label="[^"]*"/, '');
 
 /**
- * The files read these names with Warm fallbacks; map them onto the active Theme.
+ * The files read these names with Light fallbacks; map them onto the active Theme.
  */
 const artVars = {
   '--accent': palette('pp-accent'),

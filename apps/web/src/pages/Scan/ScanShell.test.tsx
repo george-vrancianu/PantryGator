@@ -45,26 +45,23 @@ describe('Scan screen shell', () => {
     expect(style.overflow).toBe('hidden');
   });
 
-  it.each(['warm', 'minimal'] as const)(
-    'renders in Dark-first under the %s Theme',
-    (theme) => {
-      localStorage.setItem(
-        'pp.appearance',
-        JSON.stringify({ theme, matchSystem: false }),
-      );
-      renderScan();
-      const shell = screen.getByTestId('scan-screen');
-      expect(document.documentElement.dataset.theme).toBe(theme);
-      expect(shell).toHaveAttribute('data-theme', 'dark');
-      expect(paintedColour(shell, 'background-color')).toBe(DARK.bg);
-      expect(paintedColour(shell, 'color')).toBe(DARK.ink);
-    },
-  );
-
-  it("paints the browser chrome in Dark-first's bg while open, then the root Theme's", () => {
+  it.each(['light'] as const)('renders in Dark under the %s Theme', (theme) => {
     localStorage.setItem(
       'pp.appearance',
-      JSON.stringify({ theme: 'minimal', matchSystem: false }),
+      JSON.stringify({ theme, matchSystem: false }),
+    );
+    renderScan();
+    const shell = screen.getByTestId('scan-screen');
+    expect(document.documentElement.dataset.theme).toBe(theme);
+    expect(shell).toHaveAttribute('data-theme', 'dark');
+    expect(paintedColour(shell, 'background-color')).toBe(DARK.bg);
+    expect(paintedColour(shell, 'color')).toBe(DARK.ink);
+  });
+
+  it("paints the browser chrome in Dark's bg while open, then the root Theme's", () => {
+    localStorage.setItem(
+      'pp.appearance',
+      JSON.stringify({ theme: 'light', matchSystem: false }),
     );
     const meta = document.createElement('meta');
     meta.name = 'theme-color';
@@ -72,14 +69,14 @@ describe('Scan screen shell', () => {
     const { unmount } = renderScan();
     expect(meta.content).toBe(DARK.bg);
     unmount();
-    expect(meta.content).toBe(THEMES.minimal.bg);
+    expect(meta.content).toBe(THEMES.light.bg);
     meta.remove();
   });
 
   it("leaves the rest of the app in the Member's Theme after closing", async () => {
     localStorage.setItem(
       'pp.appearance',
-      JSON.stringify({ theme: 'minimal', matchSystem: false }),
+      JSON.stringify({ theme: 'light', matchSystem: false }),
     );
     renderWithProviders(
       <Routes>
@@ -92,9 +89,9 @@ describe('Scan screen shell', () => {
       screen.getByRole('button', { name: 'Close scanner' }),
     );
     const home = screen.getByTestId('home');
-    expect(document.documentElement.dataset.theme).toBe('minimal');
+    expect(document.documentElement.dataset.theme).toBe('light');
     expect(document.querySelector('[data-theme="dark"]')).toBeNull();
-    expect(paintedColour(home, 'color')).toBe(THEMES.minimal.ink);
+    expect(paintedColour(home, 'color')).toBe(THEMES.light.ink);
   });
 
   it('shows the torch button in the top bar when the camera has a torch', () => {
@@ -172,7 +169,7 @@ describe('camera feed and overlays', () => {
     expect(style.height).toBe('100%');
   });
 
-  it('lays a radial vignette from transparent to 45% Dark-first background over the feed', () => {
+  it('lays a radial vignette from transparent to 45% Dark background over the feed', () => {
     renderScan();
     const vignette = screen.getByTestId('scan-vignette');
     const style = getComputedStyle(vignette);

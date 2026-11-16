@@ -347,12 +347,7 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
   [
     'mode',
     "the phone's OS dark/light mode (Match system), not a Theme",
-    [
-      'settings:appearance.lightOnlyToast',
-      'settings:appearance.matchSystemHint',
-      'settings:appearance.usedInDark',
-      'settings:appearance.usedInLight',
-    ],
+    ['settings:appearance.matchSystemHint'],
   ],
   [
     'old',

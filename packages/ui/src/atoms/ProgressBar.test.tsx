@@ -16,9 +16,9 @@ describe('ProgressBar', () => {
     );
     for (const name of ['Default', 'Large']) {
       const bar = screen.getByRole('progressbar', { name });
-      expect(paintedColour(bar, 'background-color')).toBe('#26312A');
+      expect(paintedColour(bar, 'background-color')).toBe('#0D120F');
       expect(paintedColour(bar.firstElementChild!, 'background-color')).toBe(
-        '#8FE0A8',
+        '#7FD3A0',
       );
     }
   });

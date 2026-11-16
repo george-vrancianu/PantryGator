@@ -1,4 +1,4 @@
-import { THEME_IDS, THEMES, type ThemeId } from './themes';
+import { THEME_IDS, THEMES, migrateTheme, type ThemeId } from './themes';
 
 /** The device's appearance preference: the chosen Theme and whether to follow the system's dark mode. */
 export type Appearance = { theme: ThemeId; matchSystem: boolean };
@@ -6,12 +6,9 @@ export type Appearance = { theme: ThemeId; matchSystem: boolean };
 /** The single `localStorage` key holding the device's {@link Appearance}. */
 export const APPEARANCE_STORAGE_KEY = 'pp.appearance';
 
-/**
- * Used when nothing valid is stored, for new installs and upgrades alike:
- * follow the system, with Warm editorial as the light Theme.
- */
+/** Used when nothing valid is stored, for new installs and upgrades alike: follow the system. */
 export const DEFAULT_APPEARANCE: Appearance = {
-  theme: 'warm',
+  theme: 'light',
   matchSystem: true,
 };
 
@@ -31,10 +28,11 @@ export function parseAppearance(raw: string | null | undefined): Appearance {
       value !== null &&
       'theme' in value &&
       'matchSystem' in value &&
-      isThemeId(value.theme) &&
       typeof value.matchSystem === 'boolean'
     ) {
-      return { theme: value.theme, matchSystem: value.matchSystem };
+      // A stored `warm` or `minimal` reads as `light`.
+      const theme = migrateTheme(value.theme);
+      if (theme) return { theme, matchSystem: value.matchSystem };
     }
   } catch {
     // Malformed JSON falls through to the default.
@@ -42,18 +40,13 @@ export function parseAppearance(raw: string | null | undefined): Appearance {
   return DEFAULT_APPEARANCE;
 }
 
-/** The light Theme an appearance uses: its own, or Warm editorial if Dark-first was chosen. */
-export function lightTheme(appearance: Appearance): ThemeId {
-  return appearance.theme === 'dark' ? 'warm' : appearance.theme;
-}
-
-/** With Match system on, system dark mode uses Dark-first and light mode the chosen light Theme (Warm editorial if Dark-first was chosen). */
+/** With Match system on, Dark when the device is in dark mode and Light otherwise; off, the chosen Theme. */
 export function resolveTheme(
   appearance: Appearance,
   systemDark: boolean,
 ): ThemeId {
   if (!appearance.matchSystem) return appearance.theme;
-  return systemDark ? 'dark' : lightTheme(appearance);
+  return systemDark ? 'dark' : 'light';
 }
 
 /** The device's stored appearance; blocked storage reads as the default. */
@@ -102,6 +95,8 @@ type PrePaintConfig = {
   query: string;
   fallback: Appearance;
   bg: Record<ThemeId, string>;
+  /** Pre-Canopy ids that read as a current one. */
+  legacy: Record<string, ThemeId>;
 };
 
 /**
@@ -119,12 +114,14 @@ function applyAppearanceBeforePaint(
   let pref = config.fallback;
   try {
     const stored = JSON.parse(win.localStorage.getItem(config.key) || 'null');
-    if (
-      stored &&
-      Object.prototype.hasOwnProperty.call(config.bg, stored.theme) &&
-      typeof stored.matchSystem === 'boolean'
-    ) {
-      pref = stored;
+    if (stored && typeof stored.matchSystem === 'boolean') {
+      const has = Object.prototype.hasOwnProperty;
+      const id = has.call(config.bg, stored.theme)
+        ? stored.theme
+        : has.call(config.legacy, stored.theme)
+          ? config.legacy[stored.theme]
+          : null;
+      if (id) pref = { theme: id, matchSystem: stored.matchSystem };
     }
   } catch {
     // Missing, malformed or blocked storage keeps the fallback.
@@ -137,7 +134,7 @@ function applyAppearanceBeforePaint(
     } catch {
       // No matchMedia: treat the system as light.
     }
-    theme = systemDark ? 'dark' : theme === 'dark' ? 'warm' : theme;
+    theme = systemDark ? 'dark' : 'light';
   }
   doc.documentElement.setAttribute('data-theme', theme);
   const metas = doc.querySelectorAll('meta[name="theme-color"]');
@@ -152,11 +149,8 @@ export function prePaintScript(): string {
     key: APPEARANCE_STORAGE_KEY,
     query: SYSTEM_DARK_QUERY,
     fallback: DEFAULT_APPEARANCE,
-    bg: {
-      warm: THEMES.warm.bg,
-      minimal: THEMES.minimal.bg,
-      dark: THEMES.dark.bg,
-    },
+    bg: { light: THEMES.light.bg, dark: THEMES.dark.bg },
+    legacy: { warm: 'light', minimal: 'light' },
   };
   return `(${applyAppearanceBeforePaint.toString()})(document, window, ${JSON.stringify(config)});`;
 }

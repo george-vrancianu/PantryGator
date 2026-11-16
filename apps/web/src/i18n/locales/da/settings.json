@@ -117,16 +117,11 @@
   "build": "Build {{build}}",
   "appearance": {
     "title": "Udseende",
-    "warm": "Varm redaktionel",
-    "minimal": "Minimal og skarp",
-    "dark": "Mørk først",
+    "light": "Lys",
+    "dark": "Mørk",
     "matchSystem": "Følg systemet",
-    "matchSystemHint": "Mørk først, når telefonen er i mørk tilstand, ellers dit lyse tema",
-    "usedInDark": "Bruges i mørk tilstand",
-    "usedInLight": "Bruges i lys tilstand",
-    "syncedOnDevice": "Temaet er gemt på denne telefon. Vi synkroniserer det, når du er online.",
-    "lightOnlyToast": "{{name}} vises, når telefonen er i lys tilstand.",
-    "darkEverywhereToast": "Mørk først overalt. Følg systemet er slået fra."
+    "matchSystemHint": "Mørk, når telefonen er i mørk tilstand, ellers Lys",
+    "syncedOnDevice": "Temaet er gemt på denne telefon. Vi synkroniserer det, når du er online."
   },
   "scope": {
     "device": "Denne telefon",

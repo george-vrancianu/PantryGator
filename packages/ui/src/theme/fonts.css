@@ -1,65 +1,11 @@
 /*
- * The three Themes' font pairs, self-hosted from the @fontsource-variable
- * packages. Only normal-style Latin and Latin-ext faces are declared (Danish
- * and Romanian need both). Every face is declared up front; a browser only
- * downloads a face once text on the page uses it, so only the active Theme's
- * pair is fetched. Family names match the stacks in themes.ts.
- * Fraunces is the full-axes file so the Warm editorial display can set SOFT.
+ * The Canopy Themes' font pair, self-hosted from the @fontsource-variable
+ * packages: Schibsted Grotesk (display) and Figtree (body). Only normal-style
+ * Latin and Latin-ext faces are declared (Danish and Romanian need both).
+ * Family names match the stacks in themes.ts.
  */
 
-/* Fraunces: Warm editorial display */
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('@fontsource-variable/fraunces/files/fraunces-latin-ext-full-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
-    U+2215, U+FEFF, U+FFFD;
-}
-
-/* Instrument Sans: Warm editorial body */
-@font-face {
-  font-family: 'Instrument Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400 700;
-  src: url('@fontsource-variable/instrument-sans/files/instrument-sans-latin-ext-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Instrument Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400 700;
-  src: url('@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
-    U+2215, U+FEFF, U+FFFD;
-}
-
-/* Schibsted Grotesk: Minimal crisp display */
+/* Schibsted Grotesk: Canopy display (Light and Dark) */
 @font-face {
   font-family: 'Schibsted Grotesk';
   font-style: normal;
@@ -85,7 +31,7 @@
     U+2215, U+FEFF, U+FFFD;
 }
 
-/* Figtree: Minimal crisp body */
+/* Figtree: Canopy body (Light and Dark) */
 @font-face {
   font-family: 'Figtree';
   font-style: normal;
@@ -104,58 +50,6 @@
   font-display: swap;
   font-weight: 300 900;
   src: url('@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
-    U+2215, U+FEFF, U+FFFD;
-}
-
-/* Sora: Dark-first display */
-@font-face {
-  font-family: 'Sora';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 800;
-  src: url('@fontsource-variable/sora/files/sora-latin-ext-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Sora';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 800;
-  src: url('@fontsource-variable/sora/files/sora-latin-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
-    U+2215, U+FEFF, U+FFFD;
-}
-
-/* Albert Sans: Dark-first body */
-@font-face {
-  font-family: 'Albert Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('@fontsource-variable/albert-sans/files/albert-sans-latin-ext-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Albert Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('@fontsource-variable/albert-sans/files/albert-sans-latin-wght-normal.woff2')
     format('woff2-variations');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,

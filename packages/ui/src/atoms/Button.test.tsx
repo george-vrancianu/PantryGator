@@ -9,32 +9,26 @@ describe('Button', () => {
 
   const button = (name: string) => screen.getByRole('button', { name });
 
-  it('fills primary with the Theme primary: olive in Warm editorial, ink-black in Minimal crisp', () => {
+  it('fills primary with the Theme primary: green in Light and in Dark', () => {
     render(
       <>
-        <div data-theme="warm">
-          <Button>Warm</Button>
-        </div>
-        <div data-theme="minimal">
-          <Button>Minimal</Button>
+        <div data-theme="light">
+          <Button>Light</Button>
         </div>
         <div data-theme="dark">
           <Button>Dark</Button>
         </div>
       </>,
     );
-    expect(paintedColour(button('Warm'), 'background-color')).toBe('#5F6F2E');
-    expect(paintedColour(button('Minimal'), 'background-color')).toBe(
-      '#141614',
-    );
-    expect(paintedColour(button('Minimal'), 'color')).toBe('#FFFFFF');
-    expect(paintedColour(button('Dark'), 'background-color')).toBe('#8FE0A8');
-    expect(paintedColour(button('Dark'), 'color')).toBe('#0B1A10');
+    expect(paintedColour(button('Light'), 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(button('Light'), 'color')).toBe('#FFFFFF');
+    expect(paintedColour(button('Dark'), 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(button('Dark'), 'color')).toBe('#FFFFFF');
   });
 
   it('paints the handoff variants from the Theme', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <Button variant="secondary">Secondary</Button>
         <Button variant="tonal">Tonal</Button>
         <Button variant="ghost">Ghost</Button>
@@ -44,19 +38,19 @@ describe('Button', () => {
     expect(paintedColour(button('Secondary'), 'background-color')).toBe(
       '#FFFFFF',
     );
-    expect(paintedColour(button('Tonal'), 'background-color')).toBe('#E1F2E8');
-    expect(paintedColour(button('Tonal'), 'color')).toBe('#176040');
+    expect(paintedColour(button('Tonal'), 'background-color')).toBe('#E2F0E7');
+    expect(paintedColour(button('Tonal'), 'color')).toBe('#1C5B3B');
     expect(paintedColour(button('Ghost'), 'background-color')).toBe(
       'RGBA(0, 0, 0, 0)',
     );
-    expect(paintedColour(button('Ghost'), 'color')).toBe('#1E7A4E');
-    expect(paintedColour(button('Danger'), 'background-color')).toBe('#FDE8E2');
-    expect(paintedColour(button('Danger'), 'color')).toBe('#B33A1E');
+    expect(paintedColour(button('Ghost'), 'color')).toBe('#1C6A43');
+    expect(paintedColour(button('Danger'), 'background-color')).toBe('#FBE5DB');
+    expect(paintedColour(button('Danger'), 'color')).toBe('#A53A12');
   });
 
   it('takes the Theme control radius, or a pill', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <Button>Save</Button>
         <Button shape="pill">Done</Button>
       </div>,
@@ -89,12 +83,12 @@ describe('AddButton', () => {
 
   it('is a named 52 x 52 accent button with the Theme Add-button radius', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <AddButton aria-label="Add items" />
       </div>,
     );
     const add = screen.getByRole('button', { name: 'Add items' });
-    expect(paintedColour(add, 'background-color')).toBe('#1E7A4E');
+    expect(paintedColour(add, 'background-color')).toBe('#1C6A43');
     expect(paintedColour(add, 'color')).toBe('#FFFFFF');
     expect(getComputedStyle(add).width).toBe('52px');
     expect(getComputedStyle(add).height).toBe('52px');

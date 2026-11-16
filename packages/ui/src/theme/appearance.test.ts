@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { prePaintScript } from './appearance';
+import {
+  DEFAULT_APPEARANCE,
+  parseAppearance,
+  prePaintScript,
+  resolveTheme,
+} from './appearance';
 
-const WARM_BG = '#F3EDE1';
-const MINIMAL_BG = '#FAFAF8';
-const DARK_BG = '#0F1512';
+const LIGHT_BG = '#EDECE5';
+const DARK_BG = '#101511';
 
 /** A bare document like the HTML entry before React mounts: two media-qualified `theme-color` tags. */
 function bareDocument() {
@@ -45,78 +49,105 @@ function runPrePaint({
   return { theme: doc.documentElement.dataset.theme, themeColors };
 }
 
+const stored = (theme: string, matchSystem: boolean) =>
+  JSON.stringify({ theme, matchSystem });
+
+describe('Match system', () => {
+  it('is Dark when the device is dark and Light otherwise', () => {
+    const appearance = { theme: 'light', matchSystem: true } as const;
+    expect(resolveTheme(appearance, true)).toBe('dark');
+    expect(resolveTheme(appearance, false)).toBe('light');
+    expect(resolveTheme({ theme: 'dark', matchSystem: true }, false)).toBe(
+      'light',
+    );
+  });
+
+  it('leaves the chosen Theme alone when off', () => {
+    expect(resolveTheme({ theme: 'light', matchSystem: false }, true)).toBe(
+      'light',
+    );
+    expect(resolveTheme({ theme: 'dark', matchSystem: false }, false)).toBe(
+      'dark',
+    );
+  });
+
+  it('is on by default, with Light as the Theme', () => {
+    expect(DEFAULT_APPEARANCE).toEqual({ theme: 'light', matchSystem: true });
+  });
+});
+
+describe('a stored appearance', () => {
+  it.each([
+    ['warm', 'light'],
+    ['minimal', 'light'],
+    ['light', 'light'],
+    ['dark', 'dark'],
+  ])('reads %s as %s', (theme, expected) => {
+    expect(parseAppearance(stored(theme, false))).toEqual({
+      theme: expected,
+      matchSystem: false,
+    });
+  });
+
+  it('reads an unknown Theme as the default', () => {
+    expect(parseAppearance(stored('sage', false))).toEqual(DEFAULT_APPEARANCE);
+  });
+});
+
 describe('the pre-paint script', () => {
-  it('applies the stored Theme when Match system is off', () => {
-    const result = runPrePaint({
-      stored: JSON.stringify({ theme: 'minimal', matchSystem: false }),
-      systemDark: true,
-    });
-    expect(result).toEqual({
-      theme: 'minimal',
-      themeColors: [MINIMAL_BG, MINIMAL_BG],
+  it.each(['light', 'warm', 'minimal'])(
+    'applies a stored %s as Light when Match system is off, whatever the system scheme',
+    (theme) => {
+      expect(
+        runPrePaint({ stored: stored(theme, false), systemDark: true }),
+      ).toEqual({ theme: 'light', themeColors: [LIGHT_BG, LIGHT_BG] });
+    },
+  );
+
+  it('applies Dark when it is stored, whatever the system scheme', () => {
+    expect(runPrePaint({ stored: stored('dark', false) })).toEqual({
+      theme: 'dark',
+      themeColors: [DARK_BG, DARK_BG],
     });
   });
 
-  it('applies Dark-first when it is stored, whatever the system scheme', () => {
-    const result = runPrePaint({
-      stored: JSON.stringify({ theme: 'dark', matchSystem: false }),
-    });
-    expect(result).toEqual({ theme: 'dark', themeColors: [DARK_BG, DARK_BG] });
-  });
-
-  it('follows the system with no stored preference: Warm editorial in light mode', () => {
+  it('follows the system with no stored preference: Light in light mode', () => {
     expect(runPrePaint({})).toEqual({
-      theme: 'warm',
-      themeColors: [WARM_BG, WARM_BG],
+      theme: 'light',
+      themeColors: [LIGHT_BG, LIGHT_BG],
     });
   });
 
-  it('follows the system with no stored preference: Dark-first in dark mode', () => {
+  it('follows the system with no stored preference: Dark in dark mode', () => {
     expect(runPrePaint({ systemDark: true })).toEqual({
       theme: 'dark',
       themeColors: [DARK_BG, DARK_BG],
     });
   });
 
-  it('falls back to Warm editorial when the stored preference is malformed JSON', () => {
-    expect(runPrePaint({ stored: '{not json' })).toEqual({
-      theme: 'warm',
-      themeColors: [WARM_BG, WARM_BG],
-    });
+  it('falls back to Light when the stored preference is malformed JSON', () => {
+    expect(runPrePaint({ stored: '{not json' }).theme).toBe('light');
   });
 
-  it('falls back to Warm editorial when the stored Theme is unknown', () => {
-    expect(
-      runPrePaint({
-        stored: JSON.stringify({ theme: 'sage', matchSystem: false }),
-      }).theme,
-    ).toBe('warm');
+  it('falls back to the default when the stored Theme is unknown', () => {
+    expect(runPrePaint({ stored: stored('sage', false) }).theme).toBe('light');
   });
 
-  it('uses Dark-first in system dark mode with Match system on', () => {
-    expect(
-      runPrePaint({
-        stored: JSON.stringify({ theme: 'minimal', matchSystem: true }),
-        systemDark: true,
-      }),
-    ).toEqual({ theme: 'dark', themeColors: [DARK_BG, DARK_BG] });
-  });
+  it.each(['light', 'dark', 'warm'])(
+    'uses Dark in system dark mode with Match system on (stored %s)',
+    (theme) => {
+      expect(
+        runPrePaint({ stored: stored(theme, true), systemDark: true }).theme,
+      ).toBe('dark');
+    },
+  );
 
-  it('uses the chosen light Theme in system light mode with Match system on', () => {
-    expect(
-      runPrePaint({
-        stored: JSON.stringify({ theme: 'minimal', matchSystem: true }),
-      }).theme,
-    ).toBe('minimal');
-  });
-
-  it('uses Warm editorial in system light mode when Dark-first is chosen with Match system on', () => {
-    expect(
-      runPrePaint({
-        stored: JSON.stringify({ theme: 'dark', matchSystem: true }),
-      }).theme,
-    ).toBe('warm');
-  });
+  it.each(['light', 'dark', 'minimal'])(
+    'uses Light in system light mode with Match system on (stored %s)',
+    (theme) => {
+      expect(runPrePaint({ stored: stored(theme, true) }).theme).toBe('light');
+    },
+  );
 
   it('does not throw when storage is blocked', () => {
     const doc = bareDocument();
@@ -129,6 +160,6 @@ describe('the pre-paint script', () => {
       matchMedia: () => ({ matches: false }),
     };
     new Function('document', 'window', prePaintScript())(doc, win);
-    expect(doc.documentElement.dataset.theme).toBe('warm');
+    expect(doc.documentElement.dataset.theme).toBe('light');
   });
 });

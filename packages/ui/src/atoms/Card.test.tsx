@@ -12,16 +12,16 @@ describe('Card', () => {
   it('paints the Theme card background', () => {
     render(
       <>
-        <div data-theme="warm">
-          <Card>Warm</Card>
+        <div data-theme="light">
+          <Card>Light</Card>
         </div>
         <div data-theme="dark">
           <Card>Dark</Card>
         </div>
       </>,
     );
-    expect(paintedColour(card('Warm'), 'background-color')).toBe('#FBF8F1');
-    expect(paintedColour(card('Dark'), 'background-color')).toBe('#19211C');
+    expect(paintedColour(card('Light'), 'background-color')).toBe('#FFFFFF');
+    expect(paintedColour(card('Dark'), 'background-color')).toBe('#1E2621');
   });
 
   it("takes the Theme's card edge: border width, radius and shadow", () => {

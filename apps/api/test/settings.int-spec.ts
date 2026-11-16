@@ -615,7 +615,7 @@ describe('Settings (integration)', () => {
         .send({ locale: 'ro' })
         .expect(200);
       await call(cookie, 'put', '/preferences')
-        .send({ theme: 'minimal' })
+        .send({ theme: 'light' })
         .expect(200);
       expect(
         (await call(cookie, 'get', '/preferences').expect(200)).body,
@@ -627,7 +627,7 @@ describe('Settings (integration)', () => {
         effectiveScanLanguage: 'ro',
         spokenLanguage: null,
         effectiveSpokenLanguage: 'ro',
-        theme: 'minimal',
+        theme: 'light',
         hideRecipesWithAllergies: false,
         introDone: false,
       });
@@ -646,7 +646,7 @@ describe('Settings (integration)', () => {
         effectiveScanLanguage: 'da',
         spokenLanguage: null,
         effectiveSpokenLanguage: 'da',
-        theme: 'minimal',
+        theme: 'light',
         hideRecipesWithAllergies: false,
         introDone: false,
       });
@@ -752,7 +752,7 @@ describe('Settings (integration)', () => {
     it('save the locale and the Theme together', async () => {
       const { cookie } = await signUp();
       await call(cookie, 'put', '/preferences')
-        .send({ locale: 'en', theme: 'warm' })
+        .send({ locale: 'en', theme: 'light' })
         .expect(200);
       expect(
         (await call(cookie, 'get', '/preferences').expect(200)).body,
@@ -764,11 +764,40 @@ describe('Settings (integration)', () => {
         effectiveScanLanguage: 'en',
         spokenLanguage: null,
         effectiveSpokenLanguage: 'en',
-        theme: 'warm',
+        theme: 'light',
         hideRecipesWithAllergies: false,
         introDone: false,
       });
     });
+
+    it.each(['warm', 'minimal'])(
+      'save a sent %s Theme as light',
+      async (sent) => {
+        const { cookie, userId } = await signUp();
+        const response = await call(cookie, 'put', '/preferences')
+          .send({ theme: sent })
+          .expect(200);
+        expect(response.body).toMatchObject({ theme: 'light' });
+        const [row] = await database
+          .select({ theme: user.theme })
+          .from(user)
+          .where(eq(user.id, userId));
+        expect(row.theme).toBe('light');
+      },
+    );
+
+    it.each(['warm', 'minimal'])(
+      'read a stored %s Theme as light',
+      async (stored) => {
+        const { cookie, userId } = await signUp();
+        await database
+          .update(user)
+          .set({ theme: stored })
+          .where(eq(user.id, userId));
+        const response = await call(cookie, 'get', '/preferences').expect(200);
+        expect(response.body).toMatchObject({ theme: 'light' });
+      },
+    );
 
     it('reject an unknown Theme', async () => {
       const { cookie } = await signUp();
