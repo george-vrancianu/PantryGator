@@ -156,7 +156,6 @@
       "guidance": "Recomandările rețetei nu au fost salvate: {{reason}}"
     },
     "viewRecipe": "Vezi rețeta",
-    "moreActions": "Mai multe acțiuni",
     "tips": {
       "newHint": "Adaugă sfaturi la pași după ce salvezi rețeta.",
       "variantHint": "Sfaturile copiate rămân la pașii lor; adaugă-le pe ale tale după ce salvezi Varianta.",

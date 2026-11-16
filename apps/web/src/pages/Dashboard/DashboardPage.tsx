@@ -3,9 +3,11 @@ import {
   Box,
   Button,
   CustomiseIcon,
-  IconButton,
+  HeaderButton,
+  Link,
   SettingsIcon,
   Spinner,
+  tokens,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '../../components/layout/Screen';
@@ -15,7 +17,7 @@ import { greetingKeyForHour } from '../../lib/greeting';
 import { useGridColumns } from '../../lib/layoutColumns';
 import { WIDGET_REGISTRY } from './widgets/registry';
 
-/** The Dashboard: date, greeting, Customise, and the Member's grid of Widgets. */
+/** The Dashboard: date, greeting, Settings in the top bar, the Member's grid of Widgets and the Customise link under them. */
 export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
   const layout = useDashboardLayout();
@@ -33,14 +35,9 @@ export function DashboardPage() {
       title={t(`greeting.${greetingKeyForHour(now.getHours())}`)}
       status={date}
       secondary={
-        <>
-          <IconButton label={t('customise')} href="/customise">
-            <CustomiseIcon size={20} />
-          </IconButton>
-          <IconButton label={t('screenHeader:settings')} href="/settings">
-            <SettingsIcon size={20} />
-          </IconButton>
-        </>
+        <HeaderButton href="/settings" icon={<SettingsIcon size={18} />}>
+          {t('screenHeader:settings')}
+        </HeaderButton>
       }
     >
       {layout.isPending ? (
@@ -59,30 +56,50 @@ export function DashboardPage() {
           </Button>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-            // Dense packing reorders cards on screen relative to the DOM, so use
-            // it only on the 4-column grid, where tall cards leave gaps. On the
-            // phone and 3-column grid visual order must match saved and tab
-            // order (WCAG 1.3.2, 2.4.3).
-            gridAutoFlow: columns === 4 ? 'dense' : 'row',
-            // Tall cards span two rows: 2 x 150 + 16 gap = 316px, as in the mockup.
-            gridAutoRows: columns === 4 ? 'minmax(150px, auto)' : undefined,
-            gap: { xs: '12px', md: '16px' },
-            pb: 2,
-          }}
-        >
-          {layout.data.widgets.map(({ id, type, size }) => {
-            // A layout saved by a newer app version may hold a type this one lacks.
-            const definition = WIDGET_REGISTRY[type] as
-              (typeof WIDGET_REGISTRY)[typeof type] | undefined;
-            if (!definition) return null;
-            const Widget = definition.component;
-            return <Widget key={id} size={size} columns={columns} />;
-          })}
-        </Box>
+        <>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+              // Dense packing reorders cards on screen relative to the DOM, so use
+              // it only on the 4-column grid, where tall cards leave gaps. On the
+              // phone and 3-column grid visual order must match saved and tab
+              // order (WCAG 1.3.2, 2.4.3).
+              gridAutoFlow: columns === 4 ? 'dense' : 'row',
+              // Tall cards span two rows: 2 x 150 + 16 gap = 316px, as in the mockup.
+              gridAutoRows: columns === 4 ? 'minmax(150px, auto)' : undefined,
+              gap: { xs: '12px', md: '16px' },
+              pb: 2,
+            }}
+          >
+            {layout.data.widgets.map(({ id, type, size }) => {
+              // A layout saved by a newer app version may hold a type this one lacks.
+              const definition = WIDGET_REGISTRY[type] as
+                (typeof WIDGET_REGISTRY)[typeof type] | undefined;
+              if (!definition) return null;
+              const Widget = definition.component;
+              return <Widget key={id} size={size} columns={columns} />;
+            })}
+          </Box>
+          <Link
+            href="/customise"
+            underline="none"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '7px',
+              minHeight: 44,
+              color: tokens.color.muted,
+              fontSize: 13,
+              fontWeight: 700,
+              '&:hover': { color: tokens.color.ink },
+            }}
+          >
+            <CustomiseIcon size={16} />
+            {t('customise')}
+          </Link>
+        </>
       )}
     </Screen>
   );

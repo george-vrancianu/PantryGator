@@ -6,6 +6,7 @@ import {
   type Ref,
 } from 'react';
 import { BackIcon, HomeIcon } from '../atoms/icons';
+import { HeaderButton } from '../atoms/HeaderButton';
 import { IconButton } from '../atoms/IconButton';
 import { ActionMenu, type ActionMenuItem } from './ActionMenu';
 import { Typography } from '../atoms/Typography';
@@ -16,11 +17,16 @@ import { canopy, radius } from '../theme/themeVars';
 export type ScreenHeaderAction = {
   /** Accessible name of the icon-only button. */
   label: string;
-  icon: ReactNode;
+  /** Not needed with `text`. */
+  icon?: ReactNode;
   href?: string;
   onClick?: MouseEventHandler<HTMLElement>;
   /** Turns the button into a menu of these items (e.g. two ways to add a Recipe); `href` and `onClick` are then ignored. */
   items?: ActionMenuItem[];
+  /** Draws a labelled gold key with this text (an editor's Save) instead of the icon-only "+"; `label` stays the fallback name. */
+  text?: string;
+  /** Disables a labelled key. */
+  disabled?: boolean;
   /** Ref to the button, e.g. to return focus to it when a sheet it opened closes. */
   buttonRef?: Ref<HTMLButtonElement>;
 };
@@ -96,6 +102,7 @@ export function ScreenHeader({
             label={back.label}
             href={back.href}
             onClick={back.onClick}
+            tone={onCanopy ? 'canopyChip' : undefined}
           >
             <BackIcon size={20} />
           </IconButton>
@@ -166,14 +173,14 @@ export function ScreenHeader({
       {trailing || action ? (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {trailing}
-          {action ? <HeaderAction {...action} /> : null}
+          {action ? <HeaderAction {...action} onCanopy={onCanopy} /> : null}
         </Box>
       ) : null}
     </Box>
   );
 }
 
-/** The header's one action: an accent button, or a menu when it has `items`. */
+/** The header's primary action: an accent button (the gold key on the Canopy), a labelled gold key when it has `text`, or a menu when it has `items`. */
 function HeaderAction({
   label,
   icon,
@@ -181,20 +188,40 @@ function HeaderAction({
   onClick,
   items,
   buttonRef,
-}: ScreenHeaderAction) {
-  return items ? (
-    <ActionMenu
-      label={label}
-      tone="accent"
-      icon={icon}
-      items={items}
-      buttonRef={buttonRef}
-    />
-  ) : (
+  text,
+  disabled,
+  onCanopy,
+}: ScreenHeaderAction & { onCanopy?: boolean }) {
+  const tone = onCanopy ? 'key' : 'accent';
+  if (items) {
+    return (
+      <ActionMenu
+        label={label}
+        tone={tone}
+        icon={icon}
+        items={items}
+        buttonRef={buttonRef}
+      />
+    );
+  }
+  if (text) {
+    return (
+      <HeaderButton
+        ref={buttonRef}
+        tone="key"
+        href={href}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {text}
+      </HeaderButton>
+    );
+  }
+  return (
     <IconButton
       ref={buttonRef}
       label={label}
-      tone="accent"
+      tone={tone}
       href={href}
       onClick={onClick}
     >

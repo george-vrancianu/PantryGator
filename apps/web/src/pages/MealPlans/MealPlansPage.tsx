@@ -37,6 +37,7 @@ export function MealPlansPage() {
   return (
     <Screen
       title={t('mealPlans:title')}
+      back={{ label: t('screenHeader:back'), href: '/' }}
       primary={{
         label: t('mealPlans:newPlan'),
         icon: <PlusIcon size={20} />,

@@ -147,7 +147,6 @@
       "guidance": "Opskriftens vejledning blev ikke gemt: {{reason}}"
     },
     "viewRecipe": "Se opskriften",
-    "moreActions": "Flere handlinger",
     "tips": {
       "newHint": "Tilføj tips til trin, når du har gemt opskriften.",
       "variantHint": "Kopierede tips følger deres trin; tilføj dine egne, når du har gemt varianten.",

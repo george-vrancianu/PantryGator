@@ -1,6 +1,5 @@
 import {
   Alert,
-  Link,
   ListRow,
   Spinner,
   Stack,
@@ -63,7 +62,7 @@ export function StaplesPage() {
   return (
     <Screen
       title={t('staples:title')}
-      secondary={<Link href="/shopping">{t('staples:back')}</Link>}
+      back={{ label: t('screenHeader:back'), href: '/shopping' }}
     >
       <RowHintNote hint={hint} />
       <Stack spacing={2}>

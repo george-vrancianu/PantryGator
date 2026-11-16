@@ -376,6 +376,7 @@ export function CustomisePage() {
   return (
     <Screen
       title={t('title')}
+      back={{ label: t('screenHeader:back'), href: '/' }}
       primary={{ label: t('done'), icon: <CheckIcon size={20} />, href: '/' }}
     >
       <Typography variant="meta" color="text.secondary" sx={{ mb: '16px' }}>

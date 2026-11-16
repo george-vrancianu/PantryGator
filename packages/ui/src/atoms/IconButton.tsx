@@ -1,6 +1,7 @@
 import MuiIconButton from '@mui/material/IconButton';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { tokens } from '../theme/tokens';
+import { canopy } from '../theme/themeVars';
 
 export type IconButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -15,7 +16,8 @@ export type IconButtonProps = Omit<
    * `urgentOutline` is the quieter destructive action: white with an urgent border;
    * `accentOutline` is the quiet primary action: white with an accent border;
    * `neutral` is a toggle at rest, filled with the chip colour so it stands off a card;
-   * `soon` is a pressed toggle in the expiry `soon` pair (Running low).
+   * `soon` is a pressed toggle in the expiry `soon` pair (Running low);
+   * `canopyChip` (Back) and `key` (the gold "+") are the Canopy header's square buttons, radius 8.
    */
   tone?:
     | 'surface'
@@ -25,7 +27,9 @@ export type IconButtonProps = Omit<
     | 'urgentOutline'
     | 'accentOutline'
     | 'neutral'
-    | 'soon';
+    | 'soon'
+    | 'canopyChip'
+    | 'key';
   /** Width and height in px: 44 for headers, 40 inside dense form rows, 34 inside a pill. */
   size?: 34 | 40 | 44;
   href?: string;
@@ -95,6 +99,21 @@ export function IconButton({
       border: `1px solid ${color.urgentBorder}`,
       '&:hover': { backgroundColor: color.urgentRow },
     },
+    canopyChip: {
+      backgroundColor: canopy.chip,
+      color: canopy.ink,
+      border: `1px solid ${canopy.chipLine}`,
+      boxShadow: 'inset 0 1px 0 rgba(255,255,255,.08)',
+      '&:hover': { backgroundColor: canopy.chip, filter: 'brightness(1.15)' },
+    },
+    key: {
+      background: canopy.keyBg,
+      color: canopy.goldInk,
+      border: `1px solid ${canopy.keyLine}`,
+      boxShadow: canopy.keyShadow,
+      '&:hover': { background: canopy.keyBg, filter: 'brightness(1.05)' },
+      '& svg': { width: 22, height: 22 },
+    },
   }[tone];
   return (
     <MuiIconButton
@@ -108,6 +127,9 @@ export function IconButton({
         width: size,
         height: size,
         flexShrink: 0,
+        ...(tone === 'canopyChip' || tone === 'key'
+          ? { borderRadius: '8px' }
+          : {}),
         ...toneStyles,
         ...(ariaDisabled ? { opacity: 0.35, cursor: 'default' } : {}),
         '&:focus-visible': {

@@ -2,8 +2,8 @@ import {
   Alert,
   Box,
   CompassIcon,
+  HeaderButton,
   PlusIcon,
-  radius,
   Spinner,
   Stack,
   tokens,
@@ -43,44 +43,6 @@ import { RecipeFilters } from './components/RecipeFilters';
 import { RecipeRow } from './components/RecipeRow';
 import { TagNoMatch } from './components/TagNoMatch';
 import { SectionLabel } from './components/SectionLabel';
-
-/** The header's one second button besides "+" (ADR 0027 amendment): a way into Explore. */
-function ExplorePill() {
-  const { t } = useTranslation('recipes');
-  return (
-    <Box
-      component={Link}
-      to="/recipes/explore"
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        height: 40,
-        boxSizing: 'border-box',
-        pl: '10px',
-        pr: '13px',
-        borderRadius: radius.pill,
-        bgcolor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
-        color: tokens.color.ink,
-        fontSize: 13.5,
-        fontWeight: 700,
-        textDecoration: 'none',
-        flexShrink: 0,
-        '&:hover, &:active': { bgcolor: tokens.color.subtle },
-      }}
-    >
-      <Box
-        component="span"
-        aria-hidden
-        sx={{ display: 'flex', color: tokens.color.accent }}
-      >
-        <CompassIcon size={18} />
-      </Box>
-      {t('explore.pill')}
-    </Box>
-  );
-}
 
 /**
  * The list without the Variants that sit under a Base in it. The Base's count becomes the
@@ -179,7 +141,14 @@ export function RecipesPage() {
     <>
       <Screen
         title={t('recipes:title')}
-        secondary={<ExplorePill />}
+        secondary={
+          <HeaderButton
+            href="/recipes/explore"
+            icon={<CompassIcon size={18} />}
+          >
+            {t('recipes:explore.pill')}
+          </HeaderButton>
+        }
         primary={{
           label: t('recipes:add'),
           icon: <PlusIcon size={20} />,

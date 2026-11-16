@@ -211,16 +211,12 @@ export function FamilyRecipeForm({
         back={header.back}
         subline={header.subline}
         truncateTitle
-        secondary={
-          <Button
-            size="sm"
-            shape="pill"
-            disabled={saving || !canSave}
-            onClick={submit}
-          >
-            {saving ? t('admin:common.saving') : t('admin:common.save')}
-          </Button>
-        }
+        primary={{
+          label: t('admin:common.save'),
+          text: saving ? t('admin:common.saving') : t('admin:common.save'),
+          disabled: saving || !canSave,
+          onClick: submit,
+        }}
       />
       <Stack spacing={2.5}>
         <Box

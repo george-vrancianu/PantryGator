@@ -22,7 +22,7 @@ import type { RecipeDetail } from '../../../lib/recipes';
  * Delete (archive) in a menu.
  */
 export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
-  const { t } = useTranslation(['recipes', 'errors']);
+  const { t } = useTranslation(['recipes', 'errors', 'screenHeader']);
   const navigate = useNavigate();
   const archive = useArchiveFamilyRecipe(recipe?.id ?? '');
   const [asking, setAsking] = useState(false);
@@ -68,7 +68,8 @@ export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
           own ? (
             <ActionMenu
               buttonRef={menuButton}
-              label={t('recipes:family.moreActions')}
+              label={t('screenHeader:more')}
+              labelled
               items={[
                 ...(canMakeVariant
                   ? [{ ...makeVariant, icon: <BranchIcon /> }]

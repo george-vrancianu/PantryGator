@@ -113,7 +113,7 @@ describe('RecipePreviewPage', () => {
       'href',
       '/recipes/explore',
     );
-    expect(screen.queryByRole('button', { name: 'More actions' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull();
     expect(screen.queryByRole('link', { name: /Edit/ })).toBeNull();
     expect(screen.getByRole('note')).toHaveTextContent(
       "You're previewing a Catalog Recipe.",

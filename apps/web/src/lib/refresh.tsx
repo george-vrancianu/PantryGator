@@ -9,18 +9,13 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import {
-  REFRESH_LOADER_RETRACT_MS,
-  type RefreshLoaderProps,
-} from '@pocket-pantry/ui';
+import type { RefreshLoaderProps } from '@pocket-pantry/ui';
 import { useLocation } from 'react-router-dom';
 
 export type RefreshState = RefreshLoaderProps['state'];
 
 type Refresh = {
   state: RefreshState;
-  /** Rises by one on each successful refresh, once the loader has tucked back up. */
-  successCount: number;
   run: () => Promise<void>;
 };
 
@@ -31,7 +26,7 @@ export const MIN_BUSY_MS = 700;
 
 const RefreshContext = createContext<Refresh | undefined>(undefined);
 
-/** Owns the screen refresh for the app layout: the header's mark, the loader and the content region all read it. */
+/** Owns the screen refresh for the app layout: the loader and the content region read it; pull-to-refresh runs it. */
 export function RefreshProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
@@ -49,7 +44,6 @@ export function RefreshProvider({ children }: { children: ReactNode }) {
     (next: RefreshState) => setEntry({ state: next, path: pathname }),
     [pathname],
   );
-  const [successCount, setSuccessCount] = useState(0);
   const busy = useRef(false);
   // Bumped on each run and on each path change: a run whose id is stale started on another screen.
   const runId = useRef(0);
@@ -102,23 +96,10 @@ export function RefreshProvider({ children }: { children: ReactNode }) {
     }
     busy.current = false;
     setState(failed ? 'failed' : 'done');
-    // The mark's re-entrance plays once the loader is back up, not under it.
-    if (!failed)
-      setTimeout(() => {
-        if (id === runId.current) setSuccessCount((n) => n + 1);
-      }, REFRESH_LOADER_RETRACT_MS);
   }, [queryClient, setState]);
 
-  const value = useMemo(
-    () => ({ state, successCount, run }),
-    [state, successCount, run],
-  );
+  const value = useMemo(() => ({ state, run }), [state, run]);
   return <RefreshContext value={value}>{children}</RefreshContext>;
-}
-
-/** The refresh, or undefined outside the app layout (a header rendered alone then has no mark). */
-export function useOptionalRefreshScreen(): Refresh | undefined {
-  return useContext(RefreshContext);
 }
 
 /** The refresh of everything the screen shows: `run` refetches every active query and does nothing while busy. */

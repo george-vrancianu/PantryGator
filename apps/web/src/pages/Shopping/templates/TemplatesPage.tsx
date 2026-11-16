@@ -41,7 +41,10 @@ export function TemplatesPage() {
   const items = templates.data ?? [];
 
   return (
-    <Screen title={t('templates:title')}>
+    <Screen
+      title={t('templates:title')}
+      back={{ label: t('screenHeader:back'), href: '/shopping' }}
+    >
       <Stack spacing={2.5}>
         {error ? <Alert>{translateApiError(t, error)}</Alert> : null}
         <Box component="form" onSubmit={submit} noValidate>

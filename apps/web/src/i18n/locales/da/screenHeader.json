@@ -2,9 +2,10 @@
   "home": "Hjem",
   "settings": "Indstillinger",
   "refresh": {
-    "button": "Opdater",
     "busy": "Opdaterer…",
     "done": "Opdateret lige nu",
     "failed": "Kunne ikke opdatere · viser det, du havde"
-  }
+  },
+  "back": "Tilbage",
+  "more": "Mere"
 }

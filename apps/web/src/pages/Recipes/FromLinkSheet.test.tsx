@@ -1,4 +1,4 @@
-import { cleanup, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,6 +11,7 @@ import type { RecipeDraftView } from '../../lib/recipeDrafts';
 import type { RecipeFromLink, RecipeFromLinkDraft } from '../../lib/linkRecipe';
 import type { Locale } from '../../i18n';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { makeScrollable, pull } from '../../test/scroll';
 import { NewRecipePage } from './FamilyRecipePages';
 import { RecipesPage } from './RecipesPage';
 
@@ -517,7 +518,7 @@ describe('"From a link" sheet and the link-read holder', () => {
     });
   });
 
-  it('keeps reading when the Member refreshes from the logo', async () => {
+  it('keeps reading when the Member pulls to refresh', async () => {
     const user = userEvent.setup({ delay: null });
     const pending = hold(read());
     const { signals } = setup(
@@ -527,7 +528,9 @@ describe('"From a link" sheet and the link-read holder', () => {
     await openSheet(user);
     await submit(user, link);
     await screen.findByText('Reading a recipe link…');
-    await user.click(await screen.findByRole('button', { name: /Refresh/ }));
+    act(() => {
+      pull(makeScrollable(screen.getByTestId('sheet-scroller')), { to: 200 });
+    });
     await screen.findByText('Reading a recipe link…');
     expect(signals.find((s) => s)?.aborted).toBe(false);
     pending.release();

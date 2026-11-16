@@ -5,6 +5,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useLayoutEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { AppScreenHeader } from '../AppScreenHeader';
 import {
   usePageInstance,
@@ -56,15 +57,18 @@ export function Screen({
   titleRef,
   children,
 }: ScreenProps) {
+  const { t } = useTranslation('screenHeader');
   const slots = useLayoutSlots();
   const instance = usePageInstance();
+  // Back is icon-only and always named "Back" (ADR 0042); a count on it (Explore's "+n added") keeps its own, longer name.
+  const namedBack = back && !back.badge ? { ...back, label: t('back') } : back;
 
   const topBar = (
     <AppScreenHeader
       title={title}
       subtitle={status}
       subline={subline}
-      back={back}
+      back={namedBack}
       trailing={secondary}
       action={primary}
       truncateTitle={truncateTitle}

@@ -8,28 +8,20 @@ import {
   displayType,
   radius,
 } from '@pocket-pantry/ui';
-import type { MouseEvent, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ImportPill } from './ImportPill';
 
 export type SummaryCardProps = {
   remaining: number;
   checked: number;
   /** Opens the Finish Shopping Review. */
   onFinish: () => void;
-  /** Opens the Import sheet. Omit to leave the Import pill out. */
-  onImport?: (event: MouseEvent<HTMLButtonElement>) => void;
-  /** The Import pill, so focus can come back to it. */
-  importRef?: Ref<HTMLButtonElement>;
 };
 
-/** Items left to buy, how far the basket is, Import, and Finish Shopping. */
+/** Items left to buy, how far the basket is, and Finish Shopping. Import sits in the top bar. */
 export function SummaryCard({
   remaining,
   checked,
   onFinish,
-  onImport,
-  importRef,
 }: SummaryCardProps) {
   const { t } = useTranslation('shopping');
   const total = remaining + checked;
@@ -64,7 +56,6 @@ export function SummaryCard({
               : t('summary.inBasket', { checked, total })}
           </Typography>
         </Box>
-        {onImport ? <ImportPill ref={importRef} onClick={onImport} /> : null}
       </Box>
       {total > 0 ? (
         <ProgressBar

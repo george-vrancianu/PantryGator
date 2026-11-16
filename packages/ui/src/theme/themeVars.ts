@@ -58,6 +58,15 @@ export const canopy = {
   sheetFade: pp('sheet-fade'),
   /** The working sheet's top corners. */
   sheetRadius: pp('r-sheet'),
+  /** The header buttons' fill (labelled secondary actions and Back) and its 1px line. */
+  chip: pp('canopy-chip'),
+  chipLine: pp('canopy-chip-line'),
+  /** The gold key: the page's primary action (the "+" and Save). Paint `keyBg` with `background`. */
+  keyBg: pp('key-bg'),
+  keyLine: pp('key-line'),
+  keyShadow: pp('shadow-key'),
+  goldInk: pp('gold-ink'),
+  gold: pp('gold'),
 } as const;
 
 export const border = {

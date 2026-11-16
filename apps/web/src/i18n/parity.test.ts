@@ -410,7 +410,6 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
       'shopping:empty.importTitle',
       'shopping:import.button',
       'shopping:import.title',
-      'shopping:import.aria',
       'shopping:import.tickLabel',
       'shopping:import.confirm_one',
       'shopping:import.confirm_other',

@@ -86,7 +86,6 @@
     "button": "Importér",
     "title": "Importér",
     "close": "Luk",
-    "aria": "Importér fra en skabelon",
     "hint": "Afkryds hele skabeloner, eller åbn én for at vælge linjer. Du kan blande flere.",
     "section": "Dine skabeloner · {{count}}",
     "manage": "Administrer",

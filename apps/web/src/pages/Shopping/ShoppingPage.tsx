@@ -2,6 +2,8 @@ import {
   Alert,
   Box,
   Button,
+  HeaderButton,
+  ImportIcon,
   PlusIcon,
   Spinner,
   Stack,
@@ -67,7 +69,7 @@ export function ShoppingPage() {
     hadGroups.current = groupCount > 0;
   }, [groupCount]);
   // A tile that opened a sheet unmounts once the sheet fills the list: put focus back on the
-  // header "+" / the summary card's Import pill instead of leaving it on <body>.
+  // header "+" / the header's Import button instead of leaving it on <body>.
   const importPill = useRef<HTMLButtonElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
   const opener = useRef<Element | null>(null);
@@ -110,6 +112,15 @@ export function ShoppingPage() {
       <UnverifiedToast />
       <Screen
         title={t('shopping:title')}
+        secondary={
+          <HeaderButton
+            ref={importPill}
+            icon={<ImportIcon size={18} />}
+            onClick={(event) => openApply(event.currentTarget)}
+          >
+            {t('shopping:import.button')}
+          </HeaderButton>
+        }
         primary={{
           label: t('shopping:addItems'),
           icon: <PlusIcon size={20} />,
@@ -133,15 +144,6 @@ export function ShoppingPage() {
                 remaining={screen.list.summary.remaining}
                 checked={screen.list.summary.checked}
                 onFinish={() => setReviewing(true)}
-                // The Start your list block offers Import itself when there are templates; while
-                // they load, leave the pill out so it does not flash in and out.
-                onImport={
-                  screen.list.groups.length === 0 &&
-                  (templates.isPending || (templates.data?.length ?? 0) > 0)
-                    ? undefined
-                    : (event) => openApply(event.currentTarget)
-                }
-                importRef={importPill}
               />
               {screen.list.groups.length === 0 ? (
                 <Box ref={empty} tabIndex={-1} sx={{ outline: 'none' }}>

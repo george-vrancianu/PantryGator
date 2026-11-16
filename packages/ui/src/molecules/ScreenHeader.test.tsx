@@ -104,4 +104,58 @@ describe('ScreenHeader', () => {
       expect(onClick.mock.calls[0]?.[0].defaultPrevented).toBe(true);
     });
   });
+
+  describe('on the Canopy', () => {
+    it('draws Back icon-only and named from its label, in the chip look', () => {
+      renderWithTheme(
+        <ScreenHeader
+          title="Explore"
+          onCanopy
+          back={{ label: 'Back', href: '/recipes' }}
+        />,
+      );
+      const back = screen.getByRole('link', { name: 'Back' });
+      expect(back.textContent).toBe('');
+      const css = authoredCss(back);
+      expect(css).toContain('width:44px');
+      expect(css).toContain('--pp-canopy-chip');
+    });
+
+    it('draws the primary action as the gold key', () => {
+      renderWithTheme(
+        <ScreenHeader
+          title="Pantry"
+          onCanopy
+          action={{ label: 'Add', icon: <PlusIcon />, href: '/add' }}
+        />,
+      );
+      expect(authoredCss(screen.getByRole('link', { name: 'Add' }))).toContain(
+        '--pp-key-bg',
+      );
+    });
+
+    it('draws an editor Save as a labelled gold key, disabled when told to', () => {
+      const onClick = vi.fn();
+      const { rerender } = renderWithTheme(
+        <ScreenHeader
+          title="New Recipe"
+          onCanopy
+          action={{ label: 'Save', text: 'Save', onClick }}
+        />,
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      expect(onClick).toHaveBeenCalledOnce();
+      rerender(
+        <ScreenHeader
+          title="New Recipe"
+          onCanopy
+          action={{ label: 'Save', text: 'Save', onClick, disabled: true }}
+        />,
+      );
+      expect(
+        (screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement)
+          .disabled,
+      ).toBe(true);
+    });
+  });
 });
