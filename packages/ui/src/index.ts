@@ -22,6 +22,7 @@ export {
 export {
   THEME_IDS,
   THEME_META,
+  migrateTheme,
   THEMES,
   type ThemeId,
   type ThemeMeta,

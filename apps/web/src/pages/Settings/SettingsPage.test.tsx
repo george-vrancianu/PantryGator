@@ -58,7 +58,7 @@ const storeAppearance = (appearance: { theme: string; matchSystem: boolean }) =>
   localStorage.setItem('pp.appearance', JSON.stringify(appearance));
 
 const themeTiles = async () =>
-  within(await screen.findByRole('radiogroup', { name: 'Appearance' }));
+  within(await screen.findByRole('group', { name: 'Appearance' }));
 
 describe('SettingsPage', () => {
   afterEach(() => {
@@ -199,7 +199,7 @@ describe('SettingsPage', () => {
 
   it('applies a chosen Theme at once, stores it on the device and saves it on the Member', async () => {
     stubSystemScheme(false);
-    storeAppearance({ theme: 'warm', matchSystem: false });
+    storeAppearance({ theme: 'light', matchSystem: false });
     const calls = stubSettings('en');
     renderWithProviders(
       <>
@@ -210,29 +210,29 @@ describe('SettingsPage', () => {
     );
 
     await userEvent.click(
-      (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
     );
 
-    expect(document.documentElement.dataset.theme).toBe('minimal');
+    expect(document.documentElement.dataset.theme).toBe('dark');
     expect(JSON.parse(localStorage.getItem('pp.appearance') ?? 'null')).toEqual(
-      { theme: 'minimal', matchSystem: false },
+      { theme: 'dark', matchSystem: false },
     );
     await vi.waitFor(() =>
       expect(calls).toContainEqual(
         expect.objectContaining({
           key: 'PUT /api/settings/preferences',
-          body: { theme: 'minimal' },
+          body: { theme: 'dark' },
         }),
       ),
     );
     expect(
-      (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
-    ).toHaveAttribute('aria-checked', 'true');
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('turns Match system off when Dark-first is picked with it on', async () => {
+  it('turns Match system off when a Theme tile is picked with it on', async () => {
     stubSystemScheme(false);
-    storeAppearance({ theme: 'warm', matchSystem: true });
+    storeAppearance({ theme: 'light', matchSystem: true });
     const calls = stubSettings();
     renderWithProviders(
       <>
@@ -246,7 +246,7 @@ describe('SettingsPage', () => {
     ).toHaveAttribute('aria-checked', 'true');
 
     await userEvent.click(
-      (await themeTiles()).getByRole('radio', { name: 'Dark-first' }),
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
     );
 
     expect(

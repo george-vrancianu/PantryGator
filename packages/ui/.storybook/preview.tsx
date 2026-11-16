@@ -46,7 +46,7 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { theme: 'warm' },
+  initialGlobals: { theme: 'light' },
   parameters: { layout: 'fullscreen' },
 };
 

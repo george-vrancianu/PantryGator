@@ -21,16 +21,9 @@ function fontFaces(source: string): Face[] {
 const faces = fontFaces(css);
 const familiesOf = (list: Face[]) => [...new Set(list.map((f) => f.family))];
 
-describe('self-hosted Theme fonts', () => {
-  it('declares the six Theme families under the names the Themes use', () => {
-    expect(familiesOf(faces).sort()).toEqual([
-      'Albert Sans',
-      'Figtree',
-      'Fraunces',
-      'Instrument Sans',
-      'Schibsted Grotesk',
-      'Sora',
-    ]);
+describe('self-hosted Canopy fonts', () => {
+  it('declares only the two Canopy families under the names the Themes use', () => {
+    expect(familiesOf(faces).sort()).toEqual(['Figtree', 'Schibsted Grotesk']);
   });
 
   it('subsets every family to Latin and Latin-ext only', () => {
@@ -58,12 +51,6 @@ describe('self-hosted Theme fonts', () => {
           `${family} U+${cp.toString(16)}`,
         ).toBe(true);
       }
-    }
-  });
-
-  it('uses the full-axes Fraunces so the SOFT axis is available', () => {
-    for (const face of faces.filter((f) => f.family === 'Fraunces')) {
-      expect(face.src).toMatch(/fraunces-latin(-ext)?-full-normal\.woff2/);
     }
   });
 

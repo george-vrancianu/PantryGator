@@ -62,7 +62,7 @@ export function BarcodeResultCard({
   return (
     <Box
       role="status"
-      data-theme="warm"
+      data-theme="light"
       data-testid="barcode-card"
       sx={{
         position: 'absolute',

@@ -1,5 +1,6 @@
 import {
   DEFAULT_APPEARANCE,
+  migrateTheme,
   readAppearance,
   writeAppearance,
 } from '@pocket-pantry/ui';
@@ -20,7 +21,8 @@ export function ApplyMemberTheme() {
   const queryClient = useQueryClient();
   const preferences = useMemberPreferences().data;
   const saved = preferences
-    ? (preferences.theme ?? DEFAULT_APPEARANCE.theme)
+    ? // A Theme saved before Canopy (`warm`, `minimal`) reads as `light`.
+      (migrateTheme(preferences.theme) ?? DEFAULT_APPEARANCE.theme)
     : undefined;
   useEffect(() => {
     if (saved === undefined) return;

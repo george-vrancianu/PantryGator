@@ -151,7 +151,7 @@ describe('Dock with a non-blocking teach', () => {
   it('lights the mic half with the butter fill and the pulse ring, and does not dim the camera', () => {
     renderHint('mic');
     expect(paintedColour(micSlotOf(), 'background-color').toUpperCase()).toBe(
-      '#F0C96B',
+      '#E8CB7C',
     );
     expect(pulses(micSlotOf())).toBe(true);
     expect(

@@ -18,15 +18,15 @@ describe('Alert', () => {
     );
     const alert = (name: string) =>
       screen.getByText(name).closest<HTMLElement>('.MuiAlert-root')!;
-    expect(paintedColour(alert('Saved'), 'background-color')).toBe('#26312A');
-    expect(paintedColour(alert('Saved'), 'color')).toBe('#B9C7BC');
+    expect(paintedColour(alert('Saved'), 'background-color')).toBe('#1C3327');
+    expect(paintedColour(alert('Saved'), 'color')).toBe('#A8E6C0');
     expect(paintedColour(alert('Unverified'), 'background-color')).toBe(
-      '#3A3118',
+      '#352C13',
     );
-    expect(paintedColour(alert('Unverified'), 'color')).toBe('#F2CF72');
-    expect(paintedColour(alert('Failed'), 'background-color')).toBe('#3F241B');
-    expect(paintedColour(alert('Failed'), 'color')).toBe('#FFA27E');
-    expect(paintedColour(alert('Tip'), 'background-color')).toBe('#1F3A2A');
-    expect(paintedColour(alert('Tip'), 'color')).toBe('#A9EDBD');
+    expect(paintedColour(alert('Unverified'), 'color')).toBe('#EDD084');
+    expect(paintedColour(alert('Failed'), 'background-color')).toBe('#3A2118');
+    expect(paintedColour(alert('Failed'), 'color')).toBe('#FFAB8E');
+    expect(paintedColour(alert('Tip'), 'background-color')).toBe('#1C3327');
+    expect(paintedColour(alert('Tip'), 'color')).toBe('#A8E6C0');
   });
 });

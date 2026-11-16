@@ -267,7 +267,7 @@ describe('the Intro flow', () => {
       stubFlow();
       renderWithProviders(<App />, { route: '/intro/languages' });
       await screen.findByRole('radiogroup', { name: 'App language' });
-      expect(document.querySelector('[data-theme="warm"]')).not.toBeNull();
+      expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
     });
   });
 

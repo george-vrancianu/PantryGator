@@ -21,11 +21,11 @@ describe('Tag', () => {
       paintedColour(screen.getByText(name), 'background-color'),
       paintedColour(screen.getByText(name), 'color'),
     ];
-    expect(pair('On list')).toEqual(['#1F3A2A', '#A9EDBD']);
-    expect(pair('In Pantry')).toEqual(['#26312A', '#B9C7BC']);
-    expect(pair('2 days')).toEqual(['#3A3118', '#F2CF72']);
-    expect(pair('Expired')).toEqual(['#3F241B', '#FFA27E']);
-    expect(pair('Gone')).toEqual(['#26312A', '#97A69B']);
+    expect(pair('On list')).toEqual(['#1C3327', '#A8E6C0']);
+    expect(pair('In Pantry')).toEqual(['#1C3327', '#A8E6C0']);
+    expect(pair('2 days')).toEqual(['#352C13', '#EDD084']);
+    expect(pair('Expired')).toEqual(['#3A2118', '#FFAB8E']);
+    expect(pair('Gone')).toEqual(['#0D120F', '#9DA89F']);
   });
 
   it('is an 11 px bold pill', () => {

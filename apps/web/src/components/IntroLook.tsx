@@ -10,7 +10,7 @@ import {
 import type { ReactNode } from 'react';
 
 /**
- * The Intro has no dark version: its screens use the light look (Warm) whatever Theme the device has,
+ * The Intro has no dark version: its screens use the light look (Light) whatever Theme the device has,
  * so a subtree is forced into it, as the camera is forced dark.
  */
 export function IntroLook({
@@ -21,14 +21,14 @@ export function IntroLook({
   /** The Setup step screens stand on olive; the rest of the Intro is cream. */
   ground?: 'cream' | 'olive';
 }) {
-  useForcedThemeColor('warm');
+  useForcedThemeColor('light');
   // The band matches the ground behind it, so the status bar reads as part of the screen.
   const groundColour =
     ground === 'olive' ? palette('pp-accent') : palette('background-default');
   return (
     <Box
       // `data-theme` and `data-ground` are also test hooks: the colours are theme variables jsdom cannot resolve.
-      data-theme="warm"
+      data-theme="light"
       data-ground={ground}
       sx={{
         minHeight: '100vh',

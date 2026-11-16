@@ -15,7 +15,7 @@ describe('Section label', () => {
     );
     const label = screen.getByText('To buy');
     const style = getComputedStyle(label);
-    expect(paintedColour(label, 'color')).toBe('#97A69B');
+    expect(paintedColour(label, 'color')).toBe('#9DA89F');
     expect(style.fontSize).toBe('12px');
     expect(style.fontWeight).toBe('700');
     expect(style.textTransform).toBe('uppercase');

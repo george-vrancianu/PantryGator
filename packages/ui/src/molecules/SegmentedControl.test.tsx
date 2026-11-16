@@ -48,7 +48,7 @@ describe('SegmentedControl', () => {
 
   it('sits on the Theme chip track with the selected segment in seg-on', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <SegmentedControl
           label="Add from"
           options={[...options]}
@@ -58,13 +58,13 @@ describe('SegmentedControl', () => {
       </div>,
     );
     const track = screen.getByRole('group', { name: 'Add from' });
-    expect(paintedColour(track, 'background-color')).toBe('#EEF0EB');
+    expect(paintedColour(track, 'background-color')).toBe('#E8E7DF');
     expect(getComputedStyle(track).borderRadius).toBe('var(--pp-r-ctl)');
     const selected = screen.getByRole('button', { name: 'Ingredients' });
-    expect(paintedColour(selected, 'background-color')).toBe('#141614');
-    expect(paintedColour(selected, 'color')).toBe('#FFFFFF');
+    expect(paintedColour(selected, 'background-color')).toBe('#FFFFFF');
+    expect(paintedColour(selected, 'color')).toBe('#141A16');
     const other = screen.getByRole('button', { name: 'Templates' });
-    expect(paintedColour(other, 'color')).toBe('#6B716B');
+    expect(paintedColour(other, 'color')).toBe('#586159');
   });
 
   it('keeps its usual padding and minimum width without dense', () => {

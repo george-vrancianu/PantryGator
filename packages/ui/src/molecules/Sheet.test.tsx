@@ -21,7 +21,7 @@ describe('Sheet', () => {
     );
     const sheet = screen.getByRole('dialog', { name: 'Add items' });
     const style = getComputedStyle(sheet);
-    expect(paintedColour(sheet, 'background-color')).toBe('#0F1512');
+    expect(paintedColour(sheet, 'background-color')).toBe('#101511');
     expect(style.boxShadow).toBe('var(--pp-shadow-float)');
     expect(style.borderRadius).toContain('var(--pp-r-card)');
   });
