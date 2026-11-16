@@ -187,7 +187,7 @@ function ThemePreview({
           height: 4,
           width: '44%',
           bgcolor: 'var(--pp-canopy-ink)',
-          borderRadius: radius.pill,
+          borderRadius: radius.box,
         }}
       />
       <Box
@@ -202,8 +202,8 @@ function ThemePreview({
           flexDirection: 'column',
           gap: 0.75,
           background: 'var(--pp-sheet-bg)',
-          borderTopLeftRadius: 'var(--pp-r-card)',
-          borderTopRightRadius: 'var(--pp-r-card)',
+          borderTopLeftRadius: radius.card,
+          borderTopRightRadius: radius.card,
         }}
       >
         <Box
@@ -211,7 +211,7 @@ function ThemePreview({
             height: 4,
             width: '70%',
             bgcolor: 'text.primary',
-            borderRadius: radius.pill,
+            borderRadius: radius.box,
           }}
         />
         <Box

@@ -112,11 +112,16 @@ describe('Settings Appearance', () => {
   });
 
   it.each([
-    { theme: 'light', matchSystem: false, systemDark: true, root: 'light' },
-    { theme: 'dark', matchSystem: false, systemDark: false, root: 'dark' },
+    {
+      theme: 'light',
+      matchSystemAfter: false,
+      systemDark: true,
+      root: 'light',
+    },
+    { theme: 'dark', matchSystemAfter: false, systemDark: false, root: 'dark' },
   ])(
     'tapping $theme with Match system on in system dark $systemDark shows $root, turns Match system off and saves it',
-    async ({ theme, matchSystem, systemDark, root }) => {
+    async ({ theme, matchSystemAfter, systemDark, root }) => {
       stubSystemScheme(systemDark);
       store({ theme: 'light', matchSystem: true });
       const calls = stubPreferences({ locale: null, theme: 'light' });
@@ -129,7 +134,7 @@ describe('Settings Appearance', () => {
       );
 
       expect(rootTheme()).toBe(root);
-      expect(stored()).toEqual({ theme, matchSystem });
+      expect(stored()).toEqual({ theme, matchSystem: matchSystemAfter });
       expect(
         screen.getByRole('switch', { name: 'Match system' }),
       ).toHaveAttribute('aria-checked', 'false');

@@ -127,7 +127,6 @@
     "matchSystemHint": "Întunecat când telefonul e în modul întunecat, Luminos în rest",
     "syncedOnDevice": "Tema a fost salvată pe acest telefon. O vom sincroniza când ești online."
   },
-
   "scope": {
     "device": "Pe acest telefon",
     "you": "Doar tu",

@@ -39,6 +39,16 @@ const PAIRS: ReadonlyArray<[text: Key, fill: Key]> = [
   ['urgent-fg', 'urgent-bg'],
   ['soon-fg', 'soon-bg'],
   ['ok-fg', 'ok-bg'],
+  // Canopy tokens (handoff section 2).
+  ['canopy-ink', 'canopy-base'],
+  ['gold', 'canopy-base'],
+  ['gold-ink', 'gold'],
+  ['ink-2', 'card-bg'],
+  ['ink-2', 'surface'],
+  // Not covered here: pairs with a gradient or rgba side cannot go through
+  // this hex-only test: `hero-*` on `hero-bg`, `dock-on` / `dock-off` on
+  // `dock-bg`, `cap-ink` on `cap-bg`, and `canopy-muted`. Add them when a
+  // test can composite them (used by #806/#807).
 ];
 
 describe('Theme contrast (US25: 4.5:1 for every text and accent pair)', () => {

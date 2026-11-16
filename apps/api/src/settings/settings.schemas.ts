@@ -32,7 +32,7 @@ export function normalizeTheme(value: unknown): ThemeId | null {
 /** A Theme id as sent: a current one or a pre-Canopy one, always stored as a current one. */
 const themeBody = z
   .enum(['light', 'dark', 'warm', 'minimal'])
-  .transform((value): ThemeId => normalizeTheme(value) ?? 'light');
+  .transform((value): ThemeId => (value === 'dark' ? 'dark' : 'light'));
 
 /** A partial save: whatever is omitted keeps its stored value. An empty body has nothing to update and is rejected. */
 export const updatePreferencesBody = z
