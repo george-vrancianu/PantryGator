@@ -37,12 +37,10 @@
   },
   "editor": {
     "name": "Name",
-    "rename": "Rename",
     "delete": "Delete template",
     "deleteConfirm": "Delete this template for your whole family?",
     "empty": "No lines yet. Add what this template needs below.",
-    "back": "Back to templates",
     "apply": "Add to list",
-    "done": "Done"
+    "save": "Save"
   }
 }

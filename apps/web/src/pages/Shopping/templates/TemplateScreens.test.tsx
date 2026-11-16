@@ -118,6 +118,7 @@ describe('Shopping Template screens', () => {
     renderWithProviders(
       <Routes>
         <Route path="/:id" element={<TemplateEditorPage />} />
+        <Route path="/shopping/templates" element={<p>Templates list</p>} />
       </Routes>,
       { route: '/t1' },
     );
@@ -273,7 +274,7 @@ describe('Shopping Template screens', () => {
     );
   });
 
-  it('leaves for the templates through Back and the gold Done key, as it saves as it goes', async () => {
+  it('leaves for the templates through Back', async () => {
     statefulTemplate([milk]);
     renderEditor();
 
@@ -282,13 +283,9 @@ describe('Shopping Template screens', () => {
       'href',
       '/shopping/templates',
     );
-    expect(screen.getByRole('link', { name: 'Done' })).toHaveAttribute(
-      'href',
-      '/shopping/templates',
-    );
   });
 
-  it('renames', async () => {
+  it('commits a new name with the gold Save key, then leaves', async () => {
     const { calls } = statefulTemplate([milk]);
     renderEditor();
     const user = userEvent.setup();
@@ -296,9 +293,52 @@ describe('Shopping Template screens', () => {
     const name = await screen.findByLabelText('Name');
     await user.clear(name);
     await user.type(name, 'Burrito night');
-    await user.click(screen.getByRole('button', { name: 'Rename' }));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByText('Templates list')).toBeVisible();
+    expect(patches(calls)).toEqual([{ name: 'Burrito night' }]);
+  });
+
+  it('leaves with Save without a PATCH when the name is unchanged', async () => {
+    const { calls } = statefulTemplate([milk]);
+    renderEditor();
+    const user = userEvent.setup();
+
+    await screen.findByLabelText('Name');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByText('Templates list')).toBeVisible();
+    expect(patches(calls)).toHaveLength(0);
+  });
+
+  it('stays on the page and shows the error when Save fails', async () => {
+    const { calls, fail } = statefulTemplate([milk]);
+    renderEditor();
+    const user = userEvent.setup();
+
+    const name = await screen.findByLabelText('Name');
+    await user.clear(name);
+    await user.type(name, 'Burrito night');
+    fail.next = true;
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByRole('alert')).toBeVisible();
+    expect(screen.queryByText('Templates list')).toBeNull();
+    expect(patches(calls)).toHaveLength(1);
+  });
+
+  it('commits the name on Enter in the field', async () => {
+    const { calls } = statefulTemplate([milk]);
+    renderEditor();
+    const user = userEvent.setup();
+
+    const name = await screen.findByLabelText('Name');
+    await user.clear(name);
+    await user.type(name, 'Burrito night{Enter}');
+
     await waitFor(() => expect(patches(calls)).toHaveLength(1));
     expect(patches(calls)[0]).toEqual({ name: 'Burrito night' });
+    expect(screen.queryByText('Templates list')).toBeNull();
   });
 
   it('disables the rows while a save is in flight', async () => {
