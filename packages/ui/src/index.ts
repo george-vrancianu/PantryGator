@@ -66,6 +66,7 @@ export { usePrefersReducedMotion } from './theme/usePrefersReducedMotion';
 export {
   aboveDock,
   DOCK_BOTTOM_CSS,
+  DOCK_CLEARANCE,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
 } from './theme/dock';
