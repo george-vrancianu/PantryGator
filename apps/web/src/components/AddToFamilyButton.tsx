@@ -2,6 +2,7 @@ import {
   Box,
   CheckIcon,
   PlusIcon,
+  radius,
   tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
@@ -17,10 +18,11 @@ type Props = {
   onAdd: () => void;
 };
 
-const SIZE = 38;
+/** A 44 pt square, the touch target (Canopy handoff 7.6). */
+const SIZE = 44;
 
 /**
- * The one-tap Add to Family button of a Catalog Recipe (handoff section 3.3): a plus until the
+ * The one-tap Add to Family button of a Catalog Recipe (handoff section 3.3, Canopy 7.6): a plus until the
  * Recipe is added, then a check that opens the Family's copy. Its name changes with its state.
  * The check pops on the tap that added it, and not at all under reduced motion.
  */
@@ -36,7 +38,7 @@ export function AddToFamilyButton({ title, state, onAdd }: Props) {
     width: SIZE,
     height: SIZE,
     boxSizing: 'border-box',
-    borderRadius: '50%',
+    borderRadius: radius.control,
     p: 0,
     cursor: 'pointer',
     textDecoration: 'none',

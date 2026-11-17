@@ -391,6 +391,7 @@
     "baseGone": "Rețeta de bază a cărei variantă era această ciornă de rețetă nu mai există. Se deschide ca rețetă nouă și va fi salvată ca rețetă de bază."
   },
   "explore": {
+    "status": "Rețete din Catalog",
     "title": "Explorează",
     "menuItem": "Din Explorează",
     "menuNew": "nou",

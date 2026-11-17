@@ -366,6 +366,7 @@
     "baseGone": "Grundopskriften, denne opskriftkladde var en variant af, findes ikke længere. Den åbnes som en ny opskrift og gemmes som en grundopskrift."
   },
   "explore": {
+    "status": "Katalogopskrifter",
     "title": "Udforsk",
     "menuItem": "Fra Udforsk",
     "menuNew": "ny",

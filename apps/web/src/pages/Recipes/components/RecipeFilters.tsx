@@ -1,5 +1,7 @@
 import {
   Box,
+  canopy,
+  CanopySearchField,
   color,
   InputAdornment,
   radius,
@@ -33,14 +35,42 @@ type Props = {
   /** The search box's label, when not "Search Recipes" (Explore searches all of them). */
   searchLabel?: string;
   tags?: TagFilterConfig;
+  /**
+   * For the Canopy header (Explore): a recessed search field and a Tags button in the header's style,
+   * not pinned. The picked Tags and the status line are left out; render `TagFilterRows` in the sheet.
+   */
+  onCanopy?: boolean;
 };
 
 /**
  * The search box with a Tags button beside it, and the picked Tags as chips below (tap one to
  * remove it), pinned to the top while the list scrolls. The Tags sheet holds the picking.
  */
-export function RecipeFilters({ value, onChange, searchLabel, tags }: Props) {
+export function RecipeFilters({
+  value,
+  onChange,
+  searchLabel,
+  tags,
+  onCanopy = false,
+}: Props) {
   const { t } = useTranslation('recipes');
+  if (onCanopy) {
+    return (
+      <Box sx={{ display: 'flex', gap: '8px' }}>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <CanopySearchField
+            label={searchLabel ?? t('search')}
+            placeholder={searchLabel ?? t('search')}
+            value={value.search}
+            onChange={(search) => onChange({ ...value, search })}
+          />
+        </Box>
+        {tags ? (
+          <TagFilter value={value} onChange={onChange} onCanopy {...tags} />
+        ) : null}
+      </Box>
+    );
+  }
   return (
     <Box
       sx={{
@@ -95,9 +125,11 @@ function TagFilter({
   scope,
   showHidden,
   resultCount,
+  onCanopy = false,
 }: {
   value: RecipeBrowse;
   onChange: (next: RecipeBrowse) => void;
+  onCanopy?: boolean;
 } & TagFilterConfig) {
   const { t } = useTranslation('recipes');
   const [open, setOpen] = useState(false);
@@ -123,29 +155,46 @@ function TagFilter({
           alignItems: 'center',
           flexShrink: 0,
           gap: '7px',
-          height: 50,
           boxSizing: 'border-box',
-          pl: '12px',
-          pr: '14px',
-          borderRadius: radius.control,
-          border: `${count > 0 ? '1.5px' : '1px'} solid ${count > 0 ? tokens.color.accent : tokens.color.line}`,
-          bgcolor: count > 0 ? tokens.color.accentTint : color.fieldBg,
-          color: count > 0 ? tokens.color.accentOnTint : tokens.color.ink,
           font: 'inherit',
           fontSize: 14,
           fontWeight: 700,
           cursor: 'pointer',
+          ...(onCanopy
+            ? {
+                height: 46,
+                px: '14px',
+                borderRadius: radius.btn,
+                border: `1px solid ${canopy.chipLine}`,
+                bgcolor: canopy.chip,
+                boxShadow: canopy.chipHighlight,
+                color: canopy.ink,
+              }
+            : {
+                height: 50,
+                pl: '12px',
+                pr: '14px',
+                borderRadius: radius.control,
+                border: `${count > 0 ? '1.5px' : '1px'} solid ${count > 0 ? tokens.color.accent : tokens.color.line}`,
+                bgcolor: count > 0 ? tokens.color.accentTint : color.fieldBg,
+                color: count > 0 ? tokens.color.accentOnTint : tokens.color.ink,
+              }),
         }}
       >
         <Box
           component="span"
           aria-hidden
-          sx={{ display: 'flex', color: tokens.color.accent }}
+          sx={{
+            display: 'flex',
+            color: onCanopy ? canopy.ink : tokens.color.accent,
+          }}
         >
           <TagIcon size={18} />
         </Box>
         <span aria-hidden>{t('tags.button')}</span>
-        {count > 0 ? <CountBadge tone="solid">{count}</CountBadge> : null}
+        {count > 0 ? (
+          <CountBadge tone={onCanopy ? 'gold' : 'solid'}>{count}</CountBadge>
+        ) : null}
       </Box>
       <TagsSheet
         open={open}
@@ -163,14 +212,17 @@ function TagFilter({
 }
 
 /** The picked Tags as chips (tap to remove), and the status line that announces the result. */
-function TagFilterRows({
+export function TagFilterRows({
   value,
   onChange,
   scope,
   resultCount,
+  bleed = true,
 }: {
   value: RecipeBrowse;
   onChange: (next: RecipeBrowse) => void;
+  /** Runs the row to the screen edges (inside the page gutter); off in the sheet, whose gutter is the sheet's own. */
+  bleed?: boolean;
 } & TagFilterConfig) {
   const { t } = useTranslation('recipes');
   const { picked } = usePickedTags(scope, value.tagIds);
@@ -179,7 +231,7 @@ function TagFilterRows({
       {picked.length > 0 ? (
         <Box
           sx={{
-            ...bleedSx,
+            ...(bleed ? bleedSx : {}),
             mt: '8px',
             display: 'flex',
             alignItems: 'center',

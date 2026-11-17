@@ -22,6 +22,8 @@ type Props = {
   hideCanMake?: boolean;
   /** Tags the active filter matched: shown first, with the accent ring. */
   matchedTagIds?: readonly string[];
+  /** In a card group (Explore): the Canopy row look. */
+  grouped?: boolean;
 };
 
 /** A Catalog Recipe row with its one-tap add button; shared by Explore and the empty Recipes page. */
@@ -34,6 +36,7 @@ export function ExploreRow({
   onOpen,
   hideCanMake = false,
   matchedTagIds,
+  grouped = false,
 }: Props) {
   const { t } = useTranslation('recipes');
   const meta = [
@@ -79,6 +82,7 @@ export function ExploreRow({
         ) : null
       }
       onClick={onOpen}
+      grouped={grouped}
       trailing={
         <AddToFamilyButton title={recipe.title} state={state} onAdd={onAdd} />
       }
