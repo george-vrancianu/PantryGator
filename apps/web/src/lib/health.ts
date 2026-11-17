@@ -110,16 +110,23 @@ export function isForgotten(batch: HealthBatch, today: IsoDate): boolean {
   );
 }
 
-/** Whether the Ingredient has a live (unexpired) Batch. */
-function isStocked(ingredientId: string, input: HealthInput): boolean {
-  return input.batches.some(
-    (batch) => batch.ingredientId === ingredientId && isLive(batch, input),
-  );
+/** The Ingredients that have a live (unexpired) Batch, built once per input. */
+function stockedIds(input: HealthInput): Set<string> {
+  const stocked = new Set<string>();
+  for (const batch of input.batches) {
+    if (batch.ingredientId !== null && isLive(batch, input))
+      stocked.add(batch.ingredientId);
+  }
+  return stocked;
 }
 
 /** Whether a Staple is missing and not dismissed. */
-function isMissingStaple(ingredientId: string, input: HealthInput): boolean {
-  return !input.dismissed.has(ingredientId) && !isStocked(ingredientId, input);
+function isMissingStaple(
+  ingredientId: string,
+  input: HealthInput,
+  stocked: Set<string>,
+): boolean {
+  return !input.dismissed.has(ingredientId) && !stocked.has(ingredientId);
 }
 
 type SupplyState =
@@ -147,16 +154,12 @@ function supplyState(
 
 /** What each Ingredient in Supply earns: the credit by its stock, Running low and Shopping List state. */
 function supplyCredits(input: HealthInput): number[] {
-  const held = new Set(
-    input.batches.flatMap((batch) =>
-      batch.ingredientId === null ? [] : [batch.ingredientId],
-    ),
-  );
-  const stocked = [...held].filter((id) => isStocked(id, input));
+  const stockedSet = stockedIds(input);
+  const stocked = [...stockedSet];
   const missing = new Set(
     input.staples
       .map((staple) => staple.ingredientId)
-      .filter((id) => isMissingStaple(id, input)),
+      .filter((id) => isMissingStaple(id, input, stockedSet)),
   );
   return [
     ...stocked.map((id) => SUPPLY_CREDIT[supplyState(id, true, input)]),
@@ -341,13 +344,15 @@ export function healthTodos(input: HealthInput): HealthTodo[] {
       isExpiringSoon(daysLeft(batch, input), input.staleThresholdDays),
     )
     .sort(byDaysLeft(input));
+  const stockedSet = stockedIds(input);
   const missingStaples = input.staples
     .map((staple) => staple.ingredientId)
     .filter(
-      (id) => isMissingStaple(id, input) && !input.onShoppingList.has(id),
+      (id) =>
+        isMissingStaple(id, input, stockedSet) && !input.onShoppingList.has(id),
     );
   const runningLow = [...input.runningLow].filter(
-    (id) => !input.onShoppingList.has(id) && isStocked(id, input),
+    (id) => !input.onShoppingList.has(id) && stockedSet.has(id),
   );
   const undated = input.batches.filter((batch) => batch.expiryDate === null);
   const forgotten = undated

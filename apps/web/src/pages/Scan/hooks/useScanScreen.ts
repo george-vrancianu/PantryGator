@@ -16,7 +16,7 @@ import {
   resetScanSession,
   useScanSession,
 } from '../../../lib/scanSession';
-import { resizeImage } from '../../../lib/image';
+import { BARCODE_THUMBNAIL_EDGE, resizeImage } from '../../../lib/image';
 import { haptic, HAPTIC_READ_MS } from '../../../lib/haptic';
 import {
   importPhotos,
@@ -311,7 +311,9 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     const epoch = scanEpoch.current;
     // The card's thumbnail is the frame the code was read from, frozen now.
     const frame = await camera.capture();
-    const thumbnail = frame ? await resizeImage(frame).catch(() => '') : '';
+    const thumbnail = frame
+      ? await resizeImage(frame, 0, BARCODE_THUMBNAIL_EDGE).catch(() => '')
+      : '';
     if (epoch !== scanEpoch.current) {
       lastCode.current = null;
       return;

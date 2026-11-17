@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   fitWithin,
   guideCropRect,
   receiptOutputSize,
+  resizeImage,
   rotatedBounds,
   rotatedCropTransform,
   turnedGuideCrop,
@@ -304,5 +305,36 @@ describe('the photo turn before the crop under the guide', () => {
     expect(turnedGuideCrop(frame, phone, guide, 180)).toEqual(
       guideCropRect(frame, phone, guide),
     );
+  });
+});
+
+describe('resizeImage', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  async function sizeOf(maxEdge?: number) {
+    vi.stubGlobal(
+      'createImageBitmap',
+      vi.fn().mockResolvedValue({ width: 4000, height: 3000, close: vi.fn() }),
+    );
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: () => ({ drawImage: vi.fn() }),
+      toDataURL: () => 'data:image/jpeg;base64,YQ==',
+    };
+    vi.spyOn(document, 'createElement').mockReturnValue(
+      canvas as unknown as HTMLCanvasElement,
+    );
+    await resizeImage(new Blob(['x']), 0, maxEdge);
+    vi.restoreAllMocks();
+    return { width: canvas.width, height: canvas.height };
+  }
+
+  it('fits the longest edge to 1600 by default', async () => {
+    expect(await sizeOf()).toEqual({ width: 1600, height: 1200 });
+  });
+
+  it('fits the longest edge to a smaller maxEdge when given one', async () => {
+    expect(await sizeOf(640)).toEqual({ width: 640, height: 480 });
   });
 });

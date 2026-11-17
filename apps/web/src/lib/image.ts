@@ -7,6 +7,12 @@ export type { Rect };
 
 /** Longest edge sent to the API. Plenty for reading a label, small enough for a phone connection. */
 export const MAX_IMAGE_EDGE = 1600;
+/**
+ * Longest edge of a barcode card's thumbnail, which is never uploaded. The largest place it shows is
+ * the fly-to-stack flight, which starts at the barcode guide (80% of a phone's width, about 320 CSS px)
+ * and is drawn at that size: 640 px keeps it sharp there on a 2x screen and costs a sixth of the pixels.
+ */
+export const BARCODE_THUMBNAIL_EDGE = 640;
 const JPEG_QUALITY = 0.8;
 
 /** The size to scale `width` x `height` to so the longest edge is at most `maxEdge`. Never upscales. */
@@ -25,16 +31,18 @@ export function fitWithin(
 /**
  * Resizes a camera frame or gallery file to a JPEG data URL, ready to send to a scan endpoint.
  * `turn` (a camera frame's photo turn) turns the frame clockwise by that angle first, so the
- * result is in the phone's portrait frame; the default 0 leaves it as it is.
+ * result is in the phone's portrait frame; the default 0 leaves it as it is. `maxEdge` caps the
+ * longest edge (default `MAX_IMAGE_EDGE`).
  */
 export async function resizeImage(
   source: Blob,
   turn: ScreenAngle = 0,
+  maxEdge = MAX_IMAGE_EDGE,
 ): Promise<string> {
   const bitmap = await createImageBitmap(source);
   try {
     const turned = frameSize(bitmap, turn);
-    const { width, height } = fitWithin(turned.width, turned.height);
+    const { width, height } = fitWithin(turned.width, turned.height, maxEdge);
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
