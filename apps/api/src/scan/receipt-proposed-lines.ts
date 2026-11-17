@@ -6,7 +6,7 @@ import {
   type ExclusionReason,
   type ProposedLine,
 } from './proposed-line';
-import { toPantryQuantity } from './receipt-quantity';
+import { toPantryQuantity } from './scan-quantity';
 
 type ReceiptLine = ReceiptScanResult['lines'][number];
 

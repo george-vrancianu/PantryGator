@@ -27,9 +27,6 @@ const ALTS: Record<GatorMood, string> = {
   thinking: 'Gator thinking',
   'list-keeper': 'Gator in glasses reading the receipt',
   worried: 'Gator, worried',
-  'health-curious': 'Gator, raising an eyebrow',
-  'health-dapper': 'Gator with a monocle, smiling contentedly',
-  'health-hmm': 'Gator, unsure',
   chef: 'Gator the chef stirring a pot',
   'chef-flop': 'Gator, disappointed, with the cooking tools dropped',
 };
@@ -251,8 +248,8 @@ describe('Gator', () => {
     expect(image(container).getAttribute('data-mood')).toBe(mood);
   });
 
-  it('has the 14 moods, each with a described alt', () => {
-    expect(GATOR_MOODS).toHaveLength(14);
+  it('has the 11 moods, each with a described alt', () => {
+    expect(GATOR_MOODS).toHaveLength(11);
     expect(Object.keys(ALTS).sort()).toEqual([...GATOR_MOODS].sort());
   });
 

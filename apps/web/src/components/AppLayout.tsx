@@ -1,5 +1,6 @@
 import { useLocation, useOutlet } from 'react-router-dom';
 import { dockStateFor } from '../lib/dockState';
+import { layoutKindFor } from '../lib/layoutKind';
 import { useUnloadPromptWhileReading } from '../lib/recipeReads';
 import { micClearance } from '../lib/voicePlacement';
 import { ApplyMemberLocale } from './ApplyMemberLocale';
@@ -23,9 +24,6 @@ const LAYOUT_VOICE_SETTINGS: VoiceNoteSettings = {
   ...APP_VOICE_SETTINGS,
   hostsStrip: false,
 };
-
-/** The camera is full-screen: the Gator bubble stays out of it. */
-const isCamera = (pathname: string) => pathname.replace(/\/$/, '') === '/scan';
 
 /** The line editor, whose tablet layout is a wide table (the overview of cards is not). */
 const isWide = (pathname: string) => pathname.startsWith('/scan/review/');
@@ -53,7 +51,8 @@ export function AppLayout() {
           />
           <VoiceHostSlot />
           <VoiceNote settings={LAYOUT_VOICE_SETTINGS} />
-          {isCamera(pathname) ? null : (
+          {/* The camera is full-screen: the Gator bubble stays out of it. */}
+          {layoutKindFor(pathname) === 'camera' ? null : (
             <BackgroundHost
               // The Scan Session waits for its own Review: it is not in the bubble under /scan.
               scanSession={!pathname.startsWith('/scan')}

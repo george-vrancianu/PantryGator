@@ -6,11 +6,11 @@ import {
 } from '@pocket-pantry/ui';
 import { shade, translucent } from '../../../components/camera/glass';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { haptic, HAPTIC_READ_MS } from '../../../lib/haptic';
 import type { Rect } from '../../../lib/scanGuides';
 
 const PULSE_MS = 360;
 const FLASH_MS = 420;
-const HAPTIC_MS = 12;
 const noMotion = {
   '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
 };
@@ -29,7 +29,7 @@ const CORNERS = [
 export function useShotFeedback() {
   const [shot, setShot] = useState(0);
   const fire = useCallback(() => {
-    navigator.vibrate?.(HAPTIC_MS);
+    haptic(HAPTIC_READ_MS);
     setShot((n) => n + 1);
   }, []);
   return { shot, fire };

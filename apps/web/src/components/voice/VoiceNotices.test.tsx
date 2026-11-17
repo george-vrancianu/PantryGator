@@ -94,7 +94,7 @@ describe('Voice Note notices at the app root', () => {
     await act(() => start());
     await settled();
 
-    act(() => voiceNote.discardFailed(voiceNote.getState().inbox.notes[0].id));
+    act(() => voiceNote.dismiss(voiceNote.getState().inbox.notes[0].id));
 
     expect(await screen.findByText('Recording discarded')).toBeVisible();
   });

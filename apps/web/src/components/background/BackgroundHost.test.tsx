@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { recipeReads } from '../../lib/recipeReads';
 import { renderWithProviders } from '../../test/render';
-import { openBubbleSheet } from '../../test/voice';
+import { openBubbleSheet } from '../../test/voiceDom';
 import { BackgroundHost } from './BackgroundHost';
 
 afterEach(() => {

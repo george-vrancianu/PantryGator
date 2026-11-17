@@ -157,5 +157,5 @@ function PlayRow() {
   );
 }
 
-/** Needs a human look in all three Themes; the off wipe must never flash white in Dark-first. */
+/** Needs a human look in both Themes; the off wipe must never flash white in Dark. */
 export const PlaySweepAndWipe: Story = { render: () => <PlayRow /> };

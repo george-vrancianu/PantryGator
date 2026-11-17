@@ -9,9 +9,6 @@
   "review": "Verificare",
   "scan": {
     "reviewSession": "Verificare {{title}}",
-    "failedAlert_one": "{{count}} scanare a eșuat",
-    "failedAlert_few": "{{count}} scanări au eșuat",
-    "failedAlert_other": "{{count}} de scanări au eșuat",
     "read_one": "{{count}} citită",
     "read_few": "{{count}} citite",
     "read_other": "{{count}} de citite",
@@ -40,10 +37,7 @@
     "outOfCredits": "Ai rămas fără Credite",
     "retry": "Reîncearcă",
     "retryRead": "Reîncearcă citirea {{what}}",
-    "pasteInstead": "Lipește în schimb textul de la {{what}}",
-    "failedAlert_one": "{{count}} link de rețetă a eșuat",
-    "failedAlert_few": "{{count}} linkuri de rețete au eșuat",
-    "failedAlert_other": "{{count}} de linkuri de rețete au eșuat"
+    "pasteInstead": "Lipește în schimb textul de la {{what}}"
   },
   "plate": {
     "waiting": "Se așteaptă scrierea rețetei pentru {{dish}}",
@@ -58,10 +52,7 @@
     "discardRead": "Renunță la {{dish}}",
     "retryRead": "Reîncearcă scrierea rețetei pentru {{dish}}",
     "readAgain": "Citește poza din nou",
-    "readAgainRead": "Citește din nou poza pentru {{dish}}",
-    "failedAlert_one": "{{count}} rețetă din poza farfuriei a eșuat",
-    "failedAlert_few": "{{count}} rețete din poze cu farfurii au eșuat",
-    "failedAlert_other": "{{count}} de rețete din poze cu farfurii au eșuat"
+    "readAgainRead": "Citește din nou poza pentru {{dish}}"
   },
   "bubble": {
     "reading_one": "Gator lucrează: {{count}} se citește",

@@ -1,14 +1,14 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { nextBackgroundOrder } from '../components/background/backgroundItem';
 import { MAX_RECEIPT_SECTIONS } from './receiptSections';
 import type { ProposedLine } from './scan';
 import {
   MAX_CONCURRENT_READS,
   MAX_SESSION_SCANS,
-  announcedScanFailed,
-  announceScanFailed,
   dispatchScanSession,
   getScanSessionOrder,
+  isBarcodeCard,
+  type SessionScan,
   resetScanSession,
   sessionHeld,
   canMerge,
@@ -1061,11 +1061,16 @@ describe('the Scan Session as a background item', () => {
     expect(getScanSessionOrder()).toBe(stamped);
     expect(nextBackgroundOrder()).toBeGreaterThan(stamped);
   });
+});
 
-  it('forgets the failures it announced when it ends', () => {
-    announceScanFailed(2);
-    expect(announcedScanFailed()).toBe(2);
-    resetScanSession();
-    expect(announcedScanFailed()).toBe(0);
+describe('isBarcodeCard', () => {
+  it('narrows a list of Session scans to Barcode cards', () => {
+    const scans: SessionScan[] = [
+      { id: 'a', mode: 'barcode', status: 'queued', thumbnail: 't' },
+      { id: 'b', mode: 'product', status: 'queued', thumbnail: 't' },
+    ];
+    const barcodes = scans.filter(isBarcodeCard);
+    expect(barcodes.map((scan) => scan.id)).toEqual(['a']);
+    expectTypeOf(barcodes[0].mode).toEqualTypeOf<'barcode'>();
   });
 });
