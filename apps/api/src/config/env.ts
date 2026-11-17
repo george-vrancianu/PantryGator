@@ -106,7 +106,7 @@ const envSchema = z.object({
     .string()
     .min(1)
     .default(
-      'PocketPantry/1.0 (https://github.com/george-vrancianu/pocketPantry)',
+      'PocketPantry/1.0 (https://github.com/george-vrancianu/PantryGator)',
     ),
   /**
    * Header holding the client's IP when a hosting proxy sits in front of the API (Render:
