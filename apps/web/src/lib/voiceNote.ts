@@ -876,7 +876,8 @@ export function createVoiceNote(
    * Throws the recording away. Says so unless `quiet` (the page was left). With nothing
    * recording or starting it does nothing: reads in flight and their wake lock are left alone.
    * `beforeStart` is a cancel while the page still reads the microphone permission (the module was
-   * not asked to start yet): there is nothing to drop, but it says so.
+   * not asked to start yet): there is nothing to drop, but it says so (`quiet` is
+   * ignored here).
    */
   function cancel(options: { quiet?: boolean; beforeStart?: boolean } = {}) {
     if (options.beforeStart) {

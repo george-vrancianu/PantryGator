@@ -19,8 +19,9 @@ import { holdLongEnough, pressDown } from './voiceHold';
  * Call `resetVoiceEnvironment()` in `beforeEach` to put all of it back to its defaults.
  *
  * A test that only needs the Gator bubble helpers imports `./voiceDom` (mock-free) instead; they
- * are re-exported here. This module throws if the real microphone or Voice Note module was
- * already loaded when it registered its mocks.
+ * are re-exported here. This module throws if the real lib/voiceNote was already loaded when it
+ * registered its mocks. Not detected: a real lib/microphone loaded first by another importer
+ * (useMicPermission, voice) without lib/voiceNote; keep this import first.
  */
 export * from './voiceDom';
 
@@ -77,6 +78,8 @@ vi.mock('../lib/voiceNote', async (importOriginal) => {
 
 // vi.mock does nothing to a module that is already loaded: a Voice Note module evaluated before this
 // file keeps the real microphone. Probe it: starting must reach the mock, not the real thing.
+// Relies on `start` calling the microphone before its first await; if that changes, this misreports.
+// Only a real lib/voiceNote is caught, not a real lib/microphone loaded by another importer.
 {
   const probe = voiceNote.start({ defaultTarget: 'shopping' });
   const reached = fakes.mic.start.mock.calls.length > 0;
@@ -85,7 +88,7 @@ vi.mock('../lib/voiceNote', async (importOriginal) => {
   fakes.mic.start.mockReset();
   if (!reached) {
     throw new Error(
-      'test/voice was imported after the real lib/microphone or lib/voiceNote was already loaded, so its mocks cannot apply. Import test/voice first, or import the DOM helpers from test/voiceDom.',
+      'test/voice was imported after the real lib/voiceNote was already loaded, so its mocks cannot apply. Import test/voice first, or import the DOM helpers from test/voiceDom.',
     );
   }
 }
