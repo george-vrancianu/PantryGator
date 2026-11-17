@@ -18,10 +18,10 @@ import { RecipeDetailPage, RecipePreviewPage } from './RecipeDetailPage';
 
 /*
  * DOM contract: tapping a row's body opens a `dialog` named by the Recipe's title. It holds a
- * "Close" button, the fact terms Time / Serves / Level, a list "Tags" (one chip per Tag; none when the Recipe has no Tags), a list "Ingredients" (a missing
+ * "Close" button (the X), the fact terms Time / Serves / Level, a list "Tags" (one chip per Tag; none when the Recipe has no Tags), a list "Ingredients" (a missing
  * chip carries the hidden text "missing"), a list "Variants" and the actions: a button
- * "Add to your Recipes" (then the link "In your Recipes · Open"), the link "Make a Variant" and
- * the button "See the whole Recipe".
+ * "Add to your Recipes" (then "In your Recipes · Open") as the pinned primary, the pinned
+ * secondary "Make a Variant" and the link "See the whole Recipe" in the content.
  */
 
 const soup: RecipeListItem = {
@@ -188,6 +188,10 @@ function setup(route = '/recipes/explore') {
         <Route path="/recipes/explore/:id" element={<RecipePreviewPage />} />
         <Route path="/recipes/:id" element={<RecipeDetailPage />} />
         <Route
+          path="/recipes/:id/variant/new"
+          element={<p>variant editor</p>}
+        />
+        <Route
           path="/recipes"
           element={<Link to="/recipes/explore">to explore</Link>}
         />
@@ -254,11 +258,9 @@ describe('Explore quick view', () => {
     // Only the Catalog Variant is listed.
     expect(within(dialog).getByText('Spicy soup')).toBeVisible();
     expect(within(dialog).queryByText('My soup')).toBeNull();
-    await waitFor(() =>
-      expect(
-        within(dialog).getByRole('button', { name: 'Close' }),
-      ).toHaveFocus(),
-    );
+    // Opening focus rests on the sheet itself, not on the X (ADR 0039).
+    await waitFor(() => expect(dialog).toHaveFocus());
+    expect(within(dialog).getByRole('button', { name: 'Close' })).toBeVisible();
   });
 
   it('traps focus: Tab stays inside the dialog', async () => {
@@ -313,10 +315,11 @@ describe('Explore quick view', () => {
     await user().click(
       within(dialog).getByRole('button', { name: 'Add to your Recipes' }),
     );
-    const open = await within(dialog).findByRole('link', {
-      name: 'In your Recipes · Open',
-    });
-    expect(open).toHaveAttribute('href', '/recipes/copy-1');
+    expect(
+      await within(dialog).findByRole('button', {
+        name: 'In your Recipes · Open',
+      }),
+    ).toBeVisible();
     expect(
       within(dialog).getByText(/Your copy is yours to change/),
     ).toBeVisible();
@@ -334,16 +337,17 @@ describe('Explore quick view', () => {
   it('Make a Variant opens the editor', async () => {
     setup();
     const { dialog } = await openSheet();
-    expect(
-      within(dialog).getByRole('link', { name: 'Make a Variant' }),
-    ).toHaveAttribute('href', '/recipes/soup/variant/new');
+    await user().click(
+      within(dialog).getByRole('button', { name: 'Make a Variant' }),
+    );
+    expect(await screen.findByText('variant editor')).toBeVisible();
   });
 
   it('See the whole Recipe opens the preview and closes the sheet', async () => {
     setup();
     const { dialog } = await openSheet();
     await user().click(
-      within(dialog).getByRole('button', { name: /See the whole Recipe/ }),
+      within(dialog).getByRole('link', { name: /See the whole Recipe/ }),
     );
     expect(
       await screen.findByRole('heading', { level: 1, name: /Soup/ }),
@@ -406,7 +410,7 @@ describe('Explore and the preview round trip', () => {
     );
     await u.click(await rowButton());
     await u.click(
-      await screen.findByRole('button', { name: /See the whole Recipe/ }),
+      await screen.findByRole('link', { name: /See the whole Recipe/ }),
     );
     await screen.findByRole('heading', { level: 1, name: /Soup/ });
     // Under MemoryRouter there is no browser history index: pretend there is one.
@@ -450,7 +454,7 @@ describe('Explore and the preview round trip', () => {
     await waitFor(() => expect(exploreAdds.get()).toBe(1));
     await u.click(await rowButton());
     await u.click(
-      await screen.findByRole('button', { name: /See the whole Recipe/ }),
+      await screen.findByRole('link', { name: /See the whole Recipe/ }),
     );
     await screen.findByRole('heading', { level: 1, name: /Soup/ });
     await u.click(screen.getByRole('link', { name: 'home' }));
@@ -466,7 +470,7 @@ describe('Explore and the preview round trip', () => {
     const u = user();
     await u.click(await rowButton());
     await u.click(
-      await screen.findByRole('button', { name: /See the whole Recipe/ }),
+      await screen.findByRole('link', { name: /See the whole Recipe/ }),
     );
     await u.click(await screen.findByRole('tab', { name: 'About' }));
     await u.click(await screen.findByRole('link', { name: 'Spicy soup' }));
