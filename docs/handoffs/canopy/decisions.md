@@ -13,10 +13,10 @@ Most pages share one layout with three regions:
 The top bar and header sit on one Canopy plane with one texture behind both.
 
 - **How pages plug in.** Each page renders a `<Screen title status back secondary primary header texture>{content}</Screen>`. `Screen` puts the top bar and header into slots that `AppLayout` owns, through portals. The page keeps its own state, such as the search query.
-- **Transitions.** While a transition runs, `AppLayout` keeps the outgoing page mounted by holding the previous `useOutlet()` element for about 280 ms. Both headers then exist at once, so they can be cross-faded and measured. If the Member navigates again mid-transition, the layout jumps to the newest page instead of queueing.
+- **Transitions.** While a transition runs, `AppLayout` keeps the outgoing page mounted by holding the previous `useOutlet()` element for about 280 ms. Only the content is held now; the top bar and header swap at once (ADR 0042 amendment, 2026-11-17). If the Member navigates again mid-transition, the layout jumps to the newest page instead of queueing.
 - **Header height is measured, not hard-coded.** The header animates to its measured height. "Fixed" means it never scrolls or collapses with the content. While loading, a page renders its header at its final size, with skeletons of the same size, so it never animates twice.
 - **Motion on navigation, the same everywhere, drill-ins included (no slides):**
-  - The top bar, header and texture cross-fade.
+  - ~~The top bar, header and texture cross-fade.~~ Superseded by the ADR 0042 amendment (2026-11-17): they swap at once.
   - The header height animates over about 280 ms with `cubic-bezier(.2,.8,.2,1)`, and the sheet's top follows it.
   - The content fades out and back in, about 150 ms each way.
   - The glint keeps running and does not restart.

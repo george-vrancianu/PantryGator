@@ -33,11 +33,6 @@ export const WithActionMenu: StoryObj<typeof ScreenHeader> = {
   },
 };
 
-/** Screens without the Dock keep a Home button. */
-export const WithHome: StoryObj<typeof ScreenHeader> = {
-  args: { title: 'Customise', home: { label: 'Home' } },
-};
-
 /** On the Canopy: the chip Back, a labelled gold Save. */
 export const OnCanopyWithBackAndSave: StoryObj<typeof ScreenHeader> = {
   args: {

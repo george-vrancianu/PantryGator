@@ -17,7 +17,7 @@ describe('ScreenHeader', () => {
     );
   });
 
-  it('shows the action as the only button without `home` or `back`', () => {
+  it('shows the action as the only button without `back`', () => {
     renderWithTheme(
       <ScreenHeader
         title="Pantry"
@@ -38,26 +38,6 @@ describe('ScreenHeader', () => {
     expect(screen.getByText('Draft saved')).toBeTruthy();
     rerender(<ScreenHeader subline={<span>Draft saved</span>} />);
     expect(screen.queryByText('Draft saved')).toBeNull();
-  });
-
-  it('shows Home before the title with `home`', () => {
-    renderWithTheme(
-      <ScreenHeader title="Customise" home={{ label: 'Home' }} />,
-    );
-
-    expect(
-      screen.getByRole('link', { name: 'Home' }).getAttribute('href'),
-    ).toBe('/');
-  });
-
-  it('draws Home as the Canopy chip on the Canopy', () => {
-    renderWithTheme(
-      <ScreenHeader title="Customise" home={{ label: 'Home' }} onCanopy />,
-    );
-
-    expect(authoredCss(screen.getByRole('link', { name: 'Home' }))).toContain(
-      'var(--pp-canopy-chip)',
-    );
   });
 
   it('opens a menu when the action has items', async () => {

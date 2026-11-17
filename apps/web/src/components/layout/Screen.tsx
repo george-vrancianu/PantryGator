@@ -20,7 +20,7 @@ export type ScreenProps = {
   status?: string;
   /** Back on the left of sub-screens. */
   back?: ScreenHeaderProps['back'];
-  /** A second line under the title (a sub-screen's context, e.g. the Recipe being edited). Ignored on tab roots, as in `AppScreenHeader`. The Home button needs no prop: it shows by itself where the Dock is hidden. */
+  /** A second line under the title (a sub-screen's context, e.g. the Recipe being edited). Ignored on tab roots, as in `AppScreenHeader`. The Gator logo, the way back to Home, needs no prop: it leads every header without Back. */
   subline?: ReactNode;
   /** The secondary action, before the primary key. */
   secondary?: ReactNode;

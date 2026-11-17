@@ -28,6 +28,7 @@ Supersedes [ADR 0027](0027-screen-header-holds-only-the-add-action.md) and its a
 
 ## Amendment (2026-11-17): the logo leads Home, and tab roots drop the status line
 
-- **The Gator mark comes back as a link to Home**, before the title on every header without Back. It replaces the Home button, so Home is one tap away from every page, Dock or not. Tapping it plays the mark's Tap and goes to the Dashboard; it no longer refreshes (pull-to-refresh stays the only way).
+- **The Gator mark comes back as a link to Home**, before the title on every header without Back. It replaces the Home button, so Home is one tap away from every page, Dock or not. Tapping it goes to the Dashboard; it no longer refreshes (pull-to-refresh stays the only way). The header swaps at once (below), so the mark's Tap is only seen on Home itself.
 - **Dashboard and Pantry carry no status line.** A line under the title on some tab roots and not others made the title jump when switching between them. The Dashboard's date moves out of the header into a calendar page beside the Pantry Health lights; Pantry's empty-state line and its Location chip counts are gone.
 - Sub-screens (Explore, a Meal Plan, Review, Scan) keep their status lines.
+- **The top bar and header swap at once on navigation; only the content fades.** The outgoing top bar and header unmount on the click and the new ones show at full opacity; the header region still animates to its new height. This replaces the Canopy handoff's "The top bar, header and texture cross-fade" (`docs/handoffs/canopy/decisions.md`).
