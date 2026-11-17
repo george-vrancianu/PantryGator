@@ -5,6 +5,7 @@ import {
   displayType,
   Gator,
   MicIcon,
+  palette,
   radius,
   ReceiptIcon,
   tokens,
@@ -175,13 +176,13 @@ export function AllSetPage() {
             mt: '32px',
             // The primary gradient is an image and would paint over the butter.
             backgroundImage: 'none',
-            backgroundColor: tokens.color.butter,
-            color: tokens.color.butterInk,
+            backgroundColor: palette('secondary-main'),
+            color: palette('secondary-contrastText'),
             fontSize: 17,
             fontWeight: 700,
             '&:hover': {
               backgroundImage: 'none',
-              backgroundColor: tokens.color.butter,
+              backgroundColor: palette('secondary-main'),
             },
           }}
         >

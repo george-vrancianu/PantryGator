@@ -31,8 +31,6 @@ export const radius = {
   btn: pp('r-btn'),
   /** The raised segment inside a Canopy track. */
   seg: '5px',
-  /** The Canopy's count badge (Tags). */
-  badge: '4px',
   /** The Switch's track (Canopy handoff 5). */
   track: '7px',
   /** A segment of the 4 px stock bar. */

@@ -15,7 +15,7 @@ describe('Canopy shared styles', () => {
   });
 
   it('the chip and key recipes use the Canopy tokens', () => {
-    expect(canopyChipStyle.boxShadow).toBe(canopy.chipHighlight);
+    expect(canopyChipStyle.boxShadow).toBe('var(--pp-shadow-canopy-chip)');
     expect(canopyChipStyle.backgroundColor).toBe(canopy.chip);
     expect(canopyKeyStyle.background).toBe(canopy.keyBg);
     expect(canopyKeyStyle.boxShadow).toBe(canopy.keyShadow);

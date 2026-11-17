@@ -46,6 +46,18 @@ describe('Checkbox', () => {
     expect(painted('Off').backgroundColor).toBe('var(--pp-box-bg)');
     expect(painted('Off').boxShadow).toBe('var(--pp-shadow-box)');
     expect(painted('On').backgroundImage).toBe('var(--pp-btn-bg)');
-    expect(paintedColour(box('On'), 'color')).toBe('#FFF');
+    expect(paintedColour(box('On'), 'color')).toBe('#FFFFFF');
+  });
+
+  it('draws the keyboard focus ring on the 22 box, not the 44 target', () => {
+    render(
+      <Checkbox label="Ring" checked={false} onChange={() => undefined} />,
+    );
+    const root = screen.getByRole('checkbox', { name: 'Ring' }).parentElement!;
+    const sheet = Array.from(document.querySelectorAll('style'))
+      .map((style) => style.textContent ?? '')
+      .join('');
+    expect(sheet).toMatch(/Mui-focusVisible \.pp-box[^{]*\{[^}]*outline:/);
+    expect(getComputedStyle(root).outline).not.toContain('solid');
   });
 });

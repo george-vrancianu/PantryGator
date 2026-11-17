@@ -63,7 +63,7 @@ export function IngredientActions({
             tone="staple"
             ariaDisabled={!staple.ready}
             onClick={staple.toggle}
-            icon={<StapleStar on={staple.isStaple} size={16} />}
+            icon={<StapleStar on={staple.isStaple} />}
           >
             {t(staple.isStaple ? 'group.staple' : 'group.makeStaple')}
           </ActionChip>

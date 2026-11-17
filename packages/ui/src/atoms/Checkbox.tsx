@@ -4,7 +4,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import type { Theme } from '@mui/material/styles';
 import { useId, type ChangeEvent } from 'react';
-import { focusRing } from '../theme/focusRing';
+import { focusRingStyle } from '../theme/focusRing';
 import { CheckIcon } from './icons';
 import { control, radius, shadow, themePalette } from '../theme/themeVars';
 
@@ -19,18 +19,18 @@ export type CheckboxProps = {
 
 /**
  * Handoff section 5: a 22 box inside a 44pt target, radius `r-box`. Empty is a 1.5 px `box` border on
- * `box-bg` with an inset `shadow-box`; ticked is the `btn-bg` gradient with a white check.
+ * `box-bg` with an inset `shadow-box`; ticked is the `btn-bg` gradient with a `primary.contrastText` check (as the primary Button's ink).
  * The root is the 44pt target (its negative margin keeps the box where a 22 one sat); the box is the icon.
  */
 const boxSx = (theme: Theme) => {
-  const { pp, common } = themePalette(theme);
+  const { pp, primary } = themePalette(theme);
   return {
     width: 44,
     height: 44,
     p: 0,
     m: '-11px',
     flex: '0 0 auto',
-    color: common.white,
+    color: primary.contrastText,
     '& .pp-box': {
       display: 'flex',
       alignItems: 'center',
@@ -49,8 +49,10 @@ const boxSx = (theme: Theme) => {
       backgroundImage: control.btnBg,
       boxShadow: 'none',
     },
-    '&.Mui-checked': { color: common.white },
-    '&.Mui-disabled': { opacity: 0.45, color: common.white },
+    '&.Mui-checked': { color: primary.contrastText },
+    '&.Mui-disabled': { opacity: 0.45, color: primary.contrastText },
+    // The ring hugs the visible 22 box, not the 44 target around it.
+    '&.Mui-focusVisible .pp-box, &:has(:focus-visible) .pp-box': focusRingStyle,
   };
 };
 
@@ -80,7 +82,7 @@ export function Checkbox({
                 <CheckIcon size={14} strokeWidth={2.8} />
               </span>
             }
-            sx={[boxSx, focusRing]}
+            sx={boxSx}
             slotProps={{
               input: { 'aria-describedby': helperText ? helperId : undefined },
             }}
