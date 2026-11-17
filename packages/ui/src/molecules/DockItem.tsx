@@ -1,7 +1,7 @@
 import ButtonBase from '@mui/material/ButtonBase';
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
-import { focusRing } from '../theme/focusRing';
+import { canopyFocusRing } from '../theme/focusRing';
 import { bodyFont, dock, radius } from '../theme/themeVars';
 
 export type DockItemProps = {
@@ -46,7 +46,7 @@ export function DockItem({
           fontFamily: bodyFont,
         },
         disabled ? { opacity: 0.4, cursor: 'default' } : {},
-        focusRing,
+        canopyFocusRing,
       ]}
     >
       {/* The icon row: a fixed height keeps labels aligned across tabs. */}

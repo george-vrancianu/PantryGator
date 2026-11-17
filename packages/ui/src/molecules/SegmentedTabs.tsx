@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import { useRef, type KeyboardEvent } from 'react';
-import { focusRing } from '../theme/focusRing';
+import { canopyFocusRing, focusRing } from '../theme/focusRing';
 import { tokens } from '../theme/tokens';
 import { visuallyHidden } from '../theme/visuallyHidden';
 import {
@@ -132,11 +132,7 @@ export function SegmentedTabs<T extends string>({
                     fontWeight: selected ? 700 : 600,
                     fontFamily: bodyFont,
                     color: selected ? canopy.segOnInk : canopy.muted,
-                    // Gold, as on the Canopy's search field: the accent is hard to see here.
-                    '&.Mui-focusVisible, &:focus-visible': {
-                      outline: `2px solid ${canopy.gold}`,
-                      outlineOffset: '2px',
-                    },
+                    ...canopyFocusRing,
                   }
                 : [
                     {

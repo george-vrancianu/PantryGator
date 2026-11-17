@@ -7,7 +7,7 @@ import {
   DOCK_OVERHANG,
   DOCK_PADDING,
 } from '../theme/dock';
-import { focusRing } from '../theme/focusRing';
+import { canopyFocusRing } from '../theme/focusRing';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { dock, radius } from '../theme/themeVars';
 import { tokens } from '../theme/tokens';
@@ -104,7 +104,7 @@ export function DockCapsule({
           : {},
         litHalf === 'camera' ? lit(pulse) : {},
         cameraDimmed ? dimmed : {},
-        focusRing,
+        canopyFocusRing,
       ]}
     >
       <CameraIcon size={24} />

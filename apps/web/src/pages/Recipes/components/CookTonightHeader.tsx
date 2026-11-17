@@ -4,7 +4,7 @@ import {
   Gator,
   canopy,
   displayType,
-  focusRing,
+  canopyFocusRing,
   radius,
   visuallyHidden,
 } from '@pocket-pantry/ui';
@@ -58,7 +58,7 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
           color: 'inherit',
           textDecoration: 'none',
           borderRadius: radius.btn,
-          ...focusRing,
+          ...canopyFocusRing,
         }}
       >
         <Box

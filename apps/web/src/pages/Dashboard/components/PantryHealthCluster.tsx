@@ -1,4 +1,10 @@
-import { Box, canopy, displayType, focusRing, radius } from '@pocket-pantry/ui';
+import {
+  Box,
+  canopy,
+  canopyFocusRing,
+  displayType,
+  radius,
+} from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HealthDial } from '../../../components/HealthSheet/HealthDial';
@@ -138,7 +144,7 @@ export function PantryHealthCluster() {
           color: canopy.ink,
           cursor: 'pointer',
           borderRadius: radius.btn,
-          ...focusRing,
+          ...canopyFocusRing,
         }}
       >
         <Box

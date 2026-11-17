@@ -1,7 +1,8 @@
 import ButtonBase from '@mui/material/ButtonBase';
 import type { MouseEventHandler, ReactNode, Ref } from 'react';
-import { focusRing } from '../theme/focusRing';
-import { canopy, radius } from '../theme/themeVars';
+import { canopyChipStyle, canopyKeyStyle } from '../theme/canopyStyles';
+import { canopyFocusRing } from '../theme/focusRing';
+import { radius } from '../theme/themeVars';
 
 export type HeaderButtonProps = {
   /** The visible label, which is also the accessible name. */
@@ -54,23 +55,11 @@ export function HeaderButton({
         fontWeight: 700,
         whiteSpace: 'nowrap',
         textDecoration: 'none',
-        ...(key
-          ? {
-              background: canopy.keyBg,
-              color: canopy.goldInk,
-              border: `1px solid ${canopy.keyLine}`,
-              boxShadow: canopy.keyShadow,
-            }
-          : {
-              backgroundColor: canopy.chip,
-              color: canopy.ink,
-              border: `1px solid ${canopy.chipLine}`,
-              boxShadow: canopy.chipHighlight,
-            }),
+        ...(key ? canopyKeyStyle : canopyChipStyle),
         '&:hover': { filter: 'brightness(1.08)' },
         '&.Mui-disabled': { opacity: 0.5 },
         '& svg': { width: 18, height: 18 },
-        ...focusRing,
+        ...canopyFocusRing,
       }}
     >
       {icon ? (
