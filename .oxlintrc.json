@@ -12,6 +12,209 @@
     "jsx-a11y/no-autofocus": "off"
   },
   "overrides": [
+    // Import rules, ADR 0044 (details: docs/agents/codebase-map.md). Override globs are relative to THIS
+    // file, so they start at apps/web/. An override REPLACES the base rule's options, so the second
+    // override repeats Rule B. oxlint matches the raw import string, so relative and `@/` imports both
+    // need a pattern (`**/` prefix). Excluded files are today's violators; each move ticket deletes its
+    // own entries and #854 empties the list. `npm run check:web-layout` proves both rules still fire.
+    {
+      "files": ["apps/web/src/**/*.ts", "apps/web/src/**/*.tsx"],
+      "excludeFiles": [
+        // #838 splits the Dashboard widget registry
+        "apps/web/src/lib/dashboardLayout.ts",
+        // #839 moves the route guards into routing/
+        "apps/web/src/components/RequireAuth.tsx",
+        // #839 moves the in-app scan settings constant into lib/
+        "apps/web/src/App.tsx",
+        // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
+        "apps/web/src/lib/recipeDraftContent.test.ts",
+        // #844 moves the cross-page pull-to-refresh test beside its module
+        "apps/web/src/components/RefreshScreen.test.tsx",
+        // #853 moves the voice tests beside what they render
+        "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
+        // #847 moves Meal Plans (Servings is shared by #846)
+        "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
+        // #847 moves Meal Plans (Recipe row and filters are shared by #846)
+        "apps/web/src/pages/MealPlans/components/RecipePickerSheet.tsx",
+        // #847 moves Meal Plans (Servings and Pantry status are shared by #846)
+        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              // Rule B
+              {
+                "group": [
+                  "**/Admin/components",
+                  "**/Admin/components/**",
+                  "**/Admin/hooks",
+                  "**/Admin/hooks/**",
+                  "**/Customise/components",
+                  "**/Customise/components/**",
+                  "**/Customise/hooks",
+                  "**/Customise/hooks/**",
+                  "**/Dashboard/components",
+                  "**/Dashboard/components/**",
+                  "**/Dashboard/hooks",
+                  "**/Dashboard/hooks/**",
+                  "**/Family/components",
+                  "**/Family/components/**",
+                  "**/Family/hooks",
+                  "**/Family/hooks/**",
+                  "**/Intro/components",
+                  "**/Intro/components/**",
+                  "**/Intro/hooks",
+                  "**/Intro/hooks/**",
+                  "**/MealPlans/components",
+                  "**/MealPlans/components/**",
+                  "**/MealPlans/hooks",
+                  "**/MealPlans/hooks/**",
+                  "**/Pantry/components",
+                  "**/Pantry/components/**",
+                  "**/Pantry/hooks",
+                  "**/Pantry/hooks/**",
+                  "**/Recipes/components",
+                  "**/Recipes/components/**",
+                  "**/Recipes/hooks",
+                  "**/Recipes/hooks/**",
+                  "**/Review/components",
+                  "**/Review/components/**",
+                  "**/Review/hooks",
+                  "**/Review/hooks/**",
+                  "**/Scan/components",
+                  "**/Scan/components/**",
+                  "**/Scan/hooks",
+                  "**/Scan/hooks/**",
+                  "**/Settings/components",
+                  "**/Settings/components/**",
+                  "**/Settings/hooks",
+                  "**/Settings/hooks/**",
+                  "**/Shopping/components",
+                  "**/Shopping/components/**",
+                  "**/Shopping/hooks",
+                  "**/Shopping/hooks/**",
+                  "**/SignIn/components",
+                  "**/SignIn/components/**",
+                  "**/SignIn/hooks",
+                  "**/SignIn/hooks/**",
+                  "**/SignUp/components",
+                  "**/SignUp/components/**",
+                  "**/SignUp/hooks",
+                  "**/SignUp/hooks/**"
+                ],
+                "message": "Rule B: nothing outside a page area imports that area's components or hooks. Import the whole page, or move the module to the shared components/ (ADR 0044)."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "apps/web/src/components/**/*.ts",
+        "apps/web/src/components/**/*.tsx",
+        "apps/web/src/lib/**/*.ts",
+        "apps/web/src/lib/**/*.tsx"
+      ],
+      "excludeFiles": [
+        // #838 splits the Dashboard widget registry
+        "apps/web/src/lib/dashboardLayout.ts",
+        // #839 moves the route guards into routing/
+        "apps/web/src/components/RequireAuth.tsx",
+        // #839 moves the in-app scan settings constant into lib/
+        "apps/web/src/App.tsx",
+        // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
+        "apps/web/src/lib/recipeDraftContent.test.ts",
+        // #844 moves the cross-page pull-to-refresh test beside its module
+        "apps/web/src/components/RefreshScreen.test.tsx",
+        // #853 moves the voice tests beside what they render
+        "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
+        // #847 moves Meal Plans (Servings is shared by #846)
+        "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
+        // #847 moves Meal Plans (Recipe row and filters are shared by #846)
+        "apps/web/src/pages/MealPlans/components/RecipePickerSheet.tsx",
+        // #847 moves Meal Plans (Servings and Pantry status are shared by #846)
+        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              // Rule A
+              {
+                "group": ["**/pages", "**/pages/**"],
+                "message": "Rule A: shared components and lib/ never import pages/, relative or through @/. Move the shared piece into components/ or lib/, or put the guard in routing/ (ADR 0044)."
+              },
+              // Rule B (repeated, see above)
+              {
+                "group": [
+                  "**/Admin/components",
+                  "**/Admin/components/**",
+                  "**/Admin/hooks",
+                  "**/Admin/hooks/**",
+                  "**/Customise/components",
+                  "**/Customise/components/**",
+                  "**/Customise/hooks",
+                  "**/Customise/hooks/**",
+                  "**/Dashboard/components",
+                  "**/Dashboard/components/**",
+                  "**/Dashboard/hooks",
+                  "**/Dashboard/hooks/**",
+                  "**/Family/components",
+                  "**/Family/components/**",
+                  "**/Family/hooks",
+                  "**/Family/hooks/**",
+                  "**/Intro/components",
+                  "**/Intro/components/**",
+                  "**/Intro/hooks",
+                  "**/Intro/hooks/**",
+                  "**/MealPlans/components",
+                  "**/MealPlans/components/**",
+                  "**/MealPlans/hooks",
+                  "**/MealPlans/hooks/**",
+                  "**/Pantry/components",
+                  "**/Pantry/components/**",
+                  "**/Pantry/hooks",
+                  "**/Pantry/hooks/**",
+                  "**/Recipes/components",
+                  "**/Recipes/components/**",
+                  "**/Recipes/hooks",
+                  "**/Recipes/hooks/**",
+                  "**/Review/components",
+                  "**/Review/components/**",
+                  "**/Review/hooks",
+                  "**/Review/hooks/**",
+                  "**/Scan/components",
+                  "**/Scan/components/**",
+                  "**/Scan/hooks",
+                  "**/Scan/hooks/**",
+                  "**/Settings/components",
+                  "**/Settings/components/**",
+                  "**/Settings/hooks",
+                  "**/Settings/hooks/**",
+                  "**/Shopping/components",
+                  "**/Shopping/components/**",
+                  "**/Shopping/hooks",
+                  "**/Shopping/hooks/**",
+                  "**/SignIn/components",
+                  "**/SignIn/components/**",
+                  "**/SignIn/hooks",
+                  "**/SignIn/hooks/**",
+                  "**/SignUp/components",
+                  "**/SignUp/components/**",
+                  "**/SignUp/hooks",
+                  "**/SignUp/hooks/**"
+                ],
+                "message": "Rule B: nothing outside a page area imports that area's components or hooks. Import the whole page, or move the module to the shared components/ (ADR 0044)."
+              }
+            ]
+          }
+        ]
+      }
+    },
     {
       "files": ["**/*.test.ts", "**/*.test.tsx"],
       "rules": {

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "build:mobile": "tsc --noEmit && vite build --outDir ../mobile/www --emptyOutDir",
-    "lint": "oxlint -c ../../.oxlintrc.json --report-unused-disable-directives-severity error src",
+    "lint": "oxlint -c ../../.oxlintrc.json --report-unused-disable-directives-severity error --ignore-pattern \"src/**/lintSelfTest/**\" src",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
