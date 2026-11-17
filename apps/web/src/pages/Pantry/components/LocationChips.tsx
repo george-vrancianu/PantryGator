@@ -5,11 +5,10 @@ import { FILTERS, type PantryFilter } from '../../../lib/pantry';
 type Props = {
   filter: PantryFilter;
   onFilterChange: (filter: PantryFilter) => void;
-  counts: Record<PantryFilter, number>;
 };
 
-/** The All / Fridge / Freezer / Cupboard / Spices chips with live counts, in one scrolling row that fades out at the right edge. */
-export function LocationChips({ filter, onFilterChange, counts }: Props) {
+/** The All / Fridge / Freezer / Cupboard / Spices chips, in one scrolling row that fades out at the right edge. */
+export function LocationChips({ filter, onFilterChange }: Props) {
   const { t } = useTranslation('pantry');
   return (
     <Box
@@ -37,7 +36,6 @@ export function LocationChips({ filter, onFilterChange, counts }: Props) {
           selected={chip === filter}
           onClick={() => onFilterChange(chip)}
           label={chip === 'all' ? t('all') : t(`common:locations.${chip}`)}
-          count={counts[chip]}
         />
       ))}
     </Box>

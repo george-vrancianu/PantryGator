@@ -30,6 +30,7 @@ export const States: StoryObj<typeof LocationChip> = {
         selected={false}
         onClick={() => {}}
       />
+      <LocationChip label="Cupboard" selected={false} onClick={() => {}} />
     </Box>
   ),
 };

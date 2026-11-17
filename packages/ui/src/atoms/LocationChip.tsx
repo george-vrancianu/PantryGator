@@ -5,8 +5,8 @@ import { bodyFont, color, radius, shadow } from '../theme/themeVars';
 
 export type LocationChipProps = {
   label: string;
-  /** The live count after the label. */
-  count: number;
+  /** A live count after the label; omit to show the label alone. */
+  count?: number;
   selected: boolean;
   onClick: () => void;
 };
@@ -22,7 +22,7 @@ export function LocationChip({
     <ButtonBase
       disableRipple
       aria-pressed={selected}
-      aria-label={`${label} · ${count}`}
+      aria-label={count === undefined ? undefined : `${label} · ${count}`}
       onClick={onClick}
       sx={[
         {
@@ -68,17 +68,19 @@ export function LocationChip({
         }}
       >
         {label}
-        <Box
-          component="span"
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            fontVariantNumeric: 'tabular-nums',
-            opacity: selected ? 0.78 : 0.7,
-          }}
-        >
-          {count}
-        </Box>
+        {count === undefined ? null : (
+          <Box
+            component="span"
+            sx={{
+              fontSize: 12,
+              fontWeight: 600,
+              fontVariantNumeric: 'tabular-nums',
+              opacity: selected ? 0.78 : 0.7,
+            }}
+          >
+            {count}
+          </Box>
+        )}
       </Box>
     </ButtonBase>
   );

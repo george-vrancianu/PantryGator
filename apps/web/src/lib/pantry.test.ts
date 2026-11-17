@@ -3,7 +3,6 @@ import fixture from '../../../../fixtures/pantry-answers.json';
 import {
   defaultExpiryDate,
   expiryTagFor,
-  countByLocation,
   fromIso,
   groupByLocation,
   isExpiringSoon,
@@ -275,18 +274,6 @@ describe('matchesSearch', () => {
   it('matches everything for a blank query and nothing unrelated', () => {
     expect(matchesSearch(batch, '  ')).toBe(true);
     expect(matchesSearch(batch, 'cheddar')).toBe(false);
-  });
-});
-
-describe('countByLocation', () => {
-  it('counts all and each Location', () => {
-    expect(
-      countByLocation([
-        make({ location: 'fridge' }),
-        make({ location: 'fridge' }),
-        make({ location: 'spices' }),
-      ]),
-    ).toEqual({ all: 3, fridge: 2, freezer: 0, cupboard: 0, spices: 1 });
   });
 });
 

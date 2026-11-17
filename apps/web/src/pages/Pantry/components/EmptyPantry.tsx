@@ -74,7 +74,9 @@ export function EmptyPantry({ onType, onAddTo, visit }: Props) {
           <Chip
             key={chip}
             selected={chip === 'all'}
-            label={`${chip === 'all' ? t('pantry:all') : t(`common:locations.${chip}`)} · 0`}
+            label={
+              chip === 'all' ? t('pantry:all') : t(`common:locations.${chip}`)
+            }
           />
         ))}
       </Box>

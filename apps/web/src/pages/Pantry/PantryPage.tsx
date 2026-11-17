@@ -57,7 +57,6 @@ export function PantryPage() {
       <UnverifiedToast />
       <Screen
         title={t('pantry:title')}
-        status={screen.isEmpty ? t('pantry:empty.subtitle') : undefined}
         header={
           !screen.isEmpty && !screen.error ? (
             <PantrySearch
@@ -103,7 +102,6 @@ export function PantryPage() {
             <LocationChips
               filter={screen.filter}
               onFilterChange={screen.setFilter}
-              counts={screen.counts}
             />
           ) : null}
           {screen.emptyShelf ? (

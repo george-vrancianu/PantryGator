@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { useToday } from '../../../lib/useToday';
 import {
-  countByLocation,
   groupByLocation,
   matchesSearch,
   rollUp,
@@ -64,7 +63,6 @@ export function usePantryScreen() {
   const [openKey, setOpenKey] = useState<OpenIngredientKey | null>(null);
 
   const all = batches.data ?? [];
-  // Chip counts follow the search, so they always say how many Batches the chip would show.
   const searched = all.filter((batch) => matchesSearch(batch, query));
   const live = (batch: { id: string }) => !hiddenIds.has(batch.id);
   const shown =
@@ -106,7 +104,6 @@ export function usePantryScreen() {
 
   return {
     sections,
-    counts: countByLocation(searched.filter(live)),
     query,
     setQuery,
     filter,
