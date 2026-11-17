@@ -3,6 +3,10 @@
   "loading": "Se încarcă",
   "confirm": "Confirmă",
   "cancel": "Anulează",
+  "sheet": {
+    "close": "Închide",
+    "back": "Înapoi"
+  },
   "retry": "Încearcă din nou",
   "units": {
     "g": "g",

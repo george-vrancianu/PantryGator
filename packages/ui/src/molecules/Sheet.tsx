@@ -1,13 +1,18 @@
+import CircularProgress from '@mui/material/CircularProgress';
 import MuiDialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import {
   forwardRef,
+  useId,
   useState,
   type ReactElement,
   type ReactNode,
   type Ref,
   type RefObject,
 } from 'react';
+import { Button } from '../atoms/Button';
+import { BackIcon, CloseIcon } from '../atoms/icons';
+import { IconButton } from '../atoms/IconButton';
 import { Box } from '../atoms/Layout';
 import { useRegisterOpenSheet } from './openSheets';
 import { useToastHost } from './ToastProvider';
@@ -15,17 +20,25 @@ import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
-import { sheetTopRoom } from '../theme/safeArea';
-import { canopy, color as themeColor, radius } from '../theme/themeVars';
+import { plusBottomInset, sheetTopRoom } from '../theme/safeArea';
+import { useUiLabels } from '../theme/uiLabels';
+import {
+  bodyFont,
+  canopy,
+  color as themeColor,
+  displayType,
+  palette,
+  radius,
+} from '../theme/themeVars';
 
 /** How long the phone sheet slides in and out, ms. */
 const SLIDE_MS = 340;
 const SLIDE_EASING = 'cubic-bezier(.2,.8,.2,1)';
 
-export type SheetProps = {
+type SheetBaseProps = {
   open: boolean;
   /**
-   * Called for a scrim tap and for Escape. A child that wants Escape for
+   * Called for a scrim tap, for Escape and for the X. A child that wants Escape for
    * itself (say, a popover) calls `event.stopPropagation()` on that keydown.
    */
   onClose: () => void;
@@ -46,12 +59,6 @@ export type SheetProps = {
    * and focus is back on the opener (below `md`, not when that was a text field: ADR 0039). Use it for anything that needs to focus something after the close.
    */
   onExited?: () => void;
-  /** Accessible name of the dialog. */
-  label: string;
-  /** Pinned above the body, e.g. a title row and tabs. */
-  header?: ReactNode;
-  /** Pinned below the body; omit for none. */
-  footer?: ReactNode;
   /** Scrolls when it does not fit. */
   children: ReactNode;
   /**
@@ -61,12 +68,76 @@ export type SheetProps = {
   size?: 'tall' | 'content';
   /**
    * `false` makes a sheet the Member must answer, such as Review: a scrim tap and
-   * Escape do not call `onClose`. Default `true`.
+   * Escape do not call `onClose`, and no X is drawn. Default `true`.
    */
   dismissable?: boolean;
   /** Only when not dismissable: called for Escape, so the caller can ask first ("Discard?"). */
   onEscape?: () => void;
 };
+
+/** The footer's main action, on the right. Give `onClick`, or `form` (the id of a form in the content) to submit it. */
+export type SheetPrimary = {
+  label: string;
+  /** Shows the button's spinner and disables both footer buttons; the X stays enabled. */
+  pending?: boolean;
+  disabled?: boolean;
+  /** `danger` when destroying is the Sheet's purpose (Revoke, Discard). */
+  tone?: 'danger';
+} & ({ onClick: () => void; form?: never } | { form: string; onClick?: never });
+
+/** The footer's alternative action, on the left. A real alternative, never a way to close. */
+export type SheetSecondary = { label: string; onClick: () => void };
+
+/** A danger link at the bottom of the content, away from the primary. */
+export type SheetDestructive = { label: string; onClick: () => void };
+
+/** The roles of a Sheet's chrome (ADR 0043). Sheet draws them; callers cannot. */
+type SheetRoleProps = {
+  /** Drawn in the title row at display 25/800; the dialog's accessible name. */
+  title: string;
+  subtitle?: string;
+  /** Draws Back at the left of the title row. */
+  onBack?: () => void;
+  destructive?: SheetDestructive;
+  label?: never;
+  header?: never;
+  footer?: never;
+} & (
+  | { primary?: undefined; secondary?: never }
+  | { primary: SheetPrimary; secondary?: SheetSecondary }
+);
+
+/** The old chrome slots, kept until every caller has moved to the roles (#821). */
+type SheetSlotProps = {
+  /** Accessible name of the dialog. */
+  label: string;
+  /** Pinned above the body, e.g. a title row and tabs. */
+  header?: ReactNode;
+  /** Pinned below the body; omit for none. */
+  footer?: ReactNode;
+  title?: never;
+  subtitle?: never;
+  onBack?: never;
+  primary?: never;
+  secondary?: never;
+  destructive?: never;
+};
+
+export type SheetProps = SheetBaseProps & (SheetRoleProps | SheetSlotProps);
+
+/** A long label wraps inside its share of the grid instead of pushing the other button out. */
+const footerButtonSx = {
+  minWidth: 0,
+  height: 'auto',
+  whiteSpace: 'normal',
+  lineHeight: 1.2,
+  py: '8px',
+} as const;
+
+/** The button's own spinner, sized to the label. Decorative: the button's `aria-busy` says it is working. */
+function PendingSpinner() {
+  return <CircularProgress size={18} thickness={5} color="inherit" />;
+}
 
 const SlideUp = forwardRef(function SlideUp(
   props: { children: ReactElement },
@@ -90,11 +161,19 @@ export function Sheet({
   label,
   header,
   footer,
+  title,
+  subtitle,
+  onBack,
+  primary,
+  secondary,
+  destructive,
   children,
   size = 'tall',
   dismissable = true,
   onEscape,
 }: SheetProps) {
+  const titleId = useId();
+  const labels = useUiLabels();
   const centred = useBreakpointUp('md');
   const reduceMotion = usePrefersReducedMotion();
   const { color } = tokens;
@@ -134,7 +213,9 @@ export function Sheet({
         },
         paper: {
           ref: setPaper,
-          'aria-label': label,
+          ...(title === undefined
+            ? { 'aria-label': label }
+            : { 'aria-labelledby': titleId }),
           sx: {
             display: 'flex',
             flexDirection: 'column',
@@ -173,8 +254,82 @@ export function Sheet({
           }}
         />
       )}
+      {title === undefined ? null : (
+        <Box
+          sx={{
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            px: '16px',
+            pt: '8px',
+            pb: '8px',
+          }}
+        >
+          {onBack ? (
+            <IconButton label={labels.sheetBack} tone="plain" onClick={onBack}>
+              <BackIcon size={22} />
+            </IconButton>
+          ) : null}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+              component="h2"
+              id={titleId}
+              sx={{
+                m: 0,
+                ...displayType,
+                fontSize: '25px',
+                fontWeight: 800,
+                lineHeight: 1.15,
+                color: palette('text-primary'),
+                overflowWrap: 'anywhere',
+              }}
+            >
+              {title}
+            </Box>
+            {subtitle ? (
+              <Box
+                sx={{
+                  mt: '2px',
+                  fontFamily: bodyFont,
+                  fontSize: '14px',
+                  color: themeColor.ink2,
+                  overflowWrap: 'anywhere',
+                }}
+              >
+                {subtitle}
+              </Box>
+            ) : null}
+          </Box>
+          {dismissable ? (
+            <IconButton label={labels.sheetClose} tone="well" onClick={onClose}>
+              <CloseIcon size={20} />
+            </IconButton>
+          ) : null}
+        </Box>
+      )}
       {header ? <Box sx={{ flexShrink: 0 }}>{header}</Box> : null}
-      <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>{children}</Box>
+      <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        {children}
+        {destructive ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: '16px' }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={destructive.onClick}
+              sx={{
+                color: palette('error-main'),
+                '&:hover': {
+                  backgroundColor: palette('error-light'),
+                  color: palette('error-main'),
+                },
+              }}
+            >
+              {destructive.label}
+            </Button>
+          </Box>
+        ) : null}
+      </Box>
       {footer ? (
         <Box
           sx={{
@@ -183,6 +338,63 @@ export function Sheet({
           }}
         >
           {footer}
+        </Box>
+      ) : null}
+      {primary ? (
+        <Box
+          data-sheet-footer=""
+          sx={{
+            flexShrink: 0,
+            borderTop: `1px solid ${color.line}`,
+            px: '16px',
+            pt: '12px',
+            pb: plusBottomInset(12),
+          }}
+        >
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: secondary ? '1fr 2fr' : '1fr',
+              gap: '12px',
+              alignItems: 'center',
+            }}
+          >
+            {secondary ? (
+              <Button
+                variant="secondary"
+                fullWidth
+                sx={{ ...footerButtonSx, minHeight: 44 }}
+                disabled={primary.pending}
+                onClick={secondary.onClick}
+              >
+                {secondary.label}
+              </Button>
+            ) : null}
+            <Button
+              fullWidth
+              type={primary.form === undefined ? 'button' : 'submit'}
+              form={primary.form}
+              onClick={primary.onClick}
+              disabled={primary.disabled || primary.pending}
+              aria-busy={primary.pending || undefined}
+              startIcon={primary.pending ? <PendingSpinner /> : undefined}
+              sx={
+                primary.tone === 'danger'
+                  ? {
+                      ...footerButtonSx,
+                      minHeight: 52,
+                      backgroundColor: palette('error-main'),
+                      backgroundImage: 'none',
+                      borderColor: 'transparent',
+                      color: palette('error-contrastText'),
+                      '&:hover': { filter: 'brightness(.94)' },
+                    }
+                  : { ...footerButtonSx, minHeight: 52 }
+              }
+            >
+              {primary.label}
+            </Button>
+          </Box>
         </Box>
       ) : null}
     </MuiDialog>
