@@ -285,7 +285,8 @@
     "oneShort_few": "{{count}} rețete mai au nevoie de un ingredient",
     "oneShort_other": "{{count}} de rețete mai au nevoie de un ingredient",
     "nothingInPantry": "Nimic de gătit din Cămara ta încă",
-    "addWhatYouHave": "Adaugă ce ai"
+    "addWhatYouHave": "Adaugă ce ai",
+    "seeThem": "Vezi-le"
   },
   "cookTonightPage": {
     "title": "Gătește diseară",

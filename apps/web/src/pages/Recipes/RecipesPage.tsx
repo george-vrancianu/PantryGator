@@ -33,7 +33,10 @@ import {
 } from '../../lib/recipeRoutes';
 import { useRecipeDraftDiscard } from './useRecipeDraftDiscard';
 import { EmptyFamilyRecipes } from './components/EmptyFamilyRecipes';
-import { CookTonightPanel } from '../../components/CookTonightPanel';
+import {
+  CookTonightHeader,
+  CookTonightHeaderPlaceholder,
+} from './components/CookTonightHeader';
 import { FromLinkSheet } from './components/FromLinkSheet';
 import {
   FromTextSheet,
@@ -136,11 +139,23 @@ export function RecipesPage() {
   const addButton = useRef<HTMLButtonElement>(null);
   const cards = cookTonight.data?.cards ?? [];
   const index = indexCards(cards);
+  // Hidden until both answers arrive, so an error or a slow load never reads as "nothing to cook";
+  // while they load the header keeps its size.
+  const cookTonightHeader =
+    filtering || empty ? null : recipes.data &&
+      !recipes.error &&
+      cookTonight.data &&
+      !cookTonight.error ? (
+      <CookTonightHeader cards={cards} />
+    ) : recipes.error || cookTonight.error ? null : (
+      <CookTonightHeaderPlaceholder />
+    );
 
   return (
     <>
       <Screen
         title={t('recipes:title')}
+        header={cookTonightHeader}
         secondary={
           <HeaderButton
             href="/recipes/explore"
@@ -175,15 +190,6 @@ export function RecipesPage() {
       />
       {/* Flex gap leaves the children's margins alone, so the filters can bleed to the screen edges. */}
       <Stack spacing={1.5} useFlexGap>
-        {/* Hidden until both answers arrive, so an error or a slow load never reads as "nothing to cook". */}
-        {!filtering &&
-        !empty &&
-        recipes.data &&
-        !recipes.error &&
-        cookTonight.data &&
-        !cookTonight.error ? (
-          <CookTonightPanel cards={cards} />
-        ) : null}
         {draftCount > 0 ? (
           <Box
             component={Link}

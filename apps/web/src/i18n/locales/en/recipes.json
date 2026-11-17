@@ -264,7 +264,8 @@
     "oneShort_one": "{{count}} Recipe is one ingredient short",
     "oneShort_other": "{{count}} Recipes are one ingredient short",
     "nothingInPantry": "Nothing to cook from your Pantry yet",
-    "addWhatYouHave": "Add what you have"
+    "addWhatYouHave": "Add what you have",
+    "seeThem": "See them"
   },
   "cookTonightPage": {
     "title": "Cook tonight",

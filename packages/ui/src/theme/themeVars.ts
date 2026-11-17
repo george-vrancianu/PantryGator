@@ -77,6 +77,9 @@ export const canopy = {
   keyShadow: pp('shadow-key'),
   goldInk: pp('gold-ink'),
   gold: pp('gold'),
+  /** A gold-outlined tag on the Canopy (the "Your family's" tag on a Recipe): its fill and 1px line. */
+  goldTint: 'rgba(232,203,124,.16)',
+  goldLine: 'rgba(232,203,124,.4)',
   /** The glint copy of the texture. */
   texGlint: pp('tex-glint'),
   /** The 1px inner highlight on a header chip. */

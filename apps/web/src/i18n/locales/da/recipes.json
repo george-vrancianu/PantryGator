@@ -264,7 +264,8 @@
     "oneShort_one": "{{count}} opskrift mangler én ingrediens",
     "oneShort_other": "{{count}} opskrifter mangler én ingrediens",
     "nothingInPantry": "Intet at lave fra dit spisekammer endnu",
-    "addWhatYouHave": "Tilføj det, du har"
+    "addWhatYouHave": "Tilføj det, du har",
+    "seeThem": "Se dem"
   },
   "cookTonightPage": {
     "title": "Lav mad i aften",
