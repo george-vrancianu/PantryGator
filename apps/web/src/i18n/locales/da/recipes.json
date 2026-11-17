@@ -216,7 +216,6 @@
     "buttonLabelCount": "Filtrér efter tags, {{count}} valgt",
     "sheetTitle": "Filtrér efter tags",
     "sheetHint": "Opskrifter skal have <b>alle</b> de tags, du vælger.",
-    "close": "Luk",
     "fieldPlaceholder": "Skriv for at finde et tag",
     "fieldLabel": "Filtrér efter tags",
     "yourTags": "Dine tags",
@@ -396,7 +395,6 @@
   },
   "quickView": {
     "eyebrow": "Katalogopskrift",
-    "close": "Luk",
     "missing": "mangler",
     "seeWhole": "Se hele opskriften",
     "add": "Føj til dine opskrifter",

@@ -1,12 +1,5 @@
 import {
   Box,
-  Button,
-  CloseIcon,
-  displayType,
-  gutterLeft,
-  gutterRight,
-  IconButton,
-  plusBottomInset,
   Sheet,
   TagField,
   tokens,
@@ -87,65 +80,26 @@ export function TagsSheet({
       open={open}
       onClose={onClose}
       onExited={onExited}
-      label={t('tags.sheetTitle')}
-      header={
-        <Box sx={{ px: 2.5, pt: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 1,
-            }}
-          >
-            <Box component="h2" sx={{ ...displayType, fontSize: 23, m: 0 }}>
-              {t('tags.sheetTitle')}
-            </Box>
-            <IconButton label={t('tags.close')} tone="plain" onClick={onClose}>
-              <CloseIcon size={20} />
-            </IconButton>
-          </Box>
-          <Box
-            sx={{
-              fontSize: 13.5,
-              color: tokens.color.muted,
-              pb: 1,
-            }}
-          >
-            <Trans t={t} i18nKey="tags.sheetHint" components={bold} />
-          </Box>
-        </Box>
-      }
-      footer={
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
-            gap: '10px',
-            pl: gutterLeft(16),
-            pr: gutterRight(16),
-            pt: 1.5,
-            pb: plusBottomInset(26),
-          }}
-        >
-          <Button
-            variant="secondary"
-            disabled={picked.length === 0}
-            onClick={() => onChange([])}
-            sx={{ height: 52 }}
-          >
-            {t('tags.clear')}
-          </Button>
-          <Button variant="primary" onClick={onClose}>
-            {resultCount === 0
-              ? t('tags.showNone')
-              : t('tags.show', { count: resultCount })}
-          </Button>
-        </Box>
+      title={t('tags.sheetTitle')}
+      primary={{
+        label:
+          resultCount === 0
+            ? t('tags.showNone')
+            : t('tags.show', { count: resultCount }),
+        onClick: onClose,
+      }}
+      secondary={
+        // Nothing to clear: the footer keeps its one button.
+        picked.length === 0
+          ? undefined
+          : { label: t('tags.clear'), onClick: () => onChange([]) }
       }
     >
       <TagStatus picked={picked} resultCount={resultCount} />
       <Box sx={{ px: 2.5, py: 1 }}>
+        <Box sx={{ fontSize: 13.5, color: tokens.color.muted, pb: 1 }}>
+          <Trans t={t} i18nKey="tags.sheetHint" components={bold} />
+        </Box>
         <TagField
           list="inline"
           options={options}
