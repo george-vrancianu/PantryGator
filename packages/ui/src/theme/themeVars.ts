@@ -120,6 +120,24 @@ export const healthLamp = {
   windowShadow: 'inset 0 1px 3px rgba(0,0,0,.5)',
 } as const;
 
+/** The Dashboard's one dark "hero" card (the Shopping tile; gold with dark text in Dark): fill, edge, lift and its text colours. */
+export const hero = {
+  /** Paint it with `background`. */
+  bg: pp('hero-bg'),
+  line: pp('hero-line'),
+  shadow: pp('shadow-hero'),
+  ink: pp('hero-ink'),
+  /** The big number. */
+  num: pp('hero-num'),
+  muted: pp('hero-muted'),
+} as const;
+
+/** The three segments of the Pantry tile's Location bar. */
+export const stockBar = {
+  second: pp('seg-mid'),
+  third: '#C9A545',
+} as const;
+
 /** Bar and meter tracks. */
 export const segOff = pp('seg-off');
 

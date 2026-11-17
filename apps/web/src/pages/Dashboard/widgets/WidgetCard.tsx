@@ -1,4 +1,12 @@
-import { Alert, Box, Card, Spinner, tokens } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Card,
+  Spinner,
+  displayType,
+  hero,
+  tokens,
+} from '@pocket-pantry/ui';
 import type { ElementType, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -11,7 +19,8 @@ type Props = {
   size: WidgetSize;
   /** The Dashboard grid's column count, passed down by the page. */
   columns: GridColumns;
-  tone?: 'surface' | 'butter';
+  /** `hero` is the one dark card (the Shopping tile); gold with dark text in Dark. */
+  tone?: 'surface' | 'hero';
   /** Makes the whole card a link, as the Shopping and Pantry Stock Widgets are. */
   to?: string;
   /** Makes the whole card one button that opens a dialog, as the Pantry health Widget is. */
@@ -37,12 +46,12 @@ export function WidgetCard({
   pressLabel,
   isLoading = false,
   error = null,
-  padding = '14px 16px',
+  padding = '14px 14px 13px',
   children,
 }: Props) {
   const { t } = useTranslation('dashboard');
   const span = widgetSpan(size, columns);
-  const butter = tone === 'butter';
+  const isHero = tone === 'hero';
   const linked = Boolean(to) && !isLoading && !error;
   const pressed = Boolean(onPress) && !isLoading && !error;
   const Component: ElementType = linked ? Link : pressed ? 'button' : 'section';
@@ -63,11 +72,14 @@ export function WidgetCard({
         minHeight: size === 'small' ? 136 : undefined,
         boxSizing: 'border-box',
         p: padding,
-        // The butter Widget is a filled card with no edge line.
-        ...(butter
-          ? { bgcolor: tokens.color.butter, borderColor: 'transparent' }
+        ...(isHero
+          ? {
+              background: hero.bg,
+              borderColor: hero.line,
+              boxShadow: hero.shadow,
+            }
           : {}),
-        color: tokens.color.ink,
+        color: isHero ? hero.ink : tokens.color.ink,
         textDecoration: 'none',
         ...(pressed
           ? {
@@ -113,13 +125,54 @@ export function WidgetTitle({
         display: 'flex',
         alignItems: 'center',
         gap: '6px',
-        fontSize: 13,
-        fontWeight: 600,
+        fontSize: 11,
+        lineHeight: 1,
+        fontWeight: 700,
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
         color,
       }}
     >
       {icon}
       {children}
     </Box>
+  );
+}
+
+/** The big number and the line under it, as on the Pantry, Shopping and Suggestions Widgets. */
+export function WidgetFigure({
+  value,
+  caption,
+  numberColor,
+}: {
+  value: number;
+  caption: string;
+  /** Overrides the number's colour, e.g. the hero card's gold. */
+  numberColor?: string;
+}) {
+  return (
+    <>
+      <Box
+        component="p"
+        sx={{
+          m: 0,
+          mt: '14px',
+          ...displayType,
+          fontSize: 50,
+          fontWeight: 800,
+          letterSpacing: '-0.045em',
+          lineHeight: 0.95,
+          ...(numberColor ? { color: numberColor } : {}),
+        }}
+      >
+        {value}
+      </Box>
+      <Box
+        component="p"
+        sx={{ m: 0, mt: '6px', fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}
+      >
+        {caption}
+      </Box>
+    </>
   );
 }

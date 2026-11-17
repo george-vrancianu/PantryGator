@@ -9,6 +9,8 @@ export {
   canopy,
   healthDial,
   healthLamp,
+  hero,
+  stockBar,
   segOff,
   color,
   displayType,

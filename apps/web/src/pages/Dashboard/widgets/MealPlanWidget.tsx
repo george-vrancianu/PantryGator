@@ -57,6 +57,15 @@ const CARD_PADDING_X = 14;
 /** How many missing Ingredients the footer names before "+n". */
 const FOOTER_NAMES = 3;
 
+/** The empty card's link ("Plan your week"): accent, 13/700, a 44 pt target. */
+const emptyAction = {
+  ...plainAction,
+  minHeight: 44,
+  fontSize: 13,
+  fontWeight: 700,
+  color: tokens.color.accent,
+} as const;
+
 /** Titles go under the bars when the columns are wide enough for them. */
 const MAX_DAYS_WITH_TITLES = 3;
 
@@ -251,15 +260,16 @@ export function MealPlanWidget({ columns }: WidgetProps) {
               gap: '6px',
               minWidth: 0,
               textDecoration: 'none',
-              fontSize: 11.5,
+              fontSize: 11,
+              lineHeight: 1,
               fontWeight: 700,
-              letterSpacing: '.07em',
+              letterSpacing: '.1em',
               textTransform: 'uppercase',
               color: tokens.color.muted,
               whiteSpace: 'nowrap',
             }}
           >
-            <CalendarIcon size={15} />
+            <CalendarIcon size={14} />
             {planned
               ? t('mealPlan.title', { count: days.length })
               : t('mealPlan.titleEmpty')}
@@ -499,15 +509,16 @@ export function MealPlanWidget({ columns }: WidgetProps) {
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: '10px',
-              fontSize: 13.5,
-              color: tokens.color.muted,
+              fontSize: 15,
+              fontWeight: 600,
+              color: tokens.color.ink,
             }}
           >
             {view.nextPlanStart && view.nextPlanId ? (
               <Box
                 component={Link}
                 to={`/meal-plans/${view.nextPlanId}`}
-                sx={plainAction}
+                sx={emptyAction}
               >
                 {t('mealPlan.nextPlanStarts', {
                   date: fullDate(language, view.nextPlanStart),
@@ -523,7 +534,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                       ? `/meal-plans/${view.plan?.id}`
                       : `/meal-plans/new?start=${todayIso}`
                   }
-                  sx={plainAction}
+                  sx={emptyAction}
                 >
                   {t('mealPlan.planWeek')}
                 </Box>

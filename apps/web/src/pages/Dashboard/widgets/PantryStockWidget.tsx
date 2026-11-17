@@ -1,22 +1,16 @@
-import {
-  Box,
-  PantryIcon,
-  tokens,
-  displayType,
-  radius,
-} from '@pocket-pantry/ui';
+import { Box, PantryIcon, stockBar, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { groupByLocation, useBatches } from '../../../lib/pantry';
-import { WidgetCard, WidgetTitle } from './WidgetCard';
+import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 
-const LOCATION_COLORS = {
-  fridge: tokens.color.accent,
-  freezer: tokens.color.accentMid,
-  cupboard: tokens.color.chipNeutral,
-  spices: tokens.color.butter,
-} as const;
+/** The bar's three segment colours, in the order of the Locations that hold something. */
+const SEGMENT_COLORS = [
+  tokens.color.accent,
+  stockBar.second,
+  stockBar.third,
+] as const;
 
 /** Total Batches and a stacked bar of how they split across Locations. */
 export function PantryStockWidget({ size, columns }: WidgetProps) {
@@ -26,6 +20,7 @@ export function PantryStockWidget({ size, columns }: WidgetProps) {
     location: group.location,
     count: group.batches.length,
   }));
+  const filled = stock.filter(({ count }) => count > 0);
   const labels = stock.map(
     ({ location, count }) => `${t(`common:locations.${location}`)} ${count}`,
   );
@@ -40,53 +35,46 @@ export function PantryStockWidget({ size, columns }: WidgetProps) {
       isLoading={batches.isPending}
       error={batches.error ? translateApiError(t, batches.error) : null}
     >
-      <WidgetTitle icon={<PantryIcon size={16} />}>
+      <WidgetTitle icon={<PantryIcon size={14} />}>
         {t('widgets.pantryStock.title')}
       </WidgetTitle>
-      <Box
-        component="p"
-        sx={{
-          m: 0,
-          mt: '8px',
-          ...displayType,
-          fontSize: 40,
-          lineHeight: 1,
-        }}
-      >
-        {total}
-      </Box>
-      <Box
-        component="p"
-        sx={{ m: 0, mt: '2px', fontSize: 13, fontWeight: 600 }}
-      >
-        {t('widgets.pantryStock.itemsInStock', { count: total })}
-      </Box>
+      <WidgetFigure
+        value={total}
+        caption={t('widgets.pantryStock.itemsInStock', { count: total })}
+      />
       <Box
         role="img"
         aria-label={labels.join(', ')}
         sx={{
           display: 'flex',
           gap: '3px',
-          height: 8,
-          mt: 'auto',
-          pt: 0,
+          height: 4,
+          mt: '12px',
         }}
       >
-        {stock.map(({ location, count }) => (
+        {filled.map(({ location, count }, index) => (
           <Box
             key={location}
             component="span"
             sx={{
               flexGrow: count,
-              bgcolor: LOCATION_COLORS[location],
-              borderRadius: radius.pill,
+              bgcolor: SEGMENT_COLORS[index % SEGMENT_COLORS.length],
+              borderRadius: '1px',
             }}
           />
         ))}
       </Box>
       <Box
         component="p"
-        sx={{ m: 0, mt: '6px', fontSize: 11, color: tokens.color.muted }}
+        sx={{
+          m: 0,
+          mt: '9px',
+          fontSize: 12,
+          fontWeight: 500,
+          lineHeight: 1.35,
+          color: tokens.color.muted,
+          textWrap: 'balance',
+        }}
       >
         {labels.join(' · ')}
       </Box>

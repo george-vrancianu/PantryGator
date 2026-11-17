@@ -102,6 +102,27 @@ describe('UseSoonWidget', () => {
     ).toHaveAttribute('href', '/pantry');
   });
 
+  it('keeps See all and each row at 44 pt', async () => {
+    stub({
+      'GET /api/settings/family': () =>
+        Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+      'GET /api/pantry': () =>
+        Response.json({
+          batches: [batch({ id: '1', name: 'Feta', expiryDate: isoIn(6) })],
+        }),
+    });
+
+    renderWithProviders(<UseSoonWidget size="wide" columns={2} />);
+
+    const region = await screen.findByRole('region', { name: 'Use soon' });
+    const row = await within(region).findByRole('listitem');
+    expect(getComputedStyle(row).height).toBe('44px');
+    expect(
+      getComputedStyle(within(region).getByRole('link', { name: 'See all' }))
+        .minHeight,
+    ).toBe('44px');
+  });
+
   it('counts days left within the Stale Threshold and plain days after it', async () => {
     stub({
       'GET /api/settings/family': () =>
@@ -238,6 +259,25 @@ describe('PantryStockWidget', () => {
         name: 'Fridge 2, Freezer 1, Cupboard 1',
       }),
     ).toBeInTheDocument();
+  });
+
+  it('draws one bar segment per Location that holds something', async () => {
+    stub({
+      'GET /api/pantry': () =>
+        Response.json({
+          batches: [
+            batch({ id: '1', location: 'fridge' }),
+            batch({ id: '2', location: 'cupboard' }),
+            batch({ id: '3', location: 'cupboard' }),
+          ],
+        }),
+    });
+
+    renderWithProviders(<PantryStockWidget size="small" columns={2} />);
+
+    const bar = await screen.findByRole('img', { name: /Fridge 1/ });
+    expect(bar.children).toHaveLength(2);
+    expect(getComputedStyle(bar).height).toBe('4px');
   });
 
   it('shows zero for an empty Pantry', async () => {
