@@ -189,6 +189,7 @@ export function DefaultExpirySheet({
               {hasOverride ? (
                 <Button
                   variant="ghost"
+                  sx={{ height: 52 }}
                   onClick={() => {
                     onUseCatalog(category);
                     onClose();
@@ -199,11 +200,7 @@ export function DefaultExpirySheet({
               ) : (
                 <span />
               )}
-              <Button
-                shape="pill"
-                disabled={setOverride.isPending}
-                onClick={save}
-              >
+              <Button disabled={setOverride.isPending} onClick={save}>
                 {t('defaultExpiry.save')}
               </Button>
             </Box>

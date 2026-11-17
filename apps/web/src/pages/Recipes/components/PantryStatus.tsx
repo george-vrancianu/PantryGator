@@ -72,7 +72,7 @@ export function LineStatusPill({
         sx={{
           display: 'inline-flex',
           p: '4px',
-          borderRadius: radius.pill,
+          borderRadius: radius.tag,
           bgcolor: tone.bg,
           color: tone.fg,
         }}
@@ -94,7 +94,7 @@ export function LineStatusPill({
         gap: '4px',
         px: '9px',
         py: '4px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         bgcolor: tone.bg,
         color: tone.fg,
         fontSize: 12,

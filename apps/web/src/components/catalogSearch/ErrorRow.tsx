@@ -39,7 +39,7 @@ export function ErrorRow({ onRetry }: { onRetry: () => void }) {
           px: '12px',
           py: '9px',
           border: `1.5px solid ${color.urgentFg}`,
-          borderRadius: radius.pill,
+          borderRadius: radius.control,
           background: 'none',
           color: color.urgentFg,
           font: 'inherit',

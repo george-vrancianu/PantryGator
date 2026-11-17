@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, type ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
+import { radius } from '../theme/themeVars';
 import { tokens } from '../theme/tokens';
 import { SwipeToggle, type SwipeSweep } from './SwipeToggle';
 
@@ -18,7 +19,7 @@ function ExpiryTag({ urgent }: { urgent?: boolean }) {
       sx={{
         px: '8px',
         py: '2px',
-        borderRadius: '999px',
+        borderRadius: radius.tag,
         fontSize: 12,
         fontWeight: 600,
         bgcolor: urgent ? tokens.color.urgentBg : tokens.color.soonBg,

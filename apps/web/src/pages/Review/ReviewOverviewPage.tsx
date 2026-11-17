@@ -463,7 +463,7 @@ export function ReviewOverviewPage({
                     sx={{
                       px: '10px',
                       py: '2px',
-                      borderRadius: radius.pill,
+                      borderRadius: radius.chip,
                       fontSize: 12,
                       backgroundColor: tokens.color.accentTint,
                       color: tokens.color.accentOnTint,
@@ -658,7 +658,12 @@ export function ReviewOverviewPage({
                 ? t('overview.cropFirst', { count: uncropped })
                 : t('overview.add')}
           </Button>
-          <Button variant="secondary" onClick={discardAll} disabled={saving}>
+          <Button
+            variant="secondary"
+            onClick={discardAll}
+            disabled={saving}
+            sx={{ height: 52 }}
+          >
             {t('overview.discardAll')}
           </Button>
         </Box>

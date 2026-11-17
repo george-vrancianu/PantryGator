@@ -28,7 +28,7 @@ const pair = (tone: TagTone) => (theme: Theme) => {
   return { backgroundColor, color };
 };
 
-/** A small status label: 11/700, fully round, in one of the Theme's colour pairs. */
+/** A small status label: 11/700, 3 px radius, in one of the Theme's colour pairs. */
 export function Tag({ tone, icon, children, sx, ...props }: TagProps) {
   return (
     <Box
@@ -40,7 +40,7 @@ export function Tag({ tone, icon, children, sx, ...props }: TagProps) {
           gap: '4px',
           px: '8px',
           py: '3px',
-          borderRadius: radius.pill,
+          borderRadius: radius.tag,
           fontFamily: bodyFont,
           fontSize: 11,
           fontWeight: 700,

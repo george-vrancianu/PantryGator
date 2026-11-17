@@ -264,7 +264,7 @@ export function QuickViewSheet({
                     height: 30,
                     pl: '4px',
                     pr: '10px',
-                    borderRadius: radius.pill,
+                    borderRadius: radius.chip,
                     bgcolor: tokens.color.surface,
                     border: missing.has(line.id)
                       ? `1px dashed ${tokens.color.soonFg}`

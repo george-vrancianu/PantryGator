@@ -246,7 +246,7 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                 alignItems: 'center',
                 height: 26,
                 px: '9px',
-                borderRadius: radius.pill,
+                borderRadius: radius.tag,
                 bgcolor: tokens.color.subtle,
                 border: `1px solid ${tokens.color.line}`,
                 fontSize: 12.5,

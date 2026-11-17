@@ -150,7 +150,7 @@ export function SuggestedMark() {
         fontWeight: 700,
         px: '10px',
         py: '2px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         bgcolor: tokens.color.okBg,
         color: tokens.color.okFg,
       }}

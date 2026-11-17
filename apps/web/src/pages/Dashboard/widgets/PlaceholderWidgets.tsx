@@ -41,7 +41,7 @@ function Placeholder({
             fontWeight: 700,
             px: '8px',
             py: '2px',
-            borderRadius: radius.pill,
+            borderRadius: radius.tag,
             bgcolor: tokens.color.soonBg,
             color: tokens.color.soonFg,
             whiteSpace: 'nowrap',
@@ -59,13 +59,13 @@ function Bar({ value, color }: { value: number; color: string }) {
   return (
     <Box
       aria-hidden="true"
-      sx={{ height: 6, borderRadius: radius.pill, bgcolor: tokens.color.bg }}
+      sx={{ height: 6, borderRadius: radius.tag, bgcolor: tokens.color.bg }}
     >
       <Box
         sx={{
           width: `${value}%`,
           height: '100%',
-          borderRadius: radius.pill,
+          borderRadius: radius.tag,
           bgcolor: color,
         }}
       />

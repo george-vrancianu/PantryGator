@@ -6,6 +6,7 @@ import { PlusIcon } from './icons';
 import {
   bodyFont,
   border,
+  control,
   nestedRadius,
   radius,
   shadow,
@@ -21,10 +22,8 @@ export type ButtonProps = Omit<ButtonBaseProps, 'color'> & {
    * the accent tint, `ghost` accent text, `danger` the urgent pair.
    */
   variant?: ButtonVariant;
-  /** `sm` is 36 high for tight rows. */
+  /** `sm` is 36 high (a primary one 44, the touch target) for tight rows. */
   size?: 'md' | 'sm';
-  /** `pill` is fully round, e.g. Done or Move N to Pantry. */
-  shape?: 'default' | 'pill';
   /** Icon before the label. */
   startIcon?: ReactNode;
   fullWidth?: boolean;
@@ -32,13 +31,41 @@ export type ButtonProps = Omit<ButtonBaseProps, 'color'> & {
   href?: string;
 };
 
+/** Handoff 5: a primary button is 52 high (44 small), a secondary one 44; the rest keep 46 (36). */
+function metrics(variant: ButtonVariant, small: boolean) {
+  if (variant === 'primary') {
+    return small
+      ? { height: 44, px: '16px', fontSize: 14, borderRadius: radius.control }
+      : { height: 52, px: '18px', fontSize: 15.5, borderRadius: radius.btn };
+  }
+  if (variant === 'secondary' && !small) {
+    return {
+      height: 44,
+      px: '18px',
+      fontSize: 14,
+      borderRadius: radius.control,
+    };
+  }
+  return small
+    ? {
+        height: 36,
+        px: '14px',
+        fontSize: 13.5,
+        borderRadius: nestedRadius(radius.control, 2),
+      }
+    : { height: 46, px: '18px', fontSize: 14.5, borderRadius: radius.control };
+}
+
 function variantSx(variant: ButtonVariant) {
   return (theme: Theme) => {
     const p = themePalette(theme);
     switch (variant) {
       case 'primary':
+        // The green gradient with its dark 1px line, over the flat primary as a fallback.
         return {
           backgroundColor: p.primary.main,
+          backgroundImage: control.btnBg,
+          borderColor: control.btnLine,
           color: p.primary.contrastText,
           boxShadow: shadow.button,
           '&:hover': { filter: 'brightness(.94)' },
@@ -91,30 +118,21 @@ const base = {
 export function Button({
   variant = 'primary',
   size = 'md',
-  shape = 'default',
   startIcon,
   fullWidth,
   children,
   sx,
   ...props
 }: ButtonProps) {
-  const small = size === 'sm';
+  const m = metrics(variant, size === 'sm');
   return (
     <ButtonBase
       disableRipple
       sx={[
         base,
         {
-          height: small ? 36 : 46,
-          px: small ? '14px' : '18px',
-          fontSize: small ? 13.5 : 14.5,
+          ...m,
           width: fullWidth ? '100%' : undefined,
-          borderRadius:
-            shape === 'pill'
-              ? '999px'
-              : small
-                ? nestedRadius(radius.control, 2)
-                : radius.control,
         },
         variantSx(variant),
         press,

@@ -85,7 +85,6 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
           <Button
             variant="primary"
             size="sm"
-            shape="pill"
             disabled={adding}
             aria-label={t('day.addMissingLabel', { day: label })}
             onClick={onAddMissing}

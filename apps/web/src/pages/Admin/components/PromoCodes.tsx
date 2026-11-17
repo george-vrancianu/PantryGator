@@ -214,7 +214,11 @@ export function PromoCodes() {
         title={t('admin:promoCodes.revokeTitle', { code: revoking?.code })}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => setConfirmOpen(false)}
+              sx={{ height: 52 }}
+            >
               {t('common:cancel')}
             </Button>
             <Button

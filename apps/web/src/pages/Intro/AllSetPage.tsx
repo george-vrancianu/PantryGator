@@ -5,9 +5,9 @@ import {
   displayType,
   Gator,
   MicIcon,
+  palette,
   radius,
   ReceiptIcon,
-  tokens,
   Typography,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
@@ -57,7 +57,7 @@ function Tip({ icon, children }: { icon: ReactNode; children: string }) {
     >
       <Box
         aria-hidden
-        sx={{ flex: 'none', color: tokens.color.butter, mt: '2px' }}
+        sx={{ flex: 'none', color: palette('secondary-main'), mt: '2px' }}
       >
         {icon}
       </Box>
@@ -173,11 +173,16 @@ export function AllSetPage() {
           onClick={finishIntro}
           sx={{
             mt: '32px',
-            backgroundColor: tokens.color.butter,
-            color: tokens.color.butterInk,
+            // The primary gradient is an image and would paint over the butter.
+            backgroundImage: 'none',
+            backgroundColor: palette('secondary-main'),
+            color: palette('secondary-contrastText'),
             fontSize: 17,
             fontWeight: 700,
-            '&:hover': { backgroundColor: tokens.color.butter },
+            '&:hover': {
+              backgroundImage: 'none',
+              backgroundColor: palette('secondary-main'),
+            },
           }}
         >
           {t('allSet.go')}

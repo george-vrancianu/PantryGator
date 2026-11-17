@@ -1,6 +1,8 @@
 import {
   Box,
   canopy,
+  canopyChipStyle,
+  canopyFocusRing,
   CanopySearchField,
   color,
   InputAdornment,
@@ -166,10 +168,8 @@ function TagFilter({
                 height: 46,
                 px: '14px',
                 borderRadius: radius.btn,
-                border: `1px solid ${canopy.chipLine}`,
-                bgcolor: canopy.chip,
-                boxShadow: canopy.chipHighlight,
-                color: canopy.ink,
+                ...canopyChipStyle,
+                ...canopyFocusRing,
               }
             : {
                 height: 50,

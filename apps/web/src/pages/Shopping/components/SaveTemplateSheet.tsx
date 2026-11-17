@@ -128,7 +128,7 @@ function SaveForm({
           height: 36,
           px: 2,
           border: 0,
-          borderRadius: radius.pill,
+          borderRadius: radius.control,
           cursor: 'pointer',
           backgroundColor: tokens.color.ink,
           color: tokens.color.bg,

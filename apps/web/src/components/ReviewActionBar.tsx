@@ -52,6 +52,7 @@ export function ReviewActionBar({
           variant="ghost"
           onClick={onDiscard}
           sx={{
+            height: 52,
             bgcolor: tokens.color.surface,
             border: `1px solid ${tokens.color.line}`,
             color: tokens.color.ink,

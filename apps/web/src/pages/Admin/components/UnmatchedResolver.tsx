@@ -141,7 +141,12 @@ export function UnmatchedResolver({
         submitLabel: t('admin:review.link', { count: entry.count }),
         savingLabel: t('admin:unmatched.resolving'),
         extra: onRestore ? (
-          <Button variant="ghost" onClick={onRestore} disabled={restoring}>
+          <Button
+            variant="ghost"
+            sx={{ height: 52 }}
+            onClick={onRestore}
+            disabled={restoring}
+          >
             {t('admin:unmatched.restore')}
           </Button>
         ) : undefined,

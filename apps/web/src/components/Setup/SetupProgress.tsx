@@ -33,7 +33,7 @@ export function SetupProgress({
             sx={{
               flex: 1,
               height: 6,
-              borderRadius: radius.pill,
+              borderRadius: radius.tag,
               backgroundColor: bar <= step ? filled : empty,
             }}
           />

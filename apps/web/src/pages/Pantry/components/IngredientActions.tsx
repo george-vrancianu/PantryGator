@@ -2,8 +2,7 @@ import {
   BatteryLowIcon,
   Box,
   PlusIcon,
-  StarFillIcon,
-  StarIcon,
+  StapleStar,
   border,
   color,
   focusRing,
@@ -64,13 +63,7 @@ export function IngredientActions({
             tone="staple"
             ariaDisabled={!staple.ready}
             onClick={staple.toggle}
-            icon={
-              staple.isStaple ? (
-                <StarFillIcon size={16} />
-              ) : (
-                <StarIcon size={16} />
-              )
-            }
+            icon={<StapleStar on={staple.isStaple} />}
           >
             {t(staple.isStaple ? 'group.staple' : 'group.makeStaple')}
           </ActionChip>

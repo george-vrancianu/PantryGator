@@ -1,5 +1,7 @@
 import MuiIconButton from '@mui/material/IconButton';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
+import { canopyChipStyle, canopyKeyStyle } from '../theme/canopyStyles';
+import { canopyFocusRingStyle } from '../theme/focusRing';
 import { tokens } from '../theme/tokens';
 import {
   canopy,
@@ -113,17 +115,11 @@ export function IconButton({
       '&:hover': { filter: 'brightness(.97)' },
     },
     canopyChip: {
-      backgroundColor: canopy.chip,
-      color: canopy.ink,
-      border: `1px solid ${canopy.chipLine}`,
-      boxShadow: canopy.chipHighlight,
+      ...canopyChipStyle,
       '&:hover': { backgroundColor: canopy.chip, filter: 'brightness(1.15)' },
     },
     key: {
-      background: canopy.keyBg,
-      color: canopy.goldInk,
-      border: `1px solid ${canopy.keyLine}`,
-      boxShadow: canopy.keyShadow,
+      ...canopyKeyStyle,
       '&:hover': { background: canopy.keyBg, filter: 'brightness(1.05)' },
       '& svg': { width: 22, height: 22 },
     },
@@ -147,10 +143,13 @@ export function IconButton({
             : {}),
         ...toneStyles,
         ...(ariaDisabled ? { opacity: 0.35, cursor: 'default' } : {}),
-        '&:focus-visible': {
-          outline: `3px solid ${color.accent}`,
-          outlineOffset: 2,
-        },
+        '&:focus-visible':
+          tone === 'canopyChip' || tone === 'key'
+            ? canopyFocusRingStyle
+            : {
+                outline: `3px solid ${color.accent}`,
+                outlineOffset: 2,
+              },
       }}
     >
       {children}

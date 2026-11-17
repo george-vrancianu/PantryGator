@@ -42,7 +42,12 @@ export const AlreadyInRecipes = forwardRef<
           <Button fullWidth href={`/recipes/${recipeId}`} onClick={onOpen}>
             {t('fromLink.duplicate.open')}
           </Button>
-          <Button variant="secondary" fullWidth onClick={onReadAgain}>
+          <Button
+            variant="secondary"
+            fullWidth
+            sx={{ height: 52 }}
+            onClick={onReadAgain}
+          >
             {t('fromLink.duplicate.readAgain')}
           </Button>
         </Stack>

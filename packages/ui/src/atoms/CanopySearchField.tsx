@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import { SearchIcon } from './icons';
+import { canopyFocusRingStyle } from '../theme/focusRing';
 import { bodyFont, canopy, radius } from '../theme/themeVars';
 
 export type CanopySearchFieldProps = {
@@ -35,11 +36,7 @@ export function CanopySearchField({
         border: `1px solid ${canopy.fieldLine}`,
         boxShadow: canopy.fieldShadow,
         color: canopy.muted,
-        // Gold, not the accent ring: the accent is hard to see on the dark Canopy.
-        '&:focus-within': {
-          outline: `2px solid ${canopy.gold}`,
-          outlineOffset: '2px',
-        },
+        '&:focus-within': canopyFocusRingStyle,
       }}
     >
       <SearchIcon size={18} />

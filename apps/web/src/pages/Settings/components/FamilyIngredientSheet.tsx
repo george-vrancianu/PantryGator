@@ -437,7 +437,12 @@ export function FamilyIngredientSheet({
                 ? t('common:edit.saving')
                 : t('settings:familyCatalog.save')}
             </Button>
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button
+              type="button"
+              variant="ghost"
+              sx={{ height: 52 }}
+              onClick={onClose}
+            >
               {t('common:cancel')}
             </Button>
           </Stack>

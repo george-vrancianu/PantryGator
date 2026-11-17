@@ -8,7 +8,7 @@ import {
   ShoppingIcon,
   canopy,
   displayType,
-  focusRing,
+  canopyFocusRing,
   radius,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
@@ -101,7 +101,7 @@ export function RecipeCanopyHeader({
         color: canopy.gold,
         textDecoration: 'none',
         borderRadius: radius.btn,
-        ...focusRing,
+        ...canopyFocusRing,
       }}
     >
       <BranchIcon size={14} />

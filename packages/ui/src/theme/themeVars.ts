@@ -31,16 +31,14 @@ export const radius = {
   btn: pp('r-btn'),
   /** The raised segment inside a Canopy track. */
   seg: '5px',
-  /** The Canopy's count badge (Tags). */
-  badge: '4px',
+  /** The Switch's track (Canopy handoff 5). */
+  track: '7px',
   /** A segment of the 4 px stock bar. */
   bar: '1px',
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
-  /** Small labelled pills: the gain pill and the done pills. */
+  /** Small labelled tags: the gain tag and the done tags. */
   tag: pp('r-tag'),
-  /** Tags and pill buttons: round in every Theme. */
-  pill: '999px',
   /** A layer that takes its parent's corners (the Health lamp's glow layers). */
   inherit: 'inherit',
   /** The Health lamp's case. */
@@ -70,8 +68,24 @@ export const shadow = {
   segment: pp('shadow-seg'),
   /** A tile recessed into the sheet (the empty Meal plan's icon tile). */
   recess: pp('shadow-well'),
+  /** The empty tick box's inset. */
+  box: pp('shadow-box'),
   /** The selected Location chip's lift. */
   chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
+} as const;
+
+/** Fills and lines of the sheet's controls (Canopy handoff section 5); paint the gradients with `background`. */
+export const control = {
+  /** The primary button's and the ticked box's green gradient, and the button's 1px line. `primary` is the flat fallback. */
+  btnBg: pp('btn-bg'),
+  btnLine: pp('btn-line'),
+  /** A recessed well (the Switch's track). */
+  wellBg: pp('well-bg'),
+  /** An empty tick box. */
+  boxBg: pp('box-bg'),
+  /** A Staple star: its fill when on, and the grey outline when off. */
+  starFill: pp('star-fill'),
+  deco: pp('deco'),
 } as const;
 
 /** The Canopy (the green header band) and the working sheet it sits behind (Canopy handoff section 3). */
@@ -110,8 +124,8 @@ export const canopy = {
   goldLine: 'rgba(232,203,124,.4)',
   /** The glint copy of the texture. */
   texGlint: pp('tex-glint'),
-  /** The 1px inner highlight on a header chip. */
-  chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
+  /** The 1px inner highlight on a header chip (a Theme token, `shadow-canopy-chip`). */
+  chipHighlight: pp('shadow-canopy-chip'),
   /** The search field and tracks recessed into the header, with their line and inner shadow. */
   field: pp('canopy-field'),
   fieldLine: pp('canopy-field-line'),

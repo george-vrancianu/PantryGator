@@ -126,7 +126,7 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
           minWidth: 44,
           boxSizing: 'border-box',
           px: '10px',
-          borderRadius: radius.pill,
+          borderRadius: radius.chip,
           border: `1.5px solid ${translucent(tokens.color.ink, 75)}`,
           backgroundColor: 'transparent',
           color: 'inherit',

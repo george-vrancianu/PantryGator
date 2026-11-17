@@ -4,9 +4,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import type { Theme } from '@mui/material/styles';
 import { useId, type ChangeEvent } from 'react';
-import { focusRing } from '../theme/focusRing';
+import { focusRingStyle } from '../theme/focusRing';
 import { CheckIcon } from './icons';
-import { radius, themePalette } from '../theme/themeVars';
+import { control, radius, shadow, themePalette } from '../theme/themeVars';
 
 export type CheckboxProps = {
   label: string;
@@ -17,27 +17,44 @@ export type CheckboxProps = {
   disabled?: boolean;
 };
 
-/** Handoff section 4: a 24 box, radius `r-box`, 2 px `box` border; checked is an `accent` fill with an `accent-ink` tick. */
-function boxSx(checked: boolean) {
-  return (theme: Theme) => {
-    const { pp } = themePalette(theme);
-    const fill = checked ? pp.accent : 'transparent';
-    return {
-      width: 24,
-      height: 24,
-      p: 0,
-      flex: '0 0 auto',
+/**
+ * Handoff section 5: a 22 box inside a 44pt target, radius `r-box`. Empty is a 1.5 px `box` border on
+ * `box-bg` with an inset `shadow-box`; ticked is the `btn-bg` gradient with a `primary.contrastText` check (as the primary Button's ink).
+ * The root is the 44pt target (its negative margin keeps the box where a 22 one sat); the box is the icon.
+ */
+const boxSx = (theme: Theme) => {
+  const { pp, primary } = themePalette(theme);
+  return {
+    width: 44,
+    height: 44,
+    p: 0,
+    m: '-11px',
+    flex: '0 0 auto',
+    color: primary.contrastText,
+    '& .pp-box': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 22,
+      height: 22,
+      boxSizing: 'border-box',
       borderRadius: radius.box,
-      border: '2px solid',
-      borderColor: checked ? pp.accent : pp.box,
-      backgroundColor: fill,
-      color: pp.accentInk,
-      '&:hover': { backgroundColor: fill },
-      '&.Mui-checked': { color: pp.accentInk },
-      '&.Mui-disabled': { opacity: 0.45, color: pp.accentInk },
-    };
+      border: '1.5px solid',
+      borderColor: pp.box,
+      backgroundColor: control.boxBg,
+      boxShadow: shadow.box,
+    },
+    '&.Mui-checked .pp-box': {
+      borderColor: 'transparent',
+      backgroundImage: control.btnBg,
+      boxShadow: 'none',
+    },
+    '&.Mui-checked': { color: primary.contrastText },
+    '&.Mui-disabled': { opacity: 0.45, color: primary.contrastText },
+    // The ring hugs the visible 22 box, not the 44 target around it.
+    '&.Mui-focusVisible .pp-box, &:has(:focus-visible) .pp-box': focusRingStyle,
   };
-}
+};
 
 /** A labelled checkbox with optional helper text underneath. */
 export function Checkbox({
@@ -59,9 +76,13 @@ export function Checkbox({
             disabled={disabled}
             onChange={onChange}
             disableRipple
-            icon={<span />}
-            checkedIcon={<CheckIcon size={15} strokeWidth={3} />}
-            sx={[boxSx(checked), focusRing]}
+            icon={<span className="pp-box" />}
+            checkedIcon={
+              <span className="pp-box">
+                <CheckIcon size={14} strokeWidth={2.8} />
+              </span>
+            }
+            sx={boxSx}
             slotProps={{
               input: { 'aria-describedby': helperText ? helperId : undefined },
             }}

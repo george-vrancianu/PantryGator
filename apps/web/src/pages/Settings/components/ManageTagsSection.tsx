@@ -243,7 +243,11 @@ export function ManageTagsSection() {
         title={t('settings:manageTags.merge.title', { name: merging?.name })}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setMerging(null)}>
+            <Button
+              variant="ghost"
+              onClick={() => setMerging(null)}
+              sx={{ height: 52 }}
+            >
               {t('common:cancel')}
             </Button>
             <Button

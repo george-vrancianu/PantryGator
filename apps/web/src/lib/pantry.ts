@@ -327,6 +327,8 @@ export function useLastStockedAt() {
     queryFn: () =>
       apiRequest<{ lastStockedAt: string | null }>('/pantry/last-stocked'),
     select: (body) => body.lastStockedAt,
+    // A failing read must not hold the Health cluster in its skeleton through the default 3 retries.
+    retry: 1,
   });
 }
 

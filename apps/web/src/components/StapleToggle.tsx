@@ -1,4 +1,4 @@
-import { IconButton, StarFillIcon, StarIcon } from '@pocket-pantry/ui';
+import { IconButton, StapleStar } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useStapleToggle } from './useStapleToggle';
 
@@ -24,7 +24,7 @@ export function StapleToggle({ ingredientId, name, onToggled }: Props) {
       ariaDisabled={!staple.ready}
       onClick={staple.toggle}
     >
-      {staple.isStaple ? <StarFillIcon size={20} /> : <StarIcon size={20} />}
+      <StapleStar on={staple.isStaple} />
     </IconButton>
   );
 }

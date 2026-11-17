@@ -69,7 +69,6 @@ export function BackgroundSheet({
       <Button
         key={index}
         size="sm"
-        shape="pill"
         variant={action.tone === 'secondary' ? 'secondary' : undefined}
         aria-label={action.ariaLabel}
         onClick={() => {
@@ -132,7 +131,6 @@ export function BackgroundSheet({
       {item.open ? (
         <Button
           size="sm"
-          shape="pill"
           aria-label={item.open.ariaLabel}
           onClick={() => {
             onClose();

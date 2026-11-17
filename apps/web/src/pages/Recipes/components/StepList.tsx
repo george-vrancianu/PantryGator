@@ -103,7 +103,7 @@ export function StepList({
                     gap: '5px',
                     height: 32,
                     px: '11px',
-                    borderRadius: radius.pill,
+                    borderRadius: radius.chip,
                     bgcolor: tokens.color.accentTint,
                     color: tokens.color.accentOnTint,
                     fontSize: 12.5,

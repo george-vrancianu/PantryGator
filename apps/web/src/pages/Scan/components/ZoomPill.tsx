@@ -49,7 +49,7 @@ export function ZoomPill({ onZoom }: Props) {
         display: 'flex',
         gap: '4px',
         p: '3px',
-        borderRadius: radius.pill,
+        borderRadius: radius.chip,
         backgroundColor: shade(28),
       }}
     >

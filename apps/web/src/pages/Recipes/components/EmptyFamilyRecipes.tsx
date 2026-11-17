@@ -3,7 +3,6 @@ import {
   Button,
   CompassIcon,
   displayType,
-  radius,
   Stack,
   tokens,
 } from '@pocket-pantry/ui';
@@ -132,7 +131,7 @@ export function EmptyFamilyRecipes({
           fullWidth
           href="/recipes/explore"
           startIcon={<CompassIcon size={20} />}
-          sx={{ minHeight: 48, borderRadius: radius.pill }}
+          sx={{ minHeight: 48 }}
         >
           {t('emptyFamily.explore')}
         </Button>
