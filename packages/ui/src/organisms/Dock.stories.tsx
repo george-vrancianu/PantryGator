@@ -54,7 +54,7 @@ function MicStandIn({ slot }: { slot: HTMLElement | null }) {
             p: 0,
             bgcolor: 'transparent',
             color: 'inherit',
-            borderRadius: `0 0 ${radius.pill} ${radius.pill}`,
+            borderRadius: `0 0 ${radius.cap} ${radius.cap}`,
           }}
         >
           <MicIcon size={26} />

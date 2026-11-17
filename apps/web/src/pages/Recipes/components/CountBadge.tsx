@@ -24,8 +24,7 @@ export function CountBadge({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: radius.pill,
-        ...(tone === 'gold' && { borderRadius: radius.badge }),
+        borderRadius: radius.box,
         bgcolor:
           tone === 'gold'
             ? canopy.gold

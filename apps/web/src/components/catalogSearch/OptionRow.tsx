@@ -67,7 +67,7 @@ export function OptionRow({
                 top: 10,
                 bottom: 10,
                 width: 3,
-                borderRadius: radius.pill,
+                borderRadius: radius.tag,
                 backgroundColor: color.accent,
               },
             }

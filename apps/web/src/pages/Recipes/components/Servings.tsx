@@ -52,7 +52,7 @@ export function StepperPill({
         px: '3px',
         bgcolor: tokens.color.surface,
         border: `1px solid ${tokens.color.line}`,
-        borderRadius: radius.pill,
+        borderRadius: radius.control,
         fontSize: 13.5,
         fontWeight: 700,
       }}

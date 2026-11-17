@@ -100,10 +100,20 @@ export function SlotSheet({
       }
       footer={
         <Stack direction="row" spacing={1.25} sx={{ px: 3, py: 1.5 }}>
-          <Button variant="secondary" disabled={busy} onClick={onChangeRecipe}>
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={onChangeRecipe}
+            sx={{ height: 52 }}
+          >
             {t('detail.changeRecipe')}
           </Button>
-          <Button variant="ghost" disabled={busy} onClick={onClear}>
+          <Button
+            variant="ghost"
+            disabled={busy}
+            onClick={onClear}
+            sx={{ height: 52 }}
+          >
             {t('detail.clear')}
           </Button>
           <Button onClick={onClose} sx={{ flex: 1 }}>

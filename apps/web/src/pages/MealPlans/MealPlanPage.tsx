@@ -279,7 +279,6 @@ function PlanToolbar({
           <Button
             variant="primary"
             size="sm"
-            shape="pill"
             startIcon={<PlusIcon size={14} strokeWidth={2.6} />}
             disabled={adding}
             onClick={onAddMissing}

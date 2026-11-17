@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Toggle } from '../index';
-import { paintedColour } from '../test/colour';
 import { renderWithTheme as render } from '../test/render';
 
 describe('Toggle', () => {
@@ -44,7 +43,7 @@ describe('Toggle', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it('turns its track from the Theme box colour to accent', () => {
+  it('turns its track from the recessed well to the button gradient', () => {
     render(
       <div data-theme="light">
         <Toggle aria-label="Off" checked={false} onChange={() => undefined} />
@@ -52,9 +51,12 @@ describe('Toggle', () => {
       </div>,
     );
     const track = (name: string) => screen.getByRole('switch', { name });
-    expect(paintedColour(track('Off'), 'background-color')).toBe('#9EA69D');
-    expect(paintedColour(track('On'), 'background-color')).toBe('#1C6A43');
-    expect(getComputedStyle(track('On')).width).toBe('46px');
+    const painted = (name: string) => getComputedStyle(track(name));
+    expect(painted('Off').backgroundColor).toBe('var(--pp-well-bg)');
+    expect(painted('Off').boxShadow).toBe('var(--pp-shadow-well)');
+    expect(painted('On').backgroundImage).toBe('var(--pp-btn-bg)');
+    expect(painted('On').borderRadius).toBe('7px');
+    expect(getComputedStyle(track('On')).width).toBe('48px');
     expect(getComputedStyle(track('On')).height).toBe('28px');
   });
 });

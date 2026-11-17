@@ -23,9 +23,7 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const onCanopy = tone === 'canopy';
   const height = onCanopy ? 5 : size === 'large' ? 8 : 6;
-  const corner = onCanopy
-    ? { borderRadius: radius.tag }
-    : { borderRadius: radius.pill };
+  const corner = { borderRadius: radius.tag };
   const percent =
     max > 0 ? Math.min(100, Math.max(0, Math.round((value / max) * 100))) : 0;
   return (

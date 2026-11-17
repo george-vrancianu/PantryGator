@@ -15,6 +15,7 @@ export {
   stockBar,
   segOff,
   color,
+  control,
   displayType,
   nestedRadius,
   palette,
@@ -22,6 +23,8 @@ export {
   shadow,
 } from './theme/themeVars';
 export {
+  canopyFocusRing,
+  canopyFocusRingStyle,
   focusRing,
   focusRingStyle,
   insetFocusRing,
@@ -117,6 +120,7 @@ export {
   type InputAdornmentProps,
 } from './atoms/InputAdornment';
 export { IconButton, type IconButtonProps } from './atoms/IconButton';
+export { canopyChipStyle, canopyKeyStyle } from './theme/canopyStyles';
 export { HeaderButton, type HeaderButtonProps } from './atoms/HeaderButton';
 export { Box, Stack, type BoxProps, type StackProps } from './atoms/Layout';
 export { Link, type LinkProps } from './atoms/Link';
@@ -131,6 +135,7 @@ export {
   type TagChipSize,
 } from './atoms/TagChip';
 export { TextField, type TextFieldProps } from './atoms/TextField';
+export { StapleStar, type StapleStarProps } from './atoms/StapleStar';
 export { Toggle, type ToggleProps } from './atoms/Toggle';
 export { Typography, type TypographyProps } from './atoms/Typography';
 export {

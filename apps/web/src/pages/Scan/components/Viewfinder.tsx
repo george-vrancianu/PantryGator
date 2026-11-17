@@ -1,4 +1,9 @@
-import { Box, tokens, usePrefersReducedMotion } from '@pocket-pantry/ui';
+import {
+  Box,
+  radius,
+  tokens,
+  usePrefersReducedMotion,
+} from '@pocket-pantry/ui';
 import { shade, translucent } from '../../../components/camera/glass';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Rect } from '../../../lib/scanGuides';
@@ -48,7 +53,7 @@ function ScanLine({ animated }: { animated: boolean }) {
         right: '7%',
         top: '50%',
         height: 2,
-        borderRadius: '999px',
+        borderRadius: radius.tag,
         backgroundColor: tokens.color.accent,
         boxShadow: `0 0 12px 2px ${translucent(tokens.color.accent, 70)}`,
         ...(animated && {

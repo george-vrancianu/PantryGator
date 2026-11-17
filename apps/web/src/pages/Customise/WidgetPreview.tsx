@@ -18,7 +18,7 @@ const bar = (width: string, color: string) => (
       display: 'block',
       width,
       height: 7,
-      borderRadius: radius.pill,
+      borderRadius: radius.tag,
       bgcolor: color,
     }}
   />

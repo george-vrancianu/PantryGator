@@ -110,7 +110,11 @@ export function usePantryHealth(): PantryHealthState {
       shopping.isPending ||
       runningLow.isPending ||
       suggestions.isPending ||
-      settings.isPending,
+      settings.isPending ||
+      lastStocked.isPending,
+    // `lastStocked` and `settings` errors are left out on purpose: a failed last-stocked
+    // read leaves the fourth light unlit, a failed settings read falls back to the default
+    // Stale Threshold; neither blanks the cluster.
     error:
       batches.error ??
       staples.error ??

@@ -173,11 +173,16 @@ export function AllSetPage() {
           onClick={finishIntro}
           sx={{
             mt: '32px',
+            // The primary gradient is an image and would paint over the butter.
+            backgroundImage: 'none',
             backgroundColor: tokens.color.butter,
             color: tokens.color.butterInk,
             fontSize: 17,
             fontWeight: 700,
-            '&:hover': { backgroundColor: tokens.color.butter },
+            '&:hover': {
+              backgroundImage: 'none',
+              backgroundColor: tokens.color.butter,
+            },
           }}
         >
           {t('allSet.go')}

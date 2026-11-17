@@ -365,7 +365,12 @@ export function AddToCatalogForm({
             </Box>
           ) : null}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
-            <Button type="button" variant="secondary" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onCancel}
+              sx={{ height: 52 }}
+            >
               {t('catalogAdd.cancel')}
             </Button>
             {existing ? (

@@ -5,6 +5,7 @@ import {
   ScanBarcodeIcon,
   Stack,
   Typography,
+  radius,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useRef, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +50,7 @@ function CameraSourceTag({ source }: { source: 'photo' | 'scanned' }) {
         px: '7px',
         py: '1px',
         verticalAlign: 'middle',
-        borderRadius: '999px',
+        borderRadius: radius.tag,
         fontSize: 10.5,
         fontWeight: 800,
         backgroundColor: 'secondary.main',

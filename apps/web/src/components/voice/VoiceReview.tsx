@@ -608,7 +608,7 @@ function Group({
               ml: '4px',
               px: '8px',
               py: '1px',
-              borderRadius: '999px',
+              borderRadius: radius.tag,
               backgroundColor: palette('pp-chip'),
               fontSize: 11.5,
               fontWeight: 600,

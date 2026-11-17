@@ -104,7 +104,7 @@ export function ReviewSheet({
                 >
                   {form.saving ? form.savingLabel : form.submitLabel}
                 </Button>
-                <Button variant="ghost" onClick={onClose}>
+                <Button variant="ghost" onClick={onClose} sx={{ height: 52 }}>
                   {t('admin:common.cancel')}
                 </Button>
                 {form.extra}

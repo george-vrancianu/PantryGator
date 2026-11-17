@@ -89,7 +89,7 @@ export function ConfirmPrompt({
         <Button ref={confirmRef} disabled={disabled} onClick={onConfirm}>
           {t('confirm')}
         </Button>
-        <Button variant="ghost" onClick={onCancel}>
+        <Button variant="ghost" sx={{ height: 52 }} onClick={onCancel}>
           {t('cancel')}
         </Button>
       </Stack>

@@ -463,7 +463,7 @@ export function CameraOverlay({
               gap: 1,
               py: 0.75,
               px: 1.375,
-              borderRadius: radius.pill,
+              borderRadius: radius.chip,
               backgroundColor: translucent(tokens.color.accent, 16),
               color: tokens.color.accent,
               fontSize: 12,
@@ -523,7 +523,7 @@ export function CameraOverlay({
             sx={{
               px: 1.75,
               py: 1.125,
-              borderRadius: radius.pill,
+              borderRadius: radius.chip,
               backgroundColor: shade(80),
               fontSize: 13,
               fontWeight: 600,

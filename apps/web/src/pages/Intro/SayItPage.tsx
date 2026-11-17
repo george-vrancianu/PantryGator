@@ -163,7 +163,7 @@ function SayItScreen() {
               mt: '20px',
               px: '12px',
               height: 32,
-              borderRadius: radius.pill,
+              borderRadius: radius.chip,
               backgroundColor: color.accentOnTint,
               fontWeight: 600,
               fontSize: 14,

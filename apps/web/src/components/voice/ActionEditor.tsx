@@ -353,7 +353,7 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
             fontWeight: 600,
             px: '8px',
             py: '2px',
-            borderRadius: '999px',
+            borderRadius: radius.tag,
             backgroundColor: palette('warning-light'),
             color: palette('warning-main'),
           }}
@@ -433,7 +433,7 @@ export function ActionEditor({
       {batches ? <BatchEditor action={action} /> : null}
       <IngredientEditor action={action} />
       <Box>
-        <Button variant="tonal" shape="pill" size="sm" onClick={onDone}>
+        <Button variant="tonal" size="sm" onClick={onDone}>
           {t('voice:review.edit.done')}
         </Button>
       </Box>

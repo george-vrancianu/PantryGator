@@ -10,7 +10,7 @@ export function RowTag({ children }: { children: string }) {
         flexShrink: 0,
         px: '9px',
         py: '3px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         backgroundColor: color.accentTint,
         color: color.accentOnTint,
         fontSize: 11,

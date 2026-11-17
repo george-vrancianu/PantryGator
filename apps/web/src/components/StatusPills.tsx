@@ -82,7 +82,7 @@ function Pill(props: {
         gap: '4px',
         px: '8px',
         py: '3px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         bgcolor: props.bg,
         color: props.fg,
         fontSize: 12,

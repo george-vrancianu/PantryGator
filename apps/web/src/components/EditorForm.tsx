@@ -86,7 +86,7 @@ export function EditorForm({
           ? (savingLabel ?? t('admin:common.saving'))
           : (saveLabel ?? t('admin:common.save'))}
       </Button>
-      <Button variant="ghost" onClick={onCancel}>
+      <Button variant="ghost" sx={{ height: 52 }} onClick={onCancel}>
         {t('admin:common.cancel')}
       </Button>
     </Stack>
