@@ -1324,7 +1324,7 @@ describe('RecipesPage', () => {
       );
       const link = await findCookTonight();
       expect(link).toHaveAccessibleName(
-        'Cook tonight, 3 Recipes you can make, 1 uses what expires soon',
+        'Cook tonight, 3 Recipes you can make, 1 uses what expires soon, See them',
       );
       expect(link).toHaveTextContent('3 Recipes you can make');
       expect(link).toHaveTextContent('1 uses what expires soon');
@@ -1338,7 +1338,7 @@ describe('RecipesPage', () => {
     it('says "1 Recipe" in the singular and "2 use" in the plural', async () => {
       setup(() => [omelette], [expiring('o', 'Omelette'), near('s', 'Soup')]);
       expect(await findCookTonight()).toHaveAccessibleName(
-        'Cook tonight, 1 Recipe you can make, 1 uses what expires soon',
+        'Cook tonight, 1 Recipe you can make, 1 uses what expires soon, See them',
       );
       cleanup();
       setup(
@@ -1346,14 +1346,16 @@ describe('RecipesPage', () => {
         [expiring('o', 'Omelette'), expiring('s', 'Soup', 3)],
       );
       expect(await findCookTonight()).toHaveAccessibleName(
-        'Cook tonight, 2 Recipes you can make, 2 use what expires soon',
+        'Cook tonight, 2 Recipes you can make, 2 use what expires soon, See them',
       );
     });
 
     it('leaves out the expiring line when no Recipe it counts uses what expires soon', async () => {
       setup(() => [omelette], [plain('o', 'Omelette'), near('s', 'Soup', 3)]);
       const link = await findCookTonight();
-      expect(link).toHaveAccessibleName('Cook tonight, 1 Recipe you can make');
+      expect(link).toHaveAccessibleName(
+        'Cook tonight, 1 Recipe you can make, See them',
+      );
       expect(link).not.toHaveTextContent('expires soon');
     });
 
@@ -1435,7 +1437,7 @@ describe('RecipesPage', () => {
         );
         const link = await findCookTonight();
         expect(link).toHaveAccessibleName(
-          'Cook tonight, Nothing to cook yet, 2 Recipes are one ingredient short',
+          'Cook tonight, Nothing to cook yet, 2 Recipes are one ingredient short, See them',
         );
         expect(link).toHaveTextContent('Nothing to cook yet');
         expect(link).toHaveTextContent('2 Recipes are one ingredient short');
@@ -1454,7 +1456,7 @@ describe('RecipesPage', () => {
       it('says "1 Recipe is" in the singular', async () => {
         setup(() => [omelette], [near('o', 'Omelette')]);
         expect(await findCookTonight()).toHaveAccessibleName(
-          'Cook tonight, Nothing to cook yet, 1 Recipe is one ingredient short',
+          'Cook tonight, Nothing to cook yet, 1 Recipe is one ingredient short, See them',
         );
       });
 
@@ -1516,12 +1518,12 @@ describe('RecipesPage', () => {
           1,
         );
         expect(await findCookTonight()).toHaveAccessibleName(
-          'Cook tonight, Nothing to cook yet, 1 Recipe is one ingredient short',
+          'Cook tonight, Nothing to cook yet, 1 Recipe is one ingredient short, See them',
         );
         await user.click(await screen.findByRole('button', { name: 'Show' }));
         await waitFor(async () =>
           expect(await findCookTonight()).toHaveAccessibleName(
-            'Cook tonight, Nothing to cook yet, 2 Recipes are one ingredient short',
+            'Cook tonight, Nothing to cook yet, 2 Recipes are one ingredient short, See them',
           ),
         );
       });
@@ -1642,12 +1644,12 @@ describe('RecipesPage', () => {
         1,
       );
       expect(await findCookTonight()).toHaveAccessibleName(
-        'Cook tonight, 1 Recipe you can make',
+        'Cook tonight, 1 Recipe you can make, See them',
       );
       await user.click(await screen.findByRole('button', { name: 'Show' }));
       await waitFor(async () =>
         expect(await findCookTonight()).toHaveAccessibleName(
-          'Cook tonight, 2 Recipes you can make, 1 uses what expires soon',
+          'Cook tonight, 2 Recipes you can make, 1 uses what expires soon, See them',
         ),
       );
     });

@@ -16,7 +16,7 @@ import { EmptyPotPanel } from './EmptyPotPanel';
 import { GatorBubblePanel } from './GatorBubblePanel';
 
 /**
- * Gator's bubble panel for Cook Tonight, on the Recipes page and the wide/tall Dashboard Widget:
+ * Gator's bubble panel for Cook Tonight, in the wide/tall Dashboard Widget:
  * one link in every state (see `cookTonightPanelState`). Pressing it plays Gator's Tap, then
  * navigates; with reduced motion it navigates at once. With `noRecipes` it is the empty-pot panel
  * instead (not a link) with three text links under it.

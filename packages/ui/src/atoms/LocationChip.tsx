@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
-import { focusRing } from '../theme/focusRing';
+import { focusRingStyle } from '../theme/focusRing';
 import { bodyFont, color, radius, shadow } from '../theme/themeVars';
 
 export type LocationChipProps = {
@@ -32,7 +32,10 @@ export function LocationChip({
           alignItems: 'center',
           fontFamily: bodyFont,
         },
-        focusRing,
+        // The ring goes on the 34 high face, not the 44 target: a scrolling row clips the target's outer ring.
+        {
+          '&.Mui-focusVisible > span, &:focus-visible > span': focusRingStyle,
+        },
       ]}
     >
       <Box

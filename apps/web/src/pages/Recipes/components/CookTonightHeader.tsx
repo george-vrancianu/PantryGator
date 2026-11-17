@@ -5,6 +5,7 @@ import {
   canopy,
   displayType,
   focusRing,
+  radius,
   visuallyHidden,
 } from '@pocket-pantry/ui';
 import { useId } from 'react';
@@ -44,7 +45,9 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
         component={Link}
         to={state.to}
         // Block children carry no spaces for a screen reader, so name the link explicitly.
-        aria-label={[title, ...state.lines].join(', ')}
+        aria-label={[title, ...state.lines, ...(pantry ? [] : [action])].join(
+          ', ',
+        )}
         aria-describedby={moodId}
         onClick={onClick}
         sx={{
@@ -54,7 +57,7 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
           maxWidth: 196,
           color: 'inherit',
           textDecoration: 'none',
-          borderRadius: '8px',
+          borderRadius: radius.btn,
           ...focusRing,
         }}
       >

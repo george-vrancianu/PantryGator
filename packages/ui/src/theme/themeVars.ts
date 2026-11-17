@@ -71,6 +71,8 @@ export const canopy = {
   /** The header buttons' fill (labelled secondary actions and Back) and its 1px line. */
   chip: pp('canopy-chip'),
   chipLine: pp('canopy-chip-line'),
+  /** The 1px rules on the Canopy (between the Recipe facts). */
+  line: pp('canopy-line'),
   /** The gold key: the page's primary action (the "+" and Save). Paint `keyBg` with `background`. */
   keyBg: pp('key-bg'),
   keyLine: pp('key-line'),

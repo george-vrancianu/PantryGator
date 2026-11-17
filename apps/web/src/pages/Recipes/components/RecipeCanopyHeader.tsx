@@ -4,6 +4,7 @@ import {
   CompassIcon,
   HeaderButton,
   PeopleIcon,
+  ProgressBar,
   ShoppingIcon,
   canopy,
   displayType,
@@ -36,6 +37,8 @@ export type RecipeCanopyHeaderProps = {
   /** A Catalog Recipe's preview: its own eyebrow, and the "In your Recipes" tag once added. */
   preview?: { inFamily: boolean };
   match: PantryMatch | undefined;
+  /** The Pantry match is still loading: the coverage row keeps its place, hidden, so the header does not grow when it arrives. */
+  matchPending?: boolean;
   /** The answer is for another Servings; wait for the current one. */
   stale: boolean;
   adding: boolean;
@@ -54,6 +57,7 @@ export function RecipeCanopyHeader({
   servings,
   preview,
   match,
+  matchPending = false,
   stale,
   adding,
   added,
@@ -96,7 +100,7 @@ export function RecipeCanopyHeader({
         minWidth: 0,
         color: canopy.gold,
         textDecoration: 'none',
-        borderRadius: '8px',
+        borderRadius: radius.btn,
         ...focusRing,
       }}
     >
@@ -182,8 +186,8 @@ export function RecipeCanopyHeader({
           display: 'flex',
           m: '16px 0 0',
           py: '12px',
-          borderTop: `1px solid ${canopy.chipLine}`,
-          borderBottom: `1px solid ${canopy.chipLine}`,
+          borderTop: `1px solid ${canopy.line}`,
+          borderBottom: `1px solid ${canopy.line}`,
         }}
       >
         {facts.map(({ label, value }, i) => (
@@ -196,7 +200,7 @@ export function RecipeCanopyHeader({
               flexDirection: 'column',
               gap: '7px',
               ...(i > 0
-                ? { pl: '14px', borderLeft: `1px solid ${canopy.chipLine}` }
+                ? { pl: '14px', borderLeft: `1px solid ${canopy.line}` }
                 : {}),
             }}
           >
@@ -223,9 +227,12 @@ export function RecipeCanopyHeader({
           </Box>
         ))}
       </Box>
-      {match ? (
+      {match || matchPending ? (
         <Box
+          aria-hidden={match ? undefined : true}
           sx={{
+            minHeight: 44,
+            visibility: match ? 'visible' : 'hidden',
             display: 'flex',
             alignItems: 'center',
             gap: '14px',
@@ -255,23 +262,12 @@ export function RecipeCanopyHeader({
               </Box>{' '}
               {t('pantry.coverageLabel')}
             </Box>
-            <Box
-              aria-hidden
-              sx={{
-                height: '5px',
-                borderRadius: radius.tag,
-                bgcolor: canopy.progressTrack,
-                boxShadow: canopy.progressShadow,
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  width: `${required.length === 0 ? 100 : (covered / required.length) * 100}%`,
-                  height: '100%',
-                  borderRadius: radius.tag,
-                  bgcolor: canopy.gold,
-                }}
+            <Box aria-hidden>
+              <ProgressBar
+                tone="canopy"
+                label={t('pantry.coverageLabel')}
+                value={required.length === 0 ? 1 : covered}
+                max={required.length === 0 ? 1 : required.length}
               />
             </Box>
           </Box>

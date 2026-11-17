@@ -125,6 +125,31 @@ describe('RecipeDetailPage', () => {
     expect(within(ingredients).getByText(/optional/)).toBeInTheDocument();
   });
 
+  it('keeps the Pantry coverage row in the header, hidden, until the match arrives', async () => {
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    setup(recipe({}), '/recipes/o', {
+      'GET /api/recipes/o/pantry-match': async () => {
+        await gate;
+        return Response.json({
+          servings: 2,
+          canMake: true,
+          shortOrMissingCount: 0,
+          expiringCoveredCount: 0,
+          coverageRatio: 1,
+          lines: [],
+        });
+      },
+    });
+    await screen.findByRole('heading', { level: 1, name: /Omelette/ });
+    const label = screen.getByText(/in your Pantry/);
+    expect(label).not.toBeVisible();
+    release();
+    await vi.waitFor(() => expect(label).toBeVisible());
+  });
+
   it('shows every Tag as a chip under the facts, Family Tags first, and no Style fact', async () => {
     setup(
       recipe({

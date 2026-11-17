@@ -155,6 +155,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
       recipe={recipe}
       servings={servings}
       match={match}
+      matchPending={matchQuery.isPending}
       stale={matchQuery.isPlaceholderData}
       adding={addMissing.isPending || addLine.isPending}
       added={addedList}
@@ -163,6 +164,9 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
         ? { preview: { inFamily: addState?.status !== 'none' } }
         : {})}
     />
+  ) : query.isPending ? (
+    // The header's usual height (title, facts, coverage), so it does not grow when the Recipe arrives.
+    <Box aria-hidden sx={{ height: 170 }} />
   ) : undefined;
 
   // The Family's own Recipes have no preview; they open as themselves.

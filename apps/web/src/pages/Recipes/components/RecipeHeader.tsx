@@ -36,7 +36,8 @@ export function RecipeHeader({
   const menuButton = useRef<HTMLButtonElement>(null);
   const back = { label: t('recipes:back'), href: '/recipes' };
   // No Recipe yet (loading, not found): keep a title so the screen has an H1.
-  if (!recipe) return <Screen back={back} title={t('recipes:title')} />;
+  if (!recipe)
+    return <Screen back={back} title={t('recipes:title')} header={header} />;
 
   const own = recipe.owner === 'family' && !recipe.archived;
   // A Variant's parent is a Catalog Base Recipe. A Family Base gets one only
