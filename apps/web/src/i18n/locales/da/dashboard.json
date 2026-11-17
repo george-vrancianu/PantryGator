@@ -58,13 +58,6 @@
     "title": "Spisekammerets tilstand",
     "scoreOf": "{{score}} af 100",
     "notEnough": "Ikke nok til at vurdere endnu",
-    "lights": {
-      "expired": "Udløbet",
-      "soon": "Brug snart",
-      "low": "Ved at slippe op",
-      "fresh": "Nyt på lager",
-      "nothingNew": "Intet nyt"
-    },
     "a11y": {
       "name": "{{title}}: {{verdict}}, {{lights}}.",
       "expired_one": "{{count}} udløbet",

@@ -277,8 +277,6 @@
     "addToList_other": "Add {{count}} to the Shopping List"
   },
   "inbox": {
-    "failedAlert_one": "{{count}} Voice Note failed",
-    "failedAlert_other": "{{count}} Voice Notes failed",
     "retryNote": "Retry: {{preview}}",
     "retryOtherNote": "Retry in another language: {{preview}}",
     "currentLanguage": "{{language}} (current)",

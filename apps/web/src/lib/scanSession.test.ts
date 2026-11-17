@@ -5,8 +5,6 @@ import type { ProposedLine } from './scan';
 import {
   MAX_CONCURRENT_READS,
   MAX_SESSION_SCANS,
-  announcedScanFailed,
-  announceScanFailed,
   dispatchScanSession,
   getScanSessionOrder,
   isBarcodeCard,
@@ -1062,13 +1060,6 @@ describe('the Scan Session as a background item', () => {
     dispatchScanSession({ type: 'enqueue', scan: scan('b') });
     expect(getScanSessionOrder()).toBe(stamped);
     expect(nextBackgroundOrder()).toBeGreaterThan(stamped);
-  });
-
-  it('forgets the failures it announced when it ends', () => {
-    announceScanFailed(2);
-    expect(announcedScanFailed()).toBe(2);
-    resetScanSession();
-    expect(announcedScanFailed()).toBe(0);
   });
 });
 
