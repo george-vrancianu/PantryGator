@@ -5,6 +5,7 @@ import {
   type SwipeSweep,
   Typography,
   insetFocusRing,
+  palette,
   tokens,
   radius,
 } from '@pocket-pantry/ui';
@@ -316,7 +317,7 @@ export function RollUpRow({
               p: 0,
               pb: '4px',
               listStyle: 'none',
-              borderTop: `1px solid ${tokens.color.divider}`,
+              borderTop: `1px solid ${palette('divider')}`,
             }}
           >
             {rollUp.batches.map((batch, index) => (

@@ -5,6 +5,9 @@ import { keyframesSx } from '../../../lib/keyframesSx';
 const batchTint = (index: number) =>
   `color-mix(in srgb, ${palette('pp-accentTint')} ${index % 2 === 0 ? 45 : 25}%, ${color.cardBg})`;
 
+/** The rail and each Batch row fade in on the same curve, so they arrive together. */
+const FADE_IN = '180ms ease-out';
+
 type Block = { open: boolean; first: boolean; last: boolean };
 
 /**
@@ -47,7 +50,7 @@ export function ingredientBlockSx({ open, first, last }: Block) {
       pointerEvents: 'none',
       bgcolor: palette('pp-accent'),
       opacity: open ? 1 : 0,
-      transition: 'opacity 180ms ease-out',
+      transition: `opacity ${FADE_IN}`,
     },
     '@media (prefers-reduced-motion: reduce)': {
       '&::after': { transition: 'none' },
@@ -59,7 +62,7 @@ export function ingredientBlockSx({ open, first, last }: Block) {
 export function batchRowSx(index: number) {
   return {
     bgcolor: batchTint(index),
-    ...keyframesSx('pp-batch-in', `180ms ease-out ${index * 40}ms both`, {
+    ...keyframesSx('pp-batch-in', `${FADE_IN} ${index * 40}ms both`, {
       from: { opacity: 0, transform: 'translateX(-6px)' },
       to: { opacity: 1, transform: 'none' },
     }),

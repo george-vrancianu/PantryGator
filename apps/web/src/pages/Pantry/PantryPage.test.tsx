@@ -2912,13 +2912,23 @@ describe('PantryPage', () => {
         const closed = blocks().map(corners);
 
         for (const name of ['Butter', 'Eggs', 'Yogurt']) {
-          await user.click(
-            screen.getByRole('button', { name: new RegExp(`^${name}`) }),
-          );
+          const toggle = screen.getByRole('button', {
+            name: new RegExp(`^${name}`),
+          });
+          await user.click(toggle);
+          expect(toggle).toHaveAttribute('aria-expanded', 'true');
           expect(blocks().map(corners)).toEqual(closed);
           // No block sets a margin, so none moves out of the card.
-          for (const block of blocks())
-            expect(['', '0', '0px']).toContain(getComputedStyle(block).margin);
+          for (const block of blocks()) {
+            const style = getComputedStyle(block);
+            for (const side of [
+              style.marginTop,
+              style.marginRight,
+              style.marginBottom,
+              style.marginLeft,
+            ])
+              expect(['', '0', '0px']).toContain(side);
+          }
         }
       });
 
