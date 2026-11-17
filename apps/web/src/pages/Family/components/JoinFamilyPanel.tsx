@@ -24,7 +24,7 @@ export function JoinFamilyPanel({ flow }: { flow: JoinFlow }) {
             <Button disabled={flow.joining} onClick={flow.confirm}>
               {flow.joining ? t('joining') : t('joinConfirm')}
             </Button>
-            <Button variant="ghost" onClick={flow.cancel}>
+            <Button variant="ghost" sx={{ height: 52 }} onClick={flow.cancel}>
               {t('cancel')}
             </Button>
           </Stack>

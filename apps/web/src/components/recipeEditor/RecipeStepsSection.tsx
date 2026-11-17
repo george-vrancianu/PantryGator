@@ -452,6 +452,7 @@ export function RecipeStepsSection({
                                   </Button>
                                   <Button
                                     variant="ghost"
+                                    sx={{ height: 52 }}
                                     onClick={() => setRemoving(null)}
                                   >
                                     {t('admin:recipe.steps.keep')}

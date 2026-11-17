@@ -6,7 +6,8 @@
  * the pre-paint script are all built from it. Deliberate differences from the
  * handoff file: `ThemeMeta` has no `fonts.google` query (the fonts are
  * self-hosted, fonts.css), the `pg-*` ingredient hues of the reading art stay
- * (the handoff dropped them), and `applyTheme` is not copied (the MUI provider
+ * (the handoff dropped them), `tex-ink` is dropped (the texture tiles bake the
+ * line colour in, canopy.reference.css:74), and `applyTheme` is not copied (the MUI provider
  * writes the variables). `resolveTheme` lives in appearance.ts.
  */
 

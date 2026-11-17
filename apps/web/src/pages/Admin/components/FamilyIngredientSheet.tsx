@@ -174,7 +174,11 @@ export function FamilyIngredientSheet({
           <Button onClick={() => setStep('promote')}>
             {t('review.promoteAction')}
           </Button>
-          <Button variant="secondary" onClick={() => setStep('merge')}>
+          <Button
+            variant="secondary"
+            sx={{ height: 52 }}
+            onClick={() => setStep('merge')}
+          >
             {t('review.mergeAction')}
           </Button>
         </>

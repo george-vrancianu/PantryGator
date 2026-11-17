@@ -77,7 +77,12 @@ export function EditBatchForm({ batch, onSaved, onCancel, onRemove }: Props) {
         <Button type="submit" disabled={!form.canSave}>
           {form.saving ? t('form.saving') : t('edit.save')}
         </Button>
-        <Button type="button" variant="ghost" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="ghost"
+          sx={{ height: 52 }}
+          onClick={onCancel}
+        >
           {t('form.cancel')}
         </Button>
       </Stack>
