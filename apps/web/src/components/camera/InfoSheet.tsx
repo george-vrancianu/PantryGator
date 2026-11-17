@@ -9,7 +9,7 @@ import {
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CAMERA_MODES, type CameraMode } from '../../lib/cameraMode';
-import { isBarcodeMode } from '../../lib/scanSession';
+import { isBarcodeMode } from '../../lib/cameraMode';
 import { glassFocusRing, shade, translucent } from './glass';
 import { insetBottom, useCameraFrame } from './CameraFrame';
 

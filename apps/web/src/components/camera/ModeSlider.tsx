@@ -11,7 +11,7 @@ import type { CameraMode } from '../../lib/cameraMode';
 import { haptic, HAPTIC_TICK_MS } from '../../lib/haptic';
 import { CreditPrice } from '../CreditPrice';
 import { useCreditPrice } from '../../lib/credits';
-import { isBarcodeMode } from '../../lib/scanSession';
+import { isBarcodeMode } from '../../lib/cameraMode';
 import { MODE_SLIDER_HEIGHT } from '../../lib/scanGuides';
 import {
   dragOffset,

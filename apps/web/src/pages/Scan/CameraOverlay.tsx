@@ -26,7 +26,7 @@ import { readBarcode, useCamera } from '../../lib/camera';
 import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
-import { isBarcodeMode } from '../../lib/scanSession';
+import { isBarcodeMode } from '../../lib/cameraMode';
 import { haptic, HAPTIC_READ_MS } from '../../lib/haptic';
 import { BarcodeResultCard } from '../../components/camera/BarcodeResultCard';
 import {

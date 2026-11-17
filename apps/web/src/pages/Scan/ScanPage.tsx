@@ -27,16 +27,13 @@ import { ShutterButton } from './components/ShutterButton';
 import { Viewfinder, useShotFeedback } from './components/Viewfinder';
 import { useFlyToStack } from '../../components/camera/FlyToStack';
 import { guideFocusPoint, useGuideRect } from './hooks/useGuideRect';
+import { isBarcodeMode } from '../../lib/cameraMode';
 import {
   FOOTER_HEIGHT,
   FOOTER_MIN_BOTTOM,
   type Rect,
 } from '../../lib/scanGuides';
-import {
-  failedCopyKey,
-  isBarcodeCard,
-  isBarcodeMode,
-} from '../../lib/scanSession';
+import { failedCopyKey, isBarcodeCard } from '../../lib/scanSession';
 import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
