@@ -21,7 +21,7 @@ import { holdLongEnough, pressDown } from './voiceHold';
  * A test that only needs the Gator bubble helpers imports `./voiceDom` (mock-free) instead; they
  * are re-exported here. This module throws if the real lib/voiceNote was already loaded when it
  * registered its mocks. Not detected: a real lib/microphone loaded first by another importer
- * (useMicPermission, voice) without lib/voiceNote; keep this import first.
+ * (useMicPermission, or a direct import) without lib/voiceNote; keep this import first.
  */
 export * from './voiceDom';
 
