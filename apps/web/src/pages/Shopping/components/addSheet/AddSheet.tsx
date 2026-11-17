@@ -25,7 +25,7 @@ export type AddSheetProps = {
 /**
  * The Add sheet: the standard X, and the ingredient search (no footer: items are added as the Member goes). It owns
  * everything that belongs to one opening (query, pick, typed amount and
- * unit, adds so far). All of it resets whenever the sheet opens; the lists
+ * unit). All of it resets whenever the sheet opens; the lists
  * polled behind it never reset it.
  */
 export function AddSheet({

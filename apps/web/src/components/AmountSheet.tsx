@@ -26,7 +26,7 @@ export type AmountSheetProps = {
   requireUnit?: boolean;
   /** The X, Escape and the scrim. */
   onClose: () => void;
-  /** Text of the red link under the buttons, e.g. `t('common:edit.removeFromList')`. */
+  /** Text of the red link under the amount field, e.g. `t('common:edit.removeFromList')`. */
   removeLabel: string;
   /**
    * The link was pressed. The sheet closes itself (through `onClose`) and calls this once it has

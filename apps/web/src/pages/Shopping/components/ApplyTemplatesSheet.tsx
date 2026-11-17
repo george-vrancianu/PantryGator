@@ -336,6 +336,13 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
             sx={{
               textAlign: 'center',
               color: tokens.color.muted,
+              // Stays above the pinned Import so the reason it is disabled never scrolls away.
+              position: 'sticky',
+              bottom: 0,
+              mx: '-20px',
+              px: '20px',
+              py: 1,
+              backgroundColor: tokens.color.bg,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
