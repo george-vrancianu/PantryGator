@@ -9,7 +9,9 @@ import {
   PlusIcon,
   tokens,
 } from '@pocket-pantry/ui';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBubbleBottomBound } from './layout/useBubbleBottomBound';
 import { familyRecipeHref } from '../lib/recipeHref';
 import type { AddState } from '../lib/addToFamily';
 
@@ -41,8 +43,11 @@ export function PreviewBar({
   onAdd,
 }: Props) {
   const { t } = useTranslation('recipes');
+  const bar = useRef<HTMLElement>(null);
+  useBubbleBottomBound(bar);
   return (
     <Box
+      ref={bar}
       component="nav"
       aria-label={t('preview.actions')}
       sx={{

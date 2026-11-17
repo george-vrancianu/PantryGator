@@ -6,7 +6,9 @@ import {
   plusBottomInset,
   tokens,
 } from '@pocket-pantry/ui';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBubbleBottomBound } from './layout/useBubbleBottomBound';
 
 type Props = {
   saveLabel: string;
@@ -26,8 +28,11 @@ export function ReviewActionBar({
   discardLabel,
 }: Props) {
   const { t } = useTranslation('review');
+  const bar = useRef<HTMLDivElement>(null);
+  useBubbleBottomBound(bar);
   return (
     <Box
+      ref={bar}
       sx={{
         position: 'fixed',
         left: 0,
@@ -37,8 +42,8 @@ export function ReviewActionBar({
         bgcolor: tokens.color.surface,
         borderTop: `1px solid ${tokens.color.line}`,
         pt: '12px',
-        pl: gutterLeft(20),
-        pr: gutterRight(20),
+        pl: gutterLeft(16),
+        pr: gutterRight(16),
         pb: plusBottomInset(24),
       }}
     >

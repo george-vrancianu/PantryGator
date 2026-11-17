@@ -46,14 +46,23 @@ import { useBubbleAnnouncement } from './useBubbleAnnouncement';
 export const BUBBLE_TOP_VAR = '--gator-bubble-top';
 const TOP_BOUND = `var(${BUBBLE_TOP_VAR}, calc(${SAFE_TOP} + 12px))`;
 
-/** The bubble's lowest spot: 16 above the Dock, or above the bottom safe area where there is none. */
+/**
+ * The CSS custom property that sets the bubble's lowest spot where there is no Dock: the height
+ * of a page's own fixed bottom bar, as a CSS length. A page that has such a bar sets it on
+ * `:root` while it is mounted (`useBubbleBottomBound`); without one the bubble keeps clear of the
+ * bottom safe area.
+ */
+export const BUBBLE_BOTTOM_VAR = '--gator-bubble-bottom';
+const BOTTOM_BASE = `var(${BUBBLE_BOTTOM_VAR}, ${SAFE_BOTTOM})`;
+
+/** The bubble's lowest spot: 16 above the Dock, or above the page's bottom bar (or the bottom safe area) where there is no Dock. */
 const restBottom = (dock: boolean) =>
   dock
     ? {
         xs: `calc(${DOCK_BOTTOM_CSS} + ${DOCK_HEIGHT.xs + 16}px)`,
         md: `calc(${DOCK_BOTTOM_CSS} + ${DOCK_HEIGHT.md + 16}px)`,
       }
-    : { xs: `calc(${SAFE_BOTTOM} + 16px)`, md: `calc(${SAFE_BOTTOM} + 16px)` };
+    : { xs: `calc(${BOTTOM_BASE} + 16px)`, md: `calc(${BOTTOM_BASE} + 16px)` };
 
 /** A finger or pointer must travel this far before a press becomes a drag, px. */
 const DRAG_SLOP = 6;

@@ -260,6 +260,8 @@ describe('GatorBubble placement', () => {
     expect(plainCss).toContain('safe-area-inset-bottom');
     expect(plainCss).toContain('16px');
     expect(plainCss).not.toContain('82px');
+    // A page's own bottom bar raises the lowest spot through this variable.
+    expect(plainCss).toContain('--gator-bubble-bottom');
   });
 });
 
