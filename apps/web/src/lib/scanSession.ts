@@ -4,7 +4,7 @@ import type { ScanLanguage } from '../i18n/resources';
 import type { DishGuess } from './plate';
 import { MAX_RECEIPT_SECTIONS } from './receiptSections';
 import { reviewLinesOf, type ReviewLine } from './review';
-import type { CameraMode } from './cameraMode';
+import { isBarcodeMode, type CameraMode } from './cameraMode';
 import type { ProposedLine } from './scan';
 import { clearScanLanguageOverride } from './sessionScanLanguage';
 
@@ -127,11 +127,10 @@ const waiting = (state: SessionState) => {
     : ({ status: 'queued' } as const);
 };
 
-/** Barcode cards are looked up at once and never wait for, or count against, the Scan Cap. */
-export const isBarcodeMode = (mode: CameraMode): mode is 'barcode' =>
-  mode === 'barcode';
-export const isBarcodeCard = (scan: Pick<SessionScan, 'mode'>) =>
-  isBarcodeMode(scan.mode);
+export { isBarcodeMode };
+export const isBarcodeCard = <T extends Pick<SessionScan, 'mode'>>(
+  scan: T,
+): scan is T & { mode: 'barcode' } => isBarcodeMode(scan.mode);
 
 /** The copy key (`failed` or `lookupFailed`) that says a card failed: a Barcode card did a lookup, not a read. */
 export const failedCopyKey = (scan: Pick<SessionScan, 'mode'>) =>

@@ -8,7 +8,7 @@ import {
 import { defaultExpiryDate, parseQuantity, type NewBatch } from './pantry';
 import { isIsoDate } from './dateFormat';
 import { isValidBarcode } from './gtin';
-import type { CameraMode } from './cameraMode';
+import { isBarcodeMode, type CameraMode } from './cameraMode';
 import type { ExclusionReason, ProposedLine } from './scan';
 import type { SessionScan } from './scanSession';
 
@@ -242,5 +242,7 @@ export const toSaveBatches = (
     .map(toNewBatch)
     // A Barcode Lookup's unmatched name carries no source, as in the add-Batch form (stored as manual).
     .map((batch) =>
-      batch.rawName && mode !== 'barcode' ? { ...batch, source: mode } : batch,
+      batch.rawName && !isBarcodeMode(mode)
+        ? { ...batch, source: mode }
+        : batch,
     );

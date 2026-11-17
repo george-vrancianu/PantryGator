@@ -32,7 +32,11 @@ import {
   FOOTER_MIN_BOTTOM,
   type Rect,
 } from '../../lib/scanGuides';
-import { failedCopyKey } from '../../lib/scanSession';
+import {
+  failedCopyKey,
+  isBarcodeCard,
+  isBarcodeMode,
+} from '../../lib/scanSession';
 import { useCameraOrientation } from '../../lib/useCameraOrientation';
 import { usePortraitLock } from '../../lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
@@ -58,7 +62,7 @@ export function ScanPage(props: ScanPageProps) {
     },
   });
   // Barcode cards are announced as barcodes, not photos.
-  const photos = screen.scans.filter((scan) => scan.mode !== 'barcode').length;
+  const photos = screen.scans.filter((scan) => !isBarcodeCard(scan)).length;
   const { videoRef } = screen.camera;
   const modeLabel = t(`mode.${screen.mode}`);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -129,10 +133,8 @@ export function ScanPage(props: ScanPageProps) {
           rect={guide}
           shot={shot}
           sliding={sliding}
-          scanLine={screen.mode === 'barcode'}
-          readCount={
-            screen.scans.filter((scan) => scan.mode === 'barcode').length
-          }
+          scanLine={isBarcodeMode(screen.mode)}
+          readCount={screen.scans.filter(isBarcodeCard).length}
         />
 
         <CameraTopBar
@@ -170,12 +172,12 @@ export function ScanPage(props: ScanPageProps) {
                 {screen.reading ? t('reading') : null}
                 {screen.camera.status === 'unavailable'
                   ? t('noCamera')
-                  : screen.mode === 'barcode'
+                  : isBarcodeMode(screen.mode)
                     ? t('overlay.pointAtBarcode')
                     : null}
               </Box>
               {/* Barcode Lookups are not Scans: the Scan Cap does not stop them. */}
-              {screen.capped && screen.mode !== 'barcode' ? (
+              {screen.capped && !isBarcodeMode(screen.mode) ? (
                 <Box sx={{ mt: 1 }}>
                   <Alert severity="warning">
                     {t(screen.outOfCredits ? 'outOfCredits' : 'capReached')}
@@ -198,7 +200,7 @@ export function ScanPage(props: ScanPageProps) {
           }
           shutter={
             <ShutterButton
-              ring={screen.mode === 'barcode'}
+              ring={isBarcodeMode(screen.mode)}
               disabled={
                 screen.controlsDisabled ||
                 screen.full ||
@@ -216,7 +218,7 @@ export function ScanPage(props: ScanPageProps) {
           }
           right={
             <ImportButton
-              hidden={screen.mode === 'barcode' || !screen.importOffered}
+              hidden={isBarcodeMode(screen.mode) || !screen.importOffered}
               disabled={screen.controlsDisabled}
               onFiles={screen.importFiles}
             />
