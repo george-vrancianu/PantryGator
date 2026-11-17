@@ -32,11 +32,12 @@ export function TileSection({
       <Box
         sx={{
           display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
-          p: '12px 14px 6px',
-          fontSize: 11.5,
-          fontWeight: 600,
-          letterSpacing: '0.04em',
+          m: '12px 2px 4px',
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: color.muted,
         }}
@@ -49,18 +50,26 @@ export function TileSection({
           {heading}
         </Box>
         {count !== undefined || action ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {count !== undefined ? (
-              <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <Box
+                component="span"
+                sx={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: 'normal',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
                 {count}
-              </span>
+              </Box>
             ) : null}
             {action}
           </Box>
         ) : null}
       </Box>
       {tiles.length === 0 && none ? (
-        <Box sx={{ p: '4px 14px 14px', fontSize: 13, color: color.muted }}>
+        <Box sx={{ p: '4px 2px 14px', fontSize: 13, color: color.muted }}>
           {none}
         </Box>
       ) : (
@@ -68,8 +77,8 @@ export function TileSection({
           sx={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-            gap: '8px',
-            p: '4px 14px 14px',
+            gap: '10px',
+            pb: '14px',
           }}
         >
           {tiles}

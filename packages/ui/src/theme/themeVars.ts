@@ -49,6 +49,8 @@ export const radius = {
   bubbleBadge: '10px',
   /** The Gator bubble's speech label. */
   bubbleLabel: '8px',
+  /** The sheet's grab handle. */
+  handle: '2px',
   /** The Canopy sheet: rounded on top only. */
   sheetTop: `${pp('r-sheet')} ${pp('r-sheet')} 0 0`,
 } as const;
@@ -82,6 +84,8 @@ export const canopy = {
   sheetBg: pp('sheet-bg'),
   /** Upward shadow onto the Canopy plus a 1px inner highlight. */
   sheetShadow: pp('shadow-sheet'),
+  /** The dim behind a bottom sheet. */
+  scrim: pp('scrim'),
   /** The 170px gradient under the Dock, so lists dissolve. */
   sheetFade: pp('sheet-fade'),
   /** The working sheet's top corners. */
@@ -111,6 +115,12 @@ export const canopy = {
   /** The raised segment of a track on the header (Settings You / Family): fixed cream with dark text in both Themes, as the Canopy is always dark. */
   segOn: '#F8F7F2',
   segOnInk: '#141A16',
+  /** The soft gold glow behind Gator on the Intro, and the blurred shadow under it. */
+  glow: 'radial-gradient(circle, rgba(232,203,124,.20) 0%, rgba(232,203,124,0) 68%)',
+  floorShadow: 'rgba(0,0,0,.5)',
+  /** The dark green tile behind Gator's face in a sheet header (Voice Review), always dark. */
+  gatorTile: 'radial-gradient(circle at 50% 28%, #3A6E50 0%, #173323 100%)',
+  gatorTileShadow: '0 8px 14px -8px rgba(3,14,8,.7)',
   /** A progress bar's track on the header, with its inner shadow. */
   progressTrack: 'rgba(255,255,255,.16)',
   progressShadow: 'inset 0 1px 1px rgba(0,0,0,.3)',

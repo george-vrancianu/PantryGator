@@ -1,17 +1,27 @@
 import {
+  bodyFont,
   Box,
   Button,
+  canopy,
+  color as themeColor,
+  displayType,
   Gator,
   Link,
+  radius,
   SAFE_TOP,
-  Stack,
   Typography,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { CanopyTexture } from '../../components/layout/CanopyTexture';
 import { IntroLook } from '../../components/IntroLook';
 import { INTRO_PATHS } from '../../lib/intro';
 import { useGatorAlt } from '../../lib/useGatorAlt';
+
+/** How far the sheet's top edge overlaps the Canopy (the board draws 74 under the sheet). */
+const UNDER_SHEET = 74;
+/** Between Gator's feet and the sheet's top edge. */
+const SHEET_GAP = 18;
 
 /**
  * What a signed-out visitor sees on any route. "I already have an account" opens Log in and carries the
@@ -26,52 +36,163 @@ export function LaunchPage() {
   const logIn = INTRO_PATHS['log-in'];
 
   return (
-    <IntroLook>
+    <IntroLook ground="canopy">
       <Box
-        component="main"
         sx={{
-          minHeight: `calc(100vh - ${SAFE_TOP})`,
-          boxSizing: 'border-box',
+          minHeight: '100dvh',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: '24px',
-          pt: '64px',
-          pb: '40px',
         }}
       >
-        <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
-          <Gator
-            mood="shopping-buddy"
-            size={280}
-            loop="signature"
-            alt={gatorAlt('shopping-buddy')}
-          />
-          <Typography variant="h1">{t('common:appName')}</Typography>
-          <Typography color="text.secondary">
-            {t('onboarding:launch.tagline')}
-            <br />
-            {t('onboarding:launch.taglineTwo')}
-          </Typography>
-        </Stack>
-        <Stack
-          spacing={2}
-          sx={{ width: '100%', maxWidth: 420, alignItems: 'center' }}
+        {/* Two-tone (Canopy handoff 7.8): the Canopy with its texture, the brand lockup and Gator, then the sheet. */}
+        <Box
+          data-region="canopy"
+          sx={{
+            position: 'relative',
+            overflow: 'hidden',
+            flex: '1 0 auto',
+            background: canopy.bg,
+            backgroundColor: canopy.base,
+            color: canopy.ink,
+            pt: `calc(${SAFE_TOP} + 10px)`,
+            pb: `${UNDER_SHEET + SHEET_GAP}px`,
+          }}
         >
-          <Button fullWidth href={INTRO_PATHS.languages}>
-            {t('onboarding:launch.getStarted')}
-          </Button>
-          <Link
-            href={logIn}
-            onClick={(event) => {
-              event.preventDefault();
-              void navigate(logIn, { state: { from } });
+          <CanopyTexture texture="home" />
+          <Box
+            aria-hidden
+            sx={{
+              position: 'absolute',
+              left: '50%',
+              top: 176,
+              width: 360,
+              height: 360,
+              ml: '-180px',
+              borderRadius: radius.inherit,
+              background: canopy.glow,
+            }}
+          />
+          <Box
+            sx={{
+              position: 'relative',
+              px: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '11px',
             }}
           >
-            {t('onboarding:launch.haveAccount')}
-          </Link>
-        </Stack>
+            <Gator mood="app-icon" size={38} decorative />
+            <Typography
+              component="h1"
+              sx={{
+                ...displayType,
+                fontSize: 19,
+                fontWeight: 700,
+                letterSpacing: '-0.03em',
+                lineHeight: 1,
+              }}
+            >
+              {t('common:appName')}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              position: 'relative',
+              mt: '24px',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Box
+              aria-hidden
+              sx={{
+                position: 'absolute',
+                left: '50%',
+                bottom: -10,
+                width: 240,
+                height: 26,
+                ml: '-120px',
+                borderRadius: radius.inherit,
+                backgroundColor: canopy.floorShadow,
+                filter: 'blur(10px)',
+              }}
+            />
+            <Gator
+              mood="shopping-buddy"
+              size={336}
+              loop="signature"
+              alt={gatorAlt('shopping-buddy')}
+            />
+          </Box>
+        </Box>
+        <Box
+          component="main"
+          sx={{
+            position: 'relative',
+            zIndex: 1,
+            mt: `-${UNDER_SHEET}px`,
+            boxSizing: 'border-box',
+            p: '32px 24px 0',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '28px',
+            background: canopy.sheetBg,
+            borderRadius: radius.sheetTop,
+            boxShadow: canopy.sheetShadow,
+            color: 'text.primary',
+          }}
+        >
+          <Typography
+            sx={{
+              ...displayType,
+              fontSize: 31,
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              lineHeight: 1.08,
+              textWrap: 'balance',
+            }}
+          >
+            {t('onboarding:launch.tagline')} {t('onboarding:launch.taglineTwo')}
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              pb: '34px',
+              width: '100%',
+              maxWidth: 420,
+              alignSelf: 'center',
+            }}
+          >
+            <Button
+              fullWidth
+              href={INTRO_PATHS.languages}
+              sx={{ height: 56, borderRadius: radius.btn, fontSize: 16 }}
+            >
+              {t('onboarding:launch.getStarted')}
+            </Button>
+            <Link
+              href={logIn}
+              onClick={(event) => {
+                event.preventDefault();
+                void navigate(logIn, { state: { from } });
+              }}
+              sx={{
+                height: 48,
+                display: 'grid',
+                placeItems: 'center',
+                fontFamily: bodyFont,
+                fontSize: 15,
+                fontWeight: 600,
+                color: themeColor.ink2,
+                textDecoration: 'none',
+              }}
+            >
+              {t('onboarding:launch.haveAccount')}
+            </Link>
+          </Box>
+        </Box>
       </Box>
     </IntroLook>
   );

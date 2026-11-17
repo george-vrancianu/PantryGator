@@ -2,9 +2,10 @@ import {
   Box,
   Sheet,
   Typography,
+  canopy,
+  dock,
   displayType,
   radius,
-  tokens,
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,21 +59,23 @@ export function AddSheet({
     }
   }
   const header = (
-    <Box sx={{ p: '10px 16px 10px 20px' }}>
+    <Box sx={{ p: '12px 16px 0' }}>
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 1.5,
-          mb: 1.5,
         }}
       >
         <Typography
           component="h2"
           sx={{
             ...displayType,
-            fontSize: 22,
+            fontSize: 25,
+            fontWeight: 800,
+            letterSpacing: '-0.04em',
+            lineHeight: 1,
           }}
         >
           {t('addSheet.title')}
@@ -87,16 +90,17 @@ export function AddSheet({
               : t('sheet.done')
           }
           sx={{
-            height: 36,
-            px: 2,
+            height: 44,
+            px: '18px',
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            border: 0,
-            borderRadius: radius.pill,
+            border: `1px solid ${dock.line}`,
+            borderRadius: radius.control,
             cursor: 'pointer',
-            backgroundColor: tokens.color.ink,
-            color: tokens.color.bg,
+            background: dock.bg,
+            boxShadow: dock.shadow,
+            color: dock.on,
             font: 'inherit',
             fontSize: 14,
             fontWeight: 700,
@@ -112,9 +116,9 @@ export function AddSheet({
                 px: '5px',
                 display: 'grid',
                 placeItems: 'center',
-                borderRadius: radius.pill,
-                backgroundColor: tokens.color.bg,
-                color: tokens.color.ink,
+                borderRadius: radius.tag,
+                backgroundColor: dock.on,
+                color: canopy.segOnInk,
                 fontSize: 11.5,
                 fontWeight: 700,
               }}
@@ -137,7 +141,7 @@ export function AddSheet({
       header={header}
       initialFocus={searchRef}
     >
-      <Box sx={{ p: '4px 20px 24px' }}>
+      <Box sx={{ p: '16px 16px 24px' }}>
         <IngredientsSearch
           state={ingredients}
           onStateChange={setIngredients}

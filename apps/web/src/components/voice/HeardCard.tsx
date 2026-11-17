@@ -4,6 +4,8 @@ import {
   QuoteIcon,
   Typography,
   radius,
+  shadow,
+  color,
   focusRing,
   palette,
 } from '@pocket-pantry/ui';
@@ -42,9 +44,9 @@ export function HeardCard({
   return (
     <Box
       sx={{
-        backgroundColor: palette('background-paper'),
-        border: `1px solid ${palette('pp-line')}`,
-        borderRadius: radius.card,
+        backgroundColor: color.fieldBg,
+        boxShadow: shadow.recess,
+        borderRadius: radius.control,
         overflow: 'hidden',
       }}
     >
@@ -122,7 +124,7 @@ export function HeardCard({
           <>
             <Typography
               lang={language}
-              sx={{ fontSize: 16, fontWeight: 500, lineHeight: 1.45 }}
+              sx={{ fontSize: 14, fontStyle: 'italic', lineHeight: 1.45 }}
             >
               {transcript}
             </Typography>
@@ -155,9 +157,9 @@ export function MergedHeardCard({ notes }: { notes: MergedNote[] }) {
       component="section"
       aria-label={t('voice:review.heard')}
       sx={{
-        backgroundColor: palette('background-paper'),
-        border: `1px solid ${palette('pp-line')}`,
-        borderRadius: radius.card,
+        backgroundColor: color.fieldBg,
+        boxShadow: shadow.recess,
+        borderRadius: radius.control,
         p: '12px 14px',
       }}
     >
