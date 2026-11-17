@@ -212,7 +212,7 @@ export function AddToPantrySheet({
                   gap: '4px',
                   height: 32,
                   p: '0 10px 0 4px',
-                  borderRadius: '999px',
+                  borderRadius: radius.chip,
                   backgroundColor: 'pp.accentTint',
                   color: 'pp.accentOnTint',
                   fontSize: 12.5,

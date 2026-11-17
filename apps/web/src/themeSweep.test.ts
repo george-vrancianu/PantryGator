@@ -11,11 +11,22 @@ const sources = import.meta.glob<string>(
   { query: '?raw', import: 'default', eager: true },
 );
 
+/** The UI package's source too: nothing is a pill, in the app or in the atoms. */
+const uiSources = import.meta.glob<string>(
+  [
+    '../../../packages/ui/src/**/*.{ts,tsx}',
+    '!../../../packages/ui/src/**/*.test.{ts,tsx}',
+    '!../../../packages/ui/src/**/*.stories.{ts,tsx}',
+    '!../../../packages/ui/src/test/**',
+  ],
+  { query: '?raw', import: 'default', eager: true },
+);
+
 type Rule = { name: string; find: (line: string) => boolean };
 
-/** A `borderRadius` value that follows the Theme, or is a shape (circle, pill, square). */
+/** A `borderRadius` value that follows the Theme, or is a shape (circle, square). */
 const THEMED_RADIUS =
-  /^(?:radius\.\w+|[A-Z_]*RADIUS|0|'50%'|'999px'|`[^`]*(?:var\(--pp-r-|\$\{radius\.)[^`]*`|'[^']*var\(--pp-r-[^']*'|\w+\(.*\))$/;
+  /^(?:radius\.\w+|[A-Z_]*RADIUS|0|'50%'|`[^`]*(?:var\(--pp-r-|\$\{radius\.)[^`]*`|'[^']*var\(--pp-r-[^']*'|\w+\(.*\))$/;
 
 const rules: Rule[] = [
   {
@@ -57,6 +68,20 @@ function offences() {
   return found;
 }
 
+/** A pill: a radius so large that any size becomes a capsule (the token `radius.pill` or a huge literal). */
+const PILL =
+  /\bradius\.pill\b|\b9{3,}(?:px)?\b|\bborderRadius:\s*['"`](?:pill|full)/;
+
+function pillOffences() {
+  const found: string[] = [];
+  for (const [path, source] of Object.entries({ ...sources, ...uiSources })) {
+    source.split('\n').forEach((line, index) => {
+      if (PILL.test(line)) found.push(`${path}:${index + 1} ${line.trim()}`);
+    });
+  }
+  return found;
+}
+
 describe('Theme token sweep', () => {
   it('scans the app source', () => {
     expect(Object.keys(sources).length).toBeGreaterThan(50);
@@ -64,5 +89,11 @@ describe('Theme token sweep', () => {
 
   it('leaves no hard-coded colours, radii or old font names', () => {
     expect(offences()).toEqual([]);
+  });
+
+  // Nothing is a pill: the only circles are the health hub and the Gator bubble ('50%').
+  it('uses no pill radius in the app or the UI package', () => {
+    expect(Object.keys(uiSources).length).toBeGreaterThan(50);
+    expect(pillOffences()).toEqual([]);
   });
 });

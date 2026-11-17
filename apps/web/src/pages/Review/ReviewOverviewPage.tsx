@@ -463,7 +463,7 @@ export function ReviewOverviewPage({
                     sx={{
                       px: '10px',
                       py: '2px',
-                      borderRadius: radius.pill,
+                      borderRadius: radius.chip,
                       fontSize: 12,
                       backgroundColor: tokens.color.accentTint,
                       color: tokens.color.accentOnTint,

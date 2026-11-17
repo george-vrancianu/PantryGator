@@ -39,10 +39,8 @@ export const radius = {
   bar: '1px',
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
-  /** Small labelled pills: the gain pill and the done pills. */
+  /** Small labelled tags: the gain tag and the done tags. */
   tag: pp('r-tag'),
-  /** Tags and pill buttons: round in every Theme. */
-  pill: '999px',
   /** A layer that takes its parent's corners (the Health lamp's glow layers). */
   inherit: 'inherit',
   /** The Health lamp's case. */

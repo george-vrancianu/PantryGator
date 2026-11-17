@@ -234,7 +234,7 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
           height: 36,
           px: 2,
           border: 0,
-          borderRadius: radius.pill,
+          borderRadius: radius.control,
           cursor: 'pointer',
           backgroundColor: tokens.color.ink,
           color: tokens.color.bg,
@@ -699,7 +699,7 @@ function TemplateLines({
                 sx={{
                   px: 1.25,
                   py: 0.25,
-                  borderRadius: radius.pill,
+                  borderRadius: radius.tag,
                   fontSize: 11.5,
                   fontWeight: 700,
                   color: tag.fg,

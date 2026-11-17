@@ -244,7 +244,7 @@ export function RollUpRow({
                       fontWeight: 700,
                       px: '8px',
                       py: '2px',
-                      borderRadius: radius.pill,
+                      borderRadius: radius.tag,
                       bgcolor: tokens.color.soonBg,
                       color: tokens.color.soonFg,
                     }}

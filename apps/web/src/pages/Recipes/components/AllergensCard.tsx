@@ -54,7 +54,7 @@ export function AllergensCard({ allergens }: { allergens: RecipeAllergens }) {
                       fontWeight: 700,
                       px: '10px',
                       py: '2px',
-                      borderRadius: radius.pill,
+                      borderRadius: radius.tag,
                       bgcolor: tokens.color.soonBg,
                       color: tokens.color.soonFg,
                     }}

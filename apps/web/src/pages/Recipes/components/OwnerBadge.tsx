@@ -17,7 +17,7 @@ export function OwnerBadge({ owner }: { owner: RecipeOwner }) {
         whiteSpace: 'nowrap',
         px: '8px',
         py: '3px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         bgcolor: tokens.color.butter,
         color: tokens.color.butterInk,
         fontSize: 11.5,

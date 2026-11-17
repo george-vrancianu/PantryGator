@@ -180,7 +180,7 @@ function IngredientRow({
                         fontWeight: 700,
                         px: '8px',
                         py: '1px',
-                        borderRadius: radius.pill,
+                        borderRadius: radius.tag,
                         bgcolor:
                           severity === 'strong'
                             ? tokens.color.urgentBg

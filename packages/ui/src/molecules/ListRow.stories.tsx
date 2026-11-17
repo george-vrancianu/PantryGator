@@ -53,7 +53,7 @@ const tag = (
       bgcolor: 'primary.light',
       px: 1,
       py: 0.5,
-      borderRadius: radius.pill,
+      borderRadius: radius.tag,
     }}
   >
     Unmatched
