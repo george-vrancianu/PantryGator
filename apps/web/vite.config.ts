@@ -22,7 +22,9 @@ function prePaintTheme(): Plugin {
 
 // The app calls `/api` on its own origin, so a phone or HTTPS tunnel only needs Vite's port.
 // Only the API's own prefix: a route like `/apiary` stays with the app.
-const proxy = { '^/api(/|\\?|$)': 'http://localhost:3000' };
+const proxy = {
+  '^/api(/|\\?|$)': `http://localhost:${process.env.API_PORT ?? 3000}`,
+};
 // HTTPS tunnels, which iPhone Safari needs before it grants the camera.
 const allowedHosts = [
   '.trycloudflare.com',
