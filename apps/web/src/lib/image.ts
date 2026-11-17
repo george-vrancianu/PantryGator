@@ -8,11 +8,12 @@ export type { Rect };
 /** Longest edge sent to the API. Plenty for reading a label, small enough for a phone connection. */
 export const MAX_IMAGE_EDGE = 1600;
 /**
- * Longest edge of a barcode card's thumbnail, which is never uploaded. The largest place it shows is
- * the fly-to-stack flight, which starts at the barcode guide (80% of a phone's width, about 320 CSS px)
- * and is drawn at that size: 640 px keeps it sharp there on a 2x screen and costs a sixth of the pixels.
+ * Longest edge of a barcode card's stored thumbnail, which is never uploaded. It shows in the photo
+ * stack (54 px) and the Review card (56 x 72 px, `cover`): at 3x that needs a 216 px short edge for a
+ * landscape frame, so about 384 on the long edge; 400 leaves a little room. The flight to the stack
+ * draws the frame much larger and uses a full-size image instead.
  */
-export const BARCODE_THUMBNAIL_EDGE = 640;
+export const BARCODE_THUMBNAIL_EDGE = 400;
 const JPEG_QUALITY = 0.8;
 
 /** The size to scale `width` x `height` to so the longest edge is at most `maxEdge`. Never upscales. */

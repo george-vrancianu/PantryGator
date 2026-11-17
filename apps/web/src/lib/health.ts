@@ -155,14 +155,13 @@ function supplyState(
 /** What each Ingredient in Supply earns: the credit by its stock, Running low and Shopping List state. */
 function supplyCredits(input: HealthInput): number[] {
   const stockedSet = stockedIds(input);
-  const stocked = [...stockedSet];
   const missing = new Set(
     input.staples
       .map((staple) => staple.ingredientId)
       .filter((id) => isMissingStaple(id, input, stockedSet)),
   );
   return [
-    ...stocked.map((id) => SUPPLY_CREDIT[supplyState(id, true, input)]),
+    ...[...stockedSet].map((id) => SUPPLY_CREDIT[supplyState(id, true, input)]),
     ...[...missing].map((id) => SUPPLY_CREDIT[supplyState(id, false, input)]),
   ];
 }

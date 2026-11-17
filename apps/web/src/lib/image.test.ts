@@ -309,7 +309,10 @@ describe('the photo turn before the crop under the guide', () => {
 });
 
 describe('resizeImage', () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
 
   async function sizeOf(maxEdge?: number) {
     vi.stubGlobal(
@@ -326,7 +329,6 @@ describe('resizeImage', () => {
       canvas as unknown as HTMLCanvasElement,
     );
     await resizeImage(new Blob(['x']), 0, maxEdge);
-    vi.restoreAllMocks();
     return { width: canvas.width, height: canvas.height };
   }
 
@@ -335,6 +337,6 @@ describe('resizeImage', () => {
   });
 
   it('fits the longest edge to a smaller maxEdge when given one', async () => {
-    expect(await sizeOf(640)).toEqual({ width: 640, height: 480 });
+    expect(await sizeOf(400)).toEqual({ width: 400, height: 300 });
   });
 });

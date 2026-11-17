@@ -311,9 +311,14 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     const epoch = scanEpoch.current;
     // The card's thumbnail is the frame the code was read from, frozen now.
     const frame = await camera.capture();
-    const thumbnail = frame
-      ? await resizeImage(frame, 0, BARCODE_THUMBNAIL_EDGE).catch(() => '')
-      : '';
+    // The stored thumbnail is small; the flight to the stack draws the frame at the guide's size, so
+    // it keeps the full-size image.
+    const [thumbnail, flightImage] = frame
+      ? await Promise.all([
+          resizeImage(frame, 0, BARCODE_THUMBNAIL_EDGE).catch(() => ''),
+          resizeImage(frame).catch(() => ''),
+        ])
+      : ['', ''];
     if (epoch !== scanEpoch.current) {
       lastCode.current = null;
       return;
@@ -331,7 +336,7 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     });
     haptic(HAPTIC_READ_MS);
     setBarcodesRead((n) => n + 1);
-    cardAdded.current?.(thumbnail, 'barcode');
+    cardAdded.current?.(flightImage, 'barcode');
     // The lookup starts at once, outside the read slots.
     readScans();
   };
