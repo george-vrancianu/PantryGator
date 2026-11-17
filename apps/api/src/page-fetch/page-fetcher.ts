@@ -119,7 +119,7 @@ export const STRICT_PAGE_FETCHER_OPTIONS: Readonly<PageFetcherOptions> =
   });
 
 export const PAGE_FETCHER_USER_AGENT =
-  'PocketPantry-RecipeFromLink/1.0 (+https://github.com/george-vrancianu/pocketPantry)';
+  'PocketPantry-RecipeFromLink/1.0 (+https://github.com/george-vrancianu/PantryGator)';
 
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const HTML_TYPES = new Set(['text/html', 'application/xhtml+xml']);
