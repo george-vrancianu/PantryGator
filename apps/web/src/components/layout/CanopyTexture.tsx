@@ -9,8 +9,6 @@ import {
 } from './canopyTexture';
 import { TRANSITION_MS } from './timing';
 
-// Tile URLs go inside `url("…")`: a build inlines the small tiles as data URIs holding `'`, which
-// an unquoted `url()` rejects, dropping the whole declaration.
 const MASK = mask.textureFade;
 const WINDOW = mask.textureWindow;
 
@@ -146,6 +144,8 @@ export function CanopyTexture({ texture }: { texture?: TextureName } = {}) {
                 component="i"
                 sx={{
                   ...wideSx,
+                  // Quoted: a build inlines the tiles as data URIs holding `'` and `(`, which an
+                  // unquoted `url()` rejects, dropping the whole declaration.
                   backgroundImage: `url("${t.tile}")`,
                   backgroundSize: `${t.width}px ${t.height}px`,
                   opacity: t.opacity,
