@@ -24,7 +24,7 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
       columns={columns}
       isLoading={batches.isPending}
       error={batches.error ? translateApiError(t, batches.error) : null}
-      padding="0 16px 2px"
+      padding={batches.isPending || batches.error ? undefined : '0 16px 2px'}
     >
       <Box
         sx={{

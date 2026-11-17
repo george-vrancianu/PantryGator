@@ -62,6 +62,7 @@ export function RecipeFilters({
             label={searchLabel ?? t('search')}
             placeholder={searchLabel ?? t('search')}
             value={value.search}
+            maxLength={100}
             onChange={(search) => onChange({ ...value, search })}
           />
         </Box>

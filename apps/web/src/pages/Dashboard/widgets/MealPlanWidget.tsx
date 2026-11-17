@@ -242,43 +242,42 @@ export function MealPlanWidget({ columns }: WidgetProps) {
         ref={rootRef}
         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '8px',
-            minHeight: 22,
-          }}
-        >
-          <Box
-            component={Link}
-            to={view?.plan ? `/meal-plans/${view.plan.id}` : '/meal-plans'}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              minWidth: 0,
-              textDecoration: 'none',
-              fontSize: 11,
-              lineHeight: 1,
-              fontWeight: 700,
-              letterSpacing: '.1em',
-              textTransform: 'uppercase',
-              color: tokens.color.muted,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <CalendarIcon size={14} />
-            {planned
-              ? t('mealPlan.title', { count: days.length })
-              : t('mealPlan.titleEmpty')}
-          </Box>
-          {view ? <PlanTagView tag={view.tag} /> : null}
-        </Box>
-
         {planned ? (
           <>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '8px',
+                minHeight: 22,
+              }}
+            >
+              <Box
+                component={Link}
+                to={view?.plan ? `/meal-plans/${view.plan.id}` : '/meal-plans'}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  minWidth: 0,
+                  minHeight: 44,
+                  my: '-11px',
+                  textDecoration: 'none',
+                  fontSize: 11,
+                  lineHeight: 1,
+                  fontWeight: 700,
+                  letterSpacing: '.1em',
+                  textTransform: 'uppercase',
+                  color: tokens.color.muted,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <CalendarIcon size={14} />
+                {t('mealPlan.title', { count: days.length })}
+              </Box>
+              {view ? <PlanTagView tag={view.tag} /> : null}
+            </Box>
             <Box
               sx={{
                 display: 'grid',
@@ -502,46 +501,91 @@ export function MealPlanWidget({ columns }: WidgetProps) {
               </Box>
             ) : null}
           </>
-        ) : view ? (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '10px',
-              fontSize: 15,
-              fontWeight: 600,
-              color: tokens.color.ink,
-            }}
-          >
-            {view.nextPlanStart && view.nextPlanId ? (
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Box
+              aria-hidden="true"
+              sx={{
+                width: 38,
+                height: 38,
+                flex: 'none',
+                display: 'grid',
+                placeItems: 'center',
+                borderRadius: radius.control,
+                bgcolor: tokens.color.accentTint,
+                color: tokens.color.accentOnTint,
+              }}
+            >
+              <CalendarIcon size={18} />
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box
                 component={Link}
-                to={`/meal-plans/${view.nextPlanId}`}
-                sx={emptyAction}
+                to={view?.plan ? `/meal-plans/${view.plan.id}` : '/meal-plans'}
+                sx={{
+                  ...plainAction,
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: 44,
+                  my: '-13px',
+                  fontSize: 11,
+                  lineHeight: 1,
+                  fontWeight: 700,
+                  letterSpacing: '.1em',
+                  textTransform: 'uppercase',
+                  color: tokens.color.muted,
+                }}
               >
-                {t('mealPlan.nextPlanStarts', {
-                  date: fullDate(language, view.nextPlanStart),
-                })}
+                {t('mealPlan.titleEmpty')}
               </Box>
-            ) : (
-              <>
-                <span>{t('mealPlan.nothingThisWeek')}</span>
+              {view?.nextPlanStart && view.nextPlanId ? (
                 <Box
                   component={Link}
-                  to={
-                    coversToday
-                      ? `/meal-plans/${view.plan?.id}`
-                      : `/meal-plans/new?start=${todayIso}`
-                  }
-                  sx={emptyAction}
+                  to={`/meal-plans/${view.nextPlanId}`}
+                  sx={{
+                    ...emptyAction,
+                    justifyContent: 'flex-start',
+                    my: '-13px',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: tokens.color.ink,
+                  }}
                 >
-                  {t('mealPlan.planWeek')}
+                  {t('mealPlan.nextPlanStarts', {
+                    date: fullDate(language, view.nextPlanStart),
+                  })}
                 </Box>
-              </>
-            )}
+              ) : view ? (
+                <Box
+                  component="span"
+                  sx={{
+                    display: 'block',
+                    mt: '4px',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: tokens.color.ink,
+                  }}
+                >
+                  {t('mealPlan.nothingThisWeek')}
+                </Box>
+              ) : null}
+            </Box>
+            {view && !(view.nextPlanStart && view.nextPlanId) ? (
+              <Box
+                component={Link}
+                to={
+                  coversToday
+                    ? `/meal-plans/${view.plan?.id}`
+                    : `/meal-plans/new?start=${todayIso}`
+                }
+                sx={emptyAction}
+              >
+                {t('mealPlan.planWeek')}
+                <span aria-hidden="true"> →</span>
+              </Box>
+            ) : null}
           </Box>
-        ) : null}
+        )}
       </Box>
       {openDay ? (
         <MealPlanPopover

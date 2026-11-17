@@ -1,4 +1,10 @@
-import { Alert, SegmentedControl, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Alert,
+  color,
+  SegmentedControl,
+  Stack,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +44,12 @@ export function LanguagePreferencePicker<Language extends string>({
       <Typography
         id={captionId}
         component="div"
-        sx={{ fontSize: 13, fontWeight: 700, px: '2px' }}
+        sx={{
+          fontSize: 13,
+          fontWeight: 700,
+          px: '2px',
+          color: color.ink2,
+        }}
       >
         {label}
       </Typography>

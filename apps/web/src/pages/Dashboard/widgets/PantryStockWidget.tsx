@@ -1,4 +1,4 @@
-import { Box, PantryIcon, stockBar, tokens } from '@pocket-pantry/ui';
+import { Box, PantryIcon, radius, stockBar, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { groupByLocation, useBatches } from '../../../lib/pantry';
@@ -59,7 +59,7 @@ export function PantryStockWidget({ size, columns }: WidgetProps) {
             sx={{
               flexGrow: count,
               bgcolor: SEGMENT_COLORS[index % SEGMENT_COLORS.length],
-              borderRadius: '1px',
+              borderRadius: radius.bar,
             }}
           />
         ))}

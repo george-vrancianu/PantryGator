@@ -1,4 +1,4 @@
-import { Box, canopy, tokens } from '@pocket-pantry/ui';
+import { Box, canopy, displayType, radius, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
 /**
@@ -24,7 +24,7 @@ export function CountBadge({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '999px',
+        borderRadius: tone === 'gold' ? radius.badge : radius.pill,
         bgcolor:
           tone === 'gold'
             ? canopy.gold
@@ -37,8 +37,9 @@ export function CountBadge({
             : tone === 'solid'
               ? 'var(--mui-palette-pp-accentInk)'
               : tokens.color.accentOnTint,
+        fontFamily: tone === 'gold' ? displayType.fontFamily : undefined,
         fontSize: 11.5,
-        fontWeight: 700,
+        fontWeight: tone === 'gold' ? 800 : 700,
         fontVariantNumeric: 'tabular-nums',
       }}
     >

@@ -31,6 +31,10 @@ export const radius = {
   btn: pp('r-btn'),
   /** The raised segment inside a Canopy track. */
   seg: '5px',
+  /** The Canopy's count badge (Tags). */
+  badge: '4px',
+  /** A segment of the 4 px stock bar. */
+  bar: '1px',
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
   /** Small labelled pills: the gain pill and the done pills. */
@@ -185,6 +189,8 @@ export const color = {
   /** Text and icons on an `accentTint` fill. */
   accentOnTint: palette('pp-accentOnTint'),
   lineStrong: palette('pp-lineStrong'),
+  /** The second ink: captions and unselected text a step softer than the ink. */
+  ink2: pp('ink-2'),
   /** The recording colour (Voice Notes): the urgent foreground. */
   rec: palette('error-main'),
   box: palette('pp-box'),

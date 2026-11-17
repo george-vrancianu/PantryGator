@@ -688,7 +688,7 @@ describe('ExplorePage in the Canopy layout', () => {
     ).toBeInTheDocument();
     expect(
       within(header).getByRole('searchbox', { name: 'Search all Recipes' }),
-    ).toBeInTheDocument();
+    ).toHaveAttribute('maxlength', '100');
     expect(
       within(header).getByRole('button', { name: 'Filter by Tags' }),
     ).toBeInTheDocument();

@@ -20,4 +20,20 @@ describe('CanopySearchField', () => {
     fireEvent.change(field, { target: { value: 'milk' } });
     expect(onChange).toHaveBeenCalledWith('milk');
   });
+
+  it('caps the length when asked', () => {
+    render(
+      <CanopySearchField
+        label="Search"
+        value=""
+        onChange={() => {}}
+        maxLength={100}
+      />,
+    );
+    expect(
+      screen
+        .getByRole('searchbox', { name: 'Search' })
+        .getAttribute('maxlength'),
+    ).toBe('100');
+  });
 });
