@@ -15,6 +15,7 @@ export {
   stockBar,
   segOff,
   color,
+  control,
   displayType,
   nestedRadius,
   palette,
@@ -134,6 +135,7 @@ export {
   type TagChipSize,
 } from './atoms/TagChip';
 export { TextField, type TextFieldProps } from './atoms/TextField';
+export { StapleStar, type StapleStarProps } from './atoms/StapleStar';
 export { Toggle, type ToggleProps } from './atoms/Toggle';
 export { Typography, type TypographyProps } from './atoms/Typography';
 export {

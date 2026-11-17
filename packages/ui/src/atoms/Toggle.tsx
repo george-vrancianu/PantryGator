@@ -1,6 +1,6 @@
 import ButtonBase, { type ButtonBaseProps } from '@mui/material/ButtonBase';
 import { focusRing } from '../theme/focusRing';
-import { themePalette } from '../theme/themeVars';
+import { control, radius, shadow, themePalette } from '../theme/themeVars';
 
 export type ToggleProps = Omit<
   ButtonBaseProps,
@@ -11,7 +11,7 @@ export type ToggleProps = Omit<
   onChange: (checked: boolean) => void;
 };
 
-/** An on/off switch (handoff section 4): 46 x 28, `box` track turning `accent`, white knob. */
+/** An on/off switch (Canopy handoff 5): a 48 x 28 `well-bg` track (radius 7, inset `shadow-well`) turning to the `btn-bg` gradient, with a 22 square `card-bg` knob (radius `r-box`). */
 export function Toggle({ checked, onChange, sx, ...props }: ToggleProps) {
   return (
     <ButtonBase
@@ -22,13 +22,19 @@ export function Toggle({ checked, onChange, sx, ...props }: ToggleProps) {
         (theme) => ({
           position: 'relative',
           flex: '0 0 auto',
-          width: 46,
+          width: 48,
           height: 28,
-          borderRadius: '999px',
-          backgroundColor: checked
-            ? themePalette(theme).pp.accent
-            : themePalette(theme).pp.box,
+          borderRadius: radius.track,
+          ...(checked
+            ? { backgroundImage: control.btnBg }
+            : { backgroundColor: control.wellBg, boxShadow: shadow.recess }),
           transition: 'background-color 150ms',
+          // Handoff: touch targets are 44pt or more.
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: '-8px 0',
+          },
           '&::after': {
             content: '""',
             position: 'absolute',
@@ -36,10 +42,10 @@ export function Toggle({ checked, onChange, sx, ...props }: ToggleProps) {
             left: 3,
             width: 22,
             height: 22,
-            borderRadius: '50%',
-            backgroundColor: themePalette(theme).common.white,
-            boxShadow: `0 1px 2px color-mix(in srgb, ${themePalette(theme).common.black} 25%, transparent)`,
-            transform: checked ? 'translateX(18px)' : 'none',
+            borderRadius: radius.box,
+            backgroundColor: themePalette(theme).pp.cardBg,
+            boxShadow: shadow.card,
+            transform: checked ? 'translateX(20px)' : 'none',
             transition: 'transform 150ms',
           },
           '&.Mui-disabled': { opacity: 0.45 },

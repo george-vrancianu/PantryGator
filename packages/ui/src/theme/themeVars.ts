@@ -33,6 +33,8 @@ export const radius = {
   seg: '5px',
   /** The Canopy's count badge (Tags). */
   badge: '4px',
+  /** The Switch's track (Canopy handoff 5). */
+  track: '7px',
   /** A segment of the 4 px stock bar. */
   bar: '1px',
   /** The Dock's mic / camera rocker. */
@@ -70,8 +72,24 @@ export const shadow = {
   segment: pp('shadow-seg'),
   /** A tile recessed into the sheet (the empty Meal plan's icon tile). */
   recess: pp('shadow-well'),
+  /** The empty tick box's inset. */
+  box: pp('shadow-box'),
   /** The selected Location chip's lift. */
   chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
+} as const;
+
+/** Fills and lines of the sheet's controls (Canopy handoff section 5); paint the gradients with `background`. */
+export const control = {
+  /** The primary button's and the ticked box's green gradient, and the button's 1px line. `primary` is the flat fallback. */
+  btnBg: pp('btn-bg'),
+  btnLine: pp('btn-line'),
+  /** A recessed well (the Switch's track). */
+  wellBg: pp('well-bg'),
+  /** An empty tick box. */
+  boxBg: pp('box-bg'),
+  /** A Staple star: its fill when on, and the grey outline when off. */
+  starFill: pp('star-fill'),
+  deco: pp('deco'),
 } as const;
 
 /** The Canopy (the green header band) and the working sheet it sits behind (Canopy handoff section 3). */

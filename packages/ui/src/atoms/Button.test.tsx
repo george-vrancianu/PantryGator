@@ -9,7 +9,7 @@ describe('Button', () => {
 
   const button = (name: string) => screen.getByRole('button', { name });
 
-  it('fills primary with the Theme primary: green in Light and in Dark', () => {
+  it('fills primary with the Theme button gradient: green in Light and in Dark', () => {
     render(
       <>
         <div data-theme="light">
@@ -20,9 +20,13 @@ describe('Button', () => {
         </div>
       </>,
     );
-    expect(paintedColour(button('Light'), 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(button('Light'), 'background-image')).toBe(
+      'LINEAR-GRADIENT(180DEG,#2A8257 0%,#1A6540 100%)',
+    );
     expect(paintedColour(button('Light'), 'color')).toBe('#FFFFFF');
-    expect(paintedColour(button('Dark'), 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(button('Dark'), 'background-image')).toBe(
+      'LINEAR-GRADIENT(180DEG,#2A8257 0%,#1A6540 100%)',
+    );
     expect(paintedColour(button('Dark'), 'color')).toBe('#FFFFFF');
   });
 
@@ -51,7 +55,7 @@ describe('Button', () => {
   it('takes the Theme control radius, or a pill', () => {
     render(
       <div data-theme="light">
-        <Button>Save</Button>
+        <Button variant="tonal">Save</Button>
         <Button shape="pill">Done</Button>
       </div>,
     );
@@ -64,12 +68,42 @@ describe('Button', () => {
   it('is 46 high, or 36 when small', () => {
     render(
       <>
-        <Button>Save</Button>
-        <Button size="sm">Undo</Button>
+        <Button variant="tonal">Save</Button>
+        <Button variant="tonal" size="sm">
+          Undo
+        </Button>
       </>,
     );
     expect(getComputedStyle(button('Save')).height).toBe('46px');
     expect(getComputedStyle(button('Undo')).height).toBe('36px');
+  });
+
+  it('is a 52 high primary with the button gradient and line, 44 when small', () => {
+    render(
+      <div data-theme="light">
+        <Button>Save</Button>
+        <Button size="sm">Undo</Button>
+      </div>,
+    );
+    const save = getComputedStyle(button('Save'));
+    expect(save.height).toBe('52px');
+    expect(save.borderRadius).toBe('var(--pp-r-btn)');
+    expect(save.backgroundImage).toBe('var(--pp-btn-bg)');
+    // jsdom drops a var() border-color, so read the rule the primary variant emits.
+    const rules = Array.from(document.styleSheets)
+      .flatMap((sheet) => Array.from(sheet.cssRules))
+      .map((rule) => rule.cssText)
+      .join('');
+    expect(rules).toContain('border-color: var(--pp-btn-line)');
+    expect(save.fontSize).toBe('15.5px');
+    const undo = getComputedStyle(button('Undo'));
+    expect(undo.height).toBe('44px');
+    expect(undo.borderRadius).toBe('var(--pp-r-ctl)');
+  });
+
+  it('is a 44 high secondary', () => {
+    render(<Button variant="secondary">Cancel</Button>);
+    expect(getComputedStyle(button('Cancel')).height).toBe('44px');
   });
 
   it('fades to .45 when disabled', () => {

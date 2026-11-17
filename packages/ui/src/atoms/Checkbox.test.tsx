@@ -29,20 +29,23 @@ describe('Checkbox', () => {
     expect(onChange).toHaveBeenCalled();
   });
 
-  it('is a 24 box with the Theme radius, filled accent when checked', () => {
+  it('is a 22 box in a 44pt target, filled with the button gradient when checked', () => {
     render(
       <div data-theme="light">
         <Checkbox label="Off" checked={false} onChange={() => undefined} />
         <Checkbox label="On" checked onChange={() => undefined} />
       </div>,
     );
-    expect(getComputedStyle(box('Off')).width).toBe('24px');
-    expect(getComputedStyle(box('Off')).height).toBe('24px');
-    expect(getComputedStyle(box('Off')).borderRadius).toBe('var(--pp-r-box)');
-    expect(paintedColour(box('Off'), 'background-color')).toBe(
-      'RGBA(0, 0, 0, 0)',
-    );
-    expect(paintedColour(box('On'), 'background-color')).toBe('#1C6A43');
-    expect(paintedColour(box('On'), 'color')).toBe('#FFFFFF');
+    const painted = (name: string) =>
+      getComputedStyle(box(name).querySelector('.pp-box')!);
+    expect(getComputedStyle(box('Off')).width).toBe('44px');
+    expect(getComputedStyle(box('Off')).height).toBe('44px');
+    expect(painted('Off').width).toBe('22px');
+    expect(painted('Off').height).toBe('22px');
+    expect(painted('Off').borderRadius).toBe('var(--pp-r-box)');
+    expect(painted('Off').backgroundColor).toBe('var(--pp-box-bg)');
+    expect(painted('Off').boxShadow).toBe('var(--pp-shadow-box)');
+    expect(painted('On').backgroundImage).toBe('var(--pp-btn-bg)');
+    expect(paintedColour(box('On'), 'color')).toBe('#FFF');
   });
 });
