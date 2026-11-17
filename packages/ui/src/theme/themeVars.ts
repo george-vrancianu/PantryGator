@@ -65,8 +65,7 @@ export const shadow = {
   float: pp('shadow-float'),
   segment: pp('shadow-seg'),
   /** A tile recessed into the sheet (the empty Meal plan's icon tile). */
-  recess:
-    'inset 0 1px 2px rgba(20,30,22,.18), inset 0 0 0 1px rgba(20,30,22,.05)',
+  recess: pp('shadow-well'),
   /** The selected Location chip's lift. */
   chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
 } as const;
