@@ -3,6 +3,10 @@
   "loading": "Loading",
   "confirm": "Confirm",
   "cancel": "Cancel",
+  "sheet": {
+    "close": "Close",
+    "back": "Back"
+  },
   "retry": "Try again",
   "units": {
     "g": "g",

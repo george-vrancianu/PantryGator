@@ -1,4 +1,4 @@
-import { PocketPantryUiProvider } from '@pocket-pantry/ui';
+import { AppUiProvider } from '../components/AppUiProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
@@ -28,12 +28,12 @@ export function renderWithProviders(
   const result = render(
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <PocketPantryUiProvider linkComponent={RouterLink}>
+        <AppUiProvider linkComponent={RouterLink}>
           <MemoryRouter initialEntries={[route]}>
             <VoiceNotices />
             {ui}
           </MemoryRouter>
-        </PocketPantryUiProvider>
+        </AppUiProvider>
       </QueryClientProvider>
     </I18nextProvider>,
   );
