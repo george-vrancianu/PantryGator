@@ -34,12 +34,14 @@ const emptyApi = {
 };
 
 function renderHealth(lastStocked: () => Response | Promise<Response>) {
-  const { fetchMock } = stubApi({
+  const { fetchMock, calls } = stubApi({
     ...emptyApi,
     'GET /api/pantry/last-stocked': lastStocked,
   });
   vi.stubGlobal('fetch', fetchMock);
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retryDelay: 0 } },
+  });
   const wrapper = ({ children }: { children: ReactNode }) => (
     <I18nextProvider i18n={createI18n('en')}>
       <QueryClientProvider client={queryClient}>
@@ -51,6 +53,7 @@ function renderHealth(lastStocked: () => Response | Promise<Response>) {
   );
   return {
     queryClient,
+    calls,
     ...renderHook(() => usePantryHealth(), { wrapper }),
   };
 }
@@ -72,15 +75,16 @@ describe('usePantryHealth pending state', () => {
     expect(result.current.lastStockedAt).toBe('2026-01-01T00:00:00Z');
   });
 
-  it('a failed last-stocked read stops being pending and leaves the cluster, not blank', async () => {
-    const { result } = renderHealth(() =>
+  it('a failed last-stocked read stops being pending without blanking the cluster', async () => {
+    const { result, calls } = renderHealth(() =>
       Response.json({ code: 'boom', params: {} }, { status: 500 }),
     );
 
-    // The one retry waits a second before the read is given up on.
-    await waitFor(() => expect(result.current.isPending).toBe(false), {
-      timeout: 5000,
-    });
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+    // Read once, retried once, then given up on.
+    expect(
+      calls.filter((call) => call.key === 'GET /api/pantry/last-stocked'),
+    ).toHaveLength(2);
     expect(result.current.error).toBeNull();
     expect(result.current.lastStockedAt).toBeNull();
   });

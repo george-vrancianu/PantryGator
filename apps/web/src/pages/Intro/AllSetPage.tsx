@@ -8,7 +8,6 @@ import {
   palette,
   radius,
   ReceiptIcon,
-  tokens,
   Typography,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
@@ -58,7 +57,7 @@ function Tip({ icon, children }: { icon: ReactNode; children: string }) {
     >
       <Box
         aria-hidden
-        sx={{ flex: 'none', color: tokens.color.butter, mt: '2px' }}
+        sx={{ flex: 'none', color: palette('secondary-main'), mt: '2px' }}
       >
         {icon}
       </Box>

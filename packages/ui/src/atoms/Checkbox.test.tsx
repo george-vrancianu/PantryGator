@@ -53,11 +53,10 @@ describe('Checkbox', () => {
     render(
       <Checkbox label="Ring" checked={false} onChange={() => undefined} />,
     );
-    const root = screen.getByRole('checkbox', { name: 'Ring' }).parentElement!;
     const sheet = Array.from(document.querySelectorAll('style'))
       .map((style) => style.textContent ?? '')
       .join('');
     expect(sheet).toMatch(/Mui-focusVisible \.pp-box[^{]*\{[^}]*outline:/);
-    expect(getComputedStyle(root).outline).not.toContain('solid');
+    expect(sheet).not.toMatch(/\.Mui-focusVisible\s*\{[^}]*outline:/);
   });
 });
