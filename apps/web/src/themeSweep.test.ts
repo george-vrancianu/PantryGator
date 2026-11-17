@@ -68,9 +68,13 @@ function offences() {
   return found;
 }
 
-/** A pill: a radius so large that any size becomes a capsule (the token `radius.pill` or a huge literal). */
+/**
+ * A pill: a radius so large that any size becomes a capsule (the token
+ * `radius.pill`, `'pill'`/`'full'`, or any literal of 50 or more, number or px
+ * string). Percentages such as '50%' (circles) are allowed.
+ */
 const PILL =
-  /\bradius\.pill\b|\bborderRadius:\s*(?:['"`]?9{3,}(?:px)?\b|['"`](?:pill|full))/;
+  /\bradius\.pill\b|\bborderRadius:\s*(?:['"`]?(?:[5-9]\d|\d{3,})(?:\.\d+)?(?:px)?(?![\d%.])|['"`](?:pill|full))/;
 
 function pillOffences() {
   const found: string[] = [];
