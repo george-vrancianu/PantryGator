@@ -110,7 +110,8 @@ export function usePantryHealth(): PantryHealthState {
       shopping.isPending ||
       runningLow.isPending ||
       suggestions.isPending ||
-      settings.isPending,
+      settings.isPending ||
+      lastStocked.isPending,
     error:
       batches.error ??
       staples.error ??

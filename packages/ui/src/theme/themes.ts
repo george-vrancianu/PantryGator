@@ -79,6 +79,7 @@ export interface ThemeTokens {
   'canopy-line': string;
   'canopy-chip': string;
   'canopy-chip-line': string;
+  'shadow-canopy-chip': string;
   'canopy-field': string;
   'canopy-field-line': string;
   'shadow-canopy-field': string;
@@ -228,6 +229,7 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'canopy-line': 'rgba(255,255,255,.14)',
     'canopy-chip': 'rgba(255,255,255,.09)', // header buttons
     'canopy-chip-line': 'rgba(255,255,255,.14)',
+    'shadow-canopy-chip': 'inset 0 1px 0 rgba(255,255,255,.08)', // the 1px inner highlight on a header chip
     'canopy-field': 'rgba(3,14,8,.34)', // search field and tracks inside the header
     'canopy-field-line': 'rgba(255,255,255,.13)',
     'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',
@@ -374,6 +376,7 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'canopy-line': 'rgba(255,255,255,.14)',
     'canopy-chip': 'rgba(255,255,255,.09)', // header buttons
     'canopy-chip-line': 'rgba(255,255,255,.14)',
+    'shadow-canopy-chip': 'inset 0 1px 0 rgba(255,255,255,.08)', // the 1px inner highlight on a header chip
     'canopy-field': 'rgba(3,14,8,.34)', // search field and tracks inside the header
     'canopy-field-line': 'rgba(255,255,255,.13)',
     'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',

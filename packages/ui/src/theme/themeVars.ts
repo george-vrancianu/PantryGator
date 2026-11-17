@@ -110,8 +110,8 @@ export const canopy = {
   goldLine: 'rgba(232,203,124,.4)',
   /** The glint copy of the texture. */
   texGlint: pp('tex-glint'),
-  /** The 1px inner highlight on a header chip. */
-  chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
+  /** The 1px inner highlight on a header chip (a Theme token, `shadow-canopy-chip`). */
+  chipHighlight: pp('shadow-canopy-chip'),
   /** The search field and tracks recessed into the header, with their line and inner shadow. */
   field: pp('canopy-field'),
   fieldLine: pp('canopy-field-line'),
