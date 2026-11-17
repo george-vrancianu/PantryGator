@@ -24,6 +24,7 @@ import { useUiLabels } from '../theme/uiLabels';
 import {
   bodyFont,
   canopy,
+  border,
   color as themeColor,
   displayType,
   palette,
@@ -172,6 +173,7 @@ export function Sheet({
   onEscape,
 }: SheetProps) {
   const titleId = useId();
+  const usesRoles = title !== undefined;
   const labels = useUiLabels();
   const centred = useBreakpointUp('md');
   const reduceMotion = usePrefersReducedMotion();
@@ -211,9 +213,9 @@ export function Sheet({
         },
         paper: {
           ref: setPaper,
-          ...(title === undefined
-            ? { 'aria-label': label }
-            : { 'aria-labelledby': titleId }),
+          ...(usesRoles
+            ? { 'aria-labelledby': titleId }
+            : { 'aria-label': label }),
           sx: {
             display: 'flex',
             flexDirection: 'column',
@@ -252,7 +254,7 @@ export function Sheet({
           }}
         />
       )}
-      {title === undefined ? null : (
+      {usesRoles ? (
         <Box
           sx={{
             flexShrink: 0,
@@ -277,7 +279,6 @@ export function Sheet({
                 m: 0,
                 ...displayType,
                 fontSize: '25px',
-                fontWeight: 800,
                 lineHeight: 1.15,
                 color: palette('text-primary'),
                 overflowWrap: 'anywhere',
@@ -305,7 +306,7 @@ export function Sheet({
             </IconButton>
           ) : null}
         </Box>
-      )}
+      ) : null}
       {header ? <Box sx={{ flexShrink: 0 }}>{header}</Box> : null}
       <Box
         sx={{
@@ -313,9 +314,7 @@ export function Sheet({
           minHeight: 0,
           overflowY: 'auto',
           // With no pinned footer, nothing else clears the home indicator (ADR 0040).
-          ...(title !== undefined && !primary
-            ? { pb: plusBottomInset(0) }
-            : {}),
+          ...(usesRoles && !primary ? { pb: plusBottomInset(0) } : {}),
         }}
       >
         {children}
@@ -325,6 +324,7 @@ export function Sheet({
               variant="ghost"
               size="sm"
               onClick={destructive.onClick}
+              disabled={primary?.pending}
               sx={{
                 color: palette('error-main'),
                 '&:hover': {
@@ -342,7 +342,7 @@ export function Sheet({
         <Box
           sx={{
             flexShrink: 0,
-            borderTop: `1px solid ${palette('pp-line')}`,
+            borderTop: `${border.width} solid ${palette('pp-line')}`,
           }}
         >
           {footer}
@@ -353,7 +353,7 @@ export function Sheet({
           data-sheet-footer=""
           sx={{
             flexShrink: 0,
-            borderTop: `1px solid ${palette('pp-line')}`,
+            borderTop: `${border.width} solid ${palette('pp-line')}`,
             px: '16px',
             pt: '12px',
             pb: plusBottomInset(12),
@@ -386,19 +386,17 @@ export function Sheet({
               disabled={primary.disabled || primary.pending}
               aria-busy={primary.pending || undefined}
               startIcon={primary.pending ? <PendingSpinner /> : undefined}
-              sx={
-                primary.tone === 'danger'
-                  ? {
-                      ...footerButtonSx,
-                      minHeight: 52,
-                      backgroundColor: palette('error-main'),
-                      backgroundImage: 'none',
-                      borderColor: 'transparent',
-                      color: palette('error-light'),
-                      '&:hover': { filter: 'brightness(.94)' },
-                    }
-                  : { ...footerButtonSx, minHeight: 52 }
-              }
+              sx={{
+                ...footerButtonSx,
+                minHeight: 52,
+                ...(primary.tone === 'danger' && {
+                  backgroundColor: palette('error-main'),
+                  backgroundImage: 'none',
+                  borderColor: 'transparent',
+                  color: palette('error-light'),
+                  '&:hover': { filter: 'brightness(.94)' },
+                }),
+              }}
             >
               {primary.label}
             </Button>

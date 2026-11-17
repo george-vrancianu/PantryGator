@@ -30,7 +30,7 @@ describe('Sheet title row, footer and destructive link', () => {
       ).toBeTruthy();
     });
 
-    it('draws the title at display 25/800', () => {
+    it('draws the title at 25px in the display weight of the Theme', () => {
       stubScreen(false);
       render(
         <Sheet open onClose={noop} title="Add to Pantry">
@@ -39,7 +39,7 @@ describe('Sheet title row, footer and destructive link', () => {
       );
       const css = authoredCss(screen.getByRole('heading'));
       expect(css).toContain('font-size:25px');
-      expect(css).toContain('font-weight:800');
+      expect(css).toContain('font-weight:var(--pp-display-w)');
     });
 
     it('shows the X when dismissable, and it closes the sheet', () => {
@@ -378,6 +378,27 @@ describe('Sheet title row, footer and destructive link', () => {
   });
 
   describe('destructive link', () => {
+    it('is disabled while the primary is pending', () => {
+      const remove = vi.fn();
+      render(
+        <Sheet
+          open
+          onClose={noop}
+          title="Batch"
+          primary={{ label: 'Save', onClick: noop, pending: true }}
+          destructive={{ label: 'Remove from Pantry', onClick: remove }}
+        >
+          Body
+        </Sheet>,
+      );
+      const link = screen.getByRole('button', {
+        name: 'Remove from Pantry',
+      }) as HTMLButtonElement;
+      expect(link.disabled).toBe(true);
+      fireEvent.click(link);
+      expect(remove).not.toHaveBeenCalled();
+    });
+
     it('renders after the content, outside the footer', () => {
       const remove = vi.fn();
       render(
