@@ -1,17 +1,13 @@
 import {
   Alert,
-  BookmarkIcon,
   Box,
-  Button,
   Sheet,
   TextField,
   Typography,
-  displayType,
-  radius,
   tokens,
   useToast,
 } from '@pocket-pantry/ui';
-import { useRef, useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { translateApiError } from '../../../i18n/translateApiError';
@@ -61,6 +57,7 @@ function SaveForm({
   title,
 }: SaveTemplateSheetProps & { title: string }) {
   const nameRef = useRef<HTMLInputElement>(null);
+  const formId = useId();
   const { t } = useTranslation(['templates', 'common', 'errors']);
   const toast = useToast();
   const navigate = useNavigate();
@@ -107,69 +104,25 @@ function SaveForm({
     });
   };
 
-  const header = (
-    <Box
-      sx={{
-        p: '10px 16px 10px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 1.5,
-      }}
-    >
-      <Typography component="h2" sx={{ ...displayType, fontSize: 22 }}>
-        {title}
-      </Typography>
-      <Box
-        component="button"
-        type="button"
-        onClick={onClose}
-        sx={{
-          height: 36,
-          px: 2,
-          border: 0,
-          borderRadius: radius.control,
-          cursor: 'pointer',
-          backgroundColor: tokens.color.ink,
-          color: tokens.color.bg,
-          font: 'inherit',
-          fontSize: 14,
-          fontWeight: 700,
-        }}
-      >
-        {t('templates:save.cancel')}
-      </Box>
-    </Box>
-  );
-
-  const footer = (
-    <Box sx={{ p: '12px 20px 20px' }}>
-      <Button
-        fullWidth
-        startIcon={<BookmarkIcon size={18} />}
-        disabled={!canSave}
-        onClick={() => save()}
-        sx={{ minHeight: 48, borderRadius: radius.control }}
-      >
-        {createFromList.isPending
-          ? t('templates:save.saving')
-          : t('templates:save.submit')}
-      </Button>
-    </Box>
-  );
-
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      label={title}
+      title={title}
       size="content"
       initialFocus={nameRef}
-      header={header}
-      footer={footer}
+      primary={{
+        label: createFromList.isPending
+          ? t('templates:save.saving')
+          : t('templates:save.submit'),
+        disabled: !canSave,
+        pending: createFromList.isPending,
+        form: formId,
+      }}
     >
       <Box
         component="form"
+        id={formId}
         onSubmit={save}
         noValidate
         sx={{

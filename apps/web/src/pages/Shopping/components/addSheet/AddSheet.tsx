@@ -1,12 +1,4 @@
-import {
-  Box,
-  Sheet,
-  Typography,
-  canopy,
-  dock,
-  displayType,
-  radius,
-} from '@pocket-pantry/ui';
+import { Box, Sheet } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { NewShoppingItem } from '../../../../lib/shopping';
@@ -31,7 +23,7 @@ export type AddSheetProps = {
 };
 
 /**
- * The Add sheet: a header with Done, and the ingredient search. It owns
+ * The Add sheet: the standard X, and the ingredient search (no footer: items are added as the Member goes). It owns
  * everything that belongs to one opening (query, pick, typed amount and
  * unit, adds so far). All of it resets whenever the sheet opens; the lists
  * polled behind it never reset it.
@@ -48,97 +40,20 @@ export function AddSheet({
   const { t } = useTranslation('shopping');
   const [ingredients, setIngredients] =
     useState<IngredientsState>(emptyIngredients);
-  const [addedCount, setAddedCount] = useState(0);
   const searchRef = useRef<HTMLInputElement>(null);
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setIngredients(emptyIngredients);
-      setAddedCount(0);
     }
   }
-  const header = (
-    <Box sx={{ p: '12px 16px 0' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 1.5,
-        }}
-      >
-        <Typography
-          component="h2"
-          sx={{
-            ...displayType,
-            fontSize: 25,
-            fontWeight: 800,
-            letterSpacing: '-0.04em',
-            lineHeight: 1,
-          }}
-        >
-          {t('addSheet.title')}
-        </Typography>
-        <Box
-          component="button"
-          type="button"
-          onClick={onClose}
-          aria-label={
-            addedCount > 0
-              ? t('sheet.doneCount', { count: addedCount })
-              : t('sheet.done')
-          }
-          sx={{
-            height: 44,
-            px: '18px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            border: `1px solid ${dock.line}`,
-            borderRadius: radius.control,
-            cursor: 'pointer',
-            background: dock.bg,
-            boxShadow: dock.shadow,
-            color: dock.on,
-            font: 'inherit',
-            fontSize: 14,
-            fontWeight: 700,
-          }}
-        >
-          {addedCount > 0 ? (
-            <Box
-              component="span"
-              aria-hidden
-              sx={{
-                minWidth: 20,
-                height: 20,
-                px: '5px',
-                display: 'grid',
-                placeItems: 'center',
-                borderRadius: radius.box,
-                backgroundColor: dock.on,
-                color: canopy.segOnInk,
-                fontSize: 11.5,
-                fontWeight: 700,
-              }}
-            >
-              {addedCount}
-            </Box>
-          ) : null}
-          <span aria-hidden>{t('sheet.done')}</span>
-        </Box>
-      </Box>
-    </Box>
-  );
-
   return (
     <Sheet
       open={open}
       onClose={onClose}
       onExited={onExited}
-      label={t('addSheet.title')}
-      header={header}
+      title={t('addSheet.title')}
       initialFocus={searchRef}
     >
       <Box sx={{ p: '16px 16px 24px' }}>
@@ -150,7 +65,6 @@ export function AddSheet({
           onAdd={onAdd}
           error={addError}
           suggestions={suggestions}
-          onAdded={() => setAddedCount((count) => count + 1)}
         />
       </Box>
     </Sheet>

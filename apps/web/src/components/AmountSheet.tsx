@@ -1,19 +1,11 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Sheet,
-  Stack,
-  Typography,
-} from '@pocket-pantry/ui';
-import { useRef, useState, type FormEvent } from 'react';
+import { Alert, Sheet, Stack } from '@pocket-pantry/ui';
+import { useId, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../i18n/translateApiError';
 import type { Unit } from '../lib/catalog';
 import type { Amount } from '../lib/amount';
 import { parseAmountText } from '../lib/pantry';
 import { AmountField } from './AmountField';
-import { RemoveLink } from './RemoveLink';
 
 export type { Amount };
 
@@ -32,7 +24,7 @@ export type AmountSheetProps = {
   onSave: (amount: Amount) => Promise<unknown>;
   /** A quantity needs a unit (Staples); no quantity at all is still fine. Shows `amount.unitRequired`. */
   requireUnit?: boolean;
-  /** Cancel, Escape and the scrim. */
+  /** The X, Escape and the scrim. */
   onClose: () => void;
   /** Text of the red link under the buttons, e.g. `t('common:edit.removeFromList')`. */
   removeLabel: string;
@@ -44,11 +36,22 @@ export type AmountSheetProps = {
 };
 
 /**
- * The sheet that changes an item's amount: its name, a context line, the amount field with a unit chip,
- * Cancel and Save, and a "Remove from ..." link. It knows nothing about what the item is, so Shopping
- * Items, Template Lines and Staples share it.
+ * The sheet that changes an item's amount: its name as the title with a context line, the amount field
+ * with a unit chip, a pinned Save, and a "Remove from ..." link. It knows nothing about what the item is,
+ * so Shopping Items, Template Lines and Staples share it.
  */
-export function AmountSheet({
+export function AmountSheet(props: AmountSheetProps) {
+  // The body remounts on each opening so the fields start from the item's amount every time.
+  const [opening, setOpening] = useState(0);
+  const [wasOpen, setWasOpen] = useState(props.open);
+  if (props.open !== wasOpen) {
+    setWasOpen(props.open);
+    if (props.open) setOpening((n) => n + 1);
+  }
+  return <AmountSheetBody key={opening} {...props} />;
+}
+
+function AmountSheetBody({
   open,
   name,
   context,
@@ -60,65 +63,9 @@ export function AmountSheet({
   onRemove,
 }: AmountSheetProps) {
   const { t } = useTranslation('common');
+  const formId = useId();
   const removeRequested = useRef(false);
-  return (
-    <Sheet
-      open={open}
-      onClose={onClose}
-      onExited={() => {
-        if (!removeRequested.current) return;
-        removeRequested.current = false;
-        onRemove();
-      }}
-      label={t('edit.title', { name })}
-      size="content"
-      header={
-        <Box sx={{ px: 3, pt: 2, pb: 1 }}>
-          <Typography
-            component="h2"
-            sx={{ fontSize: 20, fontWeight: 700, overflowWrap: 'anywhere' }}
-          >
-            {name}
-          </Typography>
-          <Typography variant="meta" color="text.secondary">
-            {context}
-          </Typography>
-        </Box>
-      }
-    >
-      <AmountForm
-        name={name}
-        amount={amount}
-        requireUnit={requireUnit}
-        onSave={onSave}
-        onCancel={onClose}
-        removeLabel={removeLabel}
-        onRemove={() => {
-          removeRequested.current = true;
-          onClose();
-        }}
-      />
-    </Sheet>
-  );
-}
-
-/** Mounted with the open sheet, so its fields start from the item's amount every time. */
-function AmountForm({
-  name,
-  amount,
-  requireUnit,
-  onSave,
-  onCancel,
-  removeLabel,
-  onRemove,
-}: Pick<
-  AmountSheetProps,
-  'name' | 'amount' | 'onSave' | 'removeLabel' | 'requireUnit'
-> & {
-  onCancel: () => void;
-  onRemove: () => void;
-}) {
-  const { t } = useTranslation('common');
+  const sending = useRef(false);
   const [quantity, setQuantity] = useState(
     amount.quantity === null ? '' : String(amount.quantity),
   );
@@ -126,7 +73,6 @@ function AmountForm({
   const [attempted, setAttempted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
-  const sending = useRef(false);
 
   const parsed = parseAmountText(quantity);
 
@@ -144,7 +90,7 @@ function AmountForm({
     setFailure(null);
     onSave({ quantity: parsed.value, unit: unit || null }).then(
       () => {
-        // The caller closes the sheet, which unmounts this form.
+        // The caller closes the sheet.
       },
       (error: unknown) => {
         sending.current = false;
@@ -155,46 +101,58 @@ function AmountForm({
   };
 
   return (
-    <Stack
-      component="form"
-      spacing={2}
-      onSubmit={submit}
-      aria-label={t('edit.title', { name })}
-      sx={{ px: 3, pt: 1, pb: 3 }}
+    <Sheet
+      open={open}
+      onClose={onClose}
+      onExited={() => {
+        if (!removeRequested.current) return;
+        removeRequested.current = false;
+        onRemove();
+      }}
+      title={name}
+      subtitle={context}
+      size="content"
+      primary={{
+        label: saving ? t('edit.saving') : t('edit.save'),
+        pending: saving,
+        form: formId,
+      }}
+      destructive={{
+        label: removeLabel,
+        onClick: () => {
+          removeRequested.current = true;
+          onClose();
+        },
+      }}
     >
-      <AmountField
-        name={name}
-        quantity={quantity}
-        unit={unit}
-        onQuantityChange={(next, typedUnit) => {
-          setQuantity(next);
-          if (typedUnit !== undefined) setUnit(typedUnit);
-        }}
-        onUnitChange={setUnit}
-        error={
-          attempted && !parsed.valid
-            ? t('amount.invalid')
-            : attempted && needsUnit
-              ? t('amount.unitRequired')
-              : null
-        }
+      <Stack
+        component="form"
+        id={formId}
+        spacing={2}
         onSubmit={submit}
-      />
-      {failure ? <Alert>{failure}</Alert> : null}
-      <Stack direction="row" spacing={1}>
-        <Button type="submit" disabled={saving}>
-          {saving ? t('edit.saving') : t('edit.save')}
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          sx={{ height: 52 }}
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </Button>
+        aria-label={t('edit.title', { name })}
+        sx={{ px: 3, pt: 1, pb: 3 }}
+      >
+        <AmountField
+          name={name}
+          quantity={quantity}
+          unit={unit}
+          onQuantityChange={(next, typedUnit) => {
+            setQuantity(next);
+            if (typedUnit !== undefined) setUnit(typedUnit);
+          }}
+          onUnitChange={setUnit}
+          error={
+            attempted && !parsed.valid
+              ? t('amount.invalid')
+              : attempted && needsUnit
+                ? t('amount.unitRequired')
+                : null
+          }
+          onSubmit={submit}
+        />
+        {failure ? <Alert>{failure}</Alert> : null}
       </Stack>
-      <RemoveLink onClick={onRemove}>{removeLabel}</RemoveLink>
-    </Stack>
+    </Sheet>
   );
 }
