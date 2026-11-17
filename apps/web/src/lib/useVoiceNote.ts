@@ -126,8 +126,7 @@ export function useVoiceNote(defaultTarget: VoiceDefaultTarget) {
     held.current = false;
     tipOnArrival.current = false;
     setPressing(false);
-    if (waiting) say(options.current.t('voice:listening.cancelled'));
-    else voiceNote.cancel();
+    voiceNote.cancel({ beforeStart: waiting });
   }, []);
 
   const press = useCallback(async () => {

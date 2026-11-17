@@ -7,7 +7,7 @@ import type { CatalogSearchResult } from '../../lib/catalog';
 import type { ProposedLine } from '../../lib/scan';
 import { preferenceSaves, stubSetupMember, Where } from '../../test/intro';
 import { renderWithProviders } from '../../test/render';
-import { closeBubbleSheet, openBubbleSheet } from '../../test/voice';
+import { closeBubbleSheet, openBubbleSheet } from '../../test/voiceDom';
 import {
   flush,
   photoStack,
