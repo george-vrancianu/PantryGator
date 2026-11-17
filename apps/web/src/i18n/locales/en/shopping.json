@@ -2,6 +2,7 @@
   "title": "Shopping",
   "summary": {
     "toBuy": "{{count}} to buy",
+    "toBuyLabel": "to buy",
     "inBasket": "{{checked}} of {{total}} checked",
     "progress": "Shopping progress",
     "tickedOff_one": "{{count}} ticked off",

@@ -28,7 +28,8 @@ import { SaveTemplateSheet } from './components/SaveTemplateSheet';
 import { ApplyTemplatesSheet } from './components/ApplyTemplatesSheet';
 import { SaveListRow } from './components/SaveListRow';
 import { EmptyListStart } from './components/EmptyListStart';
-import { SummaryCard } from './components/SummaryCard';
+import { FinishShoppingRow } from './components/FinishShoppingRow';
+import { ShoppingHeader } from './components/ShoppingHeader';
 import { useShoppingScreen } from './hooks/useShoppingScreen';
 
 export function ShoppingPage() {
@@ -112,6 +113,7 @@ export function ShoppingPage() {
       <UnverifiedToast />
       <Screen
         title={t('shopping:title')}
+        header={<ShoppingHeader summary={screen.list?.summary} />}
         secondary={
           <HeaderButton
             ref={importButton}
@@ -140,8 +142,7 @@ export function ShoppingPage() {
           ) : null}
           {screen.list ? (
             <>
-              <SummaryCard
-                remaining={screen.list.summary.remaining}
+              <FinishShoppingRow
                 checked={screen.list.summary.checked}
                 onFinish={() => setReviewing(true)}
               />

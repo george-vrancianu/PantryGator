@@ -22,7 +22,11 @@ import {
   pickLocation,
   pressedLocation,
 } from '../../test/location';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { trackScrolling } from '../../test/scroll';
 import { stubMotion, stubViewport } from '../../test/viewport';
 import { typeNote } from '../../test/addBatch';
@@ -117,6 +121,22 @@ describe('PantryPage', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.useRealTimers();
+  });
+
+  it('puts the search in the Canopy header and the Location chips in the body', async () => {
+    stubPantry([batch({ name: 'Yogurt', ingredientId: 'yogurt-id' })]);
+    renderInAppLayout(<PantryPage />, '/pantry');
+
+    const search = await screen.findByRole('searchbox', {
+      name: 'Search Pantry',
+    });
+    expect(document.querySelector('[data-region="header"]')).toContainElement(
+      search,
+    );
+    const chips = await screen.findByRole('group', {
+      name: 'Filter by location',
+    });
+    expect(screen.getByTestId('sheet-content')).toContainElement(chips);
   });
 
   it('groups Batches by Location in the order given, with name, amount, description and ExpiryTag', async () => {

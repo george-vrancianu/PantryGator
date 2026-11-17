@@ -48,6 +48,8 @@ export const shadow = {
   /** Sheets, popovers, toasts, the dock. */
   float: pp('shadow-float'),
   segment: pp('shadow-seg'),
+  /** The selected Location chip's lift. */
+  chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
 } as const;
 
 /** The Canopy (the green header band) and the working sheet it sits behind (Canopy handoff section 3). */
@@ -79,6 +81,13 @@ export const canopy = {
   texGlint: pp('tex-glint'),
   /** The 1px inner highlight on a header chip. */
   chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
+  /** The search field and tracks recessed into the header, with their line and inner shadow. */
+  field: pp('canopy-field'),
+  fieldLine: pp('canopy-field-line'),
+  fieldShadow: pp('shadow-canopy-field'),
+  /** A progress bar's track on the header, with its inner shadow. */
+  progressTrack: 'rgba(255,255,255,.16)',
+  progressShadow: 'inset 0 1px 1px rgba(0,0,0,.3)',
 } as const;
 
 /** Pantry Health on the Canopy: the dial's band ends and the lamps' windows and lit colours (always on the dark header). */

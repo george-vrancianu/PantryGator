@@ -2,6 +2,7 @@
   "title": "Indkøb",
   "summary": {
     "toBuy": "{{count}} at købe",
+    "toBuyLabel": "at købe",
     "inBasket": "{{checked}} af {{total}} afkrydset",
     "progress": "Fremdrift på indkøbslisten",
     "tickedOff_one": "{{count}} afkrydset",

@@ -17,7 +17,11 @@ import {
 } from '../../lib/shopping';
 import type { Template, TemplateLine } from '../../lib/shoppingTemplates';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { stubMotion, stubViewport } from '../../test/viewport';
 import { Link, Route, Routes } from 'react-router-dom';
 import { ShoppingPage } from './ShoppingPage';
@@ -116,7 +120,7 @@ describe('ShoppingPage', () => {
     vi.unstubAllGlobals();
   });
 
-  it('puts Import and then Add items in the top bar, and no Import in the summary card', async () => {
+  it('puts Import and then Add items in the top bar, and no Import in the header block', async () => {
     stubShopping();
     renderWithProviders(<ShoppingPage />);
 
@@ -126,20 +130,34 @@ describe('ShoppingPage', () => {
         .getAllByRole('button')
         .map((b) => b.textContent || b.getAttribute('aria-label')),
     ).toEqual(['Import', 'Add items']);
-    const count = await screen.findByText('1 to buy');
-    const bar = screen.getByRole('progressbar', { name: 'Shopping progress' });
-    let card = count.parentElement;
-    while (card && !card.contains(bar)) card = card.parentElement;
+    const count = await screen.findByRole('group', { name: '1 to buy' });
+    expect(within(count).queryByRole('button', { name: 'Import' })).toBeNull();
+  });
+
+  it('puts the open count and progress bar in the Canopy header, not in the body', async () => {
+    stubShopping();
+    renderInAppLayout(<ShoppingPage />, '/shopping');
+
+    const count = await screen.findByRole('group', { name: '1 to buy' });
+    const region = document.querySelector('[data-region="header"]')!;
+    expect(region).toContainElement(count);
     expect(
-      within(card as HTMLElement).queryByRole('button', { name: 'Import' }),
+      within(region as HTMLElement).getByRole('progressbar', {
+        name: 'Shopping progress',
+      }),
+    ).toHaveAttribute('aria-valuenow', '50');
+    expect(
+      within(screen.getByTestId('sheet-content')).queryByRole('progressbar'),
     ).toBeNull();
   });
 
-  it('shows the summary card and groups in the order given, with quantities', async () => {
+  it('shows the count, progress and groups in the order given, with quantities', async () => {
     stubShopping();
     renderWithProviders(<ShoppingPage />);
 
-    expect(await screen.findByText('1 to buy')).toBeVisible();
+    expect(
+      await screen.findByRole('group', { name: '1 to buy' }),
+    ).toBeVisible();
     expect(screen.getByText('1 of 2 checked')).toBeVisible();
     expect(
       screen.getByRole('progressbar', { name: 'Shopping progress' }),
@@ -177,7 +195,9 @@ describe('ShoppingPage', () => {
 
     await userEvent.click(await screen.findByText('Tomato'));
 
-    expect(await screen.findByText('0 to buy')).toBeVisible();
+    expect(
+      await screen.findByRole('group', { name: '0 to buy' }),
+    ).toBeVisible();
     expect(calls.find((c) => c.key.startsWith('PATCH'))?.body).toEqual({
       checked: true,
     });
@@ -195,12 +215,14 @@ describe('ShoppingPage', () => {
     it('hides the row at once and offers Undo without calling the API', async () => {
       const { calls } = stubShopping(deleteTomato);
       renderWithProviders(<ShoppingPage />);
-      expect(await screen.findByText('1 to buy')).toBeVisible();
+      expect(
+        await screen.findByRole('group', { name: '1 to buy' }),
+      ).toBeVisible();
 
       await remove('Tomato');
 
       expect(screen.queryByRole('group', { name: /^Tomato/ })).toBeNull();
-      expect(screen.getByText('0 to buy')).toBeVisible();
+      expect(screen.getByRole('group', { name: '0 to buy' })).toBeVisible();
       expect(await screen.findByText('Removed Tomato')).toBeVisible();
       expect(screen.getByRole('button', { name: 'Undo' })).toBeVisible();
       expect(deletes(calls)).toEqual([]);
@@ -209,12 +231,12 @@ describe('ShoppingPage', () => {
     it('puts the row back on Undo, in its place, with no request', async () => {
       const { calls } = stubShopping(deleteTomato);
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
 
-      expect(screen.getByText('1 to buy')).toBeVisible();
+      expect(screen.getByRole('group', { name: '1 to buy' })).toBeVisible();
       const rows = screen.getAllByRole('group', { name: /^(Tomato|Milk)/ });
       expect(rows.map((r) => r.textContent)).toEqual([
         expect.stringContaining('Tomato'),
@@ -227,7 +249,7 @@ describe('ShoppingPage', () => {
       const { calls } = stubShopping(deleteTomato);
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       await act(() => vi.advanceTimersByTimeAsync(4500));
@@ -246,7 +268,7 @@ describe('ShoppingPage', () => {
         'DELETE /api/shopping-list/items/i2': () => Response.json(list([])),
       });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       await remove('Milk');
@@ -267,7 +289,7 @@ describe('ShoppingPage', () => {
     it('sends the delete when the toast is dismissed with Escape', async () => {
       const { calls } = stubShopping(deleteTomato);
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       await userEvent.keyboard('{Escape}');
@@ -282,7 +304,7 @@ describe('ShoppingPage', () => {
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await removeRow('Tomato', user);
       const undo = screen.getByRole('button', { name: 'Undo' });
@@ -311,7 +333,7 @@ describe('ShoppingPage', () => {
           <Route path="/other" element={<p>Elsewhere</p>} />
         </Routes>,
       );
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await remove('Tomato');
       expect(screen.getByText('Removed Tomato')).toBeVisible();
 
@@ -352,7 +374,7 @@ describe('ShoppingPage', () => {
         list([{ aisle: produce, items: [tomato, basil] }]),
       );
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('2 to buy');
+      await screen.findByRole('group', { name: '2 to buy' });
 
       await remove('Tomato');
       const star = screen.getByRole('button', { name: 'Make Basil a staple' });
@@ -368,7 +390,7 @@ describe('ShoppingPage', () => {
     it('sends the delete when the Member leaves the page', async () => {
       const { calls } = stubShopping(deleteTomato);
       const { unmount } = renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       unmount();
@@ -381,7 +403,7 @@ describe('ShoppingPage', () => {
     it('sends the delete on pagehide', async () => {
       const { calls } = stubShopping(deleteTomato);
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       act(() => {
@@ -397,7 +419,7 @@ describe('ShoppingPage', () => {
       const shopping = stubShopping(deleteTomato);
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       shopping.setCurrent(
@@ -425,7 +447,7 @@ describe('ShoppingPage', () => {
       });
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await remove('Tomato');
       await act(() => vi.advanceTimersByTimeAsync(5500));
@@ -433,7 +455,7 @@ describe('ShoppingPage', () => {
       expect(
         await screen.findByRole('group', { name: /^Tomato/ }),
       ).toBeVisible();
-      expect(screen.getByText('1 to buy')).toBeVisible();
+      expect(screen.getByRole('group', { name: '1 to buy' })).toBeVisible();
       expect(screen.queryByText('Removed Tomato')).toBeNull();
       expect(
         screen.getByText('Something went wrong. Please try again.'),
@@ -602,7 +624,7 @@ describe('ShoppingPage', () => {
       const user = userEvent.setup();
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
 
@@ -626,7 +648,7 @@ describe('ShoppingPage', () => {
           Response.json(afterPut('i1', 3, 'g')),
       });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       const field = within(dialog).getByLabelText(/^Amount of Tomato/);
@@ -649,7 +671,7 @@ describe('ShoppingPage', () => {
           Response.json(afterPut('i1', 2, 'kg')),
       });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       const field = within(dialog).getByLabelText(/^Amount of Tomato/);
@@ -668,7 +690,7 @@ describe('ShoppingPage', () => {
       const user = userEvent.setup();
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       const field = within(dialog).getByLabelText(/^Amount of Tomato/);
@@ -692,7 +714,7 @@ describe('ShoppingPage', () => {
           ),
       });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       await user.type(within(dialog).getByLabelText(/^Amount of Tomato/), '1');
@@ -706,7 +728,7 @@ describe('ShoppingPage', () => {
       const user = userEvent.setup();
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       await user.type(within(dialog).getByLabelText(/^Amount of Tomato/), '9');
@@ -730,7 +752,7 @@ describe('ShoppingPage', () => {
           ),
       });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user, 'Milk');
       const field = within(dialog).getByLabelText(/^Amount of Milk/);
@@ -746,7 +768,7 @@ describe('ShoppingPage', () => {
       const user = userEvent.setup();
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       const dialog = await openSheet(user);
       // The app root must not be aria-hidden when Keep takes focus, or a screen reader would not
@@ -776,7 +798,7 @@ describe('ShoppingPage', () => {
     it('opens when the row is held for 500 ms, the checked ones too', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       const content = rowOf('Milk').querySelector(
         '[data-swipe-row-content]',
       ) as HTMLElement;
@@ -805,7 +827,7 @@ describe('ShoppingPage', () => {
         ]),
       );
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       const star = within(rowOf('Tomato')).getByRole('button', {
         name: /Staple/i,
       });
@@ -820,7 +842,7 @@ describe('ShoppingPage', () => {
     it('describes the row as holdable', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       expect(rowOf('Tomato')).toHaveAccessibleDescription(
         'Swipe left to remove, hold to edit',
@@ -844,7 +866,7 @@ describe('ShoppingPage', () => {
     it('has no remove button on the rows', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       // Only the hidden custom action, which is not a tab stop.
       expect(
@@ -901,7 +923,7 @@ describe('ShoppingPage', () => {
     it('opens the confirmation with Delete, focusing Keep', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await openConfirmation('Tomato');
 
@@ -917,7 +939,7 @@ describe('ShoppingPage', () => {
     it('opens the confirmation with Backspace too', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       act(() => rowOf('Tomato').focus());
       await userEvent.keyboard('{Backspace}');
@@ -928,7 +950,7 @@ describe('ShoppingPage', () => {
     it('returns to idle on Keep, with the row focused and nothing removed', async () => {
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       await userEvent.click(keep());
@@ -941,7 +963,7 @@ describe('ShoppingPage', () => {
     it('returns to idle on Escape, without dismissing anything else', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       await userEvent.keyboard('{Escape}');
@@ -954,7 +976,7 @@ describe('ShoppingPage', () => {
       stubShopping();
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       await act(() => vi.advanceTimersByTimeAsync(5500));
@@ -967,7 +989,7 @@ describe('ShoppingPage', () => {
     it('confirms one row at a time', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
 
       await openConfirmation('Tomato');
       await openConfirmation('Milk');
@@ -979,7 +1001,7 @@ describe('ShoppingPage', () => {
     it('keeps a confirming row through a refetch', async () => {
       const shopping = stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       shopping.setCurrent(
@@ -1010,7 +1032,7 @@ describe('ShoppingPage', () => {
         ]),
       );
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('2 to buy');
+      await screen.findByRole('group', { name: '2 to buy' });
 
       act(() => rowOf('Tomato').focus());
       await userEvent.keyboard('{Delete}');
@@ -1093,7 +1115,7 @@ describe('ShoppingPage', () => {
       });
       vi.useFakeTimers({ shouldAdvanceTime: true });
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       const remove = confirmRemove();
@@ -1112,7 +1134,7 @@ describe('ShoppingPage', () => {
       stubShopping();
       vi.useFakeTimers({ shouldAdvanceTime: true });
       const view = renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       fireEvent.click(confirmRemove());
@@ -1157,7 +1179,7 @@ describe('ShoppingPage', () => {
       it('springs back after a short swipe, without ticking', async () => {
         const { calls } = stubShopping();
         renderWithProviders(<ShoppingPage />);
-        await screen.findByText('1 to buy');
+        await screen.findByRole('group', { name: '1 to buy' });
 
         swipe('Tomato', -50);
 
@@ -1168,7 +1190,7 @@ describe('ShoppingPage', () => {
       it('asks for confirmation after a medium swipe', async () => {
         stubShopping();
         renderWithProviders(<ShoppingPage />);
-        await screen.findByText('1 to buy');
+        await screen.findByRole('group', { name: '1 to buy' });
 
         swipe('Tomato', -120);
 
@@ -1179,7 +1201,7 @@ describe('ShoppingPage', () => {
       it('removes the row and offers Undo after a long swipe', async () => {
         stubShopping();
         renderWithProviders(<ShoppingPage />);
-        await screen.findByText('1 to buy');
+        await screen.findByRole('group', { name: '1 to buy' });
 
         swipe('Tomato', -260);
 
@@ -1192,7 +1214,7 @@ describe('ShoppingPage', () => {
         stubMotion(true);
         stubShopping();
         renderWithProviders(<ShoppingPage />);
-        await screen.findByText('1 to buy');
+        await screen.findByRole('group', { name: '1 to buy' });
 
         swipe('Tomato', -260);
 
@@ -1205,7 +1227,7 @@ describe('ShoppingPage', () => {
       stubMotion(true);
       stubShopping();
       renderWithProviders(<ShoppingPage />);
-      await screen.findByText('1 to buy');
+      await screen.findByRole('group', { name: '1 to buy' });
       await openConfirmation('Tomato');
 
       await userEvent.click(confirmRemove());
@@ -1245,11 +1267,13 @@ describe('ShoppingPage', () => {
         }),
     });
 
-    it('shows a plain summary card and the Start your list block', async () => {
+    it('shows a plain count and the Start your list block', async () => {
       stubShopping(templateRoute(2), list([]));
       renderWithProviders(<ShoppingPage />);
 
-      expect(await screen.findByText('Nothing to buy')).toBeVisible();
+      expect(
+        await screen.findByRole('group', { name: 'Nothing to buy' }),
+      ).toBeVisible();
       expect(screen.getByText('Your list is empty')).toBeVisible();
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Add items' })).toBeVisible();
@@ -1391,7 +1415,7 @@ describe('ShoppingPage', () => {
 
   describe('Add sheet', () => {
     const openSheet = async (user = userEvent.setup()) => {
-      await screen.findByText(/^\d+ to buy$/);
+      await screen.findByRole('group', { name: /^\d+ to buy$/ });
       await user.click(
         await screen.findByRole('button', { name: 'Add items' }),
       );
@@ -1760,7 +1784,7 @@ describe('ShoppingPage', () => {
         );
         renderWithProviders(<ShoppingPage />, { locale: 'ro' });
         const user = userEvent.setup();
-        await screen.findByText('1 de cumpărat');
+        await screen.findByRole('group', { name: '1 de cumpărat' });
         await user.click(
           screen.getByRole('button', { name: 'Adaugă produse' }),
         );
@@ -2621,7 +2645,9 @@ describe('ShoppingPage', () => {
         it('hides the save row on an empty list', async () => {
           stubShopping({}, list([]));
           renderWithProviders(<ShoppingPage />);
-          expect(await screen.findByText('Nothing to buy')).toBeVisible();
+          expect(
+            await screen.findByRole('group', { name: 'Nothing to buy' }),
+          ).toBeVisible();
           expect(
             screen.queryByRole('button', {
               name: /Save this list as a template/,
@@ -2869,7 +2895,9 @@ describe('ShoppingPage', () => {
     const shopping = stubShopping();
     vi.useFakeTimers({ shouldAdvanceTime: true });
     renderWithProviders(<ShoppingPage />);
-    expect(await screen.findByText('1 to buy')).toBeVisible();
+    expect(
+      await screen.findByRole('group', { name: '1 to buy' }),
+    ).toBeVisible();
 
     shopping.setCurrent(
       list([
@@ -2896,7 +2924,9 @@ describe('ShoppingPage', () => {
     stubShopping({}, list([{ aisle: dairy, items: [milk] }]));
     renderWithProviders(<ShoppingPage />, { locale: 'ro' });
 
-    expect(await screen.findByText('0 de cumpărat')).toBeVisible();
+    expect(
+      await screen.findByRole('group', { name: '0 de cumpărat' }),
+    ).toBeVisible();
   });
 });
 

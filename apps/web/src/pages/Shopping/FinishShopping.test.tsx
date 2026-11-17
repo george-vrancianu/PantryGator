@@ -120,7 +120,7 @@ describe('Finish Shopping review', () => {
     });
     renderWithProviders(<ShoppingPage />);
 
-    await screen.findByText('1 to buy');
+    await screen.findByRole('group', { name: '1 to buy' });
     expect(
       screen.queryByRole('button', { name: /to Pantry/ }),
     ).not.toBeInTheDocument();
