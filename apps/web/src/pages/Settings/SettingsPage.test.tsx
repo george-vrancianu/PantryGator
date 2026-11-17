@@ -1,10 +1,15 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ApplyMemberLocale } from '../../components/ApplyMemberLocale';
 import { ApplyMemberTheme } from '../../components/ApplyMemberTheme';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { stubSystemScheme } from '../../test/viewport';
 import { SettingsPage } from './SettingsPage';
 
@@ -65,6 +70,31 @@ describe('SettingsPage', () => {
     document.documentElement.removeAttribute('data-theme');
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  it('puts the You / Family track in the Canopy header, a 44 pt target each', async () => {
+    stubSystemScheme(false);
+    stubSettings();
+    renderInAppLayout(<SettingsPage />, '/settings');
+    const header = document.querySelector<HTMLElement>(
+      '[data-region="header"]',
+    )!;
+    const tablist = await within(header).findByRole('tablist', {
+      name: 'Settings sections',
+    });
+    expect(
+      within(tablist)
+        .getAllByRole('tab')
+        .map((tab) => tab.textContent),
+    ).toEqual(['You', 'Family']);
+    expect(authoredCss(tablist)).toMatch(/height:\s*44px/);
+    expect(
+      authoredCss(within(tablist).getByRole('tab', { name: 'You' })),
+    ).toMatch(/height:\s*100%/);
+    // The tab's panel stays in the sheet.
+    expect(header).not.toContainElement(
+      await screen.findByRole('tabpanel', { name: 'You' }),
+    );
   });
 
   it('opens on the You tab with Appearance first', async () => {

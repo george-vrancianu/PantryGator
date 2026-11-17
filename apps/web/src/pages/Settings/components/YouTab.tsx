@@ -122,8 +122,8 @@ export function YouTab() {
   const unmatched = useLoadedUnmatchedCount(isAdmin);
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="meta" color="text.secondary">
+    <Stack spacing={0} sx={{ gap: '14px' }}>
+      <Typography variant="meta" color="text.secondary" sx={{ px: '2px' }}>
         {t('youIntro')}
       </Typography>
       <AppearanceCard />
@@ -153,18 +153,18 @@ export function YouTab() {
           />
         </Box>
         {saveLocale.isError ? <Alert>{t('localeSaveFailed')}</Alert> : null}
-        {preferences.data ? (
-          <>
-            {LANGUAGE_PREFERENCES.map((preference) => (
-              <LanguagePreferenceRow
-                key={preference.field}
-                preference={preference}
-                preferences={preferences.data}
-              />
-            ))}
-          </>
-        ) : null}
       </Stack>
+      {preferences.data ? (
+        <>
+          {LANGUAGE_PREFERENCES.map((preference) => (
+            <LanguagePreferenceRow
+              key={preference.field}
+              preference={preference}
+              preferences={preferences.data}
+            />
+          ))}
+        </>
+      ) : null}
       <AllergiesSection />
       {/* Siri setup is iPhone-only; it does nothing in the Android app. */}
       {nativeSession.isAndroidApp() ? null : <SiriSection />}

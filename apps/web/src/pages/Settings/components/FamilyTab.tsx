@@ -16,7 +16,7 @@ import { MemberAllergiesSection } from './MemberAllergiesSection';
 export function FamilyTab() {
   const { t } = useTranslation('settings');
   return (
-    <Stack spacing={3}>
+    <Stack spacing={2}>
       <FamilyCard />
       <CreditsSection />
       <Typography variant="meta" color="text.secondary">

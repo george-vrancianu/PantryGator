@@ -29,6 +29,8 @@ export const radius = {
   sheet: `calc(${pp('r-card')} + 8px)`,
   /** Header buttons and the gold key. */
   btn: pp('r-btn'),
+  /** The raised segment inside a Canopy track. */
+  seg: '5px',
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
   /** Small labelled pills: the gain pill and the done pills. */
@@ -90,6 +92,9 @@ export const canopy = {
   field: pp('canopy-field'),
   fieldLine: pp('canopy-field-line'),
   fieldShadow: pp('shadow-canopy-field'),
+  /** The raised segment of a track on the header (Settings You / Family): fixed cream with dark text in both Themes, as the Canopy is always dark. */
+  segOn: '#F8F7F2',
+  segOnInk: '#141A16',
   /** A progress bar's track on the header, with its inner shadow. */
   progressTrack: 'rgba(255,255,255,.16)',
   progressShadow: 'inset 0 1px 1px rgba(0,0,0,.3)',
