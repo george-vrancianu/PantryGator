@@ -55,12 +55,6 @@
   "addSheet": {
     "title": "Adaugă produse"
   },
-  "sheet": {
-    "done": "Gata",
-    "doneCount_one": "Gata, {{count}} adăugat",
-    "doneCount_few": "Gata, {{count}} adăugate",
-    "doneCount_other": "Gata, {{count}} adăugate"
-  },
   "search": {
     "onList": "Pe listă",
     "onListHint": "Este deja pe listă. Dacă o adaugi din nou, cantitatea crește.",
@@ -90,7 +84,6 @@
   "import": {
     "button": "Importă",
     "title": "Importă",
-    "close": "Închide",
     "hint": "Bifează șabloane întregi sau deschide unul ca să alegi liniile. Poți combina mai multe.",
     "section": "Șabloanele tale · {{count}}",
     "manage": "Gestionează",

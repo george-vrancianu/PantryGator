@@ -1,11 +1,9 @@
 import {
   Alert,
   Box,
-  Button,
   Card,
   CheckIcon,
   ChevronRightIcon,
-  ImportIcon,
   color as themeColor,
   Link,
   MinusIcon,
@@ -13,7 +11,6 @@ import {
   Spinner,
   TemplateIcon,
   Typography,
-  displayType,
   insetFocusRing,
   radius,
   tokens,
@@ -213,98 +210,22 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
     !summaries.some((s) => pending.has(s.id)) &&
     !apply.isPending;
 
-  const header = (
-    <Box
-      sx={{
-        p: '10px 16px 10px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 1.5,
-      }}
-    >
-      <Typography component="h2" sx={{ ...displayType, fontSize: 22 }}>
-        {t('shopping:import.title')}
-      </Typography>
-      <Box
-        component="button"
-        type="button"
-        onClick={onClose}
-        sx={{
-          height: 36,
-          px: 2,
-          border: 0,
-          borderRadius: radius.control,
-          cursor: 'pointer',
-          backgroundColor: tokens.color.ink,
-          color: tokens.color.bg,
-          font: 'inherit',
-          fontSize: 14,
-          fontWeight: 700,
-        }}
-      >
-        {t('shopping:import.close')}
-      </Box>
-    </Box>
-  );
-
-  const footer = (
-    <Box
-      sx={{
-        p: '12px 20px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-        borderTop: `1px solid ${tokens.color.line}`,
-      }}
-    >
-      {included.length > 0 ? (
-        <Typography
-          variant="meta"
-          sx={{
-            textAlign: 'center',
-            color: tokens.color.muted,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {summary.overCap
-            ? t('shopping:import.tooMany')
-            : [
-                t('shopping:import.from', {
-                  names: included.map((s) => s.name).join(', '),
-                }),
-                ...(summary.repeats > 0
-                  ? [t('shopping:import.repeats', { count: summary.repeats })]
-                  : []),
-              ].join(' · ')}
-        </Typography>
-      ) : null}
-      <Button
-        fullWidth
-        startIcon={<ImportIcon size={18} />}
-        disabled={!canApply}
-        onClick={submit}
-        sx={{ minHeight: 48, borderRadius: radius.control }}
-      >
-        {apply.isPending
-          ? t('shopping:import.pending')
-          : summary.items === 0
-            ? t('shopping:import.pickOne')
-            : t('shopping:import.confirm', { count: summary.items })}
-      </Button>
-    </Box>
-  );
-
   return (
     <Sheet
       open={open}
       onClose={onClose}
       onExited={onExited}
-      label={t('shopping:import.title')}
-      header={header}
-      footer={footer}
+      title={t('shopping:import.title')}
+      primary={{
+        label: apply.isPending
+          ? t('shopping:import.pending')
+          : summary.items === 0
+            ? t('shopping:import.pickOne')
+            : t('shopping:import.confirm', { count: summary.items }),
+        disabled: !canApply,
+        pending: apply.isPending,
+        onClick: submit,
+      }}
     >
       <Box
         sx={{
@@ -409,6 +330,36 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
             </Card>
           ) : null}
         </Box>
+        {included.length > 0 ? (
+          <Typography
+            variant="meta"
+            sx={{
+              textAlign: 'center',
+              color: tokens.color.muted,
+              // Stays above the pinned Import so the reason it is disabled never scrolls away.
+              position: 'sticky',
+              bottom: 0,
+              mx: '-20px',
+              px: '20px',
+              py: 1,
+              backgroundColor: tokens.color.bg,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {summary.overCap
+              ? t('shopping:import.tooMany')
+              : [
+                  t('shopping:import.from', {
+                    names: included.map((s) => s.name).join(', '),
+                  }),
+                  ...(summary.repeats > 0
+                    ? [t('shopping:import.repeats', { count: summary.repeats })]
+                    : []),
+                ].join(' · ')}
+          </Typography>
+        ) : null}
       </Box>
     </Sheet>
   );

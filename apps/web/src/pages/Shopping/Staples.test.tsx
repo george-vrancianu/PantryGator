@@ -244,7 +244,7 @@ describe('StaplesPage', () => {
   ) => {
     act(() => rowOf(name).focus());
     await user.keyboard('{Enter}');
-    return screen.findByRole('dialog', { name: `Edit ${name}` });
+    return screen.findByRole('dialog', { name });
   };
 
   it('shows read-only rows with the preferred amount and no inputs or buttons', async () => {
@@ -622,7 +622,7 @@ describe('StaplesPage', () => {
       expect(screen.queryByRole('dialog')).toBeNull();
       await act(() => vi.advanceTimersByTimeAsync(200));
 
-      expect(screen.getByRole('dialog', { name: 'Edit Milk' })).toBeVisible();
+      expect(screen.getByRole('dialog', { name: 'Milk' })).toBeVisible();
     });
   });
 
