@@ -207,6 +207,31 @@ describe('Sheet title row, footer and destructive link', () => {
       expect(authoredCss(footer)).toContain('env(safe-area-inset-bottom');
     });
 
+    it('pads the bottom safe area on the content when there is no footer', () => {
+      render(
+        <Sheet open onClose={noop} title="Info">
+          <p>Body</p>
+        </Sheet>,
+      );
+      const scroller = screen.getByText('Body').parentElement!;
+      expect(authoredCss(scroller)).toContain('env(safe-area-inset-bottom');
+    });
+
+    it('does not pad the content again when a footer clears the safe area', () => {
+      render(
+        <Sheet
+          open
+          onClose={noop}
+          title="Info"
+          primary={{ label: 'Done', onClick: noop }}
+        >
+          <p>Body</p>
+        </Sheet>,
+      );
+      const scroller = screen.getByText('Body').parentElement!;
+      expect(authoredCss(scroller)).not.toContain('safe-area-inset-bottom');
+    });
+
     it('draws a single top border on the footer', () => {
       render(
         <Sheet
@@ -226,7 +251,8 @@ describe('Sheet title row, footer and destructive link', () => {
       expect(css).not.toContain('border-bottom');
     });
 
-    it('submits the form in the content from primary.form, and Enter still submits', () => {
+    it('submits the form in the content from primary.form, and Enter still submits', async () => {
+      const user = userEvent.setup();
       const onSubmit = vi.fn((e: { preventDefault: () => void }) =>
         e.preventDefault(),
       );
@@ -244,8 +270,8 @@ describe('Sheet title row, footer and destructive link', () => {
       );
       fireEvent.click(screen.getByRole('button', { name: 'Save' }));
       expect(onSubmit).toHaveBeenCalledTimes(1);
-      const input = screen.getByRole('textbox', { name: 'Name' });
-      fireEvent.submit(input.closest('form')!);
+      // One field: user-event's implicit submission only looks for a default button inside the form, so a second field would not submit here even though a browser would (the footer button owns the form through `form`).
+      await user.type(screen.getByRole('textbox', { name: 'Name' }), '{Enter}');
       expect(onSubmit).toHaveBeenCalledTimes(2);
     });
 

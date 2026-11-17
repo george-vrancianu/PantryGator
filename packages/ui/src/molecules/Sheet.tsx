@@ -16,7 +16,6 @@ import { IconButton } from '../atoms/IconButton';
 import { Box } from '../atoms/Layout';
 import { useRegisterOpenSheet } from './openSheets';
 import { useToastHost } from './ToastProvider';
-import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
@@ -107,7 +106,7 @@ type SheetRoleProps = {
   | { primary: SheetPrimary; secondary?: SheetSecondary }
 );
 
-/** The old chrome slots, kept until every caller has moved to the roles (#821). */
+/** The old chrome slots, kept until every caller has moved to the roles (spec 821). */
 type SheetSlotProps = {
   /** Accessible name of the dialog. */
   label: string;
@@ -176,7 +175,6 @@ export function Sheet({
   const labels = useUiLabels();
   const centred = useBreakpointUp('md');
   const reduceMotion = usePrefersReducedMotion();
-  const { color } = tokens;
   // Toasts show inside the open sheet, where they can be heard and reached.
   const [paper, setPaper] = useState<HTMLElement | null>(null);
   // Only while open: a toast raised as the sheet closes must not sit in the
@@ -309,7 +307,17 @@ export function Sheet({
         </Box>
       )}
       {header ? <Box sx={{ flexShrink: 0 }}>{header}</Box> : null}
-      <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          // With no pinned footer, nothing else clears the home indicator (ADR 0040).
+          ...(title !== undefined && !primary
+            ? { pb: plusBottomInset(0) }
+            : {}),
+        }}
+      >
         {children}
         {destructive ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: '16px' }}>
@@ -334,7 +342,7 @@ export function Sheet({
         <Box
           sx={{
             flexShrink: 0,
-            borderTop: `1px solid ${color.line}`,
+            borderTop: `1px solid ${palette('pp-line')}`,
           }}
         >
           {footer}
@@ -345,7 +353,7 @@ export function Sheet({
           data-sheet-footer=""
           sx={{
             flexShrink: 0,
-            borderTop: `1px solid ${color.line}`,
+            borderTop: `1px solid ${palette('pp-line')}`,
             px: '16px',
             pt: '12px',
             pb: plusBottomInset(12),
@@ -386,7 +394,7 @@ export function Sheet({
                       backgroundColor: palette('error-main'),
                       backgroundImage: 'none',
                       borderColor: 'transparent',
-                      color: palette('error-contrastText'),
+                      color: palette('error-light'),
                       '&:hover': { filter: 'brightness(.94)' },
                     }
                   : { ...footerButtonSx, minHeight: 52 }
