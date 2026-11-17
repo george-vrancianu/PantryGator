@@ -455,7 +455,6 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                 <Button
                   variant="primary"
                   size="sm"
-                  shape="pill"
                   startIcon={<PlusIcon size={14} strokeWidth={2.6} />}
                   disabled={addMissing.isPending}
                   onClick={() => addMissing.add({ scope: 'window' })}

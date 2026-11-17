@@ -77,7 +77,7 @@ export function DockItem({
             width: 16,
             height: 2,
             ml: '-8px',
-            borderRadius: radius.pill,
+            borderRadius: radius.tag,
             bgcolor: dock.mark,
           }}
         />

@@ -38,10 +38,8 @@ export const All: Story = {
         <Button size="sm" variant="secondary">
           Small secondary
         </Button>
-        <Button shape="pill">Done</Button>
-        <Button shape="pill" startIcon={<PantryIcon size={18} />}>
-          Move 3 to Pantry
-        </Button>
+        <Button>Done</Button>
+        <Button startIcon={<PantryIcon size={18} />}>Move 3 to Pantry</Button>
         <AddButton aria-label="Add items" />
       </Box>
     </Box>

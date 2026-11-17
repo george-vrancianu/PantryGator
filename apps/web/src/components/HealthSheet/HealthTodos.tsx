@@ -439,7 +439,6 @@ function TodoRow({
         <Button
           variant={todo.group === 'now' ? 'primary' : 'secondary'}
           size="sm"
-          shape="pill"
           aria-label={bulkName}
           sx={{
             flexShrink: 0,
@@ -606,7 +605,6 @@ function TodoItemRow({
         <Button
           variant="secondary"
           size="sm"
-          shape="pill"
           aria-label={t('health.item.setDateName', { name: item.name })}
           onClick={onSetDate}
           sx={{ flexShrink: 0, minHeight: 30, height: 30, fontSize: 12.5 }}
@@ -618,7 +616,6 @@ function TodoItemRow({
         <Button
           variant="secondary"
           size="sm"
-          shape="pill"
           aria-label={t('health.item.usedName', { name: item.name })}
           sx={{ flexShrink: 0, minHeight: 30, height: 30, fontSize: 12.5 }}
           onClick={() => onUsed(t('health.toast.used', { name: item.name }))}

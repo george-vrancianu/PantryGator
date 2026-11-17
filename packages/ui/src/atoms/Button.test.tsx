@@ -52,17 +52,15 @@ describe('Button', () => {
     expect(paintedColour(button('Danger'), 'color')).toBe('#A53A12');
   });
 
-  it('takes the Theme control radius, or a pill', () => {
+  it('takes the Theme control radius', () => {
     render(
       <div data-theme="light">
         <Button variant="tonal">Save</Button>
-        <Button shape="pill">Done</Button>
       </div>,
     );
     expect(getComputedStyle(button('Save')).borderRadius).toBe(
       'var(--pp-r-ctl)',
     );
-    expect(getComputedStyle(button('Done')).borderRadius).toBe('999px');
   });
 
   it('is 46 high, or 36 when small', () => {

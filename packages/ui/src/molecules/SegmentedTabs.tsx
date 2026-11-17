@@ -180,7 +180,7 @@ export function SegmentedTabs<T extends string>({
                     fontWeight: 700,
                     px: '6px',
                     py: '2px',
-                    borderRadius: '999px',
+                    borderRadius: radius.box,
                     backgroundColor: color.urgentBg,
                     color: color.urgentFg,
                   }}

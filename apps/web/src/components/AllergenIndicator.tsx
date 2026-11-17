@@ -102,7 +102,7 @@ export function AllergenIndicator({
         gap: '4px',
         px: '8px',
         py: '3px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         bgcolor: strong ? tokens.color.urgentBg : tokens.color.soonBg,
         color: strong ? tokens.color.urgentFg : tokens.color.soonFg,
         fontSize: 12,

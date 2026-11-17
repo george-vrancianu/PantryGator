@@ -115,7 +115,7 @@ export function InfoSheet({
             height: 4,
             mx: 'auto',
             mb: 2,
-            borderRadius: radius.pill,
+            borderRadius: radius.handle,
             backgroundColor: tokens.color.muted,
           }}
         />
@@ -136,7 +136,7 @@ export function InfoSheet({
             height: 44,
             width: '100%',
             border: 0,
-            borderRadius: radius.pill,
+            borderRadius: radius.control,
             fontFamily: 'inherit',
             fontSize: 15,
             fontWeight: 700,

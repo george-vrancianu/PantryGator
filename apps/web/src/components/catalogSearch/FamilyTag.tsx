@@ -13,7 +13,7 @@ export function NamePill({ children }: { children: ReactNode }) {
         ml: '7px',
         px: '7px',
         py: '2px',
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         backgroundColor: color.butter,
         color: color.butterInk,
         fontSize: 10.5,

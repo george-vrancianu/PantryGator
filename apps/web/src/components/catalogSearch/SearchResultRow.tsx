@@ -107,7 +107,7 @@ export function SearchResultRow({
               flexShrink: 0,
               px: '8px',
               py: '5px',
-              borderRadius: radius.pill,
+              borderRadius: radius.tag,
               backgroundColor: color.chipNeutral,
               color: color.muted,
               fontSize: 11.5,

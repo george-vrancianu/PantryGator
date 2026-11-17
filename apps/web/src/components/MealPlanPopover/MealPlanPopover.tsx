@@ -659,7 +659,6 @@ export function MealPlanPopover({
             <Button
               variant="primary"
               size="sm"
-              shape="pill"
               startIcon={<PlusIcon size={14} strokeWidth={2.6} />}
               disabled={adding}
               onClick={() => onAdd({ scope: 'date', date: day.date })}

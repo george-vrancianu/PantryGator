@@ -258,7 +258,7 @@ function BackBadge({ count }: { count: number }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: radius.pill,
+        borderRadius: radius.box,
         bgcolor: tokens.color.accent,
         color: 'pp.accentInk',
         boxShadow: `0 0 0 2px ${tokens.color.bg}`,

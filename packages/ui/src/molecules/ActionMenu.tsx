@@ -151,7 +151,7 @@ export function ActionMenu({
                     ml: 'auto',
                     px: '7px',
                     py: '1px',
-                    borderRadius: radius.pill,
+                    borderRadius: radius.box,
                     bgcolor: tokens.color.accentTint,
                     color: tokens.color.accentOnTint,
                     fontSize: 10.5,

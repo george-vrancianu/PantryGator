@@ -21,7 +21,7 @@ export function SearchSkeleton({ animate }: { animate: boolean }) {
         overflow: 'hidden',
         width,
         height,
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         backgroundColor: color.chipNeutral,
         ...(animate
           ? {

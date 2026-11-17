@@ -213,7 +213,7 @@ function ProgressBar({ startedAt }: { startedAt?: number }) {
         right: 10,
         bottom: 5,
         height: 4,
-        borderRadius: radius.pill,
+        borderRadius: radius.tag,
         pointerEvents: 'none',
         background: `linear-gradient(to right, ${color.cardBg} ${progress * 100}%, color-mix(in srgb, ${color.cardBg} 30%, transparent) 0)`,
       }}

@@ -28,11 +28,11 @@ describe('Tag', () => {
     expect(pair('Gone')).toEqual(['#0D120F', '#9DA89F']);
   });
 
-  it('is an 11 px bold pill', () => {
+  it('is an 11 px bold tag', () => {
     render(<Tag tone="ok">In Pantry</Tag>);
     const style = getComputedStyle(screen.getByText('In Pantry'));
     expect(style.fontSize).toBe('11px');
     expect(style.fontWeight).toBe('700');
-    expect(style.borderRadius).toBe('999px');
+    expect(style.borderRadius).toBe('var(--pp-r-tag)');
   });
 });

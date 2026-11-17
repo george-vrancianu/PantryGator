@@ -46,7 +46,7 @@ export function RowHintPill({ visible, children }: RowHintPillProps) {
           gap: '6px',
           px: '12px',
           py: '7px',
-          borderRadius: radius.pill,
+          borderRadius: radius.chip,
           bgcolor: tokens.color.accentTint,
           color: tokens.color.accentOnTint,
           fontSize: 12.5,

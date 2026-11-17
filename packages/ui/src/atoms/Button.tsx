@@ -24,8 +24,6 @@ export type ButtonProps = Omit<ButtonBaseProps, 'color'> & {
   variant?: ButtonVariant;
   /** `sm` is 36 high (a primary one 44, the touch target) for tight rows. */
   size?: 'md' | 'sm';
-  /** `pill` is fully round, e.g. Done or Move N to Pantry. */
-  shape?: 'default' | 'pill';
   /** Icon before the label. */
   startIcon?: ReactNode;
   fullWidth?: boolean;
@@ -52,10 +50,6 @@ function metrics(variant: ButtonVariant, small: boolean) {
       }
     : { height: 46, px: '18px', fontSize: 14.5, radius: radius.control };
 }
-
-/** `pill` is fully round, whatever the size. */
-const corner = (shape: 'default' | 'pill', round: string) =>
-  shape === 'pill' ? radius.pill : round;
 
 function variantSx(variant: ButtonVariant) {
   return (theme: Theme) => {
@@ -118,7 +112,6 @@ const base = {
 export function Button({
   variant = 'primary',
   size = 'md',
-  shape = 'default',
   startIcon,
   fullWidth,
   children,
@@ -136,7 +129,7 @@ export function Button({
           px: m.px,
           fontSize: m.fontSize,
           width: fullWidth ? '100%' : undefined,
-          borderRadius: corner(shape, m.radius),
+          borderRadius: m.radius,
         },
         variantSx(variant),
         press,
