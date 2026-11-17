@@ -1,4 +1,4 @@
-import { PocketPantryUiProvider } from '@pocket-pantry/ui';
+import { AppUiProvider } from './components/AppUiProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -18,12 +18,12 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <PocketPantryUiProvider linkComponent={RouterLink}>
+        <AppUiProvider linkComponent={RouterLink}>
           <BrowserRouter>
             <VoiceNotices />
             <App />
           </BrowserRouter>
-        </PocketPantryUiProvider>
+        </AppUiProvider>
       </QueryClientProvider>
     </I18nextProvider>
   </StrictMode>,

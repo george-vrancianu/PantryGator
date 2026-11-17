@@ -1,4 +1,7 @@
-export { PocketPantryUiProvider } from './theme/PocketPantryUiProvider';
+export {
+  PocketPantryUiProvider,
+  type PocketPantryUiProviderProps,
+} from './theme/PocketPantryUiProvider';
 export { createPocketPantryTheme, themeSelector } from './theme/theme';
 export { aisleTint } from './theme/aisleTints';
 export { tokens } from './theme/tokens';
@@ -255,7 +258,13 @@ export {
   type SegmentedControlOption,
   type SegmentedControlProps,
 } from './molecules/SegmentedControl';
-export { Sheet, type SheetProps } from './molecules/Sheet';
+export {
+  Sheet,
+  type SheetDestructive,
+  type SheetPrimary,
+  type SheetProps,
+  type SheetSecondary,
+} from './molecules/Sheet';
 export { useAnySheetOpen } from './molecules/openSheets';
 export { ListRow, ListRowItem, type ListRowProps } from './molecules/ListRow';
 export { RowHintPill, type RowHintPillProps } from './molecules/RowHintPill';
