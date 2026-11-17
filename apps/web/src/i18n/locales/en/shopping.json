@@ -2,13 +2,13 @@
   "title": "Shopping",
   "summary": {
     "toBuy": "{{count}} to buy",
+    "toBuyLabel": "to buy",
     "inBasket": "{{checked}} of {{total}} checked",
     "progress": "Shopping progress",
     "tickedOff_one": "{{count}} ticked off",
     "tickedOff_other": "{{count}} ticked off",
     "moveToPantry_one": "Move {{count}} to Pantry",
     "moveToPantry_other": "Move {{count}} to Pantry",
-    "nothing": "Nothing to buy",
     "empty": "Your list is empty"
   },
   "add": {
@@ -86,7 +86,6 @@
     "button": "Import",
     "title": "Import",
     "close": "Close",
-    "aria": "Import from a template",
     "hint": "Tick whole templates, or open one to choose lines. You can mix several.",
     "section": "Your templates · {{count}}",
     "manage": "Manage",

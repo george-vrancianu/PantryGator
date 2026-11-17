@@ -2,6 +2,7 @@ import {
   BackIcon,
   Box,
   CloseIcon,
+  displayType,
   IconButton,
   Typography,
 } from '@pocket-pantry/ui';
@@ -39,30 +40,35 @@ export function SheetHeader({
         display: 'flex',
         alignItems: 'center',
         gap: 1,
-        ...(roomy ? { px: 3, pt: 2, pb: 1 } : { px: 2, py: 1.5 }),
+        px: 2,
+        pt: 1.5,
+        pb: 1,
       }}
     >
       {onBack ? (
-        <IconButton label={backLabel ?? ''} size={40} onClick={onBack}>
-          <BackIcon size={18} />
+        <IconButton
+          label={backLabel ?? ''}
+          tone="well"
+          size={44}
+          onClick={onBack}
+        >
+          <BackIcon size={19} />
         </IconButton>
       ) : null}
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography
           ref={titleRef}
           component="h2"
-          variant={roomy ? undefined : 'body1'}
           tabIndex={titleRef ? -1 : undefined}
-          sx={
-            roomy
-              ? {
-                  fontSize: 20,
-                  fontWeight: 700,
-                  overflowWrap: 'anywhere',
-                  outline: 'none',
-                }
-              : { fontWeight: 700, outline: 'none' }
-          }
+          sx={{
+            ...displayType,
+            fontSize: roomy ? 25 : 22,
+            fontWeight: 800,
+            letterSpacing: '-0.04em',
+            lineHeight: 1.1,
+            overflowWrap: 'anywhere',
+            outline: 'none',
+          }}
         >
           {title}
         </Typography>
@@ -72,8 +78,8 @@ export function SheetHeader({
           </Typography>
         ) : null}
       </Box>
-      <IconButton label={closeLabel} size={40} onClick={onClose}>
-        <CloseIcon size={18} />
+      <IconButton label={closeLabel} tone="well" size={44} onClick={onClose}>
+        <CloseIcon size={19} />
       </IconButton>
     </Box>
   );

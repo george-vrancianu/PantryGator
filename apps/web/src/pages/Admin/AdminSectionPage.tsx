@@ -1,7 +1,7 @@
 import { Alert, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { AdminEditor } from './components/AdminEditor';
 import { AisleList } from './components/AisleList';
 import { AllergenList } from './components/AllergenList';
@@ -115,11 +115,10 @@ export function AdminSectionPage() {
   } as const;
 
   return (
-    <>
-      <AppScreenHeader
-        title={t(`admin:${titles[section]}`)}
-        back={{ label: t('admin:index.back'), href: CATALOG_TAB_URL }}
-      />
+    <Screen
+      title={t(`admin:${titles[section]}`)}
+      back={{ label: t('admin:index.back'), href: CATALOG_TAB_URL }}
+    >
       <Stack spacing={3}>
         {screen.error ? <Alert>{screen.error}</Alert> : null}
         {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}
@@ -134,6 +133,6 @@ export function AdminSectionPage() {
           </>
         )}
       </Stack>
-    </>
+    </Screen>
   );
 }

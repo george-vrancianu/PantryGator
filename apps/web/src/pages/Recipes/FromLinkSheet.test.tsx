@@ -1,4 +1,4 @@
-import { cleanup, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,6 +11,8 @@ import type { RecipeDraftView } from '../../lib/recipeDrafts';
 import type { RecipeFromLink, RecipeFromLinkDraft } from '../../lib/linkRecipe';
 import type { Locale } from '../../i18n';
 import { renderWithProviders, stubApi } from '../../test/render';
+import { makeScrollable, pull } from '../../test/scroll';
+import { closeBubbleSheet, openBubbleSheet } from '../../test/voice';
 import { NewRecipePage } from './FamilyRecipePages';
 import { RecipesPage } from './RecipesPage';
 
@@ -237,13 +239,19 @@ async function submit(user: User, url: string) {
   await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
 }
 
-/** The strip's Review button (shown when exactly one item is ready). */
-const stripReview = () => screen.findByRole('button', { name: 'Review' });
+/** Opens the ready row from the Review sheet the Gator bubble opens, and waits for the sheet to go. */
+const stripReview = async (user: User) => {
+  const sheet = await openBubbleSheet();
+  await user.click(
+    within(sheet).getAllByRole('button', { name: /^Review the recipe/ })[0]!,
+  );
+  await waitFor(() => expect(sheet).not.toBeInTheDocument());
+};
 
 /** Reads a link, then opens the editor from the strip once the read is ready. */
 async function readAndOpen(user: User, url: string) {
   await submit(user, url);
-  await user.click(await stripReview());
+  await stripReview(user);
 }
 
 /** Opens the sheet from the Recipes header plus. */
@@ -323,14 +331,17 @@ describe('"From a link" sheet and the link-read holder', () => {
     const { calls } = setup({ 'POST /api/recipes/from-link': pending.handler });
     await submit(user, link);
     await waitFor(() => expect(sheet()).toBeNull());
+    await openBubbleSheet();
     expect(await screen.findByText('Reading a recipe link…')).toBeVisible();
     expect(screen.getByText('example.com')).toBeVisible();
     expect(
       calls.find((c) => c.key === 'POST /api/recipes/from-link')?.body,
     ).toEqual({ url: link, language: 'catalog' });
     // Another Dock page: the read follows the Member.
+    await closeBubbleSheet();
     await user.click(screen.getByRole('link', { name: 'Pantry' }));
     expect(await screen.findByText('pantry page')).toBeVisible();
+    await openBubbleSheet();
     expect(screen.getByText('Reading a recipe link…')).toBeVisible();
     pending.release();
     expect(await screen.findByText('Recipe ready to review')).toBeVisible();
@@ -342,8 +353,9 @@ describe('"From a link" sheet and the link-read holder', () => {
       'POST /api/recipes/from-link': () => Response.json(read()),
     });
     await submit(user, link);
+    await openBubbleSheet();
     await screen.findByText('Recipe ready to review');
-    await user.click(await stripReview());
+    await stripReview(user);
     expect(await screen.findByLabelText(/^Title/)).toHaveValue('Blog pancakes');
     expect(screen.getByText('at /recipes/new')).toBeVisible();
     expect(calls.map((c) => c.key)).toContain('GET /api/recipe-drafts/rd-1');
@@ -360,8 +372,9 @@ describe('"From a link" sheet and the link-read holder', () => {
         Response.json({ code: 'recipe_drafts.not_found' }, { status: 404 }),
     });
     await submit(user, link);
+    await openBubbleSheet();
     await screen.findByText('Recipe ready to review');
-    await user.click(await stripReview());
+    await stripReview(user);
     expect(
       await screen.findByText('That Recipe Draft is no longer kept.'),
     ).toBeVisible();
@@ -400,9 +413,11 @@ describe('"From a link" sheet and the link-read holder', () => {
     );
     await openSheet(user);
     await submit(user, link);
+    await openBubbleSheet();
     await screen.findByText('Reading a recipe link…');
     expect(screen.queryByRole('link', { name: /^Drafts/ })).toBeNull();
     pending.release();
+    await closeBubbleSheet();
     expect(
       await screen.findByRole('link', { name: 'Drafts (1)' }),
     ).toBeVisible();
@@ -432,7 +447,11 @@ describe('"From a link" sheet and the link-read holder', () => {
     it('reads two at a time, holds five, and the rest wait in the order started', async () => {
       const user = userEvent.setup({ delay: null });
       const { releases, calls } = await startFive(user);
-      expect(await screen.findByText('5 in the background')).toBeVisible();
+      expect(
+        await screen.findByRole('button', {
+          name: 'Gator is working: 5 being read. Open Review',
+        }),
+      ).toBeVisible();
       expect(sentLinks(calls)).toEqual([
         'https://site1.example.com/r',
         'https://site2.example.com/r',
@@ -470,7 +489,9 @@ describe('"From a link" sheet and the link-read holder', () => {
       // Let one go from the background sheet, then the sixth is taken.
       await user.keyboard('{Escape}');
       await waitFor(() => expect(sheet()).toBeNull());
-      await user.click(await screen.findByRole('button', { name: 'Open' }));
+      await user.click(
+        await screen.findByRole('button', { name: /Open Review/ }),
+      );
       await user.click(
         await screen.findByRole('button', {
           name: 'Cancel reading site5.example.com',
@@ -489,7 +510,9 @@ describe('"From a link" sheet and the link-read holder', () => {
       const { signals, releases } = await startFive(user);
       const requests = signals.filter((s) => s);
       expect(requests).toHaveLength(2);
-      await user.click(await screen.findByRole('button', { name: 'Open' }));
+      await user.click(
+        await screen.findByRole('button', { name: /Open Review/ }),
+      );
       await user.click(
         await screen.findByRole('button', {
           name: 'Cancel reading site1.example.com',
@@ -517,7 +540,7 @@ describe('"From a link" sheet and the link-read holder', () => {
     });
   });
 
-  it('keeps reading when the Member refreshes from the logo', async () => {
+  it('keeps reading when the Member pulls to refresh', async () => {
     const user = userEvent.setup({ delay: null });
     const pending = hold(read());
     const { signals } = setup(
@@ -526,8 +549,13 @@ describe('"From a link" sheet and the link-read holder', () => {
     );
     await openSheet(user);
     await submit(user, link);
+    await openBubbleSheet();
     await screen.findByText('Reading a recipe link…');
-    await user.click(await screen.findByRole('button', { name: /Refresh/ }));
+    await closeBubbleSheet();
+    act(() => {
+      pull(makeScrollable(screen.getByTestId('sheet-scroller')), { to: 200 });
+    });
+    await openBubbleSheet();
     await screen.findByText('Reading a recipe link…');
     expect(signals.find((s) => s)?.aborted).toBe(false);
     pending.release();
@@ -547,6 +575,7 @@ describe('"From a link" sheet and the link-read holder', () => {
     await user.click(screen.getByRole('link', { name: 'Pantry' }));
     await screen.findByText('pantry page');
     await user.click(screen.getByRole('link', { name: 'to recipes' }));
+    await openBubbleSheet();
     await screen.findByText('Reading a recipe link…');
     expect(signals.find((s) => s)?.aborted).toBe(false);
     pending.release();
@@ -561,7 +590,9 @@ describe('"From a link" sheet and the link-read holder', () => {
       { route: '/pantry' },
     );
     recipeReads.submit({ kind: 'link', url: link }, 'catalog');
+    await openBubbleSheet();
     await screen.findByText('Reading a recipe link…');
+    await closeBubbleSheet();
     await user.click(screen.getByRole('button', { name: 'Sign out now' }));
     await waitFor(() => expect(recipeReads.getState().reads).toEqual([]));
     expect(screen.queryByText('Reading a recipe link…')).toBeNull();
@@ -577,9 +608,9 @@ describe('"From a link" sheet and the link-read holder', () => {
         Response.json({ code: 'link.unreadable', params: {} }, { status: 422 }),
     });
     await submit(user, link);
+    await openBubbleSheet();
     expect(await screen.findByText("Couldn't read the recipe")).toBeVisible();
     expect(screen.getByText(/could not open that page/)).toBeVisible();
-    await user.click(await screen.findByRole('button', { name: 'Open' }));
     await user.click(
       await screen.findByRole('button', { name: 'Discard example.com' }),
     );
@@ -595,6 +626,7 @@ describe('"From a link" sheet and the link-read holder', () => {
     );
     await user.type(screen.getByLabelText(/^Recipe text/), 'two eggs');
     await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
+    await openBubbleSheet();
     expect(await screen.findByText('Reading recipe text…')).toBeVisible();
     expect(screen.getByText('Pasted text')).toBeVisible();
     expect(
@@ -735,9 +767,13 @@ describe('"From a link" sheet and the link-read holder', () => {
 
     it('asks while reading and stops once the read is ready or failed', async () => {
       const pending = hold(read());
-      setup({ 'POST /api/recipes/from-link': pending.handler });
+      setup(
+        { 'POST /api/recipes/from-link': pending.handler },
+        { route: '/recipes' },
+      );
       expect(asksToStay()).toBe(false);
       recipeReads.submit({ kind: 'link', url: link }, 'catalog');
+      await openBubbleSheet();
       await screen.findByText('Reading a recipe link…');
       expect(asksToStay()).toBe(true);
       pending.release();
@@ -785,9 +821,13 @@ describe('"From a link" sheet and the link-read holder', () => {
 
     it('does not ask when a Member discards the only read', async () => {
       const pending = hold(read());
-      setup({ 'POST /api/recipes/from-link': pending.handler });
+      setup(
+        { 'POST /api/recipes/from-link': pending.handler },
+        { route: '/recipes' },
+      );
       const added = recipeReads.submit({ kind: 'link', url: link }, 'catalog');
       expect(added).toBe('started');
+      await openBubbleSheet();
       await screen.findByText('Reading a recipe link…');
       expect(asksToStay()).toBe(true);
       recipeReads.discard(recipeReads.getState().reads[0].id);
@@ -1214,7 +1254,7 @@ describe('after a read, the editor', () => {
       );
       await user.type(textField(), '  2 eggs, whisk and fry  ');
       await user.click(submitButton);
-      await user.click(await stripReview());
+      await stripReview(user);
       expect(await screen.findByLabelText(/^Title/)).toHaveValue(
         'Blog pancakes',
       );
@@ -1238,7 +1278,7 @@ describe('after a read, the editor', () => {
       );
       await user.type(textField(), 'eggs');
       await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
-      await user.click(await stripReview());
+      await stripReview(user);
       await user.click(await screen.findByRole('button', { name: 'Save' }));
       await screen.findByText('Detail of the recipe');
       const body = calls.find((c) => c.key === 'POST /api/recipes')?.body;
@@ -1262,7 +1302,7 @@ describe('after a read, the editor', () => {
       );
       await user.type(textField(), 'eggs');
       await user.click(screen.getByRole('button', { name: 'Read the recipe' }));
-      await user.click(await stripReview());
+      await stripReview(user);
       expect(
         await screen.findByText('2 Recipes hidden by your Allergies'),
       ).toBeVisible();

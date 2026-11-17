@@ -1,10 +1,15 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ApplyMemberLocale } from '../../components/ApplyMemberLocale';
 import { ApplyMemberTheme } from '../../components/ApplyMemberTheme';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { stubSystemScheme } from '../../test/viewport';
 import { SettingsPage } from './SettingsPage';
 
@@ -58,13 +63,38 @@ const storeAppearance = (appearance: { theme: string; matchSystem: boolean }) =>
   localStorage.setItem('pp.appearance', JSON.stringify(appearance));
 
 const themeTiles = async () =>
-  within(await screen.findByRole('radiogroup', { name: 'Appearance' }));
+  within(await screen.findByRole('group', { name: 'Appearance' }));
 
 describe('SettingsPage', () => {
   afterEach(() => {
     document.documentElement.removeAttribute('data-theme');
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  it('puts the You / Family track in the Canopy header, a 44 pt target each', async () => {
+    stubSystemScheme(false);
+    stubSettings();
+    renderInAppLayout(<SettingsPage />, '/settings');
+    const header = document.querySelector<HTMLElement>(
+      '[data-region="header"]',
+    )!;
+    const tablist = await within(header).findByRole('tablist', {
+      name: 'Settings sections',
+    });
+    expect(
+      within(tablist)
+        .getAllByRole('tab')
+        .map((tab) => tab.textContent),
+    ).toEqual(['You', 'Family']);
+    expect(authoredCss(tablist)).toMatch(/height:\s*44px/);
+    expect(
+      authoredCss(within(tablist).getByRole('tab', { name: 'You' })),
+    ).toMatch(/height:\s*100%/);
+    // The tab's panel stays in the sheet.
+    expect(header).not.toContainElement(
+      await screen.findByRole('tabpanel', { name: 'You' }),
+    );
   });
 
   it('opens on the You tab with Appearance first', async () => {
@@ -199,7 +229,7 @@ describe('SettingsPage', () => {
 
   it('applies a chosen Theme at once, stores it on the device and saves it on the Member', async () => {
     stubSystemScheme(false);
-    storeAppearance({ theme: 'warm', matchSystem: false });
+    storeAppearance({ theme: 'light', matchSystem: false });
     const calls = stubSettings('en');
     renderWithProviders(
       <>
@@ -210,29 +240,29 @@ describe('SettingsPage', () => {
     );
 
     await userEvent.click(
-      (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
     );
 
-    expect(document.documentElement.dataset.theme).toBe('minimal');
+    expect(document.documentElement.dataset.theme).toBe('dark');
     expect(JSON.parse(localStorage.getItem('pp.appearance') ?? 'null')).toEqual(
-      { theme: 'minimal', matchSystem: false },
+      { theme: 'dark', matchSystem: false },
     );
     await vi.waitFor(() =>
       expect(calls).toContainEqual(
         expect.objectContaining({
           key: 'PUT /api/settings/preferences',
-          body: { theme: 'minimal' },
+          body: { theme: 'dark' },
         }),
       ),
     );
     expect(
-      (await themeTiles()).getByRole('radio', { name: 'Minimal crisp' }),
-    ).toHaveAttribute('aria-checked', 'true');
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('turns Match system off when Dark-first is picked with it on', async () => {
+  it('turns Match system off when a Theme tile is picked with it on', async () => {
     stubSystemScheme(false);
-    storeAppearance({ theme: 'warm', matchSystem: true });
+    storeAppearance({ theme: 'light', matchSystem: true });
     const calls = stubSettings();
     renderWithProviders(
       <>
@@ -246,7 +276,7 @@ describe('SettingsPage', () => {
     ).toHaveAttribute('aria-checked', 'true');
 
     await userEvent.click(
-      (await themeTiles()).getByRole('radio', { name: 'Dark-first' }),
+      (await themeTiles()).getByRole('button', { name: 'Dark' }),
     );
 
     expect(

@@ -31,7 +31,7 @@ describe('Checkbox', () => {
 
   it('is a 24 box with the Theme radius, filled accent when checked', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <Checkbox label="Off" checked={false} onChange={() => undefined} />
         <Checkbox label="On" checked onChange={() => undefined} />
       </div>,
@@ -42,7 +42,7 @@ describe('Checkbox', () => {
     expect(paintedColour(box('Off'), 'background-color')).toBe(
       'RGBA(0, 0, 0, 0)',
     );
-    expect(paintedColour(box('On'), 'background-color')).toBe('#1E7A4E');
+    expect(paintedColour(box('On'), 'background-color')).toBe('#1C6A43');
     expect(paintedColour(box('On'), 'color')).toBe('#FFFFFF');
   });
 });

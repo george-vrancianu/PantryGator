@@ -10,6 +10,7 @@ import { resetReads } from '../../lib/scanReads';
 import { getScanSession, resetScanSession } from '../../lib/scanSession';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { takeScan } from '../../test/scan';
+import { openBubbleSheet } from '../../test/voice';
 import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
 import { BackgroundHost } from '../../components/background/BackgroundHost';
 import { NewRecipePage } from '../Recipes/FamilyRecipePages';
@@ -217,6 +218,7 @@ describe('Plate Scan in the Scan Session', () => {
     // Credits added: the same card can pick again.
     balance = 5;
     await pick(/Pancakes/);
+    await openBubbleSheet();
     expect(
       await screen.findByText('Pancakes ready to review'),
     ).toBeInTheDocument();
@@ -258,6 +260,7 @@ describe('Plate Scan in the Scan Session', () => {
     // Credits added: the same card, with the same token, can pick again.
     refuse = false;
     await pick(/Pancakes/);
+    await openBubbleSheet();
     expect(
       await screen.findByText('Pancakes ready to review'),
     ).toBeInTheDocument();
@@ -326,7 +329,11 @@ describe('Plate Scan in the Scan Session', () => {
     await userEvent.click(option);
     await userEvent.click(option);
     release(Response.json(creditsBody(50)));
-    expect(await screen.findByText('Writing Pancakes…')).toBeInTheDocument();
+    await openBubbleSheet();
+    // Written once: the row is there whether the read is still going or already done.
+    expect(
+      await screen.findByText(/Writing Pancakes…|Pancakes ready to review/),
+    ).toBeInTheDocument();
     expect(
       calls.filter((c) => c.key === 'POST /api/scan/plate/recipe'),
     ).toHaveLength(1);
@@ -351,6 +358,8 @@ describe('Plate Scan in the Scan Session', () => {
     });
     await scanThenDone();
     await pick(/Pancakes/);
+    await openBubbleSheet();
+    await openBubbleSheet();
     expect(await screen.findByText('Writing Pancakes…')).toBeInTheDocument();
     expect(getScanSession().scans).toHaveLength(0);
     expect(screen.queryByRole('group', { name: 'Pick the dish' })).toBeNull();
@@ -362,6 +371,7 @@ describe('Plate Scan in the Scan Session', () => {
       { kind: 'plate', title: 'Pancakes', status: 'reading' },
     ]);
     finish(Response.json({ recipeDraftId: DRAFT_ID }));
+    await openBubbleSheet();
     expect(
       await screen.findByText('Pancakes ready to review'),
     ).toBeInTheDocument();
@@ -392,7 +402,9 @@ describe('Plate Scan in the Scan Session', () => {
     await scanThenDone();
     await pick(/Pancakes/);
     await userEvent.click(
-      await screen.findByRole('button', { name: 'Review' }),
+      within(await openBubbleSheet()).getByRole('button', {
+        name: /^Review the recipe/,
+      }),
     );
     expect(
       await screen.findByRole('radio', { name: /Standalone/ }),
@@ -437,10 +449,11 @@ describe('Plate Scan in the Scan Session', () => {
     });
     await scanThenDone();
     await pick(/Pancakes/);
+    await openBubbleSheet();
     expect(
       await screen.findByText("Couldn't write Pancakes"),
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await openBubbleSheet();
     await userEvent.click(
       await screen.findByRole('button', { name: 'Retry writing Pancakes' }),
     );
@@ -494,10 +507,11 @@ describe('Plate Scan in the Scan Session', () => {
     });
     await scanThenDone();
     await pick(/Pancakes/);
+    await openBubbleSheet();
     expect(
       await screen.findByText("Couldn't write Pancakes"),
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await openBubbleSheet();
     await userEvent.click(
       await screen.findByRole('button', { name: 'Discard Pancakes' }),
     );
@@ -514,10 +528,11 @@ describe('Plate Scan in the Scan Session', () => {
     });
     await scanThenDone();
     await pick(/Pancakes/);
+    await openBubbleSheet();
     expect(
       await screen.findByText("Couldn't write Pancakes"),
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await openBubbleSheet();
     expect(
       screen.queryByRole('button', { name: 'Retry writing Pancakes' }),
     ).toBeNull();
@@ -564,13 +579,15 @@ describe('Plate Scan in the Scan Session', () => {
     );
     await scanThenDone();
     await pick(/Pancakes/);
+    await openBubbleSheet();
+    await openBubbleSheet();
     expect(await screen.findByText('Writing Pancakes…')).toBeInTheDocument();
     await waitFor(() => expect(signal).toBeTruthy());
     const leaving = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(leaving);
     expect(leaving.defaultPrevented).toBe(true);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await openBubbleSheet();
     await userEvent.click(
       await screen.findByRole('button', { name: 'Cancel writing Pancakes' }),
     );

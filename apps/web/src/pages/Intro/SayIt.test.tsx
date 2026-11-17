@@ -118,7 +118,7 @@ describe('Setup 2, Say it', () => {
     await openSayIt();
     await screen.findByText('Hold the mic, talk, let go');
     expect(document.querySelector('[data-ground="olive"]')).not.toBeNull();
-    expect(document.querySelector('[data-theme="warm"]')).not.toBeNull();
+    expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
   });
 
   describe('when the server cannot transcribe', () => {
@@ -200,8 +200,11 @@ describe('Setup 2, holding the mic', () => {
     const { sent, button } = await recordNote();
     fireEvent.pointerUp(button);
 
-    expect(await screen.findByText(/Ready to review$/)).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Review' })).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'All read: 1 ready to review. Open Review',
+      }),
+    ).toBeVisible();
     // Nothing opens by itself.
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(sent).toHaveLength(1);
@@ -222,8 +225,11 @@ describe('Setup 2, holding the mic', () => {
     }
 
     expect(mic.start).toHaveBeenCalledTimes(2);
-    expect(await screen.findByText('2 in the background')).toBeVisible();
-    expect(screen.getByText('2 reading')).toBeVisible();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Gator is working: 2 being read. Open Review',
+      }),
+    ).toBeVisible();
     expect(sent.map((note) => note.get('defaultTarget'))).toEqual([
       'pantry',
       'pantry',
@@ -241,9 +247,9 @@ describe('Setup 2, holding the mic', () => {
       await holdLongEnough();
       fireEvent.pointerUp(button);
       // Only two are read at once; the others wait their turn in the strip.
-      await screen.findByText(
-        count === 1 ? /^Voice Note · 0:\d\d$/ : `${count} in the background`,
-      );
+      await screen.findByRole('button', {
+        name: `Gator is working: ${count} being read. Open Review`,
+      });
     }
 
     pressDown(button);

@@ -113,7 +113,7 @@ describe('RecipePreviewPage', () => {
       'href',
       '/recipes/explore',
     );
-    expect(screen.queryByRole('button', { name: 'More actions' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull();
     expect(screen.queryByRole('link', { name: /Edit/ })).toBeNull();
     expect(screen.getByRole('note')).toHaveTextContent(
       "You're previewing a Catalog Recipe.",
@@ -167,10 +167,11 @@ describe('RecipePreviewPage', () => {
     });
     expect(open).toHaveAttribute('href', '/recipes/copy-1');
     expect(copy).toBe('copy-1');
+    // The tag sits in the header's lineage row, beside the title.
     expect(
-      within(screen.getByRole('heading', { level: 1 })).getByText(
-        'In your Recipes',
-      ),
+      within(
+        screen.getByRole('heading', { level: 1 }).parentElement!,
+      ).getByText('In your Recipes'),
     ).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Undo' })).toBeVisible();
   });

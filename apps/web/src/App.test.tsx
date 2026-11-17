@@ -12,6 +12,7 @@ function stubSession(signedIn: boolean) {
       signedIn ? member() : new Response('null'),
     'GET /api/settings/preferences': () =>
       Response.json({ introDone: true, theme: null, locale: null }),
+    'GET /api/dashboard-layout': () => Response.json({ widgets: [] }),
   });
   vi.stubGlobal('fetch', fetchMock);
 }
@@ -90,8 +91,9 @@ describe('App shell', () => {
       'href',
       '/scan',
     );
+    // The link sits under the Widgets, so it shows once the layout has loaded.
     expect(
-      screen.getByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Customise dashboard' }),
     ).toHaveAttribute('href', '/customise');
   });
 

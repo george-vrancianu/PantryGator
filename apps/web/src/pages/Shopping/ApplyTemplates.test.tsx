@@ -86,7 +86,7 @@ const trolley: ShoppingList = {
   summary: { remaining: 0, checked: 1 },
 };
 
-// Bread is on no template, so it changes nothing in the sheet; it keeps the card's Import pill showing.
+// Bread is on no template, so it changes nothing in the sheet; it leaves the top bar's Import showing.
 const bread: ShoppingList = {
   id: 'l1',
   groups: [
@@ -136,22 +136,20 @@ function stub(
 }
 
 const openImport = async (user = userEvent.setup()) => {
-  await user.click(
-    await screen.findByRole('button', { name: 'Import from a template' }),
-  );
+  await user.click(await screen.findByRole('button', { name: 'Import' }));
   return screen.findByRole('dialog', { name: 'Import' });
 };
 
 describe('Import sheet', () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  it('opens from the summary card pill and closes without importing', async () => {
+  it('opens from the top-bar Import button and closes without importing', async () => {
     const user = userEvent.setup();
     const { calls } = stub();
     renderWithProviders(<ShoppingPage />);
 
     const pill = await screen.findByRole('button', {
-      name: 'Import from a template',
+      name: 'Import',
     });
     expect(pill).toHaveTextContent('Import');
     const dialog = await openImport(user);
@@ -176,7 +174,7 @@ describe('Import sheet', () => {
     ).toBe(false);
   });
 
-  it('leaves the card pill out on an empty list, where the Import tile takes its place', async () => {
+  it('keeps the top-bar Import on an empty list, beside the Import tile', async () => {
     stub(undefined, {
       id: 'l1',
       groups: [],
@@ -187,12 +185,10 @@ describe('Import sheet', () => {
     expect(
       await screen.findByRole('button', { name: /Import a template/ }),
     ).toBeVisible();
-    expect(
-      screen.queryByRole('button', { name: 'Import from a template' }),
-    ).toBeNull();
+    expect(screen.getByRole('button', { name: 'Import' })).toBeVisible();
   });
 
-  it('keeps the card pill on an empty list without templates, which has no Import tile', async () => {
+  it('keeps the top-bar Import on an empty list without templates, which has no Import tile', async () => {
     stub(
       undefined,
       { id: 'l1', groups: [], summary: { remaining: 0, checked: 0 } },
@@ -200,9 +196,7 @@ describe('Import sheet', () => {
     );
     renderWithProviders(<ShoppingPage />);
 
-    expect(
-      await screen.findByRole('button', { name: 'Import from a template' }),
-    ).toBeVisible();
+    expect(await screen.findByRole('button', { name: 'Import' })).toBeVisible();
   });
 
   it('says there are no templates yet and keeps the button disabled', async () => {
@@ -321,7 +315,7 @@ describe('Import sheet', () => {
     ).toHaveAttribute('aria-checked', 'true');
   });
 
-  it('puts focus back on the Import pill when the tile that opened the sheet goes away', async () => {
+  it('puts focus back on the Import button when the tile that opened the sheet goes away', async () => {
     const user = userEvent.setup();
     let current: ShoppingList = {
       id: 'l1',
@@ -351,16 +345,14 @@ describe('Import sheet', () => {
     );
 
     await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: 'Import from a template' }),
-      ).toHaveFocus(),
+      expect(screen.getByRole('button', { name: 'Import' })).toHaveFocus(),
     );
     expect(
       screen.queryByRole('button', { name: /Import a template/ }),
     ).toBeNull();
   });
 
-  it('imports the ticked lines as they are in one call, then closes with a toast and focus on the pill', async () => {
+  it('imports the ticked lines as they are in one call, then closes with a toast and focus on the button', async () => {
     const user = userEvent.setup();
     const { calls } = stub({
       'POST /api/shopping-list/items/bulk': () => Response.json(bread),
@@ -411,9 +403,7 @@ describe('Import sheet', () => {
       ).toBeGreaterThan(1),
     );
     await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: 'Import from a template' }),
-      ).toHaveFocus(),
+      expect(screen.getByRole('button', { name: 'Import' })).toHaveFocus(),
     );
   });
 

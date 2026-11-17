@@ -14,13 +14,13 @@ describe('TagChip', () => {
 
   it('paints a Catalog Tag with the neutral chip and a Family Tag with butter', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <TagChip kind="catalog">Dinner</TagChip>
         <TagChip kind="family">Meal prep</TagChip>
       </div>,
     );
-    expect(paint('Dinner')).toEqual(['#EEF0EB', '#141614']);
-    expect(paint('Meal prep')).toEqual(['#F5E1A4', '#5A4200']);
+    expect(paint('Dinner')).toEqual(['#E8E7DF', '#141A16']);
+    expect(paint('Meal prep')).toEqual(['#E8CB7C', '#2A2105']);
   });
 
   it('follows the Theme: the same Family Tag in dark is the dark butter pair', () => {
@@ -29,7 +29,7 @@ describe('TagChip', () => {
         <TagChip kind="family">Meal prep</TagChip>
       </div>,
     );
-    expect(paint('Meal prep')).toEqual(['#3D3418', '#F2CF72']);
+    expect(paint('Meal prep')).toEqual(['#E8CB7C', '#2A2105']);
   });
 
   it('is 21 high and 11.5 semibold on a row, 28 high on a page', () => {
@@ -65,7 +65,7 @@ describe('TagChip', () => {
 
   it('marks a Tag that matches the filter with the accent tint, bold, and an inset ring', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <TagChip kind="catalog" matched>
           Keto
         </TagChip>

@@ -31,7 +31,7 @@ describe('useForcedThemeColor', () => {
   });
 
   it("paints the browser chrome in the forced Theme's bg while mounted, then restores the root Theme's", () => {
-    writeAppearance({ theme: 'minimal', matchSystem: false });
+    writeAppearance({ theme: 'light', matchSystem: false });
     const { rerender } = renderWithTheme(<Forced />);
     expect(metas().map((m) => m.content)).toEqual([
       THEMES.dark.bg,
@@ -41,8 +41,8 @@ describe('useForcedThemeColor', () => {
     rerender(<></>);
     // The root Theme comes back.
     expect(metas().map((m) => m.content)).toEqual([
-      THEMES.minimal.bg,
-      THEMES.minimal.bg,
+      THEMES.light.bg,
+      THEMES.light.bg,
     ]);
   });
 });

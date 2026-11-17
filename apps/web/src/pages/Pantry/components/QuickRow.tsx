@@ -30,25 +30,25 @@ export function QuickRow({ openerRef, onOpen, onSayIt }: Props) {
       sx={{
         display: 'grid',
         gridTemplateColumns: `repeat(${onSayIt ? 3 : 2}, minmax(0, 1fr))`,
-        gap: '8px',
+        gap: '10px',
       }}
     >
       <Tile
         label={t('form.quick.photo')}
-        icon={<CameraIcon size={24} />}
+        icon={<CameraIcon size={22} />}
         openerRef={openerRef}
         onOpen={() => onOpen('product')}
       />
       <Tile
         label={t('form.quick.barcode')}
-        icon={<ScanBarcodeIcon size={24} />}
+        icon={<ScanBarcodeIcon size={22} />}
         openerRef={openerRef}
         onOpen={() => onOpen('barcode')}
       />
       {onSayIt ? (
         <Tile
           label={t('form.quick.sayIt')}
-          icon={<MicIcon size={24} />}
+          icon={<MicIcon size={22} />}
           openerRef={openerRef}
           onOpen={onSayIt}
         />
@@ -81,10 +81,12 @@ function Tile({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '4px',
-        minHeight: 66,
+        gap: '11px',
+        height: 96,
+        p: 0,
         font: 'inherit',
-        fontSize: 13,
+        fontSize: 13.5,
+        lineHeight: 1.15,
         fontWeight: 700,
         color: 'text.primary',
         backgroundColor: color.cardBg,
@@ -96,7 +98,18 @@ function Tile({
         ...focusRing,
       }}
     >
-      <Box aria-hidden="true" sx={{ display: 'grid', color: 'pp.accent' }}>
+      <Box
+        aria-hidden="true"
+        sx={{
+          width: 40,
+          height: 40,
+          display: 'grid',
+          placeItems: 'center',
+          borderRadius: radius.control,
+          backgroundColor: 'pp.accentTint',
+          color: 'pp.accent',
+        }}
+      >
         {icon}
       </Box>
       {label}

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 /**
- * Plain `accent` text on an `accentTint` fill falls short of 4.5:1 in Warm
- * editorial (4.49:1); the Themes define `accentOnTint` for that fill (US25).
+ * Plain `accent` text on an `accentTint` fill falls short of 4.5:1 in the
+ * old Warm editorial Theme (4.49:1); the Themes define `accentOnTint` for that fill (US25).
  */
 const sources = import.meta.glob<string>(
   [

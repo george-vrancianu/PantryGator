@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // The fake voice environment registers its mocks, so it comes before anything that reaches the microphone.
 import {
+  openReady,
   resetVoiceEnvironment,
   stubVoiceFetch,
   talkButton,
@@ -78,14 +79,8 @@ describe('the Voice Note host settings', () => {
     vi.unstubAllGlobals();
   });
 
-  const open = (name: string | RegExp) => screen.findByRole('dialog', { name });
-  /** Nothing opens by itself: the Member presses Review in the strip. */
-  const openFromStrip = async (name: string | RegExp) => {
-    await userEvent
-      .setup()
-      .click(await screen.findByRole('button', { name: 'Review' }));
-    return open(name);
-  };
+  /** Nothing opens by itself: the Member taps the Gator bubble and presses Review in the sheet. */
+  const openFromStrip = (name: string | RegExp) => openReady({ name });
   const applyOne = async () => {
     const review = await openFromStrip(/what I heard|Review/i);
     await userEvent

@@ -6,10 +6,10 @@ import {
   ManualEntryIcon,
   Stack,
 } from '@pocket-pantry/ui';
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { ConfirmPrompt } from '../../../components/ConfirmAction';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { useArchiveFamilyRecipe } from '../../../lib/familyRecipes';
@@ -21,8 +21,15 @@ import type { RecipeDetail } from '../../../lib/recipes';
  * the Recipe. The Family's own live Recipe keeps Make a Variant, Edit and
  * Delete (archive) in a menu.
  */
-export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
-  const { t } = useTranslation(['recipes', 'errors']);
+export function RecipeHeader({
+  recipe,
+  header,
+}: {
+  recipe: RecipeDetail | undefined;
+  /** The Canopy block under the buttons: lineage, title, facts and coverage. */
+  header?: ReactNode;
+}) {
+  const { t } = useTranslation(['recipes', 'errors', 'screenHeader']);
   const navigate = useNavigate();
   const archive = useArchiveFamilyRecipe(recipe?.id ?? '');
   const [asking, setAsking] = useState(false);
@@ -30,7 +37,7 @@ export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
   const back = { label: t('recipes:back'), href: '/recipes' };
   // No Recipe yet (loading, not found): keep a title so the screen has an H1.
   if (!recipe)
-    return <AppScreenHeader back={back} title={t('recipes:title')} />;
+    return <Screen back={back} title={t('recipes:title')} header={header} />;
 
   const own = recipe.owner === 'family' && !recipe.archived;
   // A Variant's parent is a Catalog Base Recipe. A Family Base gets one only
@@ -63,13 +70,15 @@ export function RecipeHeader({ recipe }: { recipe: RecipeDetail | undefined }) {
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         back={back}
-        trailing={
+        header={header}
+        secondary={
           own ? (
             <ActionMenu
               buttonRef={menuButton}
-              label={t('recipes:family.moreActions')}
+              label={t('screenHeader:more')}
+              labelled
               items={[
                 ...(canMakeVariant
                   ? [{ ...makeVariant, icon: <BranchIcon /> }]

@@ -1,6 +1,6 @@
 import { Alert, SegmentedControl, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { ScopeCaption, SectionHeading } from '../../components/SectionHeading';
 import { CatalogIndex } from './components/CatalogIndex';
 import { PromoCodes } from './components/PromoCodes';
@@ -16,8 +16,10 @@ export function AdminPage() {
   const waiting = useReviewCounts().total;
 
   return (
-    <>
-      <AppScreenHeader title={t('admin:title')} />
+    <Screen
+      title={t('admin:title')}
+      back={{ label: t('screenHeader:back'), href: '/settings' }}
+    >
       <Stack spacing={3}>
         {screen.error ? <Alert>{screen.error}</Alert> : null}
         {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}
@@ -61,6 +63,6 @@ export function AdminPage() {
           </>
         ) : null}
       </Stack>
-    </>
+    </Screen>
   );
 }

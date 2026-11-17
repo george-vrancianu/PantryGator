@@ -24,23 +24,26 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
       columns={columns}
       isLoading={batches.isPending}
       error={batches.error ? translateApiError(t, batches.error) : null}
-      padding="14px 16px 8px"
+      padding={batches.isPending || batches.error ? undefined : '0 16px 2px'}
     >
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: '4px',
+          minHeight: 42,
         }}
       >
-        <WidgetTitle icon={<ClockIcon size={16} />}>
+        <WidgetTitle icon={<ClockIcon size={14} />}>
           {t('widgets.useSoon.title')}
         </WidgetTitle>
         <Box
           component={Link}
           to="/pantry"
           sx={{
+            display: 'flex',
+            alignItems: 'center',
+            minHeight: 44,
             fontSize: 13,
             fontWeight: 700,
             color: tokens.color.accent,
@@ -65,17 +68,16 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  gap: '8px',
-                  height: 36,
+                  gap: '12px',
+                  height: 44,
                   borderTop: `1px solid ${tokens.color.divider}`,
-                  '&:first-of-type': { borderTop: 0 },
                 }}
               >
                 <Box
                   component="span"
                   sx={{
                     fontSize: 15,
-                    fontWeight: 500,
+                    fontWeight: 600,
                     minWidth: 0,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',

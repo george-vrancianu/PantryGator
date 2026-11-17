@@ -122,8 +122,8 @@ export function TagsSheet({
             display: 'grid',
             gridTemplateColumns: '1fr 2fr',
             gap: '10px',
-            pl: gutterLeft(20),
-            pr: gutterRight(20),
+            pl: gutterLeft(16),
+            pr: gutterRight(16),
             pt: 1.5,
             pb: plusBottomInset(26),
           }}

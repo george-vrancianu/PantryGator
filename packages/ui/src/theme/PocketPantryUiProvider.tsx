@@ -30,8 +30,6 @@ const globalStyles = {
   body: {
     margin: 0,
     fontFamily: bodyFont,
-    // Warm editorial's Fraunces at SOFT 50; the other five families have no SOFT axis and ignore it.
-    fontVariationSettings: "'SOFT' 50",
     color: palette('text-primary'),
     transition: colourTransition,
   },

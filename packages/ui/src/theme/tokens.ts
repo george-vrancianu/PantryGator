@@ -18,7 +18,7 @@ const soonFg = palette('warning-main');
  * The legacy colour tokens from pocket-pantry-handoff/HANDOFF.md section 4,
  * kept in their old shape as a shim so existing importers follow the active
  * Theme unchanged. Each is a reference to a Theme variable
- * (docs/handoffs/themes); legacy keys with no Theme token are mapped to the
+ * (`themes.ts`); legacy keys with no Theme token are mapped to the
  * nearest one or mixed from two. New code doesn't import this: it reads
  * colours through MUI (`theme.vars.palette`, sx paths like `'pp.accent'`) or
  * `color` / `palette()`, and other tokens through the themeVars helpers.
@@ -42,7 +42,7 @@ export const tokens = {
     star: palette('pp-star'),
     accentHover: mix(accent, 82, ink),
     accentTint: palette('pp-accentTint'),
-    /** Text on `accentTint`; plain `accent` falls short of 4.5:1 there in Warm editorial. */
+    /** Text on `accentTint`; plain `accent` can fall short of 4.5:1 there. */
     accentOnTint: palette('pp-accentOnTint'),
     accentMid: mix(accent, 55, surface),
     butter: palette('secondary-main'),

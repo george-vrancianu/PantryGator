@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  Link,
   ListRow,
   SwipeRow,
   type SwipeRowHandle,
@@ -22,7 +21,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { ConfirmAction } from '../../../components/ConfirmAction';
 import { AmountSheet, type Amount } from '../../../components/AmountSheet';
 import { formatRowAmount } from '../../../lib/amount';
@@ -46,38 +45,42 @@ import { ApplyTemplatePicker } from './ApplyTemplatePicker';
 /** Rename a Template, add lines with Catalog search, remove lines, delete it, or apply it. */
 export function TemplateEditorPage() {
   const { id = '' } = useParams();
-  const { t } = useTranslation(['templates', 'common']);
+  const { t } = useTranslation(['templates', 'common', 'screenHeader']);
   const template = useTemplate(id);
   const [applying, setApplying] = useState(false);
 
   if (applying) {
     return (
-      <>
-        <AppScreenHeader title={t('templates:title')} />
+      <Screen title={t('templates:title')}>
         <ApplyTemplatePicker
           templateId={id}
           onDone={() => setApplying(false)}
           onCancel={() => setApplying(false)}
         />
-      </>
+      </Screen>
+    );
+  }
+
+  if (template.data) {
+    return (
+      <Editor
+        key={template.data.id}
+        template={template.data}
+        onApply={() => setApplying(true)}
+      />
     );
   }
 
   return (
-    <>
-      <AppScreenHeader title={template.data?.name ?? t('templates:title')} />
+    <Screen
+      title={t('templates:title')}
+      back={{ label: t('screenHeader:back'), href: '/shopping/templates' }}
+    >
       {template.isPending ? <Spinner label={t('common:loading')} /> : null}
       {template.error ? (
         <Alert>{translateApiError(t, template.error)}</Alert>
       ) : null}
-      {template.data ? (
-        <Editor
-          key={template.data.id}
-          template={template.data}
-          onApply={() => setApplying(true)}
-        />
-      ) : null}
-    </>
+    </Screen>
   );
 }
 
@@ -88,7 +91,7 @@ function Editor({
   template: Template;
   onApply: () => void;
 }) {
-  const { t } = useTranslation(['templates', 'common']);
+  const { t } = useTranslation(['templates', 'common', 'screenHeader']);
   const navigate = useNavigate();
   const { update, remove } = useTemplateMutations();
   const [name, setName] = useState(template.name);
@@ -97,12 +100,24 @@ function Editor({
   const hint = useRowHint('template', lines.length > 0);
   const full = lines.length >= MAX_TEMPLATE_LINES;
 
+  // Commits a pending name change; resolves false (the page's alert shows why) when the save fails.
+  const commitName = async () => {
+    const trimmed = name.trim();
+    if (!trimmed || trimmed === template.name) return true;
+    try {
+      await update.mutateAsync({ id: template.id, name: trimmed });
+      return true;
+    } catch {
+      return false;
+    }
+  };
   const rename = (event: FormEvent) => {
     event.preventDefault();
-    const trimmed = name.trim();
-    if (trimmed && trimmed !== template.name) {
-      update.mutate({ id: template.id, name: trimmed });
-    }
+    void commitName();
+  };
+  // Lines save as you go, but the name does not: the gold Save key commits it, then leaves for the list.
+  const saveAndLeave = async () => {
+    if (await commitName()) navigate('/shopping/templates');
   };
 
   // The newest lines we know of: the page's, or the last save's reply. Undo builds on these, not on
@@ -197,72 +212,72 @@ function Editor({
   const error = update.error ?? remove.error;
 
   return (
-    <Stack spacing={2.5}>
-      <RowHintNote hint={hint} />
-      {error ? <Alert>{translateApiError(t, error)}</Alert> : null}
-      <Box component="form" onSubmit={rename} noValidate>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-          <TextField
-            label={t('templates:editor.name')}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            slotProps={{ htmlInput: { maxLength: 100 } }}
-          />
-          <Button
-            type="submit"
-            variant="secondary"
-            disabled={
-              update.isPending || !name.trim() || name.trim() === template.name
-            }
-            sx={{ minHeight: 56 }}
-          >
-            {t('templates:editor.rename')}
-          </Button>
-        </Stack>
-      </Box>
-
-      {lines.length === 0 ? (
-        <Typography
-          ref={empty}
-          tabIndex={-1}
-          color="text.secondary"
-          sx={{ outline: 'none' }}
-        >
-          {t('templates:editor.empty')}
-        </Typography>
-      ) : (
-        <Stack component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
-          {lines.map((line, index) => (
-            <LineRow
-              key={line.id}
-              line={line}
-              peek={index === 0 && hint.peek}
-              onLearned={hint.onLearned}
-              busy={update.isPending}
-              onRemove={removeLine}
-              onSetAmount={setAmount}
+    <Screen
+      title={template.name}
+      back={{ label: t('screenHeader:back'), href: '/shopping/templates' }}
+      primary={{
+        label: t('templates:editor.save'),
+        text: t('templates:editor.save'),
+        onClick: () => void saveAndLeave(),
+        disabled: update.isPending,
+      }}
+    >
+      <Stack spacing={2.5}>
+        <RowHintNote hint={hint} />
+        {error ? <Alert>{translateApiError(t, error)}</Alert> : null}
+        <Box component="form" onSubmit={rename} noValidate>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+            <TextField
+              label={t('templates:editor.name')}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              slotProps={{ htmlInput: { maxLength: 100 } }}
             />
-          ))}
-        </Stack>
-      )}
+          </Stack>
+        </Box>
 
-      {full ? null : <AddItemForm adding={update.isPending} onAdd={add} />}
+        {lines.length === 0 ? (
+          <Typography
+            ref={empty}
+            tabIndex={-1}
+            color="text.secondary"
+            sx={{ outline: 'none' }}
+          >
+            {t('templates:editor.empty')}
+          </Typography>
+        ) : (
+          <Stack component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+            {lines.map((line, index) => (
+              <LineRow
+                key={line.id}
+                line={line}
+                peek={index === 0 && hint.peek}
+                onLearned={hint.onLearned}
+                busy={update.isPending}
+                onRemove={removeLine}
+                onSetAmount={setAmount}
+              />
+            ))}
+          </Stack>
+        )}
 
-      <Button onClick={onApply} disabled={lines.length === 0}>
-        {t('templates:editor.apply')}
-      </Button>
-      <ConfirmAction
-        label={t('templates:editor.delete')}
-        message={t('templates:editor.deleteConfirm')}
-        disabled={remove.isPending}
-        onConfirm={() =>
-          remove.mutate(template.id, {
-            onSuccess: () => navigate('/shopping/templates'),
-          })
-        }
-      />
-      <Link href="/shopping/templates">{t('templates:editor.back')}</Link>
-    </Stack>
+        {full ? null : <AddItemForm adding={update.isPending} onAdd={add} />}
+
+        <Button onClick={onApply} disabled={lines.length === 0}>
+          {t('templates:editor.apply')}
+        </Button>
+        <ConfirmAction
+          label={t('templates:editor.delete')}
+          message={t('templates:editor.deleteConfirm')}
+          disabled={remove.isPending}
+          onConfirm={() =>
+            remove.mutate(template.id, {
+              onSuccess: () => navigate('/shopping/templates'),
+            })
+          }
+        />
+      </Stack>
+    </Screen>
   );
 }
 

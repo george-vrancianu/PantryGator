@@ -1,13 +1,12 @@
 import {
   Alert,
   Box,
+  canopy,
   Button,
-  SAFE_TOP,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
   Stack,
-  tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import {
@@ -24,6 +23,7 @@ import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/Brow
 import type { FamilyRecipeDocument } from '../../../lib/familyRecipes';
 import { useFamilyCatalog } from '../../../lib/familyCatalog';
 import type { GuidanceInput } from '../../../lib/adminRecipes';
+import { useScroller } from '../../../lib/scroller';
 import {
   hasGuidanceProblem,
   toGuidanceInput,
@@ -31,7 +31,7 @@ import {
 } from '../../../lib/guidanceDraft';
 import type { MomentOption } from '../../../components/recipeEditor/GuidanceFields';
 import { GuidanceCard } from './GuidanceCard';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { RecipeLinesSection } from '../../../components/recipeEditor/RecipeLinesSection';
 import { FamilyDetailsBasics } from './FamilyDetailsBasics';
@@ -153,10 +153,11 @@ export function FamilyRecipeForm({
   const tabsId = useId();
   const [tab, setTab] = useState<EditorTab>(openTab);
   const reduceMotion = usePrefersReducedMotion();
+  const scroller = useScroller();
   const goTo = (next: EditorTab) => {
     if (next === tab) return;
     setTab(next);
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scroller.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
   useEffect(() => {
     onChange?.({ draft, guidance: guidanceDraft });
@@ -204,33 +205,29 @@ export function FamilyRecipeForm({
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={header.title}
         titleRef={header.titleRef}
         back={header.back}
         subline={header.subline}
         truncateTitle
-        trailing={
-          <Button
-            size="sm"
-            shape="pill"
-            disabled={saving || !canSave}
-            onClick={submit}
-          >
-            {saving ? t('admin:common.saving') : t('admin:common.save')}
-          </Button>
-        }
+        primary={{
+          label: t('admin:common.save'),
+          text: saving ? t('admin:common.saving') : t('admin:common.save'),
+          disabled: saving || !canSave,
+          onClick: submit,
+        }}
       />
       <Stack spacing={2.5}>
         <Box
           sx={{
             position: 'sticky',
-            top: SAFE_TOP,
+            top: 0,
             zIndex: 2,
             py: '8px',
-            bgcolor: tokens.color.bg,
-            // Paints the page background out to the screen edges.
-            boxShadow: `0 0 0 100vmax ${tokens.color.bg}`,
+            bgcolor: canopy.sheetTop,
+            // Paints the sheet's top colour out to the screen edges.
+            boxShadow: `0 0 0 100vmax ${canopy.sheetTop}`,
             clipPath: 'inset(0 -100vmax)',
           }}
         >

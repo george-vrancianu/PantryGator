@@ -15,10 +15,7 @@ describe('IngredientIcon', () => {
   it("fills the body with its Aisle's tint for the Theme it sits in", () => {
     const { container } = render(
       <>
-        <div data-theme="warm">
-          <IngredientIcon aisleId={DAIRY} />
-        </div>
-        <div data-theme="minimal">
+        <div data-theme="light">
           <IngredientIcon aisleId={DAIRY} />
         </div>
         <div data-theme="dark">
@@ -26,9 +23,7 @@ describe('IngredientIcon', () => {
         </div>
       </>,
     );
-    // Minimal keeps the shopping handoff's pair; Warm has its own.
-    expect(paintedColour(iconIn(container, 'warm'), 'fill')).toBe('#E4E9EA');
-    expect(paintedColour(iconIn(container, 'minimal'), 'fill')).toBe('#E3ECF3');
+    expect(paintedColour(iconIn(container, 'light'), 'fill')).toBe('#E3ECF3');
     expect(paintedColour(iconIn(container, 'dark'), 'fill')).toBe('#1D2C38');
   });
 
@@ -52,6 +47,6 @@ describe('IngredientIcon', () => {
         <IngredientIcon aisleId="admin-made-aisle" />
       </div>,
     );
-    expect(paintedColour(iconIn(container, 'dark'), 'fill')).toBe('#26312A');
+    expect(paintedColour(iconIn(container, 'dark'), 'fill')).toBe('#0D120F');
   });
 });

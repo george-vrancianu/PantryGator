@@ -1,15 +1,12 @@
-import Box from '@mui/material/Box';
-import { PageLayout } from '@pocket-pantry/ui';
-import type { ReactNode } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useLocation, useOutlet } from 'react-router-dom';
 import { dockStateFor } from '../lib/dockState';
 import { useUnloadPromptWhileReading } from '../lib/recipeReads';
 import { micClearance } from '../lib/voicePlacement';
 import { ApplyMemberLocale } from './ApplyMemberLocale';
 import { ApplyMemberTheme } from './ApplyMemberTheme';
 import { AppDock } from './AppDock';
-import { RefreshProvider, useRefreshScreen } from '../lib/refresh';
-import { RefreshLoaderSlot } from './RefreshLoaderSlot';
+import { RefreshProvider } from '../lib/refresh';
+import { LayoutFrame } from './layout/LayoutFrame';
 import {
   APP_VOICE_SETTINGS,
   useShowsDockMic,
@@ -21,37 +18,23 @@ import { useRecipeReadsSideEffects } from './background/useRecipeReadsSideEffect
 import { useRefreshCreditsOnReads } from './background/useRefreshCreditsOnReads';
 import { VoiceHostProvider, VoiceHostSlot } from './voice/VoiceHost';
 
-/** The layout hosts the background strip itself, so it shows on Dock pages without voice configured. */
+/** The layout hosts the Gator bubble itself, so it shows on every page but the camera without voice configured. */
 const LAYOUT_VOICE_SETTINGS: VoiceNoteSettings = {
   ...APP_VOICE_SETTINGS,
   hostsStrip: false,
 };
 
+/** The camera is full-screen: the Gator bubble stays out of it. */
+const isCamera = (pathname: string) => pathname.replace(/\/$/, '') === '/scan';
+
 /** The line editor, whose tablet layout is a wide table (the overview of cards is not). */
 const isWide = (pathname: string) => pathname.startsWith('/scan/review/');
-
-/** Fades the screen's content (not its header) while a refresh runs, keeping the data already shown. */
-function RefreshDimmed({ children }: { children: ReactNode }) {
-  const { state } = useRefreshScreen();
-  return (
-    <Box
-      sx={{
-        display: 'contents',
-        '& > *:not(header)': {
-          opacity: state === 'busy' ? 0.55 : 1,
-          transition: 'opacity 250ms',
-        },
-      }}
-    >
-      {children}
-    </Box>
-  );
-}
 
 /** The signed-in shell: page frame plus the Dock for the current route. */
 export function AppLayout() {
   const { pathname } = useLocation();
   const dock = dockStateFor(pathname);
+  const outlet = useOutlet();
   const showsMic = useShowsDockMic();
   useUnloadPromptWhileReading();
   useRecipeReadsSideEffects();
@@ -62,19 +45,22 @@ export function AppLayout() {
       <ApplyMemberTheme />
       <RefreshProvider>
         <VoiceHostProvider>
-          <PageLayout
+          <LayoutFrame
+            outlet={outlet}
             withDock={dock.visible}
             dockClearance={showsMic ? micClearance : undefined}
             wide={isWide(pathname)}
-          >
-            <RefreshDimmed>
-              <Outlet />
-            </RefreshDimmed>
-          </PageLayout>
-          <RefreshLoaderSlot />
+          />
           <VoiceHostSlot />
           <VoiceNote settings={LAYOUT_VOICE_SETTINGS} />
-          {dock.visible ? <BackgroundHost scanSession recipeReads /> : null}
+          {isCamera(pathname) ? null : (
+            <BackgroundHost
+              // The Scan Session waits for its own Review: it is not in the bubble under /scan.
+              scanSession={!pathname.startsWith('/scan')}
+              recipeReads
+              dock={dock.visible}
+            />
+          )}
           {dock.visible ? <AppDock activeKey={dock.activeKey} /> : null}
         </VoiceHostProvider>
       </RefreshProvider>

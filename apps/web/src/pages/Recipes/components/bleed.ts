@@ -1,8 +1,8 @@
-import { gutterLeft, gutterRight } from '@pocket-pantry/ui';
+import { PAGE_GUTTERS } from '../../../components/layout/LayoutFrame';
 
-/** `PageLayout`'s gutter on one side: 20 px on phones, 48 px from `md`, or the device's side inset when larger. */
-const left = { xs: gutterLeft(20), md: gutterLeft(48) };
-const right = { xs: gutterRight(20), md: gutterRight(48) };
+/** The layout's gutter on each side (`LayoutFrame`'s own, so a bleeding row always lines up with it). */
+const left = PAGE_GUTTERS.pl;
+const right = PAGE_GUTTERS.pr;
 const negate = (v: string) => `calc(-1 * ${v})`;
 
 /** Lets a scrolling row run to the screen edges while its first item still lines up with the page gutter. */

@@ -28,6 +28,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
 
 - `pages/<Area>/` holds one feature area each (some areas have several pages), with its own `components/` and `hooks/` for code only that area uses. Page tests sit beside the page.
 - `components/` holds anything used by more than one page. Tags on Recipe rows: `RowTags` (the 2 chips, "+N" and Level line) and `TagChips` (the full list); the `TagChip` itself is in `packages/ui`.
+- `components/layout/` is the shared layout: `LayoutFrame` (top bar, header and the one scrolling sheet, page transitions, pull-to-refresh) and `Screen`, which every in-layout page renders to fill those regions. The window never scrolls: use `useScroller()` (`lib/scroller.tsx`) instead of `window.scrollTo/scrollBy/scrollY`. `lib/layoutKind.ts` says which route is a camera, editor or page, and which are Dock tab roots (`isRecipeEditor` is shared with `lib/dockState.ts`).
 - `lib/` holds non-visual logic: API client (`api.ts`), data hooks, the Voice Note module (`voiceNote.ts`), dates, amounts. `lib/tags.ts` holds the `RecipeTag` type and row ordering (`orderRowTags`, `splitRowTags`, `rowTagNames`).
 - `test/` holds shared test helpers: `render.tsx` (render with providers), `voice.ts` (fake voice environment), `setup.ts` (vitest setup), plus per-feature helpers (`scan.ts`, `review.ts`, `mealPlans.ts`, `viewport.ts`, `scroll.ts`).
 - i18n: `i18n/locales/{en,ro,da}/<namespace>.json`, one file per namespace, same names in all three. Wiring in `i18n/resources.ts`; API error codes map to copy in `i18n/translateApiError.ts`.
@@ -53,5 +54,5 @@ Run from the repo root unless noted.
 
 ## Gotchas
 
-- `SettingsAppearance` and `HealthWidget` tests flake under load; rerun alone before calling a regression.
+- `SettingsAppearance` and `PantryHealthCluster` tests flake under load; rerun alone before calling a regression.
 - Gh quirks are in `docs/agents/issue-tracker.md`.

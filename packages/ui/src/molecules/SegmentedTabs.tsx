@@ -4,7 +4,13 @@ import { useRef, type KeyboardEvent } from 'react';
 import { focusRing } from '../theme/focusRing';
 import { tokens } from '../theme/tokens';
 import { visuallyHidden } from '../theme/visuallyHidden';
-import { bodyFont, nestedRadius, radius, shadow } from '../theme/themeVars';
+import {
+  bodyFont,
+  canopy,
+  nestedRadius,
+  radius,
+  shadow,
+} from '../theme/themeVars';
 
 export type SegmentedTab<T extends string> = {
   value: T;
@@ -25,6 +31,11 @@ export type SegmentedTabsProps<T extends string> = {
   tabs: SegmentedTab<T>[];
   value: T;
   onChange: (value: T) => void;
+  /**
+   * On the Canopy header (Canopy handoff 4.3): a 44 high recessed track, the selected segment a
+   * raised 34 high cream tile; every segment is a full-height 44 pt target.
+   */
+  onCanopy?: boolean;
 };
 
 /** The id of a tab's button; give the panel `aria-labelledby` of it. */
@@ -42,6 +53,7 @@ export function SegmentedTabs<T extends string>({
   tabs,
   value,
   onChange,
+  onCanopy = false,
 }: SegmentedTabsProps<T>) {
   const { color } = tokens;
   const buttons = useRef(new Map<string, HTMLElement>());
@@ -68,14 +80,29 @@ export function SegmentedTabs<T extends string>({
     <Box
       role="tablist"
       aria-label={label}
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
-        gap: '4px',
-        p: '4px',
-        backgroundColor: color.chipNeutral,
-        borderRadius: radius.control,
-      }}
+      sx={
+        onCanopy
+          ? {
+              display: 'grid',
+              gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
+              gap: '2px',
+              height: 44,
+              boxSizing: 'border-box',
+              px: '4px',
+              backgroundColor: canopy.field,
+              border: `1px solid ${canopy.fieldLine}`,
+              boxShadow: canopy.fieldShadow,
+              borderRadius: radius.btn,
+            }
+          : {
+              display: 'grid',
+              gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
+              gap: '4px',
+              p: '4px',
+              backgroundColor: color.chipNeutral,
+              borderRadius: radius.control,
+            }
+      }
     >
       {tabs.map((tab, index) => {
         const selected = tab.value === value;
@@ -96,46 +123,81 @@ export function SegmentedTabs<T extends string>({
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(tab.value)}
             onKeyDown={(event) => onKeyDown(event, index)}
-            sx={[
-              {
-                height: 40,
-                gap: '6px',
-                borderRadius: nestedRadius(radius.control, 4),
-                fontSize: 14,
-                fontWeight: selected ? 700 : 600,
-                fontFamily: bodyFont,
-                // Selected like the SegmentedControl: `seg-on` / `seg-on-ink`.
-                backgroundColor: selected ? 'pp.segOn' : 'transparent',
-                color: selected ? 'pp.segOnInk' : color.muted,
-                boxShadow: selected ? shadow.segment : 'none',
-              },
-              focusRing,
-            ]}
+            sx={
+              onCanopy
+                ? {
+                    height: '100%',
+                    minWidth: 0,
+                    fontSize: 14,
+                    fontWeight: selected ? 700 : 600,
+                    fontFamily: bodyFont,
+                    color: selected ? canopy.segOnInk : canopy.muted,
+                    // Gold, as on the Canopy's search field: the accent is hard to see here.
+                    '&.Mui-focusVisible, &:focus-visible': {
+                      outline: `2px solid ${canopy.gold}`,
+                      outlineOffset: '2px',
+                    },
+                  }
+                : [
+                    {
+                      height: 40,
+                      gap: '6px',
+                      borderRadius: nestedRadius(radius.control, 4),
+                      fontSize: 14,
+                      fontWeight: selected ? 700 : 600,
+                      fontFamily: bodyFont,
+                      // Selected like the SegmentedControl: `seg-on` / `seg-on-ink`.
+                      backgroundColor: selected ? 'pp.segOn' : 'transparent',
+                      color: selected ? 'pp.segOnInk' : color.muted,
+                      boxShadow: selected ? shadow.segment : 'none',
+                    },
+                    focusRing,
+                  ]
+            }
           >
-            {tab.label}
-            {tab.badge ? ' ' : null}
-            {tab.badge ? (
-              <Box
-                component="span"
-                aria-hidden={tab.badgeLabel ? true : undefined}
-                sx={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  px: '6px',
-                  py: '2px',
-                  borderRadius: '999px',
-                  backgroundColor: color.urgentBg,
-                  color: color.urgentFg,
-                }}
-              >
-                {tab.badge}
-              </Box>
-            ) : null}
-            {tab.badge && tab.badgeLabel ? (
-              <Box component="span" sx={visuallyHidden}>
-                {tab.badgeLabel}
-              </Box>
-            ) : null}
+            <Box
+              component="span"
+              sx={
+                onCanopy
+                  ? {
+                      width: '100%',
+                      height: 34,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      borderRadius: radius.seg,
+                      backgroundColor: selected ? canopy.segOn : 'transparent',
+                      boxShadow: selected ? shadow.segment : 'none',
+                    }
+                  : { display: 'contents' }
+              }
+            >
+              {tab.label}
+              {tab.badge ? ' ' : null}
+              {tab.badge ? (
+                <Box
+                  component="span"
+                  aria-hidden={tab.badgeLabel ? true : undefined}
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    px: '6px',
+                    py: '2px',
+                    borderRadius: '999px',
+                    backgroundColor: color.urgentBg,
+                    color: color.urgentFg,
+                  }}
+                >
+                  {tab.badge}
+                </Box>
+              ) : null}
+              {tab.badge && tab.badgeLabel ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {tab.badgeLabel}
+                </Box>
+              ) : null}
+            </Box>
           </ButtonBase>
         );
       })}

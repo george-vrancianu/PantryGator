@@ -2,7 +2,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
 import { focusRing } from '../theme/focusRing';
-import { bodyFont, nestedRadius, radius } from '../theme/themeVars';
+import { bodyFont, dock, radius } from '../theme/themeVars';
 
 export type DockItemProps = {
   label: string;
@@ -23,10 +23,8 @@ export function DockItem({
   active = false,
   disabled = false,
 }: DockItemProps) {
-  // The active tab: the whole button on the accent tint, icon and label in
-  // the on-tint colour. Inactive tabs are muted.
-  const colour = active ? 'pp.accentOnTint' : 'text.secondary';
-  const background = active ? 'pp.accentTint' : 'transparent';
+  // Canopy: white icon and label on the active tab (plus the gold mark), 68 % cream on the rest.
+  const colour = active ? dock.on : dock.off;
 
   return (
     <ButtonBase
@@ -38,12 +36,11 @@ export function DockItem({
       onClick={disabled ? (event) => event.preventDefault() : undefined}
       sx={[
         {
+          position: 'relative',
           flexDirection: 'column',
-          gap: '3px',
-          // Concentric with the dock, 8 px inside its padding edge.
-          borderRadius: nestedRadius(radius.dock, 8),
+          gap: '5px',
+          borderRadius: radius.dock,
           color: colour,
-          bgcolor: background,
           fontSize: 11,
           fontWeight: active ? 700 : 600,
           fontFamily: bodyFont,
@@ -58,12 +55,33 @@ export function DockItem({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: 32,
+          height: 22,
+          '& svg': {
+            width: 22,
+            height: 22,
+            strokeWidth: active ? 1.9 : 1.6,
+          },
         }}
       >
         {icon}
       </Box>
       <span>{label}</span>
+      {active && !disabled ? (
+        <Box
+          aria-hidden
+          data-active-mark=""
+          sx={{
+            position: 'absolute',
+            bottom: 6,
+            left: '50%',
+            width: 16,
+            height: 2,
+            ml: '-8px',
+            borderRadius: radius.pill,
+            bgcolor: dock.mark,
+          }}
+        />
+      ) : null}
     </ButtonBase>
   );
 }

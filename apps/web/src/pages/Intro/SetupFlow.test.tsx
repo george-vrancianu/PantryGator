@@ -7,6 +7,7 @@ import type { CatalogSearchResult } from '../../lib/catalog';
 import type { ProposedLine } from '../../lib/scan';
 import { preferenceSaves, stubSetupMember, Where } from '../../test/intro';
 import { renderWithProviders } from '../../test/render';
+import { closeBubbleSheet, openBubbleSheet } from '../../test/voice';
 import {
   flush,
   photoStack,
@@ -239,7 +240,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(where()).toBe('/');
     expect(preferenceSaves(calls)).toEqual([{ introDone: true }]);
@@ -443,7 +444,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Go to my kitchen' }));
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(preferenceSaves(calls)).toEqual([{ introDone: true }]);
   });
@@ -659,13 +660,15 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
       expect(await screen.findByText(SAY_IT_CALLOUT)).toBeInTheDocument();
       expect(where()).toBe('/intro/say-it');
       // The photos wait for the app's Review: Say it's strip is Voice Notes only.
-      expect(screen.queryByText('2 photos')).toBeNull();
+      expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
 
       await user.click(screen.getByRole('link', { name: 'Skip' }));
       await user.click(
         await screen.findByRole('button', { name: 'Go to my kitchen' }),
       );
+      await openBubbleSheet();
       expect(await screen.findByText('2 photos')).toBeInTheDocument();
+      await closeBubbleSheet();
       await user.click(await screen.findByRole('link', { name: 'Camera' }));
       await waitFor(() => expect(shutter()).toBeInTheDocument());
       expect(stackCount()).toBe(2);

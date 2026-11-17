@@ -51,14 +51,6 @@ function tapRunSrc(mood: string, run: number) {
   return `data:image/svg+xml,${encodeURIComponent(`${text}<!--${run}-->`)}`;
 }
 
-/** Warms the cache with these moods' loops, so a face that mounts later doesn't show an empty box. */
-export function warmGatorLoops(moods: GatorMood[], loop: GatorLoop) {
-  for (const mood of moods) {
-    const src = ART[mood]?.[loop];
-    if (src) new Image().src = src;
-  }
-}
-
 export type GatorProps = {
   mood: GatorMood;
   /** Pixel width of the drawing itself; its padding hangs outside. */

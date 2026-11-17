@@ -2,13 +2,13 @@
   "title": "Indkøb",
   "summary": {
     "toBuy": "{{count}} at købe",
+    "toBuyLabel": "at købe",
     "inBasket": "{{checked}} af {{total}} afkrydset",
     "progress": "Fremdrift på indkøbslisten",
     "tickedOff_one": "{{count}} afkrydset",
     "tickedOff_other": "{{count}} afkrydset",
     "moveToPantry_one": "Flyt {{count}} til spisekammeret",
     "moveToPantry_other": "Flyt {{count}} til spisekammeret",
-    "nothing": "Intet at købe",
     "empty": "Din liste er tom"
   },
   "add": {
@@ -86,7 +86,6 @@
     "button": "Importér",
     "title": "Importér",
     "close": "Luk",
-    "aria": "Importér fra en skabelon",
     "hint": "Afkryds hele skabeloner, eller åbn én for at vælge linjer. Du kan blande flere.",
     "section": "Dine skabeloner · {{count}}",
     "manage": "Administrer",

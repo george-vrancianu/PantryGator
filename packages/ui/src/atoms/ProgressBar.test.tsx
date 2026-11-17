@@ -16,9 +16,9 @@ describe('ProgressBar', () => {
     );
     for (const name of ['Default', 'Large']) {
       const bar = screen.getByRole('progressbar', { name });
-      expect(paintedColour(bar, 'background-color')).toBe('#26312A');
+      expect(paintedColour(bar, 'background-color')).toBe('#0D120F');
       expect(paintedColour(bar.firstElementChild!, 'background-color')).toBe(
-        '#8FE0A8',
+        '#7FD3A0',
       );
     }
   });
@@ -30,5 +30,12 @@ describe('ProgressBar', () => {
         .getByRole('progressbar', { name: 'Bought' })
         .getAttribute('aria-valuenow'),
     ).toBe('25');
+  });
+
+  it('is a 5 px gold bar on the Canopy that still reports its progress', () => {
+    render(<ProgressBar tone="canopy" label="Bought" value={1} max={4} />);
+    const bar = screen.getByRole('progressbar', { name: 'Bought' });
+    expect(bar.getAttribute('aria-valuenow')).toBe('25');
+    expect(getComputedStyle(bar).height).toBe('5px');
   });
 });

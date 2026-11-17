@@ -6,6 +6,14 @@ export { useForcedThemeColor } from './theme/useForcedThemeColor';
 export {
   bodyFont,
   border,
+  canopy,
+  dock,
+  healthDial,
+  healthLamp,
+  hero,
+  mask,
+  stockBar,
+  segOff,
   color,
   displayType,
   nestedRadius,
@@ -22,6 +30,7 @@ export {
 export {
   THEME_IDS,
   THEME_META,
+  migrateTheme,
   THEMES,
   type ThemeId,
   type ThemeMeta,
@@ -50,7 +59,6 @@ export {
 } from './readingArt/ReadingArt';
 export {
   Gator,
-  warmGatorLoops,
   type GatorLoop,
   type GatorMotion,
   type GatorProps,
@@ -66,6 +74,7 @@ export { usePrefersReducedMotion } from './theme/usePrefersReducedMotion';
 export {
   aboveDock,
   DOCK_BOTTOM_CSS,
+  DOCK_CLEARANCE,
   DOCK_HEIGHT,
   DOCK_OVERHANG,
 } from './theme/dock';
@@ -92,6 +101,11 @@ export {
 } from './atoms/Button';
 export { Card, type CardProps } from './atoms/Card';
 export { Chip, type ChipProps } from './atoms/Chip';
+export {
+  CanopySearchField,
+  type CanopySearchFieldProps,
+} from './atoms/CanopySearchField';
+export { LocationChip, type LocationChipProps } from './atoms/LocationChip';
 export { Checkbox, type CheckboxProps } from './atoms/Checkbox';
 export { Collapse, type CollapseProps } from './atoms/Collapse';
 export { Popper, type PopperProps } from './atoms/Popper';
@@ -103,6 +117,7 @@ export {
   type InputAdornmentProps,
 } from './atoms/InputAdornment';
 export { IconButton, type IconButtonProps } from './atoms/IconButton';
+export { HeaderButton, type HeaderButtonProps } from './atoms/HeaderButton';
 export { Box, Stack, type BoxProps, type StackProps } from './atoms/Layout';
 export { Link, type LinkProps } from './atoms/Link';
 export { ProgressBar, type ProgressBarProps } from './atoms/ProgressBar';
@@ -133,6 +148,11 @@ export {
   SubItemIcon,
   TagIcon,
   PulseIcon,
+  LampExpiredIcon,
+  LampSoonIcon,
+  LampLowIcon,
+  LampFreshIcon,
+  LampNothingNewIcon,
   CookIcon,
   HourglassIcon,
   ChevronUpIcon,
@@ -176,6 +196,7 @@ export {
   SwapIcon,
   PeopleIcon,
   ArrowLeftIcon,
+  ArrowRightIcon,
   BackIcon,
   MoreIcon,
   BranchIcon,
@@ -220,10 +241,6 @@ export {
   type RefreshLoaderProps,
 } from './molecules/RefreshLoader';
 export {
-  DashboardHeader,
-  type DashboardHeaderProps,
-} from './molecules/DashboardHeader';
-export {
   ScreenHeader,
   type ScreenHeaderAction,
   type ScreenHeaderProps,
@@ -234,6 +251,7 @@ export {
   type SegmentedControlProps,
 } from './molecules/SegmentedControl';
 export { Sheet, type SheetProps } from './molecules/Sheet';
+export { useAnySheetOpen } from './molecules/openSheets';
 export { ListRow, ListRowItem, type ListRowProps } from './molecules/ListRow';
 export { RowHintPill, type RowHintPillProps } from './molecules/RowHintPill';
 export {

@@ -6,7 +6,7 @@ import {
   CameraIcon,
   CloseIcon,
   ImagePlusIcon,
-  Link,
+  HeaderButton,
   Typography,
   tokens,
   nestedRadius,
@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { translateApiError } from '../../i18n/translateApiError';
 import { GatorBanner } from '../../components/GatorBanner';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { PlateChoice, cardId } from './components/PlateChoice';
 import {
   ReceiptCropper,
@@ -561,15 +561,19 @@ export function ReviewOverviewPage({
 
   const content = (
     <div data-testid="review-overview">
-      <AppScreenHeader
+      <Screen
         title={t('title')}
-        subtitle={[
+        status={[
           t('overview.photos', { count: session.scans.length }),
           reading + uncropped > 0
             ? t('overview.stillReading', { count: reading + uncropped })
             : t('overview.allRead'),
         ].join(' · ')}
-        trailing={<Link href={cameraPath}>{t('overview.camera')}</Link>}
+        secondary={
+          <HeaderButton href={cameraPath} icon={<CameraIcon />}>
+            {t('overview.camera')}
+          </HeaderButton>
+        }
       />
       {allRead ? (
         <GatorBanner

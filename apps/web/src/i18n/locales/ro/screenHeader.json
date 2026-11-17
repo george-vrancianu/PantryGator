@@ -2,9 +2,10 @@
   "home": "Acasă",
   "settings": "Setări",
   "refresh": {
-    "button": "Reîmprospătează",
     "busy": "Se reîmprospătează…",
     "done": "Actualizat chiar acum",
     "failed": "Nu s-a putut reîmprospăta · se afișează ce aveai"
-  }
+  },
+  "back": "Înapoi",
+  "more": "Mai mult"
 }

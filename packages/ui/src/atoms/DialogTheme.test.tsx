@@ -10,7 +10,7 @@ describe('Dialog theme', () => {
 
   it('takes a forced Theme though it portals out of the screen that opened it', () => {
     render(
-      <div data-theme="warm">
+      <div data-theme="light">
         <Dialog open onClose={() => {}} title="Forced" theme="dark">
           Body
         </Dialog>
@@ -20,7 +20,7 @@ describe('Dialog theme', () => {
       .getByRole('dialog')
       .closest<HTMLElement>('.MuiDialog-root')!;
     expect(root.getAttribute('data-theme')).toBe('dark');
-    expect(root.closest('[data-theme="warm"]')).toBeNull();
+    expect(root.closest('[data-theme="light"]')).toBeNull();
     expect(paintedColour(screen.getByRole('dialog'), 'background-color')).toBe(
       THEMES.dark.surface.toUpperCase(),
     );

@@ -18,7 +18,7 @@ describe('TextField', () => {
       </div>,
     );
     const frame = field('Name');
-    expect(paintedColour(frame, 'background-color')).toBe('#111915');
+    expect(paintedColour(frame, 'background-color')).toBe('#0D120F');
     expect(getComputedStyle(frame).borderRadius).toBe('var(--pp-r-ctl)');
     expect(getComputedStyle(frame).minHeight).toBe('50px');
   });
@@ -85,7 +85,7 @@ describe('FieldUnit', () => {
 
   it('is a chip button inside the field', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <TextField
           label="Amount"
           slotProps={{
@@ -101,7 +101,7 @@ describe('FieldUnit', () => {
       </div>,
     );
     const unit = screen.getByRole('button', { name: 'Unit: kg' });
-    expect(paintedColour(unit, 'background-color')).toBe('#EEF0EB');
+    expect(paintedColour(unit, 'background-color')).toBe('#E8E7DF');
     expect(getComputedStyle(unit).borderRadius).toBe(
       'max(2px, calc(var(--pp-r-ctl) - 5px))',
     );

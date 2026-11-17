@@ -22,7 +22,7 @@ import { GuidanceSection } from './GuidanceSection';
 import { IngredientList, lineAmount, type LineAllergy } from './IngredientList';
 import { OwnerBadge } from './OwnerBadge';
 import { RowTags } from '../../../components/RowTags';
-import { AddMissing, PantryHeading } from './PantryStatus';
+import { AddMissingNotes, PantryHeading } from './PantryStatus';
 import { Section } from './Section';
 import { ServingsStepper } from './Servings';
 import { StepList, TipCallout } from './StepList';
@@ -48,10 +48,8 @@ export type SectionProps = {
   stale: boolean;
   /** Any add to the Shopping List is in flight, bulk or per line. */
   adding: boolean;
-  /** The missing lines were added at the Servings picked. */
-  added: boolean;
+  /** Why the last bulk add failed. */
   addError: string | null;
-  onAddMissing: () => void;
   /** What the per-line add controls need. */
   addLine: {
     /** Adds one line at the Servings picked; `onAdded` or `onFailed` runs with the outcome. */
@@ -73,9 +71,7 @@ function IngredientsSection({
   match,
   stale,
   adding,
-  added,
   addError,
-  onAddMissing,
   addLine,
 }: SectionProps) {
   const { t } = useTranslation('recipes');
@@ -140,14 +136,7 @@ function IngredientsSection({
             });
           }}
         />
-        <AddMissing
-          match={match}
-          stale={stale}
-          adding={adding}
-          added={added}
-          error={addError}
-          onAddMissing={onAddMissing}
-        />
+        <AddMissingNotes match={match} error={addError} />
       </Stack>
     </Section>
   );

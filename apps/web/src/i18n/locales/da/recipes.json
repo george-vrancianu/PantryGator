@@ -147,7 +147,6 @@
       "guidance": "Opskriftens vejledning blev ikke gemt: {{reason}}"
     },
     "viewRecipe": "Se opskriften",
-    "moreActions": "Flere handlinger",
     "tips": {
       "newHint": "Tilføj tips til trin, når du har gemt opskriften.",
       "variantHint": "Kopierede tips følger deres trin; tilføj dine egne, når du har gemt varianten.",
@@ -193,6 +192,10 @@
     "toBuy_other": "{{count}} at købe",
     "addMissing_one": "Læg {{count}} manglende på indkøbslisten",
     "addMissing_other": "Læg {{count}} manglende på indkøbslisten",
+    "addMissingShort_one": "Læg {{count}} manglende",
+    "addMissingShort_other": "Læg {{count}} manglende",
+    "coverageCount": "{{covered}} af {{total}}",
+    "coverageLabel": "i dit spisekammer",
     "addedList": "Lagt på listen",
     "onListShort": "på listen",
     "addLine": "Læg {{name}} på indkøbslisten",
@@ -265,7 +268,8 @@
     "oneShort_one": "{{count}} opskrift mangler én ingrediens",
     "oneShort_other": "{{count}} opskrifter mangler én ingrediens",
     "nothingInPantry": "Intet at lave fra dit spisekammer endnu",
-    "addWhatYouHave": "Tilføj det, du har"
+    "addWhatYouHave": "Tilføj det, du har",
+    "seeThem": "Se dem"
   },
   "cookTonightPage": {
     "title": "Lav mad i aften",
@@ -362,6 +366,7 @@
     "baseGone": "Grundopskriften, denne opskriftkladde var en variant af, findes ikke længere. Den åbnes som en ny opskrift og gemmes som en grundopskrift."
   },
   "explore": {
+    "status": "Katalogopskrifter",
     "title": "Udforsk",
     "menuItem": "Fra Udforsk",
     "menuNew": "ny",

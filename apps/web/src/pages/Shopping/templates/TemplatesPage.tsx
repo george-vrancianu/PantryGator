@@ -11,7 +11,7 @@ import {
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppScreenHeader } from '../../../components/AppScreenHeader';
+import { Screen } from '../../../components/layout/Screen';
 import { translateApiError } from '../../../i18n/translateApiError';
 import {
   MAX_TEMPLATES,
@@ -41,8 +41,10 @@ export function TemplatesPage() {
   const items = templates.data ?? [];
 
   return (
-    <>
-      <AppScreenHeader title={t('templates:title')} />
+    <Screen
+      title={t('templates:title')}
+      back={{ label: t('screenHeader:back'), href: '/shopping' }}
+    >
       <Stack spacing={2.5}>
         {error ? <Alert>{translateApiError(t, error)}</Alert> : null}
         <Box component="form" onSubmit={submit} noValidate>
@@ -89,6 +91,6 @@ export function TemplatesPage() {
         </Stack>
         <Link href="/shopping">{t('templates:list.back')}</Link>
       </Stack>
-    </>
+    </Screen>
   );
 }

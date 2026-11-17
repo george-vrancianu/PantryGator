@@ -6,7 +6,7 @@ import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { renderWithProviders } from './test/render';
 import { stubMatchMedia, stubSystemScheme } from './test/viewport';
 
-const BG = { warm: '#F3EDE1', minimal: '#FAFAF8', dark: '#0F1512' };
+const BG = { light: '#EDECE5', dark: '#101511' };
 
 function store(appearance: { theme: string; matchSystem: boolean }) {
   localStorage.setItem('pp.appearance', JSON.stringify(appearance));
@@ -30,14 +30,14 @@ afterEach(() => {
 });
 
 describe('Themes', () => {
-  it('follows the system on a new device: Warm editorial in light mode', () => {
+  it('follows the system on a new device: Light in light mode', () => {
     stubSystemScheme(false);
     renderWithProviders(<p>Pantry</p>);
-    expect(rootTheme()).toBe('warm');
-    expect(themeColor()).toBe(BG.warm);
+    expect(rootTheme()).toBe('light');
+    expect(themeColor()).toBe(BG.light);
   });
 
-  it('follows the system on a new device: Dark-first in dark mode', () => {
+  it('follows the system on a new device: Dark in dark mode', () => {
     stubSystemScheme(true);
     renderWithProviders(<p>Pantry</p>);
     expect(rootTheme()).toBe('dark');
@@ -46,28 +46,28 @@ describe('Themes', () => {
 
   it('switches with the system scheme while the app is open, with Match system on', () => {
     const system = stubSystemScheme(false);
-    store({ theme: 'minimal', matchSystem: true });
+    store({ theme: 'light', matchSystem: true });
     renderWithProviders(<p>Pantry</p>);
-    expect(rootTheme()).toBe('minimal');
+    expect(rootTheme()).toBe('light');
 
     act(() => system.setDark(true));
     expect(rootTheme()).toBe('dark');
     expect(themeColor()).toBe(BG.dark);
 
     act(() => system.setDark(false));
-    expect(rootTheme()).toBe('minimal');
-    expect(themeColor()).toBe(BG.minimal);
+    expect(rootTheme()).toBe('light');
+    expect(themeColor()).toBe(BG.light);
   });
 
   it('ignores the system scheme with Match system off', () => {
     const system = stubSystemScheme(false);
-    store({ theme: 'minimal', matchSystem: false });
+    store({ theme: 'light', matchSystem: false });
     renderWithProviders(<p>Pantry</p>);
     act(() => system.setDark(true));
-    expect(rootTheme()).toBe('minimal');
+    expect(rootTheme()).toBe('light');
   });
 
-  it.each(['warm', 'minimal', 'dark'] as const)(
+  it.each(['light', 'dark'] as const)(
     'renders in the stored %s Theme with Match system off',
     (theme) => {
       store({ theme, matchSystem: false });
@@ -77,18 +77,25 @@ describe('Themes', () => {
     },
   );
 
-  it('uses Dark-first in system dark mode with Match system on', () => {
+  it.each(['warm', 'minimal'])('reads a stored %s Theme as Light', (theme) => {
+    store({ theme, matchSystem: false });
+    renderWithProviders(<p>Pantry</p>);
+    expect(rootTheme()).toBe('light');
+    expect(themeColor()).toBe(BG.light);
+  });
+
+  it('uses Dark in system dark mode with Match system on', () => {
     stubMatchMedia((query) => query === '(prefers-color-scheme: dark)');
-    store({ theme: 'minimal', matchSystem: true });
+    store({ theme: 'light', matchSystem: true });
     renderWithProviders(<p>Pantry</p>);
     expect(rootTheme()).toBe('dark');
   });
 
-  it('uses the chosen light Theme in system light mode, Warm editorial for Dark-first', () => {
+  it('uses Light in system light mode with Match system on, whichever Theme is chosen', () => {
     stubMatchMedia(() => false);
     store({ theme: 'dark', matchSystem: true });
     renderWithProviders(<p>Pantry</p>);
-    expect(rootTheme()).toBe('warm');
+    expect(rootTheme()).toBe('light');
   });
 
   it('switches Theme and theme-color at once when the appearance changes', () => {
@@ -104,18 +111,18 @@ describe('Themes', () => {
 
   it('follows a preference changed in another tab', () => {
     renderWithProviders(<p>Pantry</p>);
-    const value = JSON.stringify({ theme: 'minimal', matchSystem: false });
+    const value = JSON.stringify({ theme: 'dark', matchSystem: false });
     localStorage.setItem('pp.appearance', value);
     act(() => {
       window.dispatchEvent(
         new StorageEvent('storage', { key: 'pp.appearance', newValue: value }),
       );
     });
-    expect(rootTheme()).toBe('minimal');
-    expect(themeColor()).toBe(BG.minimal);
+    expect(rootTheme()).toBe('dark');
+    expect(themeColor()).toBe(BG.dark);
   });
 
-  it('paints a subtree forced into Dark-first with dark colours under a light root', () => {
+  it('paints a subtree forced into Dark with dark colours under a light root', () => {
     renderWithProviders(
       <>
         <Box data-testid="page" sx={{ bgcolor: tokens.color.bg }} />
@@ -124,9 +131,9 @@ describe('Themes', () => {
         </Box>
       </>,
     );
-    expect(rootTheme()).toBe('warm');
+    expect(rootTheme()).toBe('light');
     expect(paintedColour(screen.getByTestId('page'), 'background-color')).toBe(
-      BG.warm,
+      BG.light,
     );
     expect(
       paintedColour(screen.getByTestId('forced'), 'background-color'),

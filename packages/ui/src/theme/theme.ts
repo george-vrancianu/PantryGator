@@ -1,6 +1,5 @@
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import {
-  createColorScheme,
   createTheme,
   type PaletteOptions,
   type Theme,
@@ -54,7 +53,6 @@ declare module '@mui/material/styles' {
     toastBg: string;
     toastInk: string;
     toastAction: string;
-    dockBg: string;
     bezel: string;
     tomato: string;
     carrot: string;
@@ -66,11 +64,6 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     pp?: PpPalette;
   }
-  /** The three Themes are MUI colour schemes; `dark` is MUI's built-in name. */
-  interface ColorSchemeOverrides {
-    warm: true;
-    minimal: true;
-  }
 }
 
 declare module '@mui/material/Typography' {
@@ -80,6 +73,47 @@ declare module '@mui/material/Typography' {
     meta: true;
   }
 }
+
+/** The tokens `schemePalette` maps into the MUI palette; every other key is a `--pp-*` variable. */
+const PALETTE_TOKENS: ReadonlySet<keyof ThemeTokens> = new Set([
+  'primary',
+  'accent-tint',
+  'primary-ink',
+  'butter',
+  'butter-ink',
+  'urgent-fg',
+  'urgent-bg',
+  'soon-fg',
+  'soon-bg',
+  'ok-fg',
+  'ok-bg',
+  'bg',
+  'surface',
+  'ink',
+  'muted',
+  'divider',
+  'subtle',
+  'line',
+  'line-strong',
+  'chip',
+  'accent',
+  'accent-ink',
+  'accent-on-tint',
+  'box',
+  'star',
+  'card-bg',
+  'card-line',
+  'field-bg',
+  'seg-on',
+  'seg-on-ink',
+  'toast-bg',
+  'toast-ink',
+  'toast-action',
+  'bezel',
+  'pg-tomato',
+  'pg-carrot',
+  'pg-leaf',
+]);
 
 /** One Theme's palette: the matching handoff tokens in MUI's standard keys, the rest under `pp`. */
 function schemePalette(id: ThemeId): PaletteOptions {
@@ -117,7 +151,6 @@ function schemePalette(id: ThemeId): PaletteOptions {
       toastBg: t['toast-bg'],
       toastInk: t['toast-ink'],
       toastAction: t['toast-action'],
-      dockBg: t['dock-bg'],
       bezel: t.bezel,
       tomato: t['pg-tomato'],
       carrot: t['pg-carrot'],
@@ -126,32 +159,21 @@ function schemePalette(id: ThemeId): PaletteOptions {
   };
 }
 
-/** The handoff's non-colour tokens, written per Theme as `--pp-<key>`: MUI doesn't vary these per scheme. */
-const NON_COLOUR_TOKENS = [
-  'bw',
-  'bw-field',
-  'r-card',
-  'r-ctl',
-  'r-chip',
-  'r-fab',
-  'r-dock',
-  'r-box',
-  'shadow-card',
-  'shadow-btn',
-  'shadow-float',
-  'shadow-seg',
-  'display',
-  'body',
-  'display-w',
-  'display-ls',
-] as const satisfies readonly (keyof ThemeTokens)[];
+/**
+ * The tokens that need no MUI palette slot, written per Theme as `--pp-<key>`
+ * (MUI doesn't vary these per scheme): the non-colour tokens, and the Canopy
+ * tokens that are gradients, shadows or translucent fills.
+ */
+const NON_COLOUR_TOKENS = (
+  Object.keys(THEMES.light) as (keyof ThemeTokens)[]
+).filter((key) => !PALETTE_TOKENS.has(key));
 
 /** The attribute selector that puts the root, or any subtree, into a Theme. */
 export function themeSelector(id: ThemeId | '%s') {
   return `[data-theme="${id}"]`;
 }
 
-/** `--pp-*` variables (non-colour tokens and Aisle tints) per Theme selector; Warm editorial is also the `:root` default. */
+/** `--pp-*` variables (non-colour tokens and Aisle tints) per Theme selector; Light is also the `:root` default. */
 export function ppCssVariables(): Record<string, Record<string, string>> {
   const styles: Record<string, Record<string, string>> = {};
   for (const id of THEME_IDS) {
@@ -159,7 +181,7 @@ export function ppCssVariables(): Record<string, Record<string, string>> {
     for (const key of NON_COLOUR_TOKENS) vars[`--pp-${key}`] = THEMES[id][key];
     Object.assign(vars, aisleTintCssVariables(id));
     const selector =
-      id === 'warm' ? `:root, ${themeSelector(id)}` : themeSelector(id);
+      id === 'light' ? `:root, ${themeSelector(id)}` : themeSelector(id);
     styles[selector] = vars;
   }
   return styles;
@@ -181,7 +203,7 @@ export type ThemeOptions = {
 };
 
 /**
- * The three Themes as MUI colour schemes over CSS variables. The active one is
+ * The two Themes as MUI colour schemes over CSS variables. The active one is
  * picked by `data-theme` on the root, or on any subtree to force it there.
  * Breakpoints follow handoff section 9: phone < 600, 600-899, >= 900.
  */
@@ -192,13 +214,10 @@ export function createPocketPantryTheme({ linkComponent }: ThemeOptions = {}) {
       cssVarPrefix: 'mui',
     },
     colorSchemes: {
-      warm: { palette: schemePalette('warm') },
-      // MUI only builds the palettes of the default scheme and of the built-in
-      // `light`/`dark`; any other custom scheme must arrive already built.
-      minimal: createColorScheme({ palette: schemePalette('minimal') }),
+      light: { palette: schemePalette('light') },
       dark: { palette: schemePalette('dark') },
     },
-    defaultColorScheme: 'warm',
+    defaultColorScheme: 'light',
     breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
     shape: { borderRadius: radius.control },
     typography: {

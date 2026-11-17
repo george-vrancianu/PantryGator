@@ -9,7 +9,11 @@ import { shoppingListQueryKey } from '../../lib/shopping';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { PantryLine, PantryMatch } from '../../lib/recipes';
 import type { RecipeDetail } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { RecipeDetailPage } from './RecipeDetailPage';
 
 const detail: RecipeDetail = {
@@ -435,11 +439,10 @@ describe('Recipe detail Pantry status', () => {
       .click(
         screen.getByRole('button', { name: 'Add 3 missing to Shopping List' }),
       );
-    const summary = (await screen.findByRole('alert')).parentElement!;
+    expect(await screen.findByRole('alert')).toBeVisible();
+    // The button is in the header now, and stays there to try again.
     expect(
-      within(summary).getByRole('button', {
-        name: 'Add 3 missing to Shopping List',
-      }),
+      screen.getByRole('button', { name: 'Add 3 missing to Shopping List' }),
     ).toBeVisible();
   });
 
@@ -932,3 +935,37 @@ function CacheProbe() {
   void queryClient;
   return <p>list items: {list.data?.items.length ?? 0}</p>;
 }
+
+describe('Recipe detail in the Canopy header', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('puts the title, facts, Pantry coverage and Add missing in the header, not in the sheet', async () => {
+    const { fetchMock } = stubApi({
+      'GET /api/recipes/:id': () => Response.json(detail),
+      'GET /api/recipes/:id/pantry-match': () => Response.json(match()),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderInAppLayout(<RecipeDetailPage />, '/recipes/:id');
+    const header = document.querySelector<HTMLElement>(
+      '[data-region="header"]',
+    )!;
+    expect(
+      await within(header).findByRole('heading', {
+        level: 1,
+        name: 'Pancakes',
+      }),
+    ).toBeInTheDocument();
+    // Required lines only: the Chives are optional. 3 of 4 need adding, so 1 is covered.
+    expect(await within(header).findByText('1 of 4')).toBeInTheDocument();
+    expect(header).toHaveTextContent('1 of 4 in your Pantry');
+    const add = within(header).getByRole('button', {
+      name: 'Add 3 missing to Shopping List',
+    });
+    expect(add).toHaveTextContent('Add 3 missing');
+    const sheet = screen.getByTestId('sheet-content');
+    expect(
+      within(sheet).queryByRole('button', { name: /^Add \d+ missing/ }),
+    ).toBeNull();
+    expect(within(sheet).queryByRole('heading', { level: 1 })).toBeNull();
+  });
+});

@@ -25,6 +25,8 @@ type LayoutProps = {
   'aria-label'?: string;
   /** A control beside the row (not inside its link or button), e.g. Explore's add button. */
   trailing?: ReactNode;
+  /** In a card group (Canopy handoff 7.4 and 7.6): display title 17, minutes 22 with MIN in caps, no chevron, the trailing control at the card's right edge. */
+  grouped?: boolean;
 };
 
 /** The row's look, for a Recipe in a list and for a Recipe in a Meal plan's slot. */
@@ -41,6 +43,7 @@ export function RecipeRowLayout({
   dimmed,
   'aria-label': ariaLabel,
   trailing,
+  grouped = false,
 }: LayoutProps) {
   const { t } = useTranslation('recipes');
   const inner = {
@@ -49,7 +52,7 @@ export function RecipeRowLayout({
     gap: '12px',
     minHeight: 66,
     boxSizing: 'border-box',
-    p: '12px 4px',
+    p: grouped ? '11px 0 11px 16px' : '12px 4px',
     color: tokens.color.ink,
     textDecoration: 'none',
     opacity: dimmed ? 0.55 : 1,
@@ -59,13 +62,26 @@ export function RecipeRowLayout({
   const content = (
     <>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Box sx={{ fontSize: 15, fontWeight: 700 }}>{title}</Box>
+        <Box
+          sx={
+            grouped
+              ? { ...displayType, fontSize: 17, lineHeight: 1.15 }
+              : { fontSize: 15, fontWeight: 700 }
+          }
+        >
+          {title}
+        </Box>
         {above}
         {tags && tags.length > 0 ? (
           <RowTags tags={tags} matchedIds={matchedTagIds ?? []} meta={meta} />
         ) : meta.length > 0 ? (
           <Box
-            sx={{ fontSize: 13, fontWeight: 500, color: tokens.color.muted }}
+            sx={{
+              fontSize: grouped ? 12.5 : 13,
+              fontWeight: 500,
+              color: tokens.color.muted,
+              ...(grouped ? { mt: '7px' } : {}),
+            }}
           >
             {meta.join(' · ')}
           </Box>
@@ -88,12 +104,17 @@ export function RecipeRowLayout({
             </Box>
           ) : (
             <>
-              <Box sx={{ ...displayType, fontSize: 17 }}>{minutes}</Box>
+              <Box sx={{ ...displayType, fontSize: grouped ? 22 : 17 }}>
+                {minutes}
+              </Box>
               <Box
                 sx={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: grouped ? 10.5 : 11,
+                  fontWeight: grouped ? 700 : 600,
                   color: tokens.color.muted,
+                  ...(grouped
+                    ? { letterSpacing: '0.08em', textTransform: 'uppercase' }
+                    : {}),
                 }}
               >
                 {t('minutesShort')}
@@ -102,7 +123,7 @@ export function RecipeRowLayout({
           )}
         </Box>
       )}
-      {to !== undefined || onClick !== undefined ? (
+      {!grouped && (to !== undefined || onClick !== undefined) ? (
         <Box aria-hidden sx={{ display: 'flex', color: tokens.color.muted }}>
           <ChevronRightIcon size={16} />
         </Box>
@@ -115,7 +136,12 @@ export function RecipeRowLayout({
       sx={{
         '& + &': { borderTop: `1px solid ${tokens.color.line}` },
         ...(trailing
-          ? { display: 'flex', alignItems: 'center', gap: '8px' }
+          ? {
+              display: 'flex',
+              alignItems: 'center',
+              gap: grouped ? '12px' : '8px',
+              ...(grouped ? { pr: '10px' } : {}),
+            }
           : {}),
       }}
     >

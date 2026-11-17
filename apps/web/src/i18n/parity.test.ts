@@ -216,6 +216,11 @@ const PLAIN_WORDS: Record<string, string> = {
   note: 'plain word; Voice Note and Nutrition Note are canonical and not matched',
   product: 'packaged goods in Product Scan copy, not an Ingredient',
   save: 'plain verb for keeping a form ("Save Recipe"); avoided only as the name of Add to Family',
+  new: 'plain adjective ("New Tip", "Generate a new code"); avoided only as the name of the Fresh in light',
+  recent:
+    'plain adjective ("recent searches"); avoided only as the name of the Fresh in light',
+  request:
+    'plain noun/verb ("Suggest Guidance requests"); avoided only as a name for a Wish (an Assistant Request)',
 };
 
 /** Exceptions found when the broad whitelist was narrowed: term, reason, keys. */
@@ -347,12 +352,7 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
   [
     'mode',
     "the phone's OS dark/light mode (Match system), not a Theme",
-    [
-      'settings:appearance.lightOnlyToast',
-      'settings:appearance.matchSystemHint',
-      'settings:appearance.usedInDark',
-      'settings:appearance.usedInLight',
-    ],
+    ['settings:appearance.matchSystemHint'],
   ],
   [
     'old',
@@ -415,7 +415,6 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
       'shopping:empty.importTitle',
       'shopping:import.button',
       'shopping:import.title',
-      'shopping:import.aria',
       'shopping:import.tickLabel',
       'shopping:import.confirm_one',
       'shopping:import.confirm_other',

@@ -36,7 +36,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { translateApiError } from '../../i18n/translateApiError';
 import {
   useDashboardLayout,
@@ -293,20 +293,18 @@ export function CustomisePage() {
 
   if (layout.isPending) {
     return (
-      <>
-        <AppScreenHeader title={t('title')} />
+      <Screen title={t('title')}>
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
           <Spinner label={t('common:loading')} />
         </Box>
-      </>
+      </Screen>
     );
   }
   if (layout.error) {
     return (
-      <>
-        <AppScreenHeader title={t('title')} />
+      <Screen title={t('title')}>
         <Alert severity="error">{translateApiError(t, layout.error)}</Alert>
-      </>
+      </Screen>
     );
   }
 
@@ -376,11 +374,11 @@ export function CustomisePage() {
   const available = availableWidgetTypes(widgets);
 
   return (
-    <>
-      <AppScreenHeader
-        title={t('title')}
-        action={{ label: t('done'), icon: <CheckIcon size={20} />, href: '/' }}
-      />
+    <Screen
+      title={t('title')}
+      back={{ label: t('screenHeader:back'), href: '/' }}
+      primary={{ label: t('done'), icon: <CheckIcon size={20} />, href: '/' }}
+    >
       <Typography variant="meta" color="text.secondary" sx={{ mb: '16px' }}>
         {t('hint')}
       </Typography>
@@ -552,6 +550,6 @@ export function CustomisePage() {
       <Box role="status" sx={visuallyHidden}>
         {status}
       </Box>
-    </>
+    </Screen>
   );
 }

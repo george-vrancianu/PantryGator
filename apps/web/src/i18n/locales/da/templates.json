@@ -37,11 +37,10 @@
   },
   "editor": {
     "name": "Navn",
-    "rename": "Omdøb",
     "delete": "Slet skabelon",
     "deleteConfirm": "Slet denne skabelon for hele familien?",
     "empty": "Ingen linjer endnu. Tilføj, hvad skabelonen skal bruge, nedenfor.",
-    "back": "Tilbage til skabeloner",
-    "apply": "Tilføj til listen"
+    "apply": "Tilføj til listen",
+    "save": "Gem"
   }
 }

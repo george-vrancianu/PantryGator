@@ -19,6 +19,7 @@ import {
   CircleAlert,
   CircleCheck,
   ArrowLeft,
+  ArrowRight,
   ArrowLeftRight,
   Users,
   GitBranch,
@@ -213,6 +214,47 @@ const ICON_NODES = {
       { cx: '8.2', cy: '8.2', r: '1.4', fill: 'currentColor', stroke: 'none' },
     ],
   ],
+  /** Pantry Health lights (Canopy handoff section 6.4), drawn at 22 px with stroke 1.7. Expired: a jar with an exclamation mark. */
+  'lamp-expired': [
+    ['rect', { x: '8', y: '3', width: '8', height: '2.6', rx: '0.9' }],
+    [
+      'path',
+      {
+        d: 'M7.8 5.6C6.5 6.5 5.5 7.8 5.5 9.5v9a2.5 2.5 0 0 0 2.5 2.5h8a2.5 2.5 0 0 0 2.5-2.5v-9c0-1.7-1-3-2.3-3.9',
+      },
+    ],
+    ['path', { d: 'M12 10v5M12 17.8v.2' }],
+  ],
+  /** Use soon: an hourglass with a little sand left. */
+  'lamp-soon': [
+    [
+      'path',
+      {
+        d: 'M7 3.5h10M7 20.5h10M8.5 3.5v2.5c0 2.5 3.5 3.7 3.5 6s-3.5 3.5-3.5 6v2.5M15.5 3.5v2.5c0 2.5-3.5 3.7-3.5 6s3.5 3.5 3.5 6v2.5M10.5 18h3',
+      },
+    ],
+  ],
+  /** Running low: the jar with a low level line and a down arrow. */
+  'lamp-low': [
+    ['rect', { x: '8', y: '3', width: '8', height: '2.6', rx: '0.9' }],
+    [
+      'path',
+      {
+        d: 'M7.8 5.6C6.5 6.5 5.5 7.8 5.5 9.5v9a2.5 2.5 0 0 0 2.5 2.5h8a2.5 2.5 0 0 0 2.5-2.5v-9c0-1.7-1-3-2.3-3.9',
+      },
+    ],
+    ['path', { d: 'M5.5 17.8h13M12 9.2v5.2M9.7 12.2l2.3 2.3 2.3-2.3' }],
+  ],
+  /** Fresh in: an arrow dropping into a basket. */
+  'lamp-fresh': [
+    ['path', { d: 'M12 2.5V11M8.5 7.5 12 11l3.5-3.5' }],
+    ['path', { d: 'M3.5 13.5h17l-1.4 6.7a1 1 0 0 1-1 .8H5.9a1 1 0 0 1-1-.8z' }],
+  ],
+  /** Nothing new: the same basket asleep ("z z"). */
+  'lamp-stale': [
+    ['path', { d: 'M7 4.5h5.5l-5.5 6h5.5M15.5 2.5h3.5l-3.5 4h3.5' }],
+    ['path', { d: 'M3.5 13.5h17l-1.4 6.7a1 1 0 0 1-1 .8H5.9a1 1 0 0 1-1-.8z' }],
+  ],
   /** Not in the handoff set: a tree elbow that marks a row as belonging to the one above. */
   'sub-item': [['path', { d: 'M6 3v8a5 5 0 0 0 5 5h9' }]],
 } as const satisfies Record<string, IconNode>;
@@ -318,6 +360,11 @@ export const UndoIcon = handoff('undo');
 export const CalendarIcon = handoff('calendar');
 export const BatteryLowIcon = handoff('battery-low');
 export const PulseIcon = handoff('pulse');
+export const LampExpiredIcon = handoff('lamp-expired');
+export const LampSoonIcon = handoff('lamp-soon');
+export const LampLowIcon = handoff('lamp-low');
+export const LampFreshIcon = handoff('lamp-fresh');
+export const LampNothingNewIcon = handoff('lamp-stale');
 export const BangIcon = handoff('bang');
 export const CookIcon = handoff('cook');
 export const HourglassIcon = handoff('hourglass');
@@ -343,6 +390,7 @@ export const WarningIcon = lucide(TriangleAlert);
 export const AlertIcon = lucide(CircleAlert);
 export const CheckCircleIcon = lucide(CircleCheck);
 export const ArrowLeftIcon = lucide(ArrowLeft);
+export const ArrowRightIcon = lucide(ArrowRight);
 export const SwapIcon = lucide(ArrowLeftRight);
 export const PeopleIcon = lucide(Users);
 export const BranchIcon = lucide(GitBranch);

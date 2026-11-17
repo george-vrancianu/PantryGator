@@ -22,7 +22,11 @@ import {
   pickLocation,
   pressedLocation,
 } from '../../test/location';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { trackScrolling } from '../../test/scroll';
 import { stubMotion, stubViewport } from '../../test/viewport';
 import { typeNote } from '../../test/addBatch';
@@ -117,6 +121,22 @@ describe('PantryPage', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.useRealTimers();
+  });
+
+  it('puts the search in the Canopy header and the Location chips in the body', async () => {
+    stubPantry([batch({ name: 'Yogurt', ingredientId: 'yogurt-id' })]);
+    renderInAppLayout(<PantryPage />, '/pantry');
+
+    const search = await screen.findByRole('searchbox', {
+      name: 'Search Pantry',
+    });
+    expect(document.querySelector('[data-region="header"]')).toContainElement(
+      search,
+    );
+    const chips = await screen.findByRole('group', {
+      name: 'Filter by location',
+    });
+    expect(screen.getByTestId('sheet-content')).toContainElement(chips);
   });
 
   it('groups Batches by Location in the order given, with name, amount, description and ExpiryTag', async () => {
@@ -3019,9 +3039,9 @@ describe('PantryPage', () => {
           const scrollBy = await openWithBottomAt(760);
           expect(scrollBy).not.toHaveBeenCalled();
           await act(() => vi.advanceTimersByTimeAsync(300));
-          // 800 tall, the Dock and its gap take the bottom 130 with the capsule's overhang, and 14 more to breathe.
+          // 800 tall, the Dock and its gap take the bottom 105 with the capsule's overhang, and 14 more to breathe.
           expect(scrollBy).toHaveBeenCalledWith({
-            top: 104,
+            top: 79,
             behavior: 'smooth',
           });
         });
@@ -3039,9 +3059,9 @@ describe('PantryPage', () => {
           );
           const scrollBy = await openWithBottomAt(760);
           await act(() => vi.advanceTimersByTimeAsync(300));
-          // 6px more of Dock than with no inset.
+          // 8px more of Dock than with no inset.
           expect(scrollBy).toHaveBeenCalledWith({
-            top: 110,
+            top: 87,
             behavior: 'smooth',
           });
         });
@@ -3050,7 +3070,7 @@ describe('PantryPage', () => {
           stubMotion(true);
           const scrollBy = await openWithBottomAt(760);
           await act(() => vi.advanceTimersByTimeAsync(300));
-          expect(scrollBy).toHaveBeenCalledWith({ top: 104, behavior: 'auto' });
+          expect(scrollBy).toHaveBeenCalledWith({ top: 79, behavior: 'auto' });
         });
 
         it('leaves the page alone when the card is clear of the Dock', async () => {

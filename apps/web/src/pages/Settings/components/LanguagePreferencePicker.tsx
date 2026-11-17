@@ -1,4 +1,10 @@
-import { Alert, SegmentedControl, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Alert,
+  color,
+  SegmentedControl,
+  Stack,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,17 +40,23 @@ export function LanguagePreferencePicker<Language extends string>({
   const { t } = useTranslation('settings');
   const captionId = useId();
   return (
-    <Stack spacing={0.5}>
+    <Stack spacing={0} sx={{ gap: '7px' }}>
       <Typography
         id={captionId}
         component="div"
-        sx={{ fontSize: 12, fontWeight: 600, color: 'text.secondary' }}
+        sx={{
+          fontSize: 13,
+          fontWeight: 700,
+          px: '2px',
+          color: color.ink2,
+        }}
       >
         {label}
       </Typography>
       <SegmentedControl
         labelledBy={captionId}
         fullWidth
+        small
         value={value ?? SAME_AS_UI}
         options={[
           { value: SAME_AS_UI, label: sameAsUiLabel },
@@ -58,7 +70,10 @@ export function LanguagePreferencePicker<Language extends string>({
           onChange(picked === SAME_AS_UI ? null : (picked as Language))
         }
       />
-      <Typography variant="meta" color="text.secondary">
+      <Typography
+        color="text.secondary"
+        sx={{ fontSize: 12.5, lineHeight: 1.35, px: '2px' }}
+      >
         {hint}
       </Typography>
       {failed ? <Alert>{failedLabel}</Alert> : null}

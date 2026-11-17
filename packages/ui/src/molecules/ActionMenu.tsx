@@ -3,6 +3,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useId, useState, type ReactNode, type Ref } from 'react';
 import { MoreIcon } from '../atoms/icons';
+import { HeaderButton } from '../atoms/HeaderButton';
 import { IconButton } from '../atoms/IconButton';
 import { tokens } from '../theme/tokens';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
@@ -31,7 +32,9 @@ export type ActionMenuProps = {
   /** The button's icon; "…" by default. */
   icon?: ReactNode;
   /** The button's tone, as on `IconButton`; the header action's `accent` for a "+" menu. */
-  tone?: 'surface' | 'accent';
+  tone?: 'surface' | 'accent' | 'canopyChip' | 'key';
+  /** Draw the button as a labelled Canopy header button (icon 18 and `label`, e.g. "More") instead of an icon-only one. */
+  labelled?: boolean;
 };
 
 /** An icon button ("…" unless `icon` says otherwise) that opens a dropdown of actions. Escape, outside click and focus are handled by the MUI menu. */
@@ -41,6 +44,7 @@ export function ActionMenu({
   buttonRef,
   icon,
   tone,
+  labelled,
 }: ActionMenuProps) {
   const reduceMotion = usePrefersReducedMotion();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -48,17 +52,31 @@ export function ActionMenu({
   const close = () => setAnchor(null);
   return (
     <>
-      <IconButton
-        ref={buttonRef}
-        label={label}
-        tone={tone}
-        aria-haspopup="menu"
-        aria-expanded={anchor !== null}
-        aria-controls={anchor ? menuId : undefined}
-        onClick={(event) => setAnchor(event.currentTarget)}
-      >
-        {icon ?? <MoreIcon size={20} />}
-      </IconButton>
+      {labelled ? (
+        <HeaderButton
+          ref={buttonRef}
+          icon={icon ?? <MoreIcon size={18} />}
+          tone={tone === 'key' ? 'key' : 'chip'}
+          aria-haspopup="menu"
+          aria-expanded={anchor !== null}
+          aria-controls={anchor ? menuId : undefined}
+          onClick={(event) => setAnchor(event.currentTarget)}
+        >
+          {label}
+        </HeaderButton>
+      ) : (
+        <IconButton
+          ref={buttonRef}
+          label={label}
+          tone={tone}
+          aria-haspopup="menu"
+          aria-expanded={anchor !== null}
+          aria-controls={anchor ? menuId : undefined}
+          onClick={(event) => setAnchor(event.currentTarget)}
+        >
+          {icon ?? <MoreIcon size={20} />}
+        </IconButton>
+      )}
       <Menu
         id={menuId}
         anchorEl={anchor}

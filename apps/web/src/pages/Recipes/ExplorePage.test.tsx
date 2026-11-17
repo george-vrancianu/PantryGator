@@ -7,10 +7,15 @@ import {
 } from '@testing-library/react';
 import { findToast, getToast } from '../../test/toast';
 import userEvent from '@testing-library/user-event';
+import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RecipeListItem } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
+import {
+  renderInAppLayout,
+  renderWithProviders,
+  stubApi,
+} from '../../test/render';
 import { ExplorePage } from './ExplorePage';
 import { exploreAdds } from '../../lib/exploreAdds';
 
@@ -459,9 +464,7 @@ describe('ExplorePage Back badge', () => {
   it('counts net adds on Back, counts down on Undo and hides at 0', async () => {
     setupGroups({ list: () => [base('b')] });
     const user = userEvent.setup();
-    expect(
-      await screen.findByRole('link', { name: 'Back to your Recipes' }),
-    ).toBeVisible();
+    expect(await screen.findByRole('link', { name: 'Back' })).toBeVisible();
     expect(screen.queryByTestId('back-badge')).toBeNull();
     await user.click(
       await screen.findByRole('button', { name: 'Add b to your Recipes' }),
@@ -474,64 +477,19 @@ describe('ExplorePage Back badge', () => {
     expect(screen.getByTestId('back-badge')).toHaveTextContent('+1');
     await user.click(screen.getByRole('button', { name: 'Undo' }));
     await waitFor(() => expect(screen.queryByTestId('back-badge')).toBeNull());
-    expect(
-      screen.getByRole('link', { name: 'Back to your Recipes' }),
-    ).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Back' })).toBeVisible();
   });
 });
 
 describe('ExplorePage Back', () => {
-  const original = window.matchMedia;
   afterEach(() => {
-    window.matchMedia = original;
     vi.unstubAllGlobals();
   });
-  const reduceMotion = (reduce: boolean) => {
-    window.matchMedia = ((query: string) => ({
-      ...original(query),
-      matches: reduce && query.includes('prefers-reduced-motion: reduce'),
-    })) as typeof window.matchMedia;
-  };
 
-  it('goes back at once under reduced motion', async () => {
-    reduceMotion(true);
+  it('goes back at once, with no slide of its own', async () => {
     setupGroups({ list: () => [base('a')] });
-    await userEvent.click(
-      await screen.findByRole('link', { name: 'Back to your Recipes' }),
-    );
+    await userEvent.click(await screen.findByRole('link', { name: 'Back' }));
     expect(await screen.findByText('recipes page')).toBeVisible();
-  });
-
-  it('slides out first, then goes back when the animation ends', async () => {
-    reduceMotion(false);
-    setupGroups({ list: () => [base('a')] });
-    const back = await screen.findByRole('link', {
-      name: 'Back to your Recipes',
-    });
-    await userEvent.click(back);
-    expect(screen.queryByText('recipes page')).toBeNull();
-    const el = screen.getByTestId('explore-page');
-    el.dispatchEvent(new Event('animationend', { bubbles: true }));
-    expect(await screen.findByText('recipes page')).toBeVisible();
-  });
-
-  it('goes back anyway when the slide-out never ends', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    try {
-      reduceMotion(false);
-      setupGroups({ list: () => [base('a')] });
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-      await user.click(
-        await screen.findByRole('link', { name: 'Back to your Recipes' }),
-      );
-      expect(screen.queryByText('recipes page')).toBeNull();
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(450);
-      });
-      expect(await screen.findByText('recipes page')).toBeVisible();
-    } finally {
-      vi.useRealTimers();
-    }
   });
 });
 
@@ -700,5 +658,56 @@ describe('ExplorePage Tag filter', () => {
     expect(
       await screen.findByRole('list', { name: /^All Recipes/ }),
     ).toBeInTheDocument();
+  });
+});
+
+describe('ExplorePage in the Canopy layout', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('holds the description, search and Tags in the header and the list in the sheet', async () => {
+    const { fetchMock } = stubApi({
+      'GET /api/recipes': () =>
+        Response.json({ recipes: [soup], hiddenByAllergiesCount: 0 }),
+      'GET /api/recipes/filters': () => Response.json({ tags: [] }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderInAppLayout(<ExplorePage />, '/recipes/explore');
+    const list = await screen.findByRole('list', { name: /^All Recipes/ });
+    const header = document.querySelector<HTMLElement>(
+      '[data-region="header"]',
+    )!;
+    const topBar = document.querySelector<HTMLElement>(
+      '[data-region="top-bar"]',
+    )!;
+    expect(
+      within(topBar).getByRole('heading', { name: 'Explore' }),
+    ).toBeInTheDocument();
+    expect(within(topBar).getByText('Catalog Recipes')).toBeInTheDocument();
+    expect(
+      within(header).getByText(/^Add a Recipe to cook, plan and change it/),
+    ).toBeInTheDocument();
+    expect(
+      within(header).getByRole('searchbox', { name: 'Search all Recipes' }),
+    ).toHaveAttribute('maxlength', '100');
+    expect(
+      within(header).getByRole('button', { name: 'Filter by Tags' }),
+    ).toBeInTheDocument();
+    expect(header).not.toContainElement(list);
+  });
+
+  it('ends each row in a 44 pt square add button', async () => {
+    const { fetchMock } = stubApi({
+      'GET /api/recipes': () =>
+        Response.json({ recipes: [soup], hiddenByAllergiesCount: 0 }),
+      'GET /api/recipes/filters': () => Response.json({ tags: [] }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderInAppLayout(<ExplorePage />, '/recipes/explore');
+    const add = await screen.findByRole('button', {
+      name: 'Add Soup to your Recipes',
+    });
+    const css = authoredCss(add);
+    expect(css).toMatch(/width:\s*44px/);
+    expect(css).toMatch(/height:\s*44px/);
   });
 });

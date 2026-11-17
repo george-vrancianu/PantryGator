@@ -43,18 +43,18 @@ describe('Toasts', () => {
     };
   };
 
-  it('is dark ink with a butter action in Warm editorial', () => {
-    const { toast, action } = showIn('warm');
-    expect(paintedColour(toast, 'background-color')).toBe('#2B2418');
-    expect(paintedColour(toast, 'color')).toBe('#FBF8F1');
-    expect(paintedColour(action, 'color')).toBe('#F0C96B');
+  it('is dark ink with a butter action in Light', () => {
+    const { toast, action } = showIn('light');
+    expect(paintedColour(toast, 'background-color')).toBe('#141A16');
+    expect(paintedColour(toast, 'color')).toBe('#F4F7F1');
+    expect(paintedColour(action, 'color')).toBe('#E8CB7C');
   });
 
-  it('is a light toast in Dark-first', () => {
+  it('is a light toast in Dark', () => {
     const { toast, action } = showIn('dark');
-    expect(paintedColour(toast, 'background-color')).toBe('#ECF2EC');
-    expect(paintedColour(toast, 'color')).toBe('#0F1512');
-    expect(paintedColour(action, 'color')).toBe('#1E7A4E');
+    expect(paintedColour(toast, 'background-color')).toBe('#EEF2ED');
+    expect(paintedColour(toast, 'color')).toBe('#101511');
+    expect(paintedColour(action, 'color')).toBe('#1C6A43');
   });
 
   it('dismiss() closes the showing toast and runs its onClose', () => {
@@ -114,9 +114,53 @@ describe('Toasts', () => {
   });
 
   it('takes the Theme control radius and float shadow', () => {
-    const { toast } = showIn('minimal');
+    const { toast } = showIn('light');
     expect(getComputedStyle(toast).borderRadius).toBe('var(--pp-r-ctl)');
     expect(getComputedStyle(toast).boxShadow).toBe('var(--pp-shadow-float)');
+  });
+});
+
+describe('Toasts that wait for the current one', () => {
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
+
+  function Waiting() {
+    const toast = useToast();
+    return (
+      <>
+        <button onClick={() => toast.show('Undo me', { polite: true })}>
+          first
+        </button>
+        <button
+          onClick={() =>
+            toast.show('Gator says', { polite: true, waitForCurrent: true })
+          }
+        >
+          waiting
+        </button>
+      </>
+    );
+  }
+
+  it('shows at once when no toast is up', () => {
+    render(<Waiting />);
+    act(() => fireEvent.click(screen.getByText('waiting')));
+    expect(screen.getByText('Gator says')).toBeTruthy();
+  });
+
+  it('leaves the showing toast alone and shows after it ends', () => {
+    vi.useFakeTimers();
+    render(<Waiting />);
+    act(() => fireEvent.click(screen.getByText('first')));
+    act(() => fireEvent.click(screen.getByText('waiting')));
+    expect(screen.getByText('Undo me')).toBeTruthy();
+    expect(screen.queryByText('Gator says')).toBeNull();
+    act(() => {
+      vi.advanceTimersByTime(2700);
+    });
+    expect(screen.getByText('Gator says')).toBeTruthy();
   });
 });
 
@@ -218,38 +262,38 @@ describe('Toast floors', () => {
   // `calc()` survives; `composeToastBottom` below checks the composed values.
   it('sits just above the Dock with no floor', () => {
     render(<Harness floors={[null]} />);
-    expect(bottomOf()).toContain('bottom: calc(100px');
+    expect(bottomOf()).toContain('bottom: calc(85px');
   });
 
   it('is lifted while a floor is registered', () => {
     render(<Harness floors={[120]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(100px');
+    expect(bottomOf()).not.toContain('bottom: calc(85px');
   });
 
   it('ignores the floor when hosted in a modal', () => {
     render(<Harness floors={[120]} modal />);
-    expect(bottomOf()).toContain('bottom: calc(100px');
+    expect(bottomOf()).toContain('bottom: calc(85px');
   });
 
   it('drops back when the floor is cleared, and moves with a transition', () => {
     const { rerender } = render(<Harness floors={[120]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(100px');
+    expect(bottomOf()).not.toContain('bottom: calc(85px');
     const snackbar = screen
       .getByText('Saved')
       .closest<HTMLElement>('.MuiSnackbar-root')!;
     expect(getComputedStyle(snackbar).transition).toContain('bottom');
     rerender(<Harness floors={[null]} />);
-    expect(snackbarCss()).toContain('bottom: calc(100px');
+    expect(snackbarCss()).toContain('bottom: calc(85px');
   });
 
   it('keeps the lift while another floor is registered, and drops back once all are gone', () => {
     const { rerender } = render(<Harness floors={[120, 200]} />);
-    expect(bottomOf()).not.toContain('bottom: calc(100px');
+    expect(bottomOf()).not.toContain('bottom: calc(85px');
     // Removing the higher floor leaves the lower one in force.
     rerender(<Harness floors={[120, null]} />);
-    expect(snackbarCss()).not.toContain('bottom: calc(100px');
+    expect(snackbarCss()).not.toContain('bottom: calc(85px');
     rerender(<Harness floors={[null, null]} />);
-    expect(snackbarCss()).toContain('bottom: calc(100px');
+    expect(snackbarCss()).toContain('bottom: calc(85px');
   });
 
   it('does not animate the move under reduced motion', () => {

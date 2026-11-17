@@ -1,14 +1,13 @@
 import {
   Alert,
   Box,
-  SAFE_TOP,
+  canopy,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
   Snackbar,
   Spinner,
   Stack,
-  tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useState, type MouseEvent } from 'react';
@@ -19,8 +18,9 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { useAddToFamily } from '../../lib/addToFamily';
+import { useScroller } from '../../lib/scroller';
 import { exploreAdds } from '../../lib/exploreAdds';
 import { isPlainClick } from '../../lib/isPlainClick';
 import { familyRecipeHref, recipeHref } from '../../lib/recipeHref';
@@ -35,6 +35,10 @@ import {
 } from '../../lib/recipes';
 import type { RecipeDetailLine } from '../../lib/recipes';
 import { AllergyWarningBanner } from './components/AllergyWarningBanner';
+import {
+  RecipeCanopyHeader,
+  RecipeCanopyHeaderPlaceholder,
+} from './components/RecipeCanopyHeader';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeHeader } from './components/RecipeHeader';
 import {
@@ -105,10 +109,11 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
   const tabsId = useId();
   const [tab, setTab] = useState<DetailTab>('ingredients');
   const reduceMotion = usePrefersReducedMotion();
+  const scroller = useScroller();
   const openTab = (next: DetailTab) => {
     if (next === tab) return;
     setTab(next);
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scroller.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
   const fromExplore =
     (useLocation().state as { fromExplore?: boolean } | null)?.fromExplore ===
@@ -138,7 +143,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
     if (!isPlainClick(event)) return;
     event.preventDefault();
     if (hasHistory) navigate(-1);
-    else navigate('/recipes/explore', { state: { noSlide: true } });
+    else navigate('/recipes/explore');
   };
   const addState = recipe
     ? addToFamily.stateOf({
@@ -148,6 +153,23 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
       })
     : undefined;
   const toBuy = match?.shortOrMissingCount ?? 0;
+  const canopyHeader = recipe ? (
+    <RecipeCanopyHeader
+      recipe={recipe}
+      servings={servings}
+      match={match}
+      matchPending={matchQuery.isPending}
+      stale={matchQuery.isPlaceholderData}
+      adding={addMissing.isPending || addLine.isPending}
+      added={addedList}
+      onAddMissing={onAddMissing}
+      {...(preview
+        ? { preview: { inFamily: addState?.status !== 'none' } }
+        : {})}
+    />
+  ) : query.isPending ? (
+    <RecipeCanopyHeaderPlaceholder preview={!!preview} />
+  ) : undefined;
 
   // The Family's own Recipes have no preview; they open as themselves.
   if (preview && recipe && recipe.owner === 'family') {
@@ -160,16 +182,17 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
   return (
     <>
       {preview ? (
-        <AppScreenHeader
+        <Screen
           back={{
             label: t('recipes:back'),
             href: '/recipes/explore',
             onClick: leavePreview,
           }}
+          header={canopyHeader}
           {...(recipe ? {} : { title: t('recipes:explore.title') })}
         />
       ) : (
-        <RecipeHeader recipe={recipe} />
+        <RecipeHeader recipe={recipe} header={canopyHeader} />
       )}
       <Stack spacing={2.5}>
         {query.error ? (
@@ -182,13 +205,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
         {query.isPending ? <Spinner label={t('common:loading')} /> : null}
         {recipe ? (
           <>
-            <RecipeHero
-              recipe={recipe}
-              servings={servings}
-              {...(preview
-                ? { preview: { inFamily: addState?.status !== 'none' } }
-                : {})}
-            />
+            <RecipeHero recipe={recipe} />
             {recipe.sourceLink ? (
               <Box>
                 <SourceLink
@@ -203,12 +220,12 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
             <Box
               sx={{
                 position: 'sticky',
-                top: SAFE_TOP,
+                top: 0,
                 zIndex: 2,
                 py: '8px',
-                bgcolor: tokens.color.bg,
-                // Paints the page background out to the screen edges.
-                boxShadow: `0 0 0 100vmax ${tokens.color.bg}`,
+                bgcolor: canopy.sheetTop,
+                // Paints the sheet's top colour out to the screen edges.
+                boxShadow: `0 0 0 100vmax ${canopy.sheetTop}`,
                 clipPath: 'inset(0 -100vmax)',
               }}
             >
@@ -263,13 +280,11 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
                     match={match}
                     stale={matchQuery.isPlaceholderData}
                     adding={addMissing.isPending || addLine.isPending}
-                    added={addedList}
                     addError={
                       addMissing.error
                         ? translateApiError(t, addMissing.error)
                         : null
                     }
-                    onAddMissing={onAddMissing}
                     addLine={{
                       onAdd: onAddLine,
                       handAddedIds: handAddedLineIds,

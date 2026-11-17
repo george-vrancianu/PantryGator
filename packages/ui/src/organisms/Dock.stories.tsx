@@ -67,9 +67,9 @@ function MicStandIn({ slot }: { slot: HTMLElement | null }) {
 function Teaching({ teach }: { teach?: DockTeach }) {
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   return (
-    // The Intro's ground: olive, in the light look.
+    // The Intro's ground: green, in the light look.
     <Box
-      data-theme="warm"
+      data-theme="light"
       sx={{ minHeight: '100vh', bgcolor: 'pp.accent', color: 'pp.accentInk' }}
     >
       <Dock

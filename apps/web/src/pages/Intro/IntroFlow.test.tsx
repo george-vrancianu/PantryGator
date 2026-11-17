@@ -82,7 +82,7 @@ describe('the Intro flow', () => {
       await screen.findByRole('button', { name: /Skip, take me to the app/ }),
     );
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
 
     // The rows left on "Same" are not in the body, so they store nothing.
@@ -267,7 +267,7 @@ describe('the Intro flow', () => {
       stubFlow();
       renderWithProviders(<App />, { route: '/intro/languages' });
       await screen.findByRole('radiogroup', { name: 'App language' });
-      expect(document.querySelector('[data-theme="warm"]')).not.toBeNull();
+      expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
     });
   });
 

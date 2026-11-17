@@ -46,14 +46,14 @@ describe('Toggle', () => {
 
   it('turns its track from the Theme box colour to accent', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <Toggle aria-label="Off" checked={false} onChange={() => undefined} />
         <Toggle aria-label="On" checked onChange={() => undefined} />
       </div>,
     );
     const track = (name: string) => screen.getByRole('switch', { name });
-    expect(paintedColour(track('Off'), 'background-color')).toBe('#B9BEB8');
-    expect(paintedColour(track('On'), 'background-color')).toBe('#1E7A4E');
+    expect(paintedColour(track('Off'), 'background-color')).toBe('#9EA69D');
+    expect(paintedColour(track('On'), 'background-color')).toBe('#1C6A43');
     expect(getComputedStyle(track('On')).width).toBe('46px');
     expect(getComputedStyle(track('On')).height).toBe('28px');
   });

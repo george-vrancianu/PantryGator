@@ -7,7 +7,7 @@ import {
   displayType,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { translateApiError } from '../../i18n/translateApiError';
 import { useRecipeDrafts } from '../../lib/recipeDrafts';
 import { RecipeDraftRow } from './components/RecipeDraftRow';
@@ -21,7 +21,7 @@ export function RecipeDraftsPage() {
   const visible = drafts.data?.filter((draft) => !hiddenIds.has(draft.id));
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={t('recipes:drafts.title')}
         back={{ label: t('recipes:drafts.back'), href: '/recipes' }}
       />

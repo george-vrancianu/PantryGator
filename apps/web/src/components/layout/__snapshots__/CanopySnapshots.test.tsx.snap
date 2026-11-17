@@ -1,0 +1,417 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`The Canopy in the dark Theme > wears the 'home' texture on '/' 1`] = `
+"data-theme=dark
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="home" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="home" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-eozsqp{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:home>);-webkit-background-size:112px 112px;background-size:112px 112px;opacity:0.8;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="home" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1es0udg{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:home>);-webkit-mask-image:url(<tile:home>);mask-image:url(<tile:home>);-webkit-mask-size:112px 112px;-webkit-mask-size:112px 112px;mask-size:112px 112px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.8;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" aria-current="page" href="/" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;
+
+exports[`The Canopy in the dark Theme > wears the 'pantry' texture on '/pantry' 1`] = `
+"data-theme=dark
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="pantry" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="pantry" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-edpvjx{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:pantry>);-webkit-background-size:240px 132px;background-size:240px 132px;opacity:1;-webkit-animation:pp-shelf-slide 70s linear infinite;animation:pp-shelf-slide 70s linear infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="pantry" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1294z0p{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:pantry>);-webkit-mask-image:url(<tile:pantry>);mask-image:url(<tile:pantry>);-webkit-mask-size:240px 132px;-webkit-mask-size:240px 132px;mask-size:240px 132px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:1;-webkit-animation:pp-shelf-slide 70s linear infinite;animation:pp-shelf-slide 70s linear infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" aria-current="page" href="/pantry" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;
+
+exports[`The Canopy in the dark Theme > wears the 'recipes' texture on '/recipes' 1`] = `
+"data-theme=dark
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="recipes" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="recipes" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-teyc3e{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:recipes>);-webkit-background-size:44px 44px;background-size:44px 44px;opacity:0.9;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="recipes" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-19as175{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<glint-tile:recipes>);-webkit-mask-image:url(<glint-tile:recipes>);mask-image:url(<glint-tile:recipes>);-webkit-mask-size:44px 44px;-webkit-mask-size:44px 44px;mask-size:44px 44px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.9;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" aria-current="page" href="/recipes" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);"
+`;
+
+exports[`The Canopy in the dark Theme > wears the 'shopping' texture on '/shopping' 1`] = `
+"data-theme=dark
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="shopping" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="shopping" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1qc79lw{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:shopping>);-webkit-background-size:72px 72px;background-size:72px 72px;opacity:0.72;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="shopping" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-13smrxd{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:shopping>);-webkit-mask-image:url(<tile:shopping>);mask-image:url(<tile:shopping>);-webkit-mask-size:72px 72px;-webkit-mask-size:72px 72px;mask-size:72px 72px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.72;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" aria-current="page" href="/shopping" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;
+
+exports[`The Canopy in the light Theme > wears the 'home' texture on '/' 1`] = `
+"data-theme=light
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="home" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="home" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-eozsqp{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:home>);-webkit-background-size:112px 112px;background-size:112px 112px;opacity:0.8;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="home" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1es0udg{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:home>);-webkit-mask-image:url(<tile:home>);mask-image:url(<tile:home>);-webkit-mask-size:112px 112px;-webkit-mask-size:112px 112px;mask-size:112px 112px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.8;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" aria-current="page" href="/" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;
+
+exports[`The Canopy in the light Theme > wears the 'pantry' texture on '/pantry' 1`] = `
+"data-theme=light
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="pantry" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="pantry" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-edpvjx{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:pantry>);-webkit-background-size:240px 132px;background-size:240px 132px;opacity:1;-webkit-animation:pp-shelf-slide 70s linear infinite;animation:pp-shelf-slide 70s linear infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="pantry" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1294z0p{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:pantry>);-webkit-mask-image:url(<tile:pantry>);mask-image:url(<tile:pantry>);-webkit-mask-size:240px 132px;-webkit-mask-size:240px 132px;mask-size:240px 132px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:1;-webkit-animation:pp-shelf-slide 70s linear infinite;animation:pp-shelf-slide 70s linear infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" aria-current="page" href="/pantry" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;
+
+exports[`The Canopy in the light Theme > wears the 'recipes' texture on '/recipes' 1`] = `
+"data-theme=light
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="recipes" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="recipes" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-teyc3e{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:recipes>);-webkit-background-size:44px 44px;background-size:44px 44px;opacity:0.9;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="recipes" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-19as175{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<glint-tile:recipes>);-webkit-mask-image:url(<glint-tile:recipes>);mask-image:url(<glint-tile:recipes>);-webkit-mask-size:44px 44px;-webkit-mask-size:44px 44px;mask-size:44px 44px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.9;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/shopping" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" aria-current="page" href="/recipes" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);"
+`;
+
+exports[`The Canopy in the light Theme > wears the 'shopping' texture on '/shopping' 1`] = `
+"data-theme=light
+--- canopy
+<div data-region="canopy"> .css-1b6lp63{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;position:relative;z-index:0;background:var(--pp-canopy-bg);background-color:var(--pp-canopy-base);color:var(--pp-canopy-ink);padding-bottom:64px;overflow:hidden;}
+.css-1b6lp63>[data-region]{position:relative;
+<div data-testid="canopy-texture" data-texture="shopping" aria-hidden="true"> .css-5jpfdi{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);-webkit-mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);mask-image:linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%);
+<div > .css-18vwjdo{position:absolute;inset:0;opacity:0.17;
+<div data-layer="base" data-texture="shopping" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-1qc79lw{position:absolute;left:0;top:0;right:-240px;bottom:0;background-image:url(<tile:shopping>);-webkit-background-size:72px 72px;background-size:72px 72px;opacity:0.72;
+<div data-testid="canopy-glint"> .css-12tjmid{position:absolute;inset:0;opacity:0.5;-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);mask-image:linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%);-webkit-mask-size:46% 100%;-webkit-mask-size:46% 100%;mask-size:46% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:62% 0;-webkit-mask-position:62% 0;mask-position:62% 0;-webkit-animation:pp-glint 10s ease-in-out -3s infinite;animation:pp-glint 10s ease-in-out -3s infinite;-webkit-animation-play-state:running;animation-play-state:running;
+<div data-layer="glint" data-texture="shopping" data-fade="idle"> .css-1ayv084{position:absolute;inset:0;
+<i > .css-13smrxd{position:absolute;left:0;top:0;right:-240px;bottom:0;background:var(--pp-tex-glint);-webkit-mask-image:url(<tile:shopping>);-webkit-mask-image:url(<tile:shopping>);mask-image:url(<tile:shopping>);-webkit-mask-size:72px 72px;-webkit-mask-size:72px 72px;mask-size:72px 72px;-webkit-mask-repeat:repeat;-webkit-mask-repeat:repeat;mask-repeat:repeat;opacity:0.72;
+<div data-region="top-bar"> .css-tc1so0{padding-top:calc(env(safe-area-inset-top, 0px) + 6px);}
+@media (min-width:0px){.css-tc1so0{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-tc1so0{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+<div data-region="header"> .css-1xcb56d{}
+@media (min-width:0px){.css-1xcb56d{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+@media (min-width:900px){.css-1xcb56d{padding-left:max(48px, env(safe-area-inset-left, 0px));padding-right:max(48px, env(safe-area-inset-right, 0px));
+<div > .css-m20fs8{position:relative;-webkit-transition:none;transition:none;height:0;
+--- dock
+<nav aria-label="Main"> .css-gmtqj6{position:fixed;left:0;right:0;bottom:max(26px, env(safe-area-inset-bottom, 0px));z-index:10;margin-left:auto;margin-right:auto;width:calc(100% - 2 * max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)));height:66px;box-sizing:border-box;padding:0px;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr)) 66px repeat(2, minmax(0, 1fr));background:var(--pp-dock-bg);border:1px solid var(--pp-dock-line);border-radius:var(--pp-r-dock);box-shadow:var(--pp-shadow-dock);}
+@media (min-width:600px){.css-gmtqj6{max-width:480px;}
+@media (min-width:900px){.css-gmtqj6{max-width:520px;
+<a tabindex="0" href="/" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" aria-current="page" href="/shopping" data-discover="true">
+<div > .css-gu45d6{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-gu45d6 svg{width:22px;height:22px;stroke-width:1.9;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<div aria-hidden="true" data-active-mark=""> .css-n57la0{position:absolute;bottom:6px;left:50%;width:16px;height:2px;margin-left:-8px;border-radius:999px;background-color:var(--pp-gold);
+<div > .css-79elbk{position:relative;
+<div data-dock-capsule=""> .css-11kvqxq{position:absolute;left:50%;-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);top:0;bottom:0;width:52px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;border-radius:var(--pp-r-cap);background:var(--pp-cap-bg);border:1px solid var(--pp-cap-line);box-sizing:border-box;color:var(--pp-cap-ink);box-shadow:var(--pp-shadow-cap);}
+.css-11kvqxq svg{stroke-width:1.7;
+<a tabindex="0" aria-label="Camera" href="/scan" data-discover="true">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<a tabindex="0" href="/pantry" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >
+<a tabindex="0" href="/recipes" data-discover="true">
+<div > .css-swza6z{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;height:22px;}
+.css-swza6z svg{width:22px;height:22px;stroke-width:1.6;
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<span >"
+`;

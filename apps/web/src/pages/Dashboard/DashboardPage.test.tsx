@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   renderInAppLayout,
@@ -6,6 +6,7 @@ import {
   stubApi,
 } from '../../test/render';
 import { stubViewport } from '../../test/viewport';
+import { makeScrollable, pull } from '../../test/scroll';
 import { MIN_BUSY_MS } from '../../lib/refresh';
 import { DashboardPage } from './DashboardPage';
 
@@ -42,6 +43,72 @@ describe('DashboardPage', () => {
       'Meal plan',
       'Budget',
     ]);
+  });
+
+  describe('Pantry Health', () => {
+    function stubHealth(layout: unknown) {
+      const { fetchMock } = stubApi({
+        'GET /api/dashboard-layout': () => Response.json(layout),
+        'GET /api/settings/family': () =>
+          Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+        'GET /api/pantry': () => Response.json({ batches: [], runningLow: [] }),
+        'GET /api/pantry/last-stocked': () =>
+          Response.json({ lastStockedAt: null }),
+        'GET /api/staples': () => Response.json({ staples: [] }),
+        'GET /api/shopping-list/suggestions': () =>
+          Response.json({
+            staples: [],
+            usedUp: [],
+            runningLow: [],
+            expired: [],
+            dismissed: [],
+          }),
+        'GET /api/shopping-list': () =>
+          Response.json({
+            id: 'l',
+            groups: [],
+            summary: { remaining: 0, checked: 0 },
+          }),
+      });
+      vi.stubGlobal('fetch', fetchMock);
+    }
+
+    it('shows the dial and lights in the header, not as a Widget', async () => {
+      stubHealth({ widgets: [{ id: 'a', type: 'budget', size: 'small' }] });
+
+      renderInAppLayout(<DashboardPage />, '/');
+
+      const cluster = await screen.findByRole('button', {
+        name: 'Pantry health: Not enough to judge yet, no warning lights.',
+      });
+      expect(cluster.closest('[data-region="header"]')).not.toBeNull();
+      expect(
+        screen
+          .getAllByRole('region')
+          .map((region) => region.getAttribute('aria-label')),
+      ).toEqual(['Budget']);
+    });
+
+    it('loads a stored layout that still holds a health Widget without it', async () => {
+      stubHealth({
+        widgets: [
+          { id: 'h', type: 'health', size: 'wide' },
+          { id: 'a', type: 'budget', size: 'small' },
+        ],
+      });
+
+      renderInAppLayout(<DashboardPage />, '/');
+
+      await screen.findByRole('region', { name: 'Budget' });
+      expect(
+        screen
+          .getAllByRole('region')
+          .map((region) => region.getAttribute('aria-label')),
+      ).toEqual(['Budget']);
+      expect(
+        screen.getAllByRole('button', { name: /^Pantry health: / }),
+      ).toHaveLength(1);
+    });
   });
 
   it.each([
@@ -108,7 +175,7 @@ describe('DashboardPage', () => {
     },
   );
 
-  it('keeps the Customise button in the header', async () => {
+  it('keeps Customise dashboard as a link to the Customise page', async () => {
     stub({ widgets: [] });
 
     renderWithProviders(<DashboardPage />);
@@ -118,18 +185,15 @@ describe('DashboardPage', () => {
     ).toHaveAttribute('href', '/customise');
   });
 
-  it('puts the Settings gear rightmost, after Customise', async () => {
+  it('shows Settings as the labelled top-bar action, and Customise not at all in the header', async () => {
     stub({ widgets: [] });
 
     renderWithProviders(<DashboardPage />);
 
     const header = await screen.findByRole('banner');
     const links = within(header).getAllByRole('link');
-    expect(links.map((link) => link.getAttribute('aria-label'))).toEqual([
-      'Customise dashboard',
-      'Settings',
-    ]);
-    expect(links[1]).toHaveAttribute('href', '/settings');
+    expect(links.map((link) => link.textContent)).toEqual(['Settings']);
+    expect(links[0]).toHaveAttribute('href', '/settings');
   });
 
   it('shows an error with a retry when the layout cannot be loaded', async () => {
@@ -168,6 +232,19 @@ describe('DashboardPage header', () => {
     const { fetchMock, calls } = stubApi({
       'GET /api/dashboard-layout': layout,
       'GET /api/pantry': () => Response.json({ batches: [] }),
+      // Pantry Health in the header reads these too, and a refresh refetches them.
+      'GET /api/pantry/last-stocked': () =>
+        Response.json({ lastStockedAt: null }),
+      'GET /api/settings/family': () =>
+        Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+      'GET /api/shopping-list/suggestions': () =>
+        Response.json({
+          staples: [],
+          usedUp: [],
+          runningLow: [],
+          expired: [],
+          dismissed: [],
+        }),
       'GET /api/shopping-list': () =>
         Response.json({
           id: 'l',
@@ -189,28 +266,50 @@ describe('DashboardPage header', () => {
     vi.stubGlobal('fetch', fetchMock);
     return calls;
   }
+  const tapRefresh = () =>
+    act(() => {
+      pull(makeScrollable(screen.getByTestId('sheet-scroller')), { to: 200 });
+    });
   const layout = () =>
     Response.json({ widgets: [{ id: 'a', type: 'budget', size: 'small' }] });
 
-  it('shows the Refresh button, the greeting and the date under it, with the actions at the end', async () => {
+  it('shows the greeting and the date under it, with Settings the only top-bar action and no logo', async () => {
     stubDash(layout);
     renderInAppLayout(<DashboardPage />, '/');
     await settle();
 
-    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Refresh' }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole('heading', { level: 1, name: 'Good evening' }),
     ).toBeInTheDocument();
     const header = screen.getByRole('banner');
     expect(header).toHaveTextContent('Sunday, October 25');
     const links = within(header).getAllByRole('link');
-    expect(links.map((l) => l.getAttribute('aria-label'))).toEqual([
-      'Customise dashboard',
-      'Settings',
-    ]);
+    expect(links.map((l) => l.textContent)).toEqual(['Settings']);
+    expect(within(header).queryByRole('img')).not.toBeInTheDocument();
   });
 
-  it('refetches on a tap, saying the outcome off the header and keeping the date under the greeting', async () => {
+  it('puts Customise dashboard under the last Widget, as a link to the Customise page', async () => {
+    stubDash(layout);
+    renderInAppLayout(<DashboardPage />, '/');
+    await settle();
+
+    const link = screen.getByRole('link', { name: 'Customise dashboard' });
+    expect(link).toHaveAttribute('href', '/customise');
+    expect(
+      within(screen.getByRole('banner')).queryByRole('link', {
+        name: 'Customise dashboard',
+      }),
+    ).not.toBeInTheDocument();
+    const widget = screen.getByRole('region', { name: 'Budget' });
+    expect(
+      widget.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it('refetches on a pull, saying the outcome off the header and keeping the date under the greeting', async () => {
     const calls = stubDash(layout);
     renderInAppLayout(<DashboardPage />, '/');
     await settle();
@@ -219,7 +318,7 @@ describe('DashboardPage header', () => {
     const before = count();
     const header = screen.getByRole('banner');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+    tapRefresh();
     expect(screen.getByRole('status')).toHaveTextContent('Refreshing…');
     expect(header).toHaveTextContent('Sunday, October 25');
     expect(header).not.toHaveTextContent('Refreshing…');
@@ -238,7 +337,7 @@ describe('DashboardPage header', () => {
     await settle();
     fail = true;
 
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+    tapRefresh();
     await elapse(MIN_BUSY_MS);
     expect(screen.getByRole('status')).toHaveTextContent(
       "Couldn't refresh · showing what you had",

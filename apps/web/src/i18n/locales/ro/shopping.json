@@ -2,6 +2,7 @@
   "title": "Cumpărături",
   "summary": {
     "toBuy": "{{count}} de cumpărat",
+    "toBuyLabel": "de cumpărat",
     "inBasket": "{{checked}} din {{total}} bifate",
     "progress": "Progresul listei de cumpărături",
     "tickedOff_one": "{{count}} produs bifat",
@@ -10,7 +11,6 @@
     "moveToPantry_one": "Mută {{count}} în cămară",
     "moveToPantry_few": "Mută {{count}} în cămară",
     "moveToPantry_other": "Mută {{count}} în cămară",
-    "nothing": "Nimic de cumpărat",
     "empty": "Lista ta este goală"
   },
   "add": {
@@ -91,7 +91,6 @@
     "button": "Importă",
     "title": "Importă",
     "close": "Închide",
-    "aria": "Importă dintr-un șablon",
     "hint": "Bifează șabloane întregi sau deschide unul ca să alegi liniile. Poți combina mai multe.",
     "section": "Șabloanele tale · {{count}}",
     "manage": "Gestionează",

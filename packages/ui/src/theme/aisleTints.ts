@@ -20,7 +20,7 @@ export type AisleTintName = (typeof AISLE_TINT_NAMES)[number] | 'neutral';
 /** An Aisle tint with its own colour pair in each Theme. */
 type TintedAisleName = Exclude<AisleTintName, 'neutral'>;
 
-/** The shopping handoff's pairs (docs/handoffs/shopping, section 4): Minimal's values. */
+/** The shopping handoff's pairs (docs/handoffs/shopping, section 4): the Light Theme's values. */
 const light: Record<TintedAisleName, AisleTint> = {
   produce: { bg: '#DDEBE2', fg: '#2E6A4D' },
   bakery: { bg: '#F6EBC8', fg: '#6E5200' },
@@ -31,22 +31,7 @@ const light: Record<TintedAisleName, AisleTint> = {
   drinks: { bg: '#EFE6F1', fg: '#6A3F72' },
 };
 
-/**
- * Warm: the backgrounds from the catalog search handoff (section 2), a little
- * more muted and yellow than Minimal's. The text is Minimal's (Meat darkened) to hold 4.5:1
- * on these (aisleTints.test.ts).
- */
-const warm: Record<TintedAisleName, AisleTint> = {
-  produce: { bg: '#DFE7CF', fg: '#2E6A4D' },
-  bakery: { bg: '#F3E4BF', fg: '#6E5200' },
-  dairy: { bg: '#E4E9EA', fg: '#2F5674' },
-  meat: { bg: '#F5DCCB', fg: '#A3400F' },
-  frozen: { bg: '#E3E5EE', fg: '#3E4C7A' },
-  pantry: { bg: '#E8E3D1', fg: '#3C4A41' },
-  drinks: { bg: '#ECE1E7', fg: '#6A3F72' },
-};
-
-/** Dark-first: the shopping handoff's dark pairs (docs/handoffs/shopping-import, section 7). */
+/** Dark: the shopping handoff's dark pairs (docs/handoffs/shopping-import, section 7). */
 const dark: Record<TintedAisleName, AisleTint> = {
   produce: { bg: '#1F3A2A', fg: '#9FE0B4' },
   bakery: { bg: '#3A3118', fg: '#F2CF72' },
@@ -60,7 +45,7 @@ const dark: Record<TintedAisleName, AisleTint> = {
 /** Aisle tints keyed by Theme, next to the Theme tokens. */
 export const AISLE_TINTS: Readonly<
   Record<ThemeId, Record<TintedAisleName, AisleTint>>
-> = { warm, minimal: light, dark };
+> = { light, dark };
 
 /**
  * Tints by Aisle id. The ids are the seeded Aisles' stable ids

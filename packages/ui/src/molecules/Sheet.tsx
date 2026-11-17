@@ -9,19 +9,18 @@ import {
   type RefObject,
 } from 'react';
 import { Box } from '../atoms/Layout';
+import { useRegisterOpenSheet } from './openSheets';
 import { useToastHost } from './ToastProvider';
 import { tokens } from '../theme/tokens';
 import { useBreakpointUp } from '../theme/useBreakpointUp';
 import { focusOpening, useSkipTextRestore } from '../theme/focusOpening';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { sheetTopRoom } from '../theme/safeArea';
-import { palette, radius, shadow } from '../theme/themeVars';
+import { canopy, color as themeColor, radius } from '../theme/themeVars';
 
 /** How long the phone sheet slides in and out, ms. */
 const SLIDE_MS = 340;
 const SLIDE_EASING = 'cubic-bezier(.2,.8,.2,1)';
-/** The Themes define no scrim; a translucent black reads on light and dark alike. */
-const SCRIM = `color-mix(in srgb, ${palette('common-black')} 38%, transparent)`;
 
 export type SheetProps = {
   open: boolean;
@@ -104,6 +103,7 @@ export function Sheet({
   // Only while open: a toast raised as the sheet closes must not sit in the
   // paper that is sliding away.
   useToastHost(open ? paper : null);
+  useRegisterOpenSheet(open);
   const focusInitial = focusOpening(paper, initialFocus, centred);
   const skipRestore = useSkipTextRestore(open, centred);
   return (
@@ -124,7 +124,7 @@ export function Sheet({
           : { '& .MuiDialog-container': { alignItems: 'flex-end' } }
       }
       slotProps={{
-        backdrop: { sx: { backgroundColor: SCRIM } },
+        backdrop: { sx: { backgroundColor: canopy.scrim } },
         transition: {
           onEntered: () => {
             focusInitial();
@@ -139,9 +139,9 @@ export function Sheet({
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            backgroundColor: color.bg,
-            backgroundImage: 'none',
-            boxShadow: shadow.float,
+            // The working sheet's look (Canopy handoff section 8.1).
+            background: canopy.sheetBg,
+            boxShadow: canopy.sheetShadow,
             ...(centred
               ? { borderRadius: radius.sheet, maxHeight: '80vh' }
               : {
@@ -153,7 +153,7 @@ export function Sheet({
                       ? `min(90dvh, calc(100dvh - ${sheetTopRoom}))`
                       : 'auto',
                   maxHeight: `min(90dvh, calc(100dvh - ${sheetTopRoom}))`,
-                  borderRadius: `${radius.sheet} ${radius.sheet} 0 0`,
+                  borderRadius: radius.sheetTop,
                 }),
           },
         },
@@ -164,12 +164,12 @@ export function Sheet({
           aria-hidden
           sx={{
             flexShrink: 0,
-            width: 40,
-            height: 5,
-            mt: 1,
+            width: 38,
+            height: 4,
+            mt: '9px',
             mx: 'auto',
-            borderRadius: '999px',
-            backgroundColor: color.line,
+            borderRadius: radius.handle,
+            backgroundColor: themeColor.lineStrong,
           }}
         />
       )}
@@ -180,7 +180,6 @@ export function Sheet({
           sx={{
             flexShrink: 0,
             borderTop: `1px solid ${color.line}`,
-            backgroundColor: color.bg,
           }}
         >
           {footer}

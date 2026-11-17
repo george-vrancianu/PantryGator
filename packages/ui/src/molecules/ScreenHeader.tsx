@@ -6,21 +6,27 @@ import {
   type Ref,
 } from 'react';
 import { BackIcon, HomeIcon } from '../atoms/icons';
+import { HeaderButton } from '../atoms/HeaderButton';
 import { IconButton } from '../atoms/IconButton';
 import { ActionMenu, type ActionMenuItem } from './ActionMenu';
 import { Typography } from '../atoms/Typography';
 import { topRoomBelowInset } from '../theme/safeArea';
 import { tokens } from '../theme/tokens';
-import { radius } from '../theme/themeVars';
+import { canopy, radius } from '../theme/themeVars';
 
 export type ScreenHeaderAction = {
   /** Accessible name of the icon-only button. */
   label: string;
-  icon: ReactNode;
+  /** Not needed with `text`. */
+  icon?: ReactNode;
   href?: string;
   onClick?: MouseEventHandler<HTMLElement>;
   /** Turns the button into a menu of these items (e.g. two ways to add a Recipe); `href` and `onClick` are then ignored. */
   items?: ActionMenuItem[];
+  /** Draws a labelled gold key with this text (an editor's Save) instead of the icon-only "+"; `label` stays the fallback name. */
+  text?: string;
+  /** Disables a labelled key. */
+  disabled?: boolean;
   /** Ref to the button, e.g. to return focus to it when a sheet it opened closes. */
   buttonRef?: Ref<HTMLButtonElement>;
 };
@@ -53,6 +59,8 @@ export type ScreenHeaderProps = {
   };
   /** Makes the title programmatically focusable, so a screen can move focus to it. Needs `title`. */
   titleRef?: Ref<HTMLHeadingElement>;
+  /** Drawn on the Canopy: the title and status in the Canopy's ink, a 44px title row, no room of its own above or below (the layout supplies it). */
+  onCanopy?: boolean;
 };
 
 /** Sub-screen header: optional Back or Home button, H1 title, optional trailing content (e.g. counter chips), one action button. */
@@ -67,6 +75,7 @@ export function ScreenHeader({
   trailing,
   titleRef,
   back,
+  onCanopy,
 }: ScreenHeaderProps) {
   return (
     <Box
@@ -75,12 +84,16 @@ export function ScreenHeader({
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-        // Same box as the DashboardHeader, so every screen's header is as tall as Home's.
+        // Every screen's header is the same height, Home's included.
         // The page is already padded by the top inset; this room gives way to it (ADR 0040).
-        pt: topRoomBelowInset(28),
-        pb: '18px',
+        ...(onCanopy
+          ? { pt: 0, pb: 0, minHeight: '44px' }
+          : {
+              pt: topRoomBelowInset(28),
+              pb: '18px',
+              minHeight: '54px',
+            }),
         boxSizing: 'content-box',
-        minHeight: '54px',
       }}
     >
       {back ? (
@@ -89,13 +102,18 @@ export function ScreenHeader({
             label={back.label}
             href={back.href}
             onClick={back.onClick}
+            tone={onCanopy ? 'canopyChip' : undefined}
           >
             <BackIcon size={20} />
           </IconButton>
           {back.badge ? <BackBadge count={back.badge} /> : null}
         </Box>
       ) : home ? (
-        <IconButton label={home.label} href={home.href ?? '/'}>
+        <IconButton
+          label={home.label}
+          href={home.href ?? '/'}
+          tone={onCanopy ? 'canopyChip' : undefined}
+        >
           <HomeIcon size={20} />
         </IconButton>
       ) : null}
@@ -109,6 +127,15 @@ export function ScreenHeader({
             tabIndex={titleRef ? -1 : undefined}
             sx={{
               outline: 'none',
+              ...(onCanopy
+                ? {
+                    color: canopy.ink,
+                    fontSize: 25,
+                    lineHeight: 1,
+                    fontWeight: 800,
+                    letterSpacing: '-0.035em',
+                  }
+                : {}),
               overflowWrap: 'break-word',
               ...(truncateTitle
                 ? {
@@ -124,7 +151,12 @@ export function ScreenHeader({
         ) : null}
         {subtitle ? (
           <Typography
-            sx={{ fontSize: 13, color: tokens.color.muted, mt: '2px' }}
+            sx={{
+              fontSize: 13,
+              color: onCanopy ? canopy.muted : tokens.color.muted,
+              mt: onCanopy ? '6px' : '2px',
+              ...(onCanopy ? { lineHeight: 1, fontWeight: 500 } : {}),
+            }}
           >
             {subtitle}
           </Typography>
@@ -133,7 +165,7 @@ export function ScreenHeader({
           <Box
             sx={{
               fontSize: 12.5,
-              color: tokens.color.muted,
+              color: onCanopy ? canopy.muted : tokens.color.muted,
               mt: '2px',
               minHeight: '1.4em',
             }}
@@ -145,14 +177,14 @@ export function ScreenHeader({
       {trailing || action ? (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {trailing}
-          {action ? <HeaderAction {...action} /> : null}
+          {action ? <HeaderAction {...action} onCanopy={onCanopy} /> : null}
         </Box>
       ) : null}
     </Box>
   );
 }
 
-/** The header's one action: an accent button, or a menu when it has `items`. */
+/** The header's primary action: an accent button (the gold key on the Canopy), a labelled gold key when it has `text`, or a menu when it has `items`. */
 function HeaderAction({
   label,
   icon,
@@ -160,20 +192,40 @@ function HeaderAction({
   onClick,
   items,
   buttonRef,
-}: ScreenHeaderAction) {
-  return items ? (
-    <ActionMenu
-      label={label}
-      tone="accent"
-      icon={icon}
-      items={items}
-      buttonRef={buttonRef}
-    />
-  ) : (
+  text,
+  disabled,
+  onCanopy,
+}: ScreenHeaderAction & { onCanopy?: boolean }) {
+  const tone = onCanopy ? 'key' : 'accent';
+  if (items) {
+    return (
+      <ActionMenu
+        label={label}
+        tone={tone}
+        icon={icon}
+        items={items}
+        buttonRef={buttonRef}
+      />
+    );
+  }
+  if (text) {
+    return (
+      <HeaderButton
+        ref={buttonRef}
+        tone="key"
+        href={href}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {text}
+      </HeaderButton>
+    );
+  }
+  return (
     <IconButton
       ref={buttonRef}
       label={label}
-      tone="accent"
+      tone={tone}
       href={href}
       onClick={onClick}
     >

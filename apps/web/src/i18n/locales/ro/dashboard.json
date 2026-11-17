@@ -61,19 +61,38 @@
   },
   "health": {
     "title": "Starea cămării",
+    "scoreOf": "{{score}} din 100",
+    "notEnough": "Prea puțin ca să judecăm încă",
+    "lights": {
+      "expired": "Expirate",
+      "soon": "De folosit curând",
+      "low": "Pe terminate",
+      "fresh": "Proaspăt aduse",
+      "nothingNew": "Nimic nou"
+    },
+    "a11y": {
+      "name": "{{title}}: {{verdict}}, {{lights}}.",
+      "expired_one": "{{count}} expirat",
+      "expired_few": "{{count}} expirate",
+      "expired_other": "{{count}} de expirate",
+      "soon_one": "{{count}} de folosit curând",
+      "soon_few": "{{count}} de folosit curând",
+      "soon_other": "{{count}} de folosit curând",
+      "low_one": "{{count}} pe terminate",
+      "low_few": "{{count}} pe terminate",
+      "low_other": "{{count}} pe terminate",
+      "fresh": "produse noi adăugate",
+      "allClear": "niciun avertisment",
+      "nothingNew_one": "nimic adăugat de {{count}} zi",
+      "nothingNew_few": "nimic adăugat de {{count}} zile",
+      "nothingNew_other": "nimic adăugat de {{count}} de zile"
+    },
     "verdict": {
       "good": "În formă bună",
       "some": "Câteva lucruri de pus la punct",
       "attention": "Necesită atenție"
     },
-    "toDo_one": "{{count}} de făcut",
-    "toDo_few": "{{count}} de făcut",
-    "toDo_other": "{{count}} de făcut",
     "nothingToDo": "Nimic de făcut",
-    "nothingToDoSpoken": "nimic de făcut",
-    "toDoLong_one": "{{count}} lucru de făcut",
-    "toDoLong_few": "{{count}} lucruri de făcut",
-    "toDoLong_other": "{{count}} de lucruri de făcut",
     "progress_one": "Adaugă încă {{count}} în cămară ca să primești scorul",
     "progress_few": "Adaugă încă {{count}} în cămară ca să primești scorul",
     "progress_other": "Adaugă încă {{count}} în cămară ca să primești scorul",
@@ -83,9 +102,6 @@
       "dated": "Cu dată",
       "rotation": "Rotație"
     },
-    "factorValue": "{{name}} {{value}}",
-    "cardName": "{{title}}, {{score}}, {{verdict}}, {{todos}}",
-    "cardNameProgress": "{{title}}, {{progress}}, {{todos}}",
     "group": {
       "now": "Acum",
       "week": "Săptămâna aceasta",
@@ -183,12 +199,6 @@
       "add": "Adaugă {{name}}",
       "setDate": "Setează data",
       "setDateName": "Setează data pentru {{name}}"
-    },
-    "gator": {
-      "curious": "Încă învăț ce ai prin casă. Adaugă încă câteva lucruri și îți pot spune cum stă cămara.",
-      "dapper": "Splendid. Totul e în termen, aprovizionat și pus la socoteală.",
-      "hmm": "Hmm. Să începem de aici: {{title}}.",
-      "worried": "Hai să le punem în ordine. Mai întâi: {{title}}."
     }
   },
   "mealPlan": {

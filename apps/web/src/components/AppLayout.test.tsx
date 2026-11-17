@@ -11,8 +11,8 @@ import {
 import { holdLongEnough, pressDown, useVoiceTimers } from '../test/voiceHold';
 import { VOICE_LAYER } from '../lib/voicePlacement';
 import { Route, Routes } from 'react-router-dom';
+import { recipeReads } from '../lib/recipeReads';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { renderWithProviders, stubApi } from '../test/render';
 import { AppLayout } from './AppLayout';
@@ -30,7 +30,9 @@ function renderAtView(route: string) {
         <Route path="/scan" element={<p>camera</p>} />
         <Route path="/pantry" element={<p>pantry</p>} />
         <Route path="/recipes" element={<p>recipes</p>} />
+        <Route path="/recipes/new" element={<p>editor</p>} />
         <Route path="/shopping" element={<p>shopping</p>} />
+        <Route path="/settings" element={<p>settings</p>} />
         <Route path="/shopping/staples" element={<p>staples</p>} />
       </Route>
     </Routes>,
@@ -40,6 +42,31 @@ function renderAtView(route: string) {
 
 afterEach(() => {
   document.documentElement.removeAttribute('data-theme');
+});
+
+describe('AppLayout Gator bubble', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', () => new Promise<Response>(() => {}));
+    recipeReads.submit(
+      { kind: 'link', url: 'https://example.com/soup' },
+      'source',
+    );
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each(['/pantry', '/recipes/new'])(
+    'shows the bubble on %s while a Job is held',
+    async (path) => {
+      renderAt(path);
+      expect(await screen.findByTestId('gator-bubble')).toBeInTheDocument();
+    },
+  );
+
+  it('hides the bubble while the camera is open', () => {
+    renderAt('/scan');
+    expect(screen.getByText('camera')).toBeInTheDocument();
+    expect(screen.queryByTestId('gator-bubble')).not.toBeInTheDocument();
+  });
 });
 
 describe('AppLayout Dock', () => {
@@ -100,39 +127,42 @@ describe('AppLayout Dock', () => {
     );
   });
 
-  it('leaves 132px at the bottom of every page for the Dock and its capsule, more where the home indicator is taller', () => {
-    const pageCss = () =>
-      authoredCss(screen.getByRole('main').parentElement as HTMLElement);
+  it('leaves 115px at the bottom of every page for the Dock and its capsule, more where the home indicator is taller', () => {
+    const pageCss = () => authoredCss(screen.getByRole('main'));
     const { unmount } = renderAtView('/pantry');
-    // 104 + max(28, inset) is 132 with no inset.
+    // 89 + max(26, inset) is 115 with no inset.
     expect(pageCss()).toContain(
-      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 104px)',
+      'padding-bottom:calc(max(26px, env(safe-area-inset-bottom, 0px)) + 89px)',
     );
     unmount();
     renderAtView('/recipes');
     expect(pageCss()).toContain(
-      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 104px)',
+      'padding-bottom:calc(max(26px, env(safe-area-inset-bottom, 0px)) + 89px)',
     );
   });
 
   it('paints the dock and its tabs from the active Theme', () => {
-    localStorage.setItem(
-      'pp.appearance',
-      JSON.stringify({ theme: 'dark', matchSystem: false }),
-    );
     renderAt('/pantry');
     const dock = screen.getByRole('navigation');
-    expect(paintedColour(dock, 'background-color')).toBe('RGBA(25,33,28,.9)');
+    expect(authoredCss(dock)).toContain('background:var(--pp-dock-bg)');
 
+    // The active tab is white with the gold mark; the rest are the dimmed cream. The Theme's own values
+    // sit behind these variables (see the Canopy snapshots).
     const active = screen.getByRole('link', { current: 'page' });
-    expect(paintedColour(active, 'background-color')).toBe('#1F3A2A');
-    expect(paintedColour(active, 'color')).toBe('#A9EDBD');
+    expect(authoredCss(active)).toContain('color:var(--pp-dock-on)');
+    expect(active.querySelector('[data-active-mark]')).not.toBeNull();
 
     const inactive = screen.getByRole('link', { name: /shopping/i });
-    expect(paintedColour(inactive, 'background-color')).toBe(
-      'RGBA(0, 0, 0, 0)',
-    );
-    expect(paintedColour(inactive, 'color')).toBe('#97A69B');
+    expect(authoredCss(inactive)).toContain('color:var(--pp-dock-off)');
+    expect(inactive.querySelector('[data-active-mark]')).toBeNull();
+  });
+
+  it('shows the Dock with no active tab on Settings', () => {
+    renderAt('/settings');
+    const dock = within(screen.getByRole('navigation'));
+    expect(dock.getByRole('link', { name: 'Home' })).toBeInTheDocument();
+    expect(document.querySelector('[data-active-mark]')).toBeNull();
+    expect(document.querySelector('nav [aria-current]')).toBeNull();
   });
 });
 
@@ -175,15 +205,10 @@ describe('AppLayout Voice Note host', () => {
     renderAt('/pantry');
     await talkButton();
     // jsdom drops calc() with env() from computed style, so read the authored rule text.
-    const rules = authoredCss(
-      screen.getByRole('main').parentElement as HTMLElement,
-    );
-    // Just clear of the capsule: Dock 28 + 76 + 24 on phones, 28 + 84 + 24 from md; no chip row. The 28 grows with the bottom inset.
+    const rules = authoredCss(screen.getByRole('main'));
+    // Just clear of the rocker: Dock 26 + 66 + 19 (rocker overhang 13 + 6 air), the same from md; no chip row. The 26 grows with the bottom inset.
     expect(rules).toContain(
-      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 100px)',
-    );
-    expect(rules).toContain(
-      'padding-bottom:calc(max(28px, env(safe-area-inset-bottom, 0px)) + 108px)',
+      'padding-bottom:calc(max(26px, env(safe-area-inset-bottom, 0px)) + 85px)',
     );
     expect(rules).not.toMatch(/calc\(36px/);
   });

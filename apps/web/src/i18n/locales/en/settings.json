@@ -117,16 +117,11 @@
   "build": "Build {{build}}",
   "appearance": {
     "title": "Appearance",
-    "warm": "Warm editorial",
-    "minimal": "Minimal crisp",
-    "dark": "Dark-first",
+    "light": "Light",
+    "dark": "Dark",
     "matchSystem": "Match system",
-    "matchSystemHint": "Dark-first when the phone is in dark mode, your light theme otherwise",
-    "usedInDark": "Used in dark mode",
-    "usedInLight": "Used in light mode",
-    "syncedOnDevice": "Theme saved on this phone. We'll sync it when you're online.",
-    "lightOnlyToast": "{{name}} shows when the phone is in light mode.",
-    "darkEverywhereToast": "Dark-first everywhere. Match system is off."
+    "matchSystemHint": "Dark when the phone is in dark mode, Light otherwise",
+    "syncedOnDevice": "Theme saved on this phone. We'll sync it when you're online."
   },
   "scope": {
     "device": "This phone",

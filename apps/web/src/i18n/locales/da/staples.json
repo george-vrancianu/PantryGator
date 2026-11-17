@@ -1,6 +1,5 @@
 {
   "title": "Basisvarer",
-  "back": "Tilbage til listen",
   "hint": "Ting, du altid vil have på lager. Når en ikke har nogen frisk vare i spisekammeret, foreslås den på din indkøbsliste.",
   "empty": "Ingen basisvarer endnu. Søg ovenfor for at tilføje en, eller tryk på stjernen ved en vare i spisekammeret eller på listen.",
   "listLabel": "Dine basisvarer",

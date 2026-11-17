@@ -1,6 +1,6 @@
 import { Alert, Button, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { ConfirmAction } from '../../components/ConfirmAction';
 import { InviteCodePanel } from './components/InviteCodePanel';
 import { JoinFamilyPanel } from './components/JoinFamilyPanel';
@@ -18,8 +18,10 @@ export function FamilyPage() {
   const isHouseholdOfOne = family?.members.length === 1;
 
   return (
-    <>
-      <AppScreenHeader title={t('family:title')} />
+    <Screen
+      title={t('family:title')}
+      back={{ label: t('screenHeader:back'), href: '/settings' }}
+    >
       <Stack spacing={3}>
         {screen.error ? <Alert>{screen.error}</Alert> : null}
         {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}
@@ -69,6 +71,6 @@ export function FamilyPage() {
           </>
         ) : null}
       </Stack>
-    </>
+    </Screen>
   );
 }

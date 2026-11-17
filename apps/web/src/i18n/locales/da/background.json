@@ -1,14 +1,10 @@
 {
-  "title": "{{count}} i baggrunden",
   "reading_one": "{{count}} læses",
   "reading_other": "{{count}} læses",
   "ready": "{{count}} klar",
   "failed_one": "{{count}} mislykkedes",
   "failed_other": "{{count}} mislykkedes",
   "review": "Gennemse",
-  "open": "Åbn",
-  "openCount": "Åbn {{count}}",
-  "sheetTitle": "I baggrunden",
   "scan": {
     "reviewSession": "Gennemse {{title}}",
     "failedAlert_one": "{{count}} scanning mislykkedes",
@@ -58,5 +54,26 @@
     "readAgainRead": "Læs fotoet af {{dish}} igen",
     "failedAlert_one": "{{count}} retsopskrift mislykkedes",
     "failedAlert_other": "{{count}} retsopskrifter mislykkedes"
+  },
+  "bubble": {
+    "reading_one": "Gator arbejder: {{count}} læses",
+    "reading_other": "Gator arbejder: {{count}} læses",
+    "ready_one": "{{count}} klar til gennemsyn",
+    "ready_other": "{{count}} klar til gennemsyn",
+    "failed_one": "{{count}} kunne ikke læses",
+    "failed_other": "{{count}} kunne ikke læses",
+    "allDone_one": "Alt er læst: {{count}} klar til gennemsyn",
+    "allDone_other": "Alt er læst: {{count}} klar til gennemsyn",
+    "open": "Åbn Gennemsyn"
+  },
+  "sheet": {
+    "title": "Gennemsyn",
+    "summary": "{{ready}} klar · {{reading}} læses · {{failed}} mislykket",
+    "group": {
+      "ready": "Klar til gennemsyn",
+      "reading": "Læses",
+      "failed": "Kunne ikke læses"
+    },
+    "note": "Intet ændres, før du har gennemset og anvendt."
   }
 }

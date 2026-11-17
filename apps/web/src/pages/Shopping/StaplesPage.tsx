@@ -1,6 +1,5 @@
 import {
   Alert,
-  Link,
   ListRow,
   Spinner,
   Stack,
@@ -13,7 +12,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountSheet } from '../../components/AmountSheet';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { CatalogSearch } from '../../components/catalogSearch/CatalogSearch';
 import { BrowseByAisle } from '../../components/catalogSearch/emptyState/BrowseByAisle';
 import { translateApiError } from '../../i18n/translateApiError';
@@ -61,11 +60,10 @@ export function StaplesPage() {
   const error = staples.error ?? add.error;
 
   return (
-    <>
-      <AppScreenHeader
-        title={t('staples:title')}
-        trailing={<Link href="/shopping">{t('staples:back')}</Link>}
-      />
+    <Screen
+      title={t('staples:title')}
+      back={{ label: t('screenHeader:back'), href: '/shopping' }}
+    >
       <RowHintNote hint={hint} />
       <Stack spacing={2}>
         <Typography color="text.secondary">{t('staples:hint')}</Typography>
@@ -114,7 +112,7 @@ export function StaplesPage() {
           </Card>
         ) : null}
       </Stack>
-    </>
+    </Screen>
   );
 }
 

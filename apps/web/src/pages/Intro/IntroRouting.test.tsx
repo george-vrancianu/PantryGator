@@ -139,7 +139,7 @@ describe('the Intro shell routing', () => {
         await screen.findByRole('button', { name: /Skip, take me to the app/ }),
       );
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
     expect(
       calls.find((c) => c.key === 'PUT /api/settings/preferences')?.body,
@@ -153,7 +153,7 @@ describe('the Intro shell routing', () => {
       renderWithProviders(<App />, { route: '/intro/languages' });
       if (introDone) {
         expect(
-          await screen.findByRole('link', { name: 'Customise dashboard' }),
+          await screen.findByRole('link', { name: 'Settings' }),
         ).toBeInTheDocument();
       } else {
         expect(
@@ -183,16 +183,14 @@ describe('the Intro shell routing', () => {
     vi.stubGlobal('fetch', fetchMock);
     renderWithProviders(<App />, { route: '/' });
     expect(
-      await screen.findByRole('link', { name: 'Customise dashboard' }),
+      await screen.findByRole('link', { name: 'Settings' }),
     ).toBeInTheDocument();
 
     act(() => {
       window.dispatchEvent(new Event('visibilitychange'));
     });
     await waitFor(() => expect(reads).toBe(2));
-    expect(
-      screen.getByRole('link', { name: 'Customise dashboard' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument();
     expect(
       calls.filter((c) => c.key === 'GET /api/settings/preferences').length,
     ).toBeLessThanOrEqual(2);

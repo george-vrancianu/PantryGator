@@ -8,7 +8,7 @@ import {
   type TagTone,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { localIso } from '../../lib/pantry';
 import {
   dateRange,
@@ -35,15 +35,15 @@ export function MealPlansPage() {
   const items = plans.data ?? [];
 
   return (
-    <>
-      <AppScreenHeader
-        title={t('mealPlans:title')}
-        action={{
-          label: t('mealPlans:newPlan'),
-          icon: <PlusIcon size={20} />,
-          href: '/meal-plans/new',
-        }}
-      />
+    <Screen
+      title={t('mealPlans:title')}
+      back={{ label: t('screenHeader:back'), href: '/' }}
+      primary={{
+        label: t('mealPlans:newPlan'),
+        icon: <PlusIcon size={20} />,
+        href: '/meal-plans/new',
+      }}
+    >
       {plans.error ? <Alert>{translateApiError(t, plans.error)}</Alert> : null}
       {plans.isPending ? <Spinner label={t('common:loading')} /> : null}
       {plans.data && items.length === 0 ? (
@@ -78,6 +78,6 @@ export function MealPlansPage() {
           );
         })}
       </Box>
-    </>
+    </Screen>
   );
 }

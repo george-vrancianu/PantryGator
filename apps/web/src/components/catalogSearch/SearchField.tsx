@@ -7,6 +7,7 @@ import {
   tokens,
   visuallyHidden,
   radius,
+  shadow,
   border,
   color as themeColor,
 } from '@pocket-pantry/ui';
@@ -53,7 +54,7 @@ export type SearchFieldProps = {
 
 const SPINNER_SIZE = 18;
 
-/** The 50 pt search input: search icon, a right slot (spinner or clear ×), and the selected token. */
+/** The 48 pt search input: search icon, a right slot (spinner or clear ×), and the selected token. */
 export function SearchField({
   inputRef,
   inputId,
@@ -119,15 +120,16 @@ export function SearchField({
     <Box
       sx={{
         position: 'relative',
-        height: 50,
+        height: 48,
         display: 'flex',
         alignItems: 'center',
         borderRadius: radius.control,
-        border: `${border.field} solid ${selected ? 'transparent' : color.line}`,
+        border: `${border.field} solid transparent`,
+        // A recessed well (Canopy 5: Field on a sheet).
         backgroundColor: themeColor.fieldBg,
+        boxShadow: shadow.recess,
         '&:focus-within': {
-          borderColor: selected ? 'transparent' : color.accent,
-          boxShadow: `0 0 0 3px ${color.accentTint}`,
+          boxShadow: `${shadow.recess}, 0 0 0 3px ${color.accentTint}`,
         },
       }}
     >

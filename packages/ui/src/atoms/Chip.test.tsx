@@ -9,13 +9,13 @@ describe('Chip', () => {
 
   it('is a 36 high surface chip with the Theme chip radius', () => {
     render(
-      <div data-theme="minimal">
+      <div data-theme="light">
         <Chip label="Eggs" onClick={() => undefined} />
       </div>,
     );
     const chip = screen.getByRole('button', { name: 'Eggs' });
     expect(paintedColour(chip, 'background-color')).toBe('#FFFFFF');
-    expect(paintedColour(chip, 'color')).toBe('#141614');
+    expect(paintedColour(chip, 'color')).toBe('#141A16');
     expect(getComputedStyle(chip).height).toBe('36px');
     expect(getComputedStyle(chip).borderRadius).toBe('var(--pp-r-chip)');
   });
@@ -38,8 +38,8 @@ describe('Chip', () => {
       </div>,
     );
     const on = screen.getByRole('button', { name: 'Butter', pressed: true });
-    expect(paintedColour(on, 'background-color')).toBe('#1F3A2A');
-    expect(paintedColour(on, 'color')).toBe('#A9EDBD');
+    expect(paintedColour(on, 'background-color')).toBe('#1C3327');
+    expect(paintedColour(on, 'color')).toBe('#A8E6C0');
     expect(
       screen.getByRole('button', { name: 'Milk', pressed: false }),
     ).toBeTruthy();

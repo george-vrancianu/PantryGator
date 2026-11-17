@@ -156,7 +156,6 @@
       "guidance": "Recomandările rețetei nu au fost salvate: {{reason}}"
     },
     "viewRecipe": "Vezi rețeta",
-    "moreActions": "Mai multe acțiuni",
     "tips": {
       "newHint": "Adaugă sfaturi la pași după ce salvezi rețeta.",
       "variantHint": "Sfaturile copiate rămân la pașii lor; adaugă-le pe ale tale după ce salvezi Varianta.",
@@ -205,6 +204,11 @@
     "addMissing_one": "Adaugă {{count}} ingredient lipsă în lista de cumpărături",
     "addMissing_few": "Adaugă {{count}} ingrediente lipsă în lista de cumpărături",
     "addMissing_other": "Adaugă {{count}} de ingrediente lipsă în lista de cumpărături",
+    "addMissingShort_one": "Adaugă {{count}} ingredient lipsă",
+    "addMissingShort_few": "Adaugă {{count}} ingrediente lipsă",
+    "addMissingShort_other": "Adaugă {{count}} de ingrediente lipsă",
+    "coverageCount": "{{covered}} din {{total}}",
+    "coverageLabel": "în Cămara ta",
     "addedList": "Adăugat în listă",
     "onListShort": "pe listă",
     "addLine": "Adaugă {{name}} în lista de cumpărături",
@@ -286,7 +290,8 @@
     "oneShort_few": "{{count}} rețete mai au nevoie de un ingredient",
     "oneShort_other": "{{count}} de rețete mai au nevoie de un ingredient",
     "nothingInPantry": "Nimic de gătit din Cămara ta încă",
-    "addWhatYouHave": "Adaugă ce ai"
+    "addWhatYouHave": "Adaugă ce ai",
+    "seeThem": "Vezi-le"
   },
   "cookTonightPage": {
     "title": "Gătește diseară",
@@ -386,6 +391,7 @@
     "baseGone": "Rețeta de bază a cărei variantă era această ciornă de rețetă nu mai există. Se deschide ca rețetă nouă și va fi salvată ca rețetă de bază."
   },
   "explore": {
+    "status": "Rețete din Catalog",
     "title": "Explorează",
     "menuItem": "Din Explorează",
     "menuNew": "nou",

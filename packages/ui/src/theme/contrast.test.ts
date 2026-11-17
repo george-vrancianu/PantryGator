@@ -39,6 +39,20 @@ const PAIRS: ReadonlyArray<[text: Key, fill: Key]> = [
   ['urgent-fg', 'urgent-bg'],
   ['soon-fg', 'soon-bg'],
   ['ok-fg', 'ok-bg'],
+  // Canopy tokens (handoff section 2).
+  ['canopy-ink', 'canopy-base'],
+  ['gold', 'canopy-base'],
+  ['gold-ink', 'gold'],
+  ['ink-2', 'card-bg'],
+  ['ink-2', 'surface'],
+  // The Gator bubble's count badges (gold uses gold-ink on gold, above).
+  ['bubble-grey-fg', 'bubble-grey-bg'],
+  ['bubble-green-fg', 'bubble-green-bg'],
+  ['bubble-red-fg', 'bubble-red-bg'],
+  // Not covered here: pairs with a gradient or rgba side cannot go through
+  // this hex-only test: `hero-*` on `hero-bg`, `dock-on` / `dock-off` on
+  // `dock-bg`, `cap-ink` on `cap-bg`, and `canopy-muted`. Add them when a
+  // test can composite them (used by #806/#807).
 ];
 
 describe('Theme contrast (US25: 4.5:1 for every text and accent pair)', () => {
@@ -53,14 +67,10 @@ describe('Theme contrast (US25: 4.5:1 for every text and accent pair)', () => {
     ).map(([text, fill]) => `${id} ${text}/${fill}` as const),
   );
 
-  // Design handoff values that fall short of 4.5:1. They are taken back to
-  // design rather than adjusted here (muted #766A58 on chip #EAE1CF is 4.07:1
-  // in Warm editorial; Minimal crisp is 4.36:1; both 14 px / 600 segment
-  // labels). The list is exact: a new failure, or a design fix, trips the test.
-  const KNOWN_HANDOFF_FAILURES = [
-    'warm muted/chip',
-    'minimal muted/chip',
-  ] as const;
+  // Canopy values that fall short of 4.5:1 are listed here and taken back to
+  // design rather than adjusted. The list is exact: a new failure, or a
+  // design fix, trips the test.
+  const KNOWN_HANDOFF_FAILURES: readonly string[] = [];
 
   it('meets 4.5:1 in every Theme except the known handoff failures', () => {
     expect(failures).toEqual(KNOWN_HANDOFF_FAILURES);
@@ -74,17 +84,17 @@ describe('Theme contrast (US25: 4.5:1 for every text and accent pair)', () => {
   });
 });
 
-describe('The Intro ground (Warm, olive): text meets 4.5:1', () => {
-  const warm = THEMES.warm;
+describe('The Intro ground (Light, green): text meets 4.5:1', () => {
+  const light = THEMES.light;
   it.each([
-    ['cream text', warm.surface, warm.accent],
+    ['cream text', light.surface, light.accent],
     [
-      'cream text on the darker olive cards',
-      warm.surface,
-      warm['accent-on-tint'],
+      'cream text on the darker green cards',
+      light.surface,
+      light['accent-on-tint'],
     ],
-    ['butter-ink on butter buttons', warm['butter-ink'], warm.butter],
-    ['ink on the cream speech bubble', warm.ink, warm['card-bg']],
+    ['butter-ink on butter buttons', light['butter-ink'], light.butter],
+    ['ink on the cream speech bubble', light.ink, light['card-bg']],
   ])('%s', (_name, text, fill) => {
     expect(contrast(text, fill)).toBeGreaterThanOrEqual(4.5);
   });

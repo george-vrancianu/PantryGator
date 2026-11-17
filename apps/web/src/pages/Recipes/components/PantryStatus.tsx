@@ -1,8 +1,6 @@
 import {
   Alert,
   Box,
-  Button,
-  ShoppingIcon,
   CheckCircleIcon,
   Stack,
   Typography,
@@ -136,44 +134,21 @@ export function PantryHeading({ match }: { match: PantryMatch | undefined }) {
   );
 }
 
-type AddMissingProps = {
-  match: PantryMatch | undefined;
-  /** The answer is for another Servings or Recipe; wait for the current one. */
-  stale: boolean;
-  adding: boolean;
-  /** The missing lines were added at the Servings picked. */
-  added: boolean;
-  /** Why the last add failed, shown beside the button. */
-  error: string | null;
-  onAddMissing: () => void;
-};
-
-/** The full-width "Add n missing to Shopping List" button, its note and any error. */
-export function AddMissing({
+/** What goes with the header's "Add missing" button, under the ingredient list: a note when some lines are already on the Shopping List, and why the last add failed. */
+export function AddMissingNotes({
   match,
-  stale,
-  adding,
-  added,
   error,
-  onAddMissing,
-}: AddMissingProps) {
+}: {
+  match: PantryMatch | undefined;
+  /** Why the last add failed. */
+  error: string | null;
+}) {
   const { t } = useTranslation('recipes');
-  const toAdd = linesToAdd(match);
-  if (toAdd.length === 0 && !added) return null;
+  const showNote = linesToAdd(match).some((line) => line.onShoppingList);
+  if (!showNote && !error) return null;
   return (
     <Stack spacing={1}>
-      <Button
-        fullWidth
-        startIcon={<ShoppingIcon size={18} />}
-        disabled={adding || stale || added}
-        onClick={onAddMissing}
-        sx={{ fontSize: 15, fontWeight: 700 }}
-      >
-        {added
-          ? t('pantry.addedList')
-          : t('pantry.addMissing', { count: toAdd.length })}
-      </Button>
-      {toAdd.some((line) => line.onShoppingList) ? (
+      {showNote ? (
         <Typography variant="meta" color="text.secondary">
           {t('pantry.someOnList')}
         </Typography>

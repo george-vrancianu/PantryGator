@@ -1,10 +1,9 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Sheet } from '../index';
-import { paintedColour } from '../test/colour';
+import { authoredCss } from '../test/authoredCss';
 import { renderWithTheme as render } from '../test/render';
 import { stubScreen } from '../test/stubScreen';
-import { writeAppearance } from '../theme/appearance';
 
 describe('Sheet', () => {
   afterEach(() => {
@@ -12,18 +11,20 @@ describe('Sheet', () => {
     localStorage.clear();
   });
 
-  it('is a floating bg panel, a step rounder than the Theme card', () => {
-    writeAppearance({ theme: 'dark', matchSystem: false });
+  it('is the working sheet look (Canopy 8.1): sheet gradient, upward shadow, top radius', () => {
+    stubScreen(false, false);
     render(
       <Sheet open onClose={() => undefined} label="Add items">
         Body
       </Sheet>,
     );
     const sheet = screen.getByRole('dialog', { name: 'Add items' });
-    const style = getComputedStyle(sheet);
-    expect(paintedColour(sheet, 'background-color')).toBe('#0F1512');
-    expect(style.boxShadow).toBe('var(--pp-shadow-float)');
-    expect(style.borderRadius).toContain('var(--pp-r-card)');
+    const css = authoredCss(sheet);
+    expect(css).toContain('background:var(--pp-sheet-bg)');
+    expect(css).toContain('box-shadow:var(--pp-shadow-sheet)');
+    expect(css).toContain(
+      'border-radius:var(--pp-r-sheet) var(--pp-r-sheet) 0 0',
+    );
   });
 
   it('caps a phone sheet below the top inset so the grab handle stays reachable', () => {

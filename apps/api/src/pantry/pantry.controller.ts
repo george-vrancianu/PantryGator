@@ -71,6 +71,19 @@ export class PantryController {
     };
   }
 
+  @Get('last-stocked')
+  @ApiOperation({
+    summary:
+      'When the Family last added to the Pantry: the later of Stock history and the newest Batch, used-up and Unmatched ones included (null when never)',
+  })
+  async lastStocked(
+    @CurrentUser() member: CurrentUserValue,
+  ): Promise<{ lastStockedAt: string | null }> {
+    return {
+      lastStockedAt: await this.recentlyStocked.lastStockedAt(member.id),
+    };
+  }
+
   @Get()
   @ApiOperation({
     summary:

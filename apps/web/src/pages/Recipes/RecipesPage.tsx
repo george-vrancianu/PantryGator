@@ -2,8 +2,8 @@ import {
   Alert,
   Box,
   CompassIcon,
+  HeaderButton,
   PlusIcon,
-  radius,
   Spinner,
   Stack,
   tokens,
@@ -12,7 +12,7 @@ import {
 import { useId, useRef, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '../../components/AppScreenHeader';
+import { Screen } from '../../components/layout/Screen';
 import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
 import { translateApiError } from '../../i18n/translateApiError';
 import { cardFor, indexCards, useCookTonight } from '../../lib/cookTonight';
@@ -33,7 +33,10 @@ import {
 } from '../../lib/recipeRoutes';
 import { useRecipeDraftDiscard } from './useRecipeDraftDiscard';
 import { EmptyFamilyRecipes } from './components/EmptyFamilyRecipes';
-import { CookTonightPanel } from '../../components/CookTonightPanel';
+import {
+  CookTonightHeader,
+  CookTonightHeaderPlaceholder,
+} from './components/CookTonightHeader';
 import { FromLinkSheet } from './components/FromLinkSheet';
 import {
   FromTextSheet,
@@ -43,44 +46,6 @@ import { RecipeFilters } from './components/RecipeFilters';
 import { RecipeRow } from './components/RecipeRow';
 import { TagNoMatch } from './components/TagNoMatch';
 import { SectionLabel } from './components/SectionLabel';
-
-/** The header's one second button besides "+" (ADR 0027 amendment): a way into Explore. */
-function ExplorePill() {
-  const { t } = useTranslation('recipes');
-  return (
-    <Box
-      component={Link}
-      to="/recipes/explore"
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        height: 40,
-        boxSizing: 'border-box',
-        pl: '10px',
-        pr: '13px',
-        borderRadius: radius.pill,
-        bgcolor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
-        color: tokens.color.ink,
-        fontSize: 13.5,
-        fontWeight: 700,
-        textDecoration: 'none',
-        flexShrink: 0,
-        '&:hover, &:active': { bgcolor: tokens.color.subtle },
-      }}
-    >
-      <Box
-        component="span"
-        aria-hidden
-        sx={{ display: 'flex', color: tokens.color.accent }}
-      >
-        <CompassIcon size={18} />
-      </Box>
-      {t('explore.pill')}
-    </Box>
-  );
-}
 
 /**
  * The list without the Variants that sit under a Base in it. The Base's count becomes the
@@ -174,13 +139,32 @@ export function RecipesPage() {
   const addButton = useRef<HTMLButtonElement>(null);
   const cards = cookTonight.data?.cards ?? [];
   const index = indexCards(cards);
+  // Hidden until both answers arrive, so an error or a slow load never reads as "nothing to cook";
+  // while they load the header keeps its size.
+  const cookTonightHeader =
+    filtering || empty ? null : recipes.data &&
+      !recipes.error &&
+      cookTonight.data &&
+      !cookTonight.error ? (
+      <CookTonightHeader cards={cards} />
+    ) : recipes.error || cookTonight.error ? null : (
+      <CookTonightHeaderPlaceholder />
+    );
 
   return (
     <>
-      <AppScreenHeader
+      <Screen
         title={t('recipes:title')}
-        trailing={<ExplorePill />}
-        action={{
+        header={cookTonightHeader}
+        secondary={
+          <HeaderButton
+            href="/recipes/explore"
+            icon={<CompassIcon size={18} />}
+          >
+            {t('recipes:explore.pill')}
+          </HeaderButton>
+        }
+        primary={{
           label: t('recipes:add'),
           icon: <PlusIcon size={20} />,
           buttonRef: addButton,
@@ -206,15 +190,6 @@ export function RecipesPage() {
       />
       {/* Flex gap leaves the children's margins alone, so the filters can bleed to the screen edges. */}
       <Stack spacing={1.5} useFlexGap>
-        {/* Hidden until both answers arrive, so an error or a slow load never reads as "nothing to cook". */}
-        {!filtering &&
-        !empty &&
-        recipes.data &&
-        !recipes.error &&
-        cookTonight.data &&
-        !cookTonight.error ? (
-          <CookTonightPanel cards={cards} />
-        ) : null}
         {draftCount > 0 ? (
           <Box
             component={Link}
