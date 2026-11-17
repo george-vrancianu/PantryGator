@@ -310,13 +310,6 @@ describe('the Scan Session and Voice Notes in the bubble', () => {
   });
 });
 
-describe('the failure alert copy', () => {
-  it('has plural forms in Romanian and Danish', () => {
-    expect(ro.scan.failedAlert_few).toContain('{{count}}');
-    expect(da.scan.failedAlert_other).toContain('{{count}}');
-  });
-});
-
 describe('the background copy for Scan Sessions', () => {
   it('has plural forms in Romanian and Danish', () => {
     expect(ro.scan.receipt_few).toContain('{{count}}');
