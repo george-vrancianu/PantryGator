@@ -59,7 +59,6 @@ export {
 } from './readingArt/ReadingArt';
 export {
   Gator,
-  warmGatorLoops,
   type GatorLoop,
   type GatorMotion,
   type GatorProps,
@@ -241,10 +240,6 @@ export {
   REFRESH_LOADER_RETRACT_MS,
   type RefreshLoaderProps,
 } from './molecules/RefreshLoader';
-export {
-  DashboardHeader,
-  type DashboardHeaderProps,
-} from './molecules/DashboardHeader';
 export {
   ScreenHeader,
   type ScreenHeaderAction,

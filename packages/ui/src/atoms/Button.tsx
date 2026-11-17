@@ -17,9 +17,8 @@ export type ButtonVariant =
 
 export type ButtonProps = Omit<ButtonBaseProps, 'color'> & {
   /**
-   * Handoff section 4. `primary` is the Theme primary (ink-black in Minimal
-   * crisp), `secondary` a bordered surface, `tonal` the accent tint, `ghost`
-   * accent text, `danger` the urgent pair.
+   * `primary` is the Theme primary, `secondary` a bordered surface, `tonal`
+   * the accent tint, `ghost` accent text, `danger` the urgent pair.
    */
   variant?: ButtonVariant;
   /** `sm` is 36 high for tight rows. */
@@ -135,7 +134,7 @@ export type AddButtonProps = Omit<ButtonBaseProps, 'children' | 'color'> & {
   'aria-label': string;
 };
 
-/** The 52 x 52 Add button: `accent` fill, radius `r-fab` (round in Warm editorial). */
+/** The 52 x 52 Add button: `accent` fill, radius `r-fab`. */
 export function AddButton({ sx, ...props }: AddButtonProps) {
   return (
     <ButtonBase

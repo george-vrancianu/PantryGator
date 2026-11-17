@@ -9,7 +9,6 @@
     "tickedOff_other": "{{count}} ticked off",
     "moveToPantry_one": "Move {{count}} to Pantry",
     "moveToPantry_other": "Move {{count}} to Pantry",
-    "nothing": "Nothing to buy",
     "empty": "Your list is empty"
   },
   "add": {

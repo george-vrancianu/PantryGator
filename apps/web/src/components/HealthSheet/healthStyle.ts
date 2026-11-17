@@ -7,7 +7,3 @@ export const VERDICT_COLOR: Record<Verdict, string> = {
   some: tokens.color.star,
   attention: tokens.color.urgentFg,
 };
-
-/** How long the ring and the number take to move to a new score, ms. */
-export const SCORE_ANIMATION_MS = 700;
-export const SCORE_EASING = 'cubic-bezier(.2,.8,.2,1)';

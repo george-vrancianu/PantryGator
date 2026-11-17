@@ -1272,7 +1272,7 @@ describe('ShoppingPage', () => {
       renderWithProviders(<ShoppingPage />);
 
       expect(
-        await screen.findByRole('group', { name: 'Nothing to buy' }),
+        await screen.findByRole('group', { name: '0 to buy' }),
       ).toBeVisible();
       expect(screen.getByText('Your list is empty')).toBeVisible();
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
@@ -2646,7 +2646,7 @@ describe('ShoppingPage', () => {
           stubShopping({}, list([]));
           renderWithProviders(<ShoppingPage />);
           expect(
-            await screen.findByRole('group', { name: 'Nothing to buy' }),
+            await screen.findByRole('group', { name: '0 to buy' }),
           ).toBeVisible();
           expect(
             screen.queryByRole('button', {

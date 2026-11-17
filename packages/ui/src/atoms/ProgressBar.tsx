@@ -13,7 +13,7 @@ export type ProgressBarProps = {
   tone?: 'canopy';
 };
 
-/** Themes handoff section 4: an `accent` fill on the `chip` track. */
+/** An `accent` fill on the `chip` track. */
 export function ProgressBar({
   label,
   value,

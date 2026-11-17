@@ -11,7 +11,6 @@
     "moveToPantry_one": "Mută {{count}} în cămară",
     "moveToPantry_few": "Mută {{count}} în cămară",
     "moveToPantry_other": "Mută {{count}} în cămară",
-    "nothing": "Nimic de cumpărat",
     "empty": "Lista ta este goală"
   },
   "add": {

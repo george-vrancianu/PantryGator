@@ -31,10 +31,12 @@ import { usePullToRefresh } from './usePullToRefresh';
 import { useBubbleTopBound } from './useBubbleTopBound';
 import { useSheetScroll } from './useSheetScroll';
 
-const gutters = {
+/** The page's gutter on each side: 16 px on phones, 48 px from `md`, or the device's side inset when larger. */
+export const PAGE_GUTTERS = {
   pl: { xs: gutterLeft(16), md: gutterLeft(48) },
   pr: { xs: gutterRight(16), md: gutterRight(48) },
 };
+const gutters = PAGE_GUTTERS;
 
 /** The Canopy runs this far under the sheet, so its green shows behind the sheet's rounded corners. */
 const CANOPY_UNDER_SHEET = 40;

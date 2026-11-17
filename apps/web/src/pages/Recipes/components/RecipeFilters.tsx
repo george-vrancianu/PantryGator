@@ -78,7 +78,7 @@ export function RecipeFilters({
         position: 'sticky',
         top: 0,
         zIndex: 2,
-        bgcolor: tokens.color.bg,
+        bgcolor: canopy.sheetTop,
         ml: bleedSx.ml,
         mr: bleedSx.mr,
         pl: bleedSx.pl,

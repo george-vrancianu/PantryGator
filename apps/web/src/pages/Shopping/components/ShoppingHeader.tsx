@@ -21,11 +21,7 @@ export function ShoppingHeader({ summary }: ShoppingHeaderProps) {
   return (
     <Box
       role="group"
-      aria-label={
-        total === 0
-          ? t('summary.nothing')
-          : t('summary.toBuy', { count: remaining })
-      }
+      aria-label={t('summary.toBuy', { count: remaining })}
       aria-busy={summary ? undefined : true}
       sx={{
         mt: '18px',

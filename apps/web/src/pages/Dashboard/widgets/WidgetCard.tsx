@@ -23,10 +23,6 @@ type Props = {
   tone?: 'surface' | 'hero';
   /** Makes the whole card a link, as the Shopping and Pantry Stock Widgets are. */
   to?: string;
-  /** Makes the whole card one button that opens a dialog, as the Pantry health Widget is. */
-  onPress?: () => void;
-  /** The button's accessible name when it is more than the label, e.g. the score and verdict. */
-  pressLabel?: string;
   /** Shown instead of the content while the Widget's data loads. */
   isLoading?: boolean;
   /** Shown instead of the content when the Widget's data failed to load. */
@@ -42,8 +38,6 @@ export function WidgetCard({
   columns,
   tone = 'surface',
   to,
-  onPress,
-  pressLabel,
   isLoading = false,
   error = null,
   padding = '14px 14px 13px',
@@ -53,17 +47,13 @@ export function WidgetCard({
   const span = widgetSpan(size, columns);
   const isHero = tone === 'hero';
   const linked = Boolean(to) && !isLoading && !error;
-  const pressed = Boolean(onPress) && !isLoading && !error;
-  const Component: ElementType = linked ? Link : pressed ? 'button' : 'section';
+  const Component: ElementType = linked ? Link : 'section';
 
   return (
     <Card
       component={Component}
       {...(linked ? { to } : {})}
-      {...(pressed
-        ? { type: 'button', onClick: onPress, 'aria-haspopup': 'dialog' }
-        : {})}
-      aria-label={pressed ? (pressLabel ?? label) : label}
+      aria-label={label}
       sx={{
         gridColumn: `span ${span.columns}`,
         gridRow: `span ${span.rows}`,
@@ -81,15 +71,6 @@ export function WidgetCard({
           : {}),
         color: isHero ? hero.ink : tokens.color.ink,
         textDecoration: 'none',
-        ...(pressed
-          ? {
-              width: '100%',
-              font: 'inherit',
-              textAlign: 'left',
-              cursor: 'pointer',
-              '&:active': { transform: 'scale(.985)' },
-            }
-          : {}),
       }}
     >
       {isLoading ? (

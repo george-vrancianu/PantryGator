@@ -32,7 +32,7 @@ export function FinishShoppingRow({
         startIcon={<PantryIcon size={16} />}
         sx={{
           minHeight: 44,
-          borderRadius: radius.pill,
+          borderRadius: radius.control,
           px: 1.75,
           fontSize: 13.5,
           fontWeight: 700,

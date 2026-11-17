@@ -54,5 +54,5 @@ Run from the repo root unless noted.
 
 ## Gotchas
 
-- `SettingsAppearance` and `HealthWidget` tests flake under load; rerun alone before calling a regression.
+- `SettingsAppearance` and `PantryHealthCluster` tests flake under load; rerun alone before calling a regression.
 - Gh quirks are in `docs/agents/issue-tracker.md`.

@@ -43,7 +43,7 @@ export function AppearanceCard() {
   useEffect(
     () =>
       onThemeSaveFailed(() => {
-        toast.show(t('appearance.syncedOnDevice'));
+        toast.show(t('appearance.syncedOnDevice'), { polite: true });
       }),
     [toast, t],
   );

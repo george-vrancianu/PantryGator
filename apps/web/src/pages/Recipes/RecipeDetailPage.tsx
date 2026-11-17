@@ -1,13 +1,13 @@
 import {
   Alert,
   Box,
+  canopy,
   segmentedTabId,
   segmentedTabPanelId,
   SegmentedTabs,
   Snackbar,
   Spinner,
   Stack,
-  tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useState, type MouseEvent } from 'react';
@@ -223,9 +223,9 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
                 top: 0,
                 zIndex: 2,
                 py: '8px',
-                bgcolor: tokens.color.bg,
-                // Paints the page background out to the screen edges.
-                boxShadow: `0 0 0 100vmax ${tokens.color.bg}`,
+                bgcolor: canopy.sheetTop,
+                // Paints the sheet's top colour out to the screen edges.
+                boxShadow: `0 0 0 100vmax ${canopy.sheetTop}`,
                 clipPath: 'inset(0 -100vmax)',
               }}
             >

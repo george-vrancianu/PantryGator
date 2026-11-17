@@ -29,8 +29,6 @@ export type ScreenProps = {
   primary?: ScreenHeaderAction;
   /** The page's own block under the top bar (Pantry's search, Shopping's progress). Editors and Scan Review have none. */
   header?: ReactNode;
-  /** The Canopy texture behind the top bar and header. Reserved: the Canopy look is not built yet. */
-  texture?: string;
   /** Keep the title to one line with an ellipsis. */
   truncateTitle?: boolean;
   titleRef?: ScreenHeaderProps['titleRef'];
@@ -52,7 +50,6 @@ export function Screen({
   secondary,
   primary,
   header,
-  texture,
   truncateTitle,
   titleRef,
   children,
@@ -88,15 +85,11 @@ export function Screen({
   }
   return (
     <>
-      <Slot region="topBar" texture={texture}>
-        {topBar}
-      </Slot>
+      <Slot region="topBar">{topBar}</Slot>
       {slots.kind === 'editor' ? (
         <Slot region="header">{null}</Slot>
       ) : (
-        <Slot region="header" texture={texture}>
-          {header}
-        </Slot>
+        <Slot region="header">{header}</Slot>
       )}
       {children}
     </>
@@ -109,11 +102,9 @@ export function Screen({
  */
 function Slot({
   region,
-  texture,
   children,
 }: {
   region: LayoutRegion;
-  texture?: string;
   children: ReactNode;
 }) {
   const slots = useLayoutSlots()!;
@@ -147,7 +138,6 @@ function Slot({
     <Box
       data-slot={region}
       data-instance={instance.id}
-      data-texture={texture}
       data-phase={phase === 'idle' ? undefined : phase}
       aria-hidden={phase === 'leaving' ? true : undefined}
       inert={phase === 'leaving'}

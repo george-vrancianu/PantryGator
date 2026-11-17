@@ -17,7 +17,7 @@ const padding = {
   list: '4px 16px',
 } as const;
 
-/** The card's edge per Theme: hairline + warm shadow, hairline only, or borderless with an inner highlight. */
+/** The card's edge in both Themes: a hairline and the Theme's card shadow. */
 const edge = (theme: Theme) => {
   const { pp } = themePalette(theme);
   return {

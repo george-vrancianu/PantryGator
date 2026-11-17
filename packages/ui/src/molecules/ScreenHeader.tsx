@@ -84,7 +84,7 @@ export function ScreenHeader({
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
-        // Same box as the DashboardHeader, so every screen's header is as tall as Home's.
+        // Every screen's header is the same height, Home's included.
         // The page is already padded by the top inset; this room gives way to it (ADR 0040).
         ...(onCanopy
           ? { pt: 0, pb: 0, minHeight: '44px' }

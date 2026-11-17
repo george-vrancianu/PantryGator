@@ -9,7 +9,6 @@
     "tickedOff_other": "{{count}} afkrydset",
     "moveToPantry_one": "Flyt {{count}} til spisekammeret",
     "moveToPantry_other": "Flyt {{count}} til spisekammeret",
-    "nothing": "Intet at købe",
     "empty": "Din liste er tom"
   },
   "add": {

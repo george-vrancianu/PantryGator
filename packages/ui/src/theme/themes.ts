@@ -13,9 +13,6 @@
 export const THEME_IDS = ['light', 'dark'] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
 
-/** The three ids the app stored before Canopy. */
-export type LegacyThemeId = 'warm' | 'minimal' | 'dark';
-
 export interface ThemeTokens {
   bg: string;
   surface: string;
@@ -90,6 +87,8 @@ export interface ThemeTokens {
   'tex-ink': string;
   'tex-glint': string;
   'sheet-bg': string;
+  /** The sheet gradient's top stop, flat: for bars that stick to the sheet's top. */
+  'sheet-top': string;
   'shadow-sheet': string;
   'sheet-fade': string;
   scrim: string;
@@ -237,6 +236,7 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'tex-ink': '#F4F7F1', // page texture lines
     'tex-glint': '#F6E7B4', // the glint copy of the texture
     'sheet-bg': 'linear-gradient(180deg, #F8F7F2 0%, #EDECE5 100%)', // working sheet and bottom sheets
+    'sheet-top': '#F8F7F2',
     'shadow-sheet': '0 -16px 32px -12px rgba(3,14,8,.6), inset 0 1px 0 #FFFFFF',
     'sheet-fade':
       'linear-gradient(180deg, rgba(237,236,229,0) 0%, rgba(237,236,229,.94) 58%, #EDECE5 100%)', // lists dissolve under the Dock
@@ -382,6 +382,7 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'tex-ink': '#F4F7F1', // page texture lines
     'tex-glint': '#F6E7B4', // the glint copy of the texture
     'sheet-bg': 'linear-gradient(180deg, #181E1A 0%, #101511 100%)', // working sheet and bottom sheets
+    'sheet-top': '#181E1A',
     'shadow-sheet':
       '0 -16px 32px -12px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08)',
     'sheet-fade':

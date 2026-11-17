@@ -1,7 +1,7 @@
 import type { Theme } from '@mui/material/styles';
 
 /**
- * The active Theme's tokens (docs/handoffs/themes/handoff.md section 3) as CSS
+ * The active Theme's tokens (`themes.ts`) as CSS
  * variable references, for `sx` and other string contexts. They resolve per
  * `data-theme`, so a forced subtree follows its own Theme. This is the typed
  * home for every non-colour token; colours come from MUI (`theme.vars`, sx
@@ -84,6 +84,8 @@ export const canopy = {
   muted: pp('canopy-muted'),
   /** The working sheet's gradient; paint it with `background`. */
   sheetBg: pp('sheet-bg'),
+  /** The same gradient's top colour, flat: fill for bars that stick to the sheet's top. */
+  sheetTop: pp('sheet-top'),
   /** Upward shadow onto the Canopy plus a 1px inner highlight. */
   sheetShadow: pp('shadow-sheet'),
   /** The dim behind a bottom sheet. */
