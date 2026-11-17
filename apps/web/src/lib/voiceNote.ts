@@ -903,12 +903,8 @@ export function createVoiceNote(
     pump();
   }
 
-  /** How many failed notes the strip has announced as an alert. Outlives the strip, which remounts. */
-  let announcedFailed = 0;
-
   /** Sign-out: everything goes, the recording, every read and the Voice Cap. */
   function clear() {
-    announcedFailed = 0;
     epoch++;
     dropMicrophone();
     for (const request of reads.values()) request.abort();
@@ -1018,11 +1014,6 @@ export function createVoiceNote(
     cancelReading: cancelRead,
     /** Sign-out: forgets every Voice Note, read and recording. */
     clear,
-    /** How many failed notes have been announced as an alert (a drop lowers it, so a later failure alerts again). */
-    announcedFailed: () => announcedFailed,
-    announceFailed(failed: number) {
-      announcedFailed = failed;
-    },
     /** Opens the oldest Voice Note that is ready: its Review, or its answer sheet. Nothing is open already. */
     openReady() {
       const next = store.notes.find(isReady);

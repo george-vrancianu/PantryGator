@@ -13,7 +13,7 @@ import { ConfirmAction } from './ConfirmAction';
 import { translateApiError } from '../i18n/translateApiError';
 import { EditorSheetContext } from './editorSheetContext';
 
-type Props = {
+type BaseProps = {
   heading: string;
   /** A line under the heading. */
   description?: string;
@@ -24,7 +24,6 @@ type Props = {
   canSave: boolean;
   saving: boolean;
   onSubmit: () => void;
-  onCancel: () => void;
   /** Omit when creating: there is nothing to delete yet. */
   onDelete?: () => void;
   deleting?: boolean;
@@ -33,10 +32,18 @@ type Props = {
   /** Replace Save / Saving… on the submit button. */
   saveLabel?: string;
   savingLabel?: string;
-  /** The page's top bar carries Save, so the form draws no Save / Cancel row (an editor page, ADR 0042). */
-  hideActions?: boolean;
   children: ReactNode;
 };
+
+type Props = BaseProps &
+  (
+    | {
+        /** The page's top bar carries Save, so the form draws no Save / Cancel row (an editor page, ADR 0042). */
+        hideActions: true;
+        onCancel?: never;
+      }
+    | { hideActions?: false; onCancel: () => void }
+  );
 
 /**
  * Shared frame of the editors (Admin and Recipes): a heading that takes focus when the
