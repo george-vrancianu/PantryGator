@@ -77,14 +77,18 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+/** Gator's line, drawn only in the Empty Pantry: the empty state's marker now the header has no subtitle. */
+const EMPTY_LINE = "Tell me what you have and I'll put it on the right shelf.";
+
 describe('the Empty Pantry', () => {
-  it('shows the subtitle, dimmed inert chips, no search, the banner and four shelves in order', async () => {
+  it('shows no subtitle, dimmed inert chips without counts, no search, the banner and four shelves in order', async () => {
     stub();
     renderPantry();
 
-    expect(await screen.findByText('Nothing in here yet')).toBeInTheDocument();
+    const chips = (await screen.findByText('All')).closest('[aria-hidden]')!;
+    expect(screen.queryByText('Nothing in here yet')).not.toBeInTheDocument();
+    expect(screen.queryByText(/· 0/)).not.toBeInTheDocument();
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
-    const chips = screen.getByText('All · 0').closest('[aria-hidden]')!;
     expect(chips).toHaveAttribute('aria-hidden', 'true');
     expect(chips).toHaveAttribute('inert');
     expect(chips).toHaveStyle({ opacity: '0.55' });
@@ -122,7 +126,7 @@ describe('the Empty Pantry', () => {
     stub({ batches: [batch({ expiryDate: inDays(-5) })] });
     renderPantry();
     expect(await screen.findByText('Milk')).toBeInTheDocument();
-    expect(screen.queryByText('Nothing in here yet')).not.toBeInTheDocument();
+    expect(screen.queryByText(EMPTY_LINE)).not.toBeInTheDocument();
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
   });
 
@@ -140,7 +144,7 @@ describe('the Empty Pantry', () => {
   it('has no ticked bar when nothing is checked', async () => {
     stub({ checked: 0 });
     renderPantry();
-    await screen.findByText('Nothing in here yet');
+    await screen.findByText(EMPTY_LINE);
     expect(screen.queryByText(/ticked on your/)).not.toBeInTheDocument();
   });
 
@@ -242,11 +246,11 @@ describe('the Empty Pantry', () => {
       },
     });
     const { queryClient } = renderPantry();
-    await screen.findByText('Nothing in here yet');
+    await screen.findByText(EMPTY_LINE);
     batches = [batch()];
     await act(() => queryClient.invalidateQueries());
     expect(await screen.findByText('Milk')).toBeInTheDocument();
-    expect(screen.queryByText('Nothing in here yet')).not.toBeInTheDocument();
+    expect(screen.queryByText(EMPTY_LINE)).not.toBeInTheDocument();
   });
 });
 
@@ -260,7 +264,7 @@ describe("Gator's entrance", () => {
     let batches: Batch[] = [];
     stub({ extra: { 'GET /api/pantry': () => Response.json({ batches }) } });
     const first = renderPantry();
-    await screen.findByText('Nothing in here yet');
+    await screen.findByText(EMPTY_LINE);
     expect(motion()).toBe('entrance');
 
     batches = [batch()];
@@ -268,12 +272,12 @@ describe("Gator's entrance", () => {
     expect(await screen.findByText('Milk')).toBeInTheDocument();
     batches = [];
     await act(() => first.queryClient.invalidateQueries());
-    await screen.findByText('Nothing in here yet');
+    await screen.findByText(EMPTY_LINE);
     expect(motion()).toBe('signature');
 
     first.unmount();
     renderPantry();
-    await screen.findByText('Nothing in here yet');
+    await screen.findByText(EMPTY_LINE);
     expect(motion()).toBe('entrance');
   });
 });
@@ -284,7 +288,7 @@ describe('a Location filter with none', () => {
     const user = userEvent.setup();
     renderPantry();
     await screen.findByText('Milk');
-    await user.click(screen.getByRole('button', { name: 'Freezer · 0' }));
+    await user.click(screen.getByRole('button', { name: 'Freezer' }));
     expect(screen.getByText('Freezer is empty')).toBeInTheDocument();
     expect(screen.queryByText('No batches match.')).not.toBeInTheDocument();
     expect(
@@ -307,7 +311,7 @@ describe('deleting the last Batch', () => {
     await user.keyboard('{Delete}');
     await user.click(screen.getByRole('button', { name: 'Remove' }));
 
-    expect(await screen.findByText('Nothing in here yet')).toBeInTheDocument();
+    expect(await screen.findByText(EMPTY_LINE)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument();
     // The pending-delete Batch's section does not sit under the shelf cards.
     expect(
@@ -315,7 +319,7 @@ describe('deleting the last Batch', () => {
     ).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Undo' }));
-    expect(screen.queryByText('Nothing in here yet')).not.toBeInTheDocument();
+    expect(screen.queryByText(EMPTY_LINE)).not.toBeInTheDocument();
     expect(await screen.findByText('Milk')).toBeInTheDocument();
   });
 });

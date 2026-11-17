@@ -1,7 +1,9 @@
-import { ScreenHeader, type ScreenHeaderProps } from '@pocket-pantry/ui';
+import {
+  GatorLogo,
+  ScreenHeader,
+  type ScreenHeaderProps,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import { dockStateFor } from '../lib/dockState';
 
 type Props = Pick<
   ScreenHeaderProps,
@@ -16,7 +18,7 @@ type Props = Pick<
   | 'onCanopy'
 >;
 
-/** The screen header; Home shows only where the Dock is hidden, since the Dock carries Home everywhere else. No header carries a logo (ADR 0042). */
+/** The screen header. Every header without Back starts with the Gator logo, a link to Home (ADR 0042 amendment); it stands in for the old Home button. */
 export function AppScreenHeader({
   title,
   subtitle,
@@ -29,14 +31,15 @@ export function AppScreenHeader({
   onCanopy,
 }: Props) {
   const { t } = useTranslation('screenHeader');
-  const { pathname } = useLocation();
   return (
     <ScreenHeader
       title={title}
       subtitle={subtitle}
       subline={subline}
       truncateTitle={truncateTitle}
-      home={dockStateFor(pathname).visible ? undefined : { label: t('home') }}
+      leading={
+        back ? undefined : <GatorLogo label={t('logo')} href="/" size={38} />
+      }
       action={action}
       trailing={trailing}
       titleRef={titleRef}

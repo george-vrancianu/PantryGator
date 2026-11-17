@@ -2,7 +2,6 @@
   "title": "Spisekammer",
   "add": "Tilføj parti",
   "empty": {
-    "subtitle": "Der er ikke noget her endnu",
     "gatorAlt": "Gator læser en liste. Tryk for at sige hej",
     "gatorLine": "Fortæl mig, hvad du har, så lægger jeg det på den rigtige hylde.",
     "scan": "Scan",

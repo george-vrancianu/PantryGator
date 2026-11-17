@@ -70,7 +70,9 @@ export function VoiceNote({
 /** Whether the Dock's capsule has a mic half: voice is configured and the page shows the Dock. The only gate for the mic. */
 export function useShowsDockMic() {
   const configured = useVoiceConfigured();
-  return configured && dockStateFor(useLocation().pathname).visible;
+  // Call every hook on every render: `useLocation()` behind `&&` ran only once voice was configured.
+  const { pathname } = useLocation();
+  return configured && dockStateFor(pathname).visible;
 }
 
 function VoiceNoteControls({

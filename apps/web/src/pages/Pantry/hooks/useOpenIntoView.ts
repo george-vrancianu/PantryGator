@@ -6,19 +6,20 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { useScroller } from '../../../lib/scroller';
-import { LIFT_MS } from '../components/liftedBlock';
 
 /** The bottom of the viewport the Dock covers (its larger height, so it holds on every width),
  * with the capsule's overhang, from the Dock's real bottom (the home-indicator inset on a Face ID iPhone). */
 const dockZone = () => dockBottomPx() + DOCK_HEIGHT.md + DOCK_OVERHANG;
 /** Room left between the scrolled-in card and the Dock. */
 const BREATHING = 14;
+/** The open body is at full height at once; wait a beat so the scroll does not land on the tap itself. */
+const SETTLE_MS = 60;
 
 /**
- * Once an Ingredient has lifted open, scroll its card up if its bottom is under the Dock: smoothly, or at once
+ * Once an Ingredient has opened, scroll its block up if its bottom is under the Dock: smoothly, or at once
  * under reduce-motion.
  */
-export function useLiftIntoView(
+export function useOpenIntoView(
   target: RefObject<HTMLElement | null>,
   open: boolean,
 ) {
@@ -40,7 +41,7 @@ export function useLiftIntoView(
         top: bottom - limit + BREATHING,
         behavior: reduceMotionNow.current ? 'auto' : 'smooth',
       });
-    }, LIFT_MS + 20);
+    }, SETTLE_MS);
     return () => clearTimeout(timer);
     // Re-runs when the Ingredient opens, its target or the scroller changes, not when the motion setting changes while it is open.
   }, [open, target, scroller]);

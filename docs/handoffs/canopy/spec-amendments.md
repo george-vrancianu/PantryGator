@@ -20,7 +20,9 @@ The three theme tiles become two, Light and Dark (§8.3). Language, Catalog Lang
 
 ## `header-logo/` — removed
 
-No Gator tile or logo in any page header (§4.2). Tap-the-logo-to-refresh goes with it. The mark stays in the Intro's brand lockup (§7.8) and as the app icon.
+No Gator tile or logo in any page header (§4.2). Tap-the-logo-to-refresh goes with it.
+
+> **Superseded in part** by the ADR 0042 amendment (2026-11-17): the mark returns as a link to Home on every header without Back. It still does not refresh. The mark stays in the Intro's brand lockup (§7.8) and as the app icon.
 
 ## `health-widget/` — card and sheet header replaced
 

@@ -19,14 +19,10 @@ describe('LocationChips', () => {
         JSON.stringify({ theme, matchSystem: false }),
       );
       renderWithProviders(
-        <LocationChips
-          filter="fridge"
-          onFilterChange={() => {}}
-          counts={{ all: 3, fridge: 2, freezer: 1, cupboard: 0, spices: 0 }}
-        />,
+        <LocationChips filter="fridge" onFilterChange={() => {}} />,
       );
       const chip = screen.getByRole('button', {
-        name: /Fridge/,
+        name: 'Fridge',
         pressed: true,
       });
       const face = chip.firstElementChild as HTMLElement;
@@ -37,11 +33,7 @@ describe('LocationChips', () => {
 
   it('keeps every chip a 44 pt target in one scrolling row', () => {
     renderWithProviders(
-      <LocationChips
-        filter="all"
-        onFilterChange={() => {}}
-        counts={{ all: 3, fridge: 2, freezer: 1, cupboard: 0, spices: 0 }}
-      />,
+      <LocationChips filter="all" onFilterChange={() => {}} />,
     );
     expect(screen.getAllByRole('button')).toHaveLength(5);
   });

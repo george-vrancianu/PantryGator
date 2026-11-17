@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { ExpiryTag } from '../../../components/ExpiryTag';
 import { fullDate, useExpiryTags, type Batch } from '../../../lib/pantry';
 import { formatAmount } from '../../../lib/amount';
-import { keyframesSx } from '../../../lib/keyframesSx';
+import { batchRowSx } from './ingredientBlock';
 import { useSwipeRowLabels } from '../../../lib/useSwipeRowLabels';
 import { EditBatchForm } from './EditBatchForm';
 
@@ -93,14 +93,7 @@ export function BatchDetail({
             py: '7px',
             pl: '50px',
             pr: '2px',
-            ...keyframesSx(
-              'pp-batch-in',
-              `220ms ease-out ${index * 35 + 60}ms both`,
-              {
-                from: { opacity: 0, transform: 'translateY(-4px)' },
-                to: { opacity: 1, transform: 'none' },
-              },
-            ),
+            ...batchRowSx(index),
           }}
         >
           <Box

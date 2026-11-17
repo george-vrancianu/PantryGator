@@ -19,4 +19,12 @@ describe('LocationChip', () => {
     expect(onClick).toHaveBeenCalled();
     expect(getComputedStyle(chip).height).toBe('44px');
   });
+
+  it('without a count is named by its label alone', () => {
+    render(<LocationChip label="Fridge" selected={false} onClick={() => {}} />);
+    expect(
+      screen.getByRole('button', { name: 'Fridge', pressed: false })
+        .textContent,
+    ).toBe('Fridge');
+  });
 });

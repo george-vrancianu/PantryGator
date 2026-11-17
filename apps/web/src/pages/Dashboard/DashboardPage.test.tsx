@@ -192,8 +192,10 @@ describe('DashboardPage', () => {
 
     const header = await screen.findByRole('banner');
     const links = within(header).getAllByRole('link');
-    expect(links.map((link) => link.textContent)).toEqual(['Settings']);
-    expect(links[0]).toHaveAttribute('href', '/settings');
+    expect(
+      links.map((link) => link.getAttribute('aria-label') ?? link.textContent),
+    ).toEqual(['PantryGator, go to Home', 'Settings']);
+    expect(links[1]).toHaveAttribute('href', '/settings');
   });
 
   it('shows an error with a retry when the layout cannot be loaded', async () => {
@@ -273,7 +275,7 @@ describe('DashboardPage header', () => {
   const layout = () =>
     Response.json({ widgets: [{ id: 'a', type: 'budget', size: 'small' }] });
 
-  it('shows the greeting and the date under it, with Settings the only top-bar action and no logo', async () => {
+  it('shows the logo and greeting with no line under them, and Settings the only top-bar action', async () => {
     stubDash(layout);
     renderInAppLayout(<DashboardPage />, '/');
     await settle();
@@ -285,10 +287,25 @@ describe('DashboardPage header', () => {
       screen.getByRole('heading', { level: 1, name: 'Good evening' }),
     ).toBeInTheDocument();
     const header = screen.getByRole('banner');
-    expect(header).toHaveTextContent('Sunday, October 25');
+    expect(header).not.toHaveTextContent('Sunday');
     const links = within(header).getAllByRole('link');
-    expect(links.map((l) => l.textContent)).toEqual(['Settings']);
-    expect(within(header).queryByRole('img')).not.toBeInTheDocument();
+    expect(
+      links.map((l) => l.getAttribute('aria-label') ?? l.textContent),
+    ).toEqual(['PantryGator, go to Home', 'Settings']);
+    expect(links[0]).toHaveAttribute('href', '/');
+  });
+
+  it('shows today as a calendar page beside Pantry Health, read out as one date', async () => {
+    stubDash(layout);
+    renderInAppLayout(<DashboardPage />, '/');
+    await settle();
+
+    const page = screen.getByTestId('calendar-day');
+    expect(page.tagName).toBe('TIME');
+    expect(page).toHaveAttribute('datetime', '2026-10-25');
+    expect(page).toHaveTextContent('Sunday, October 25');
+    const drawn = page.querySelector('[aria-hidden="true"]')!;
+    expect(drawn).toHaveTextContent(/^Oct25Sun$/);
   });
 
   it('puts Customise dashboard under the last Widget, as a link to the Customise page', async () => {
@@ -309,7 +326,7 @@ describe('DashboardPage header', () => {
     ).toBeTruthy();
   });
 
-  it('refetches on a pull, saying the outcome off the header and keeping the date under the greeting', async () => {
+  it('refetches on a pull, saying the outcome off the header and keeping the calendar page', async () => {
     const calls = stubDash(layout);
     renderInAppLayout(<DashboardPage />, '/');
     await settle();
@@ -317,14 +334,15 @@ describe('DashboardPage header', () => {
       calls.filter((c) => c.key === 'GET /api/dashboard-layout').length;
     const before = count();
     const header = screen.getByRole('banner');
+    const page = screen.getByTestId('calendar-day');
 
     tapRefresh();
     expect(screen.getByRole('status')).toHaveTextContent('Refreshing…');
-    expect(header).toHaveTextContent('Sunday, October 25');
+    expect(page).toHaveTextContent('Sunday, October 25');
     expect(header).not.toHaveTextContent('Refreshing…');
     await elapse(MIN_BUSY_MS);
     expect(screen.getByRole('status')).toHaveTextContent('Updated just now');
-    expect(header).toHaveTextContent('Sunday, October 25');
+    expect(page).toHaveTextContent('Sunday, October 25');
     expect(count()).toBeGreaterThan(before);
     await elapse(2500);
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
@@ -342,7 +360,9 @@ describe('DashboardPage header', () => {
     expect(screen.getByRole('status')).toHaveTextContent(
       "Couldn't refresh · showing what you had",
     );
-    expect(screen.getByRole('banner')).toHaveTextContent('Sunday, October 25');
+    expect(screen.getByTestId('calendar-day')).toHaveTextContent(
+      'Sunday, October 25',
+    );
     await elapse(4000);
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
   });

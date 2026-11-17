@@ -17,7 +17,13 @@ import { useGatorAlt } from '../../../lib/useGatorAlt';
 import { useGatorTapLink } from '../../../lib/useGatorTapLink';
 
 /** The block's height, kept while the Recipes and Cook Tonight answers load so the header does not jump. */
-const BLOCK_HEIGHT = 139;
+const BLOCK_HEIGHT = 100;
+/** Gator's size: with GATOR_SINK his head stays level with the block's top, clear of the top bar. */
+const GATOR_SIZE = 140;
+/** Room above the block, under the top bar. */
+const BLOCK_TOP = 10;
+/** How far Gator's feet run past the block's bottom: the layout's 24px gap to the sheet, then 16px under it. */
+const GATOR_SINK = 40;
 
 /**
  * Cook tonight in the Canopy header (Canopy handoff section 7.4): the label, what Gator says, a gold
@@ -40,7 +46,13 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
   const moodAlt = gatorAlt(state.mood);
 
   return (
-    <Box sx={{ position: 'relative', mt: '20px', minHeight: BLOCK_HEIGHT }}>
+    <Box
+      sx={{
+        position: 'relative',
+        mt: `${BLOCK_TOP}px`,
+        minHeight: BLOCK_HEIGHT,
+      }}
+    >
       <Box
         component={Link}
         to={state.to}
@@ -53,7 +65,7 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '9px',
+          gap: '6px',
           maxWidth: 196,
           color: 'inherit',
           textDecoration: 'none',
@@ -66,12 +78,13 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
             position: 'absolute',
             // Past the header's gutter, so he stands at the screen's edge.
             right: { xs: -16, md: -48 },
-            top: 4,
+            // Anchored to the block's bottom, so he stands in the sheet however many lines the text runs.
+            bottom: -GATOR_SINK,
           }}
         >
           <Gator
             mood={state.mood}
-            size={166}
+            size={GATOR_SIZE}
             loop="signature"
             tapSignal={taps}
             alt={moodAlt}
@@ -117,8 +130,8 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
           component="span"
           aria-hidden
           sx={{
-            minHeight: 44,
-            mt: '-4px',
+            // The whole block is the link, so this line needs no touch-target height of its own.
+            minHeight: 24,
             alignSelf: 'flex-start',
             display: 'flex',
             alignItems: 'center',
@@ -143,5 +156,7 @@ export function CookTonightHeader({ cards }: { cards: CookTonightCard[] }) {
 
 /** Keeps the header's height while the answers load. */
 export function CookTonightHeaderPlaceholder() {
-  return <Box aria-hidden sx={{ mt: '20px', height: BLOCK_HEIGHT }} />;
+  return (
+    <Box aria-hidden sx={{ mt: `${BLOCK_TOP}px`, height: BLOCK_HEIGHT }} />
+  );
 }

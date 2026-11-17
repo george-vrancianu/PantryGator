@@ -208,21 +208,6 @@ export function matchesSearch(batch: Batch, query: string): boolean {
   );
 }
 
-/** Batch counts for the filter chips: `all` plus one per Location. */
-export function countByLocation(
-  batches: Batch[],
-): Record<PantryFilter, number> {
-  const counts: Record<PantryFilter, number> = {
-    all: batches.length,
-    fridge: 0,
-    freezer: 0,
-    cupboard: 0,
-    spices: 0,
-  };
-  for (const batch of batches) counts[batch.location] += 1;
-  return counts;
-}
-
 export type RollUp = {
   /** Stable key: the Ingredient id, or the folded typed name for Unmatched Batches. */
   key: string;

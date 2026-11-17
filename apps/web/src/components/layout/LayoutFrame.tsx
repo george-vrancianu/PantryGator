@@ -61,8 +61,8 @@ type Props = {
  * screen (`100dvh`). The window never scrolls; the sheet is the only scroller. Pages put their top
  * bar and header into the first two through `Screen`; their content renders in the sheet.
  *
- * Moving to another path holds the outgoing page for `TRANSITION_MS`, so both exist at once: the top
- * bar and header cross-fade, their regions animate to the new page's measured height, and the
+ * Moving to another path holds the outgoing page's content for `TRANSITION_MS` so it can fade out; the top
+ * bar and header swap at once, their regions animate to the new page's measured height, and the
  * content fades out then in. Reduced motion, and the camera, swap instantly.
  */
 export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {

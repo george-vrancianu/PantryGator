@@ -394,7 +394,11 @@ describe('PantryPage', () => {
   it('shows the Empty Pantry with no Batches (see EmptyPantry.test.tsx)', async () => {
     stubPantry([]);
     renderWithProviders(<PantryPage />);
-    expect(await screen.findByText('Nothing in here yet')).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        "Tell me what you have and I'll put it on the right shelf.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it('adds a Batch from the Catalog with pre-filled Location and expiry', async () => {
@@ -2862,7 +2866,7 @@ describe('PantryPage', () => {
       });
     });
 
-    describe('the lifted Ingredient card', () => {
+    describe('the open Ingredient card', () => {
       const fridgeOfFour = () =>
         ['Butter', 'Eggs', 'Milk', 'Yogurt'].map((name, index) =>
           batch({
@@ -2900,48 +2904,32 @@ describe('PantryPage', () => {
         ]);
       });
 
-      it('lifts the open Ingredient, and its neighbours round the corners next to it', async () => {
+      it('opens an Ingredient in place: no block changes its corners or margins', async () => {
         const user = userEvent.setup();
         stubManaged(fridgeOfFour());
         renderWithProviders(<PantryPage />);
-        await user.click(await screen.findByRole('button', { name: /^Eggs/ }));
+        await screen.findByRole('button', { name: /^Milk/ });
+        const closed = blocks().map(corners);
 
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', '0', '0'],
-          ['0', '0', 'r', 'r'],
-        ]);
-        expect(blocks()[1]).toHaveStyle({
-          marginTop: '10px',
-          marginBottom: '10px',
-          marginLeft: '-6px',
-          marginRight: '-6px',
-        });
-        expect(blocks()[0]).toHaveStyle({ marginTop: '0px' });
-      });
-
-      it('rounds all four corners of an open first or last block', async () => {
-        const user = userEvent.setup();
-        stubManaged(fridgeOfFour());
-        renderWithProviders(<PantryPage />);
-        await user.click(
-          await screen.findByRole('button', { name: /^Butter/ }),
-        );
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', '0', '0'],
-          ['0', '0', '0', '0'],
-          ['0', '0', 'r', 'r'],
-        ]);
-
-        await user.click(screen.getByRole('button', { name: /^Yogurt/ }));
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', '0', '0'],
-          ['0', '0', '0', '0'],
-          ['0', '0', 'r', 'r'],
-          ['r', 'r', 'r', 'r'],
-        ]);
+        for (const name of ['Butter', 'Eggs', 'Yogurt']) {
+          const toggle = screen.getByRole('button', {
+            name: new RegExp(`^${name}`),
+          });
+          await user.click(toggle);
+          expect(toggle).toHaveAttribute('aria-expanded', 'true');
+          expect(blocks().map(corners)).toEqual(closed);
+          // No block sets a margin, so none moves out of the card.
+          for (const block of blocks()) {
+            const style = getComputedStyle(block);
+            for (const side of [
+              style.marginTop,
+              style.marginRight,
+              style.marginBottom,
+              style.marginLeft,
+            ])
+              expect(['', '0', '0px']).toContain(side);
+          }
+        }
       });
 
       it('numbers the Batch rows, with the amount and date, the Product Description and the tag', async () => {
@@ -3035,7 +3023,7 @@ describe('PantryPage', () => {
           return scrollBy;
         }
 
-        it('scrolls the card clear of the Dock once it has lifted', async () => {
+        it('scrolls the card clear of the Dock once it has opened', async () => {
           const scrollBy = await openWithBottomAt(760);
           expect(scrollBy).not.toHaveBeenCalled();
           await act(() => vi.advanceTimersByTimeAsync(300));
@@ -3829,9 +3817,6 @@ describe('PantryPage', () => {
       await user.type(search, 'grana');
       expect(screen.getByText('Parmesan')).toBeInTheDocument();
       expect(screen.queryByText('Milk')).not.toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'All · 1' }),
-      ).toBeInTheDocument();
 
       await user.clear(search);
       await user.type(search, 'MILK');
@@ -3843,45 +3828,26 @@ describe('PantryPage', () => {
       expect(screen.getByText('No batches match.')).toBeInTheDocument();
     });
 
-    it('filters by Location with live counts and marks the active chip', async () => {
+    it('filters by Location with chips that carry no count and marks the active chip', async () => {
       const user = userEvent.setup();
       stubManaged(stock());
       renderWithProviders(<PantryPage />);
 
-      const all = await screen.findByRole('button', { name: 'All · 4' });
+      const all = await screen.findByRole('button', { name: 'All' });
       expect(all).toHaveAttribute('aria-pressed', 'true');
-      expect(
-        screen.getByRole('button', { name: 'Fridge · 2' }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'Freezer · 1' }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'Cupboard · 1' }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'Spices · 0' }),
-      ).toBeInTheDocument();
+      for (const name of ['Fridge', 'Freezer', 'Cupboard', 'Spices'])
+        expect(screen.getByRole('button', { name })).toHaveTextContent(
+          new RegExp(`^${name}$`),
+        );
 
-      await user.click(screen.getByRole('button', { name: 'Freezer · 1' }));
-      expect(
-        screen.getByRole('button', { name: 'Freezer · 1' }),
-      ).toHaveAttribute('aria-pressed', 'true');
+      await user.click(screen.getByRole('button', { name: 'Freezer' }));
+      expect(screen.getByRole('button', { name: 'Freezer' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
       expect(all).toHaveAttribute('aria-pressed', 'false');
       expect(screen.getByText('Parmesan')).toBeInTheDocument();
       expect(screen.queryByText('Milk')).not.toBeInTheDocument();
-
-      // Counts follow the search.
-      await user.type(
-        screen.getByRole('searchbox', { name: 'Search Pantry' }),
-        'milk',
-      );
-      expect(
-        screen.getByRole('button', { name: 'Fridge · 2' }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: 'Freezer · 0' }),
-      ).toBeInTheDocument();
     });
   });
 

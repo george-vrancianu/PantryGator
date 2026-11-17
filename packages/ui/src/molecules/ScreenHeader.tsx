@@ -5,7 +5,7 @@ import {
   type ReactNode,
   type Ref,
 } from 'react';
-import { BackIcon, HomeIcon } from '../atoms/icons';
+import { BackIcon } from '../atoms/icons';
 import { HeaderButton } from '../atoms/HeaderButton';
 import { IconButton } from '../atoms/IconButton';
 import { ActionMenu, type ActionMenuItem } from './ActionMenu';
@@ -36,8 +36,6 @@ export type ScreenHeaderProps = {
   title?: string;
   /** A muted line under the title. Needs `title`; ignored without it. */
   subtitle?: string;
-  /** The Home button, only where the Dock is hidden (the Dock carries Home elsewhere). Omit to leave it out. */
-  home?: { label: string; href?: string };
   /** The single action on the right, the only button there: add, search or share. */
   action?: ScreenHeaderAction;
   /** A small muted line under the title (and subtitle), e.g. a status. Needs `title`; ignored without it. */
@@ -48,7 +46,7 @@ export type ScreenHeaderProps = {
   leading?: ReactNode;
   /** Content right-aligned in the header, e.g. counter chips on wide screens. */
   trailing?: ReactNode;
-  /** A Back link to `href`, in place of the Home button. */
+  /** A Back link to `href`, before the title. */
   back?: {
     label: string;
     href: string;
@@ -63,14 +61,13 @@ export type ScreenHeaderProps = {
   onCanopy?: boolean;
 };
 
-/** Sub-screen header: optional Back or Home button, H1 title, optional trailing content (e.g. counter chips), one action button. */
+/** Sub-screen header: optional Back button or leading mark, H1 title, optional trailing content (e.g. counter chips), one action button. */
 export function ScreenHeader({
   title,
   subtitle,
   subline,
   truncateTitle,
   leading,
-  home,
   action,
   trailing,
   titleRef,
@@ -108,14 +105,6 @@ export function ScreenHeader({
           </IconButton>
           {back.badge ? <BackBadge count={back.badge} /> : null}
         </Box>
-      ) : home ? (
-        <IconButton
-          label={home.label}
-          href={home.href ?? '/'}
-          tone={onCanopy ? 'canopyChip' : undefined}
-        >
-          <HomeIcon size={20} />
-        </IconButton>
       ) : null}
       {leading}
       <Box sx={{ flexGrow: 1, minWidth: 0 }}>

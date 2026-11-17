@@ -511,8 +511,8 @@ const GLOSSARY_EXCEPTIONS: Record<string, string> = {
   'common:unverified_other|unverified': 'same as unverified_one',
   'shopping:suggestions.goneNone|run out':
     'Used Up / expired Suggestions empty state, plain verb (copy drift, flag)',
-  'screenHeader:home|home':
-    'aria label of the button that leads to the Dashboard',
+  'screenHeader:logo|home':
+    'aria label of the header logo that leads to the Dashboard',
   'dock:home|home': 'label of the Dock tab that leads to the Dashboard',
   'review:overview.fixValues|card':
     'a Review row card in the Review UI, not a Dashboard Widget',

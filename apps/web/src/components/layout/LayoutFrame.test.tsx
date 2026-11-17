@@ -189,25 +189,14 @@ describe('The layout regions', () => {
 });
 
 describe('Page transitions', () => {
-  it('keeps both headers mounted for the transition, then unmounts the old one', async () => {
+  it('swaps the top bar and header at once, with no cross-fade', () => {
     renderRoutes('/pantry');
     fireEvent.click(screen.getByRole('link', { name: 'to /shopping' }));
-    expect(slots('topBar')).toHaveLength(2);
-    expect(slots('header')).toHaveLength(2);
-    expect(screen.getByText('Pantry header')).toBeInTheDocument();
-    expect(screen.getByText('Shopping header')).toBeInTheDocument();
-    const [leaving, entering] = [...slots('topBar')];
-    expect(leaving).toHaveAttribute('data-phase', 'leaving');
-    expect(entering).toHaveAttribute('data-phase', 'entering');
-
-    await elapse(TRANSITION_MS - 1);
-    expect(slots('header')).toHaveLength(2);
-    await elapse(1);
     expect(slots('topBar')).toHaveLength(1);
     expect(slots('header')).toHaveLength(1);
     expect(screen.queryByText('Pantry header')).toBeNull();
     expect(screen.getByText('Shopping header')).toBeInTheDocument();
-    expect(slots('header')[0]).not.toHaveAttribute('data-phase');
+    expect(slots('header')[0]).toHaveAttribute('data-phase', 'entering');
   });
 
   it('holds the outgoing content, faded out, beside the new content', async () => {
