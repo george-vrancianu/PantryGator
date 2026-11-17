@@ -167,10 +167,11 @@ describe('RecipePreviewPage', () => {
     });
     expect(open).toHaveAttribute('href', '/recipes/copy-1');
     expect(copy).toBe('copy-1');
+    // The tag sits in the header's lineage row, beside the title.
     expect(
-      within(screen.getByRole('heading', { level: 1 })).getByText(
-        'In your Recipes',
-      ),
+      within(
+        screen.getByRole('heading', { level: 1 }).parentElement!,
+      ).getByText('In your Recipes'),
     ).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: 'Undo' })).toBeVisible();
   });

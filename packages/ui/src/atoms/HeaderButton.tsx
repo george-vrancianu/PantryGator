@@ -14,6 +14,8 @@ export type HeaderButtonProps = {
   onClick?: MouseEventHandler<HTMLElement>;
   disabled?: boolean;
   ref?: Ref<HTMLButtonElement>;
+  /** For a label that says more than the visible text (it must still contain it). */
+  'aria-label'?: string;
   'aria-haspopup'?: 'menu';
   'aria-expanded'?: boolean;
   'aria-controls'?: string;

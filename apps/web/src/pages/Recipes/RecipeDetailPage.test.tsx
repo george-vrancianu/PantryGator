@@ -212,13 +212,14 @@ describe('RecipeDetailPage', () => {
     expect(screen.queryByRole('link', { name: /^From / })).toBeNull();
   });
 
-  it('puts the family pill in the H1 of a Family Recipe', async () => {
+  it("puts the Your family's tag beside the lineage row of a Family Recipe, not in the H1", async () => {
     setup(recipe({ owner: 'family' }));
     const heading = await screen.findByRole('heading', {
       level: 1,
-      name: /Omelette/,
+      name: 'Omelette',
     });
-    expect(within(heading).getByText("Your family's")).toBeInTheDocument();
+    expect(screen.getByText("Your family's")).toBeInTheDocument();
+    expect(heading).not.toHaveTextContent("Your family's");
   });
 
   describe('Header', () => {
@@ -259,11 +260,11 @@ describe('RecipeDetailPage', () => {
       expect(labels).toContain('Serves');
     });
 
-    it('sizes the fact columns to the cells shown', async () => {
+    it('shows only the facts it has', async () => {
       setup(recipe({ prepMinutes: null, cookMinutes: null, difficulty: null }));
       await screen.findByRole('heading', { level: 1, name: /Omelette/ });
-      const grid = fact('Serves').parentElement!.parentElement!;
-      expect(grid).toHaveStyle({ gridTemplateColumns: '1fr' });
+      const facts = fact('Serves').parentElement!.parentElement!;
+      expect(facts.children).toHaveLength(1);
     });
 
     it('sums prep and cook time when only one is known', async () => {
