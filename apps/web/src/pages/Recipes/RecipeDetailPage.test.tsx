@@ -125,6 +125,27 @@ describe('RecipeDetailPage', () => {
     expect(within(ingredients).getByText(/optional/)).toBeInTheDocument();
   });
 
+  it('holds the header place while the Recipe itself loads', async () => {
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    setup(recipe({}), '/recipes/o', {
+      'GET /api/recipes/o': async () => {
+        await gate;
+        return Response.json(recipe({}));
+      },
+    });
+    expect(
+      await screen.findByTestId('recipe-header-placeholder'),
+    ).toBeInTheDocument();
+    release();
+    await screen.findByRole('heading', { level: 1, name: /Omelette/ });
+    expect(
+      screen.queryByTestId('recipe-header-placeholder'),
+    ).not.toBeInTheDocument();
+  });
+
   it('keeps the Pantry coverage row in the header, hidden, until the match arrives', async () => {
     let release: () => void = () => {};
     const gate = new Promise<void>((resolve) => {

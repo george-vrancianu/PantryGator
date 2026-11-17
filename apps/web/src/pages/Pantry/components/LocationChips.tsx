@@ -22,8 +22,9 @@ export function LocationChips({ filter, onFilterChange, counts }: Props) {
         // The chips sit 44 high; the row gives back the slack so the gap to the first group stays the drawn 12.
         my: '-4px',
         mr: -2,
-        // Room for the first chip's focus ring at the scroll edge.
-        pl: '3px',
+        // Room for the first chip's focus ring (4 px past the face) at the scroll edge, pulled back so the chips keep the gutter.
+        pl: '4px',
+        ml: '-4px',
         overflowX: 'auto',
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': { display: 'none' },

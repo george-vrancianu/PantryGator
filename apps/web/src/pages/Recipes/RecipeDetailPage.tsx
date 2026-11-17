@@ -35,7 +35,10 @@ import {
 } from '../../lib/recipes';
 import type { RecipeDetailLine } from '../../lib/recipes';
 import { AllergyWarningBanner } from './components/AllergyWarningBanner';
-import { RecipeCanopyHeader } from './components/RecipeCanopyHeader';
+import {
+  RecipeCanopyHeader,
+  RecipeCanopyHeaderPlaceholder,
+} from './components/RecipeCanopyHeader';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeHeader } from './components/RecipeHeader';
 import {
@@ -165,8 +168,7 @@ function RecipeDetail({ id, preview }: { id: string; preview: boolean }) {
         : {})}
     />
   ) : query.isPending ? (
-    // The header's usual height (title, facts, coverage), so it does not grow when the Recipe arrives.
-    <Box aria-hidden sx={{ height: 170 }} />
+    <RecipeCanopyHeaderPlaceholder preview={!!preview} />
   ) : undefined;
 
   // The Family's own Recipes have no preview; they open as themselves.

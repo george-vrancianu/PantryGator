@@ -293,3 +293,49 @@ export function RecipeCanopyHeader({
     </Box>
   );
 }
+
+/**
+ * Holds the header's place while the Recipe loads: the same rows as `RecipeCanopyHeader` (the
+ * 22 tag row, or the 44 eyebrow row on a preview, one title line, the facts and the 44 coverage
+ * row), hidden, so the header does not grow when the Recipe arrives. A Variant's 44 lineage row
+ * cannot be known yet and adds 22 on load.
+ */
+export function RecipeCanopyHeaderPlaceholder({
+  preview = false,
+}: {
+  preview?: boolean;
+}) {
+  return (
+    <Box
+      aria-hidden
+      data-testid="recipe-header-placeholder"
+      sx={{ mt: '4px', visibility: 'hidden' }}
+    >
+      <Box sx={{ height: preview ? 44 : 22 }} />
+      <Box
+        sx={{
+          ...displayType,
+          m: '-2px 0 0',
+          fontSize: 31,
+          fontWeight: 800,
+          lineHeight: 1.05,
+          letterSpacing: '-0.04em',
+        }}
+      >
+        &nbsp;
+      </Box>
+      <Box
+        sx={{
+          m: '16px 0 0',
+          py: '12px',
+          borderTop: '1px solid transparent',
+          borderBottom: '1px solid transparent',
+        }}
+      >
+        <Box sx={{ ...CAPS, fontSize: 10.5, mb: '7px' }}>&nbsp;</Box>
+        <Box sx={{ ...displayType, fontSize: 16, lineHeight: 1 }}>&nbsp;</Box>
+      </Box>
+      <Box sx={{ minHeight: 44, mt: '14px' }} />
+    </Box>
+  );
+}
