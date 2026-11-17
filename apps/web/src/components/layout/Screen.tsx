@@ -12,7 +12,6 @@ import {
   useLayoutSlots,
   type LayoutRegion,
 } from './layoutContext';
-import { FADE_MS } from './timing';
 
 export type ScreenProps = {
   /** The page title, an H1 in the top bar. */
@@ -97,7 +96,7 @@ export function Screen({
 }
 
 /**
- * A region's part of a page: portalled into the layout's region, faded with the page's phase, and
+ * A region's part of a page: portalled into the layout's region, swapped without a fade, and
  * measured so the region can animate to its height. Nothing to show reports a height of 0.
  */
 function Slot({
@@ -133,14 +132,13 @@ function Slot({
     return () => observer.disconnect();
   }, [empty, target, phase, region, setHeight, instance]);
 
-  if (empty || !target) return null;
+  // No cross-fade: the leaving page's part goes at once and the new one shows at full opacity; only the content fades.
+  if (empty || !target || phase === 'leaving') return null;
   return createPortal(
     <Box
       data-slot={region}
       data-instance={instance.id}
       data-phase={phase === 'idle' ? undefined : phase}
-      aria-hidden={phase === 'leaving' ? true : undefined}
-      inert={phase === 'leaving'}
       sx={{
         position: 'absolute',
         top: 0,
@@ -148,21 +146,6 @@ function Slot({
         right: 0,
         maxWidth: slots.wide ? 1180 : 960,
         mx: 'auto',
-        '@keyframes pp-layout-fade-in': {
-          from: { opacity: 0 },
-          to: { opacity: 1 },
-        },
-        '@keyframes pp-layout-fade-out': {
-          from: { opacity: 1 },
-          to: { opacity: 0 },
-        },
-        '&[data-phase="entering"]': {
-          animation: `pp-layout-fade-in ${FADE_MS.crossfade}ms linear both`,
-        },
-        '&[data-phase="leaving"]': {
-          animation: `pp-layout-fade-out ${FADE_MS.crossfade}ms linear both`,
-          pointerEvents: 'none',
-        },
       }}
     >
       {children}

@@ -18,6 +18,9 @@ import { useGridColumns } from '../../lib/layoutColumns';
 import { PantryHealthCluster } from './components/PantryHealthCluster';
 import { WIDGET_REGISTRY } from './widgets/registry';
 
+/** How far Pantry Health moves down in the header: added above it, taken from the room above the sheet. */
+const HEADER_SHIFT = 10;
+
 /** The Dashboard: date, greeting, Settings in the top bar, Pantry Health in the header, the Member's grid of Widgets and the Customise link under them. */
 export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
@@ -35,7 +38,20 @@ export function DashboardPage() {
     <Screen
       title={t(`greeting.${greetingKeyForHour(now.getHours())}`)}
       status={date}
-      header={<PantryHealthCluster />}
+      header={
+        // flow-root keeps the negative margin inside, so the header region measures the shorter height.
+        <Box sx={{ display: 'flow-root' }}>
+          <Box
+            sx={{
+              // Pantry Health sits lower: more room under the top bar, less above the sheet.
+              pt: `${HEADER_SHIFT}px`,
+              mb: `-${HEADER_SHIFT}px`,
+            }}
+          >
+            <PantryHealthCluster />
+          </Box>
+        </Box>
+      }
       secondary={
         <HeaderButton href="/settings" icon={<SettingsIcon size={18} />}>
           {t('screenHeader:settings')}
