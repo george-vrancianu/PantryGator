@@ -7,6 +7,7 @@ import type { PantryRowHint } from '../hooks/usePantryRowHint';
 import type { OpenIngredientKey, PantryRow } from '../hooks/usePantryScreen';
 import { blockEdges, liftedBlockSx } from './liftedBlock';
 import { RollUpRow } from './RollUpRow';
+import { flatBlockSx, useOpenVariant } from './openEffect.prototype';
 
 type Props = {
   location: StorageLocation;
@@ -38,6 +39,7 @@ export function LocationSection({
   const headingId = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const edges = blockEdges(rows);
+  const variant = useOpenVariant(); // PROTOTYPE
   return (
     <Box component="section" aria-labelledby={headingId} sx={{ mb: 2 }}>
       <Typography
@@ -56,7 +58,15 @@ export function LocationSection({
         {rows.map((row, index) => (
           <RollUpRow
             key={row.key}
-            sx={liftedBlockSx(edges[index])}
+            sx={
+              variant === 'lift'
+                ? liftedBlockSx(edges[index])
+                : flatBlockSx(variant, {
+                    open: row.open,
+                    first: index === 0,
+                    last: index === rows.length - 1,
+                  })
+            }
             rollUp={row}
             today={today}
             onToggle={() => onToggleOpen(row.openKey)}

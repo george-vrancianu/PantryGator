@@ -15,6 +15,7 @@ import { formatAmount } from '../../../lib/amount';
 import { keyframesSx } from '../../../lib/keyframesSx';
 import { useSwipeRowLabels } from '../../../lib/useSwipeRowLabels';
 import { EditBatchForm } from './EditBatchForm';
+import { flatBatchSx, useOpenVariant } from './openEffect.prototype';
 
 type Props = {
   batch: Batch;
@@ -52,6 +53,7 @@ export function BatchDetail({
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const toast = useToast();
+  const variant = useOpenVariant(); // PROTOTYPE
   const tag = useExpiryTags(today).tagFor(batch.expiryDate);
   const [editing, setEditing] = useState(false);
   const row = useRef<SwipeRowHandle>(null);
@@ -93,14 +95,16 @@ export function BatchDetail({
             py: '7px',
             pl: '50px',
             pr: '2px',
-            ...keyframesSx(
-              'pp-batch-in',
-              `220ms ease-out ${index * 35 + 60}ms both`,
-              {
-                from: { opacity: 0, transform: 'translateY(-4px)' },
-                to: { opacity: 1, transform: 'none' },
-              },
-            ),
+            ...(variant === 'lift'
+              ? keyframesSx(
+                  'pp-batch-in',
+                  `220ms ease-out ${index * 35 + 60}ms both`,
+                  {
+                    from: { opacity: 0, transform: 'translateY(-4px)' },
+                    to: { opacity: 1, transform: 'none' },
+                  },
+                )
+              : flatBatchSx(variant, index)),
           }}
         >
           <Box

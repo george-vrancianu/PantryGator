@@ -34,6 +34,7 @@ import { RowFlash, flashHost } from '../../../components/RowFlash';
 import { keyframesSx } from '../../../lib/keyframesSx';
 import { rowKeyHintIds } from './RowKeyHints';
 import { LIFT_EASING, LIFT_MS } from './liftedBlock';
+import { flatBodySx, useOpenVariant } from './openEffect.prototype';
 
 /** The row springs back before the flag flips (Pantry batches handoff, section 6). */
 const FLAG_FLIP_MS = 220;
@@ -66,6 +67,7 @@ export function RollUpRow({
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const expanded = rollUp.open;
+  const variant = useOpenVariant(); // PROTOTYPE
   const panelId = useId();
   const toggle = useRef<HTMLButtonElement>(null);
   const { tagFor } = useExpiryTags(today);
@@ -209,7 +211,7 @@ export function RollUpRow({
               gap: '12px',
               flexGrow: 1,
               minWidth: 0,
-              minHeight: expanded ? 64 : 60,
+              minHeight: expanded && variant === 'lift' ? 64 : 60,
               p: 0,
               border: 0,
               bgcolor: 'transparent',
@@ -309,15 +311,23 @@ export function RollUpRow({
             count: rollUp.batches.length,
           })}
           onKeyDown={closeFromInside}
-          sx={{
-            // The body grows open with the lift.
-            display: 'grid',
-            gridTemplateRows: '1fr',
-            ...keyframesSx('pp-lift-body', `${LIFT_MS}ms ${LIFT_EASING}`, {
-              from: { gridTemplateRows: '0fr' },
-              to: { gridTemplateRows: '1fr' },
-            }),
-          }}
+          sx={
+            variant === 'lift'
+              ? {
+                  // The body grows open with the lift.
+                  display: 'grid',
+                  gridTemplateRows: '1fr',
+                  ...keyframesSx(
+                    'pp-lift-body',
+                    `${LIFT_MS}ms ${LIFT_EASING}`,
+                    {
+                      from: { gridTemplateRows: '0fr' },
+                      to: { gridTemplateRows: '1fr' },
+                    },
+                  ),
+                }
+              : { display: 'grid', ...flatBodySx(variant) }
+          }
         >
           {/* The one grid track: the Batches, then the action row at the bottom of the card. */}
           <Box sx={{ minHeight: 0, overflow: 'hidden' }}>

@@ -24,6 +24,8 @@ import { LocationChips } from './components/LocationChips';
 import { PantrySearch } from './components/PantrySearch';
 import { usePantryRowHint } from './hooks/usePantryRowHint';
 import { usePantryScreen } from './hooks/usePantryScreen';
+import { PrototypeSwitcher } from '../../components/PrototypeSwitcher';
+import { OPEN_VARIANTS } from './components/openEffect.prototype';
 
 export function PantryPage() {
   const { t } = useTranslation(['pantry', 'common']);
@@ -133,6 +135,8 @@ export function PantryPage() {
           ))}
         </Stack>
         <RowKeyHints />
+        {/* PROTOTYPE */}
+        <PrototypeSwitcher param="open" variants={[...OPEN_VARIANTS]} />
       </Screen>
     </RowToggleErrorProvider>
   );
