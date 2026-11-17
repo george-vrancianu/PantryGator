@@ -96,7 +96,7 @@ export function ReviewFooter({
           <Button
             variant="secondary"
             onClick={onKeep}
-            sx={{ flex: 1 }}
+            sx={{ flex: 1, height: 46 }}
             autoFocus
             disabled={applying}
           >
@@ -142,6 +142,7 @@ export function ReviewFooter({
         disabled={applying}
         onClick={onAsk}
         data-voice-discard
+        sx={{ height: 52 }}
       >
         {t('review.footer.discard')}
       </Button>

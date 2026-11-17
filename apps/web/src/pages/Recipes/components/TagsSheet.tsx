@@ -132,6 +132,7 @@ export function TagsSheet({
             variant="secondary"
             disabled={picked.length === 0}
             onClick={() => onChange([])}
+            sx={{ height: 52 }}
           >
             {t('tags.clear')}
           </Button>

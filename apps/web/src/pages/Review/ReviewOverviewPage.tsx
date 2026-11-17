@@ -658,7 +658,12 @@ export function ReviewOverviewPage({
                 ? t('overview.cropFirst', { count: uncropped })
                 : t('overview.add')}
           </Button>
-          <Button variant="secondary" onClick={discardAll} disabled={saving}>
+          <Button
+            variant="secondary"
+            onClick={discardAll}
+            disabled={saving}
+            sx={{ height: 52 }}
+          >
             {t('overview.discardAll')}
           </Button>
         </Box>

@@ -23,9 +23,9 @@ const sources = import.meta.glob<string>(
 
 type Rule = { name: string; find: (line: string) => boolean };
 
-/** A `borderRadius` that follows the Theme, or is a shape (circle, square). `m.radius` is the Button's size metrics, built from radius tokens. */
+/** A `borderRadius` that follows the Theme, or is a shape (circle, square). */
 const THEMED_RADIUS =
-  /^(?:radius\.\w+|m\.radius|0|'50%'|`[^`]*\$\{radius\.[^`]*`|\w+\(.*\))$/;
+  /^(?:radius\.\w+|0|'50%'|`[^`]*\$\{radius\.[^`]*`|\w+\(.*\))$/;
 
 const rules: Rule[] = [
   {

@@ -137,7 +137,12 @@ export function FinishShoppingReview({ onDone, onCancel }: Props) {
               : t('shopping:finish.confirm', { count: review.keptCount })}
           </Button>
         )}
-        <Button type="button" variant="ghost" onClick={onCancel}>
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onCancel}
+          sx={{ height: 52 }}
+        >
           {t('shopping:finish.cancel')}
         </Button>
       </Stack>

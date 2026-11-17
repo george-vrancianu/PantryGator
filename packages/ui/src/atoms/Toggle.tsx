@@ -28,7 +28,6 @@ export function Toggle({ checked, onChange, sx, ...props }: ToggleProps) {
           ...(checked
             ? { backgroundImage: control.btnBg }
             : { backgroundColor: control.wellBg, boxShadow: shadow.recess }),
-          transition: 'background-color 150ms',
           // Handoff: touch targets are 44pt or more.
           '&::before': {
             content: '""',

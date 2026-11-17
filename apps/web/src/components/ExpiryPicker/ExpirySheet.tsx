@@ -109,7 +109,7 @@ export function ExpirySheet({
               aria-pressed={value === null}
               startIcon={<CloseIcon size={16} strokeWidth={2.4} />}
               onClick={() => onChange(null)}
-              sx={{ flex: 'none', whiteSpace: 'nowrap' }}
+              sx={{ flex: 'none', whiteSpace: 'nowrap', height: 52 }}
             >
               {t('picker.clear')}
             </Button>

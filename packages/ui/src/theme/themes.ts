@@ -85,7 +85,6 @@ export interface ThemeTokens {
   'shadow-canopy-field': string;
   gold: string;
   'gold-ink': string;
-  'tex-ink': string;
   'tex-glint': string;
   'sheet-bg': string;
   /** The sheet gradient's top stop, flat: for bars that stick to the sheet's top. */
@@ -235,7 +234,6 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',
     gold: '#E8CB7C',
     'gold-ink': '#2A2105',
-    'tex-ink': '#F4F7F1', // page texture lines
     'tex-glint': '#F6E7B4', // the glint copy of the texture
     'sheet-bg': 'linear-gradient(180deg, #F8F7F2 0%, #EDECE5 100%)', // working sheet and bottom sheets
     'sheet-top': '#F8F7F2',
@@ -382,7 +380,6 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'shadow-canopy-field': 'inset 0 1px 3px rgba(0,0,0,.4)',
     gold: '#E8CB7C',
     'gold-ink': '#2A2105',
-    'tex-ink': '#F4F7F1', // page texture lines
     'tex-glint': '#F6E7B4', // the glint copy of the texture
     'sheet-bg': 'linear-gradient(180deg, #181E1A 0%, #101511 100%)', // working sheet and bottom sheets
     'sheet-top': '#181E1A',

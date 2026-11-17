@@ -101,7 +101,7 @@ function Intro({
       size="content"
       footer={
         <Box sx={footerSx}>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose} sx={{ height: 52 }}>
             {t('intro.notNow')}
           </Button>
           <Button
@@ -214,7 +214,7 @@ function Blocked({
       size="content"
       footer={
         <Box sx={footerSx}>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose} sx={{ height: 52 }}>
             {t('blocked.close')}
           </Button>
           <Button onClick={onRecheck} disabled={requesting}>

@@ -146,7 +146,7 @@ function Picker({
             ? t('templates:apply.confirming')
             : t('templates:apply.confirm', { count: ticked.length })}
         </Button>
-        <Button variant="ghost" onClick={onCancel}>
+        <Button variant="ghost" onClick={onCancel} sx={{ height: 52 }}>
           {t('templates:apply.cancel')}
         </Button>
       </Stack>

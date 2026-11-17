@@ -189,6 +189,7 @@ export function DefaultExpirySheet({
               {hasOverride ? (
                 <Button
                   variant="ghost"
+                  sx={{ height: 52 }}
                   onClick={() => {
                     onUseCatalog(category);
                     onClose();

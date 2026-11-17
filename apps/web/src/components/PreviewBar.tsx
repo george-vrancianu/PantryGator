@@ -73,7 +73,7 @@ export function PreviewBar({
           fullWidth
           href={`/recipes/${recipeId}/variant/new`}
           startIcon={<BranchIcon size={18} />}
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: 'nowrap', height: 52 }}
         >
           {t('family.makeVariant')}
         </Button>
@@ -86,7 +86,7 @@ export function PreviewBar({
           fullWidth
           onClick={onAdd}
           startIcon={<PlusIcon size={18} />}
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: 'nowrap', height: 52 }}
         >
           {t('preview.addShort')}
         </Button>
@@ -97,7 +97,7 @@ export function PreviewBar({
           href={familyRecipeHref(state.copyId)}
           aria-label={t('explore.openCopy', { title })}
           startIcon={<CheckIcon size={18} />}
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: 'nowrap', height: 52 }}
         >
           {t('preview.inFamily')}
         </Button>
@@ -109,7 +109,7 @@ export function PreviewBar({
           aria-disabled
           aria-busy
           startIcon={<CheckIcon size={18} />}
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: 'nowrap', height: 52 }}
         >
           {t('preview.inFamily')}
         </Button>

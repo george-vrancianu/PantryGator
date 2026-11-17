@@ -70,7 +70,7 @@ function offences() {
 
 /** A pill: a radius so large that any size becomes a capsule (the token `radius.pill` or a huge literal). */
 const PILL =
-  /\bradius\.pill\b|\b9{3,}(?:px)?\b|\bborderRadius:\s*['"`](?:pill|full)/;
+  /\bradius\.pill\b|\bborderRadius:\s*(?:['"`]?9{3,}(?:px)?\b|['"`](?:pill|full))/;
 
 function pillOffences() {
   const found: string[] = [];
