@@ -36,7 +36,7 @@ Checks: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` (all wi
 
 - Every string on screen goes through `t()`. Add the key to all three locales: `src/i18n/parity.test.ts`
   fails if `ro` or `da` differ from `en` in namespaces, keys or interpolation variables, if a locale lacks
-  the plural forms its language needs (Romanian `few`), or if the copy uses a term `GLOSSARY.md` avoids.
+  the plural forms its language needs (Romanian `few`), or if the English copy uses a term `GLOSSARY.md` avoids.
 - API errors are `{ code, params }`. Codes such as `auth.invalid_email_or_password` resolve
   against the nested `errors` namespace (`translateApiError`). Unknown codes show the generic
   message; add copy for new codes in all three locales.

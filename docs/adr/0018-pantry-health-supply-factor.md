@@ -33,8 +33,8 @@ A Family flagged all 40 Ingredients in its Pantry Running low and still saw Pant
 - Fresh weighs less now, so a stocked Pantry whose dated Batches are all Expiring Soon scores higher than before (about 88). How lenient Expiring Soon and undated Batches are is a separate question.
 - The factor key changes from `staples` to `supply`. Pantry Health is never stored, so there is nothing to migrate.
 
-## Sources
+## Amendment (2026-11-17): where Health To-dos come from
 
 Pantry Health and its Health To-dos are computed in the browser, in `apps/web/src/lib/health.ts`, from what the Dashboard already loads: the Pantry (Batches and the Running low flags), the Staples, the Shopping List and the Stale Threshold. `usePantryHealth` gathers them. The only thing taken from the Suggestions API is the `dismissed` ids, which hide a dismissed missing Staple from Supply and from the To-dos.
 
-The Running low To-do is not the server's Running low Suggestion. The browser lists a flagged Ingredient only when it has an unexpired Batch and is not on the Shopping List. The API (`runningLowGroup` in `suggestions.service.ts`) accepts any Batch, expired or not, and then drops Ingredients already shown as a missing Staple or as Expired. So a flagged non-Staple Ingredient whose Batches are all expired and whose Expired Suggestion was dismissed shows as Running low on the server, but gives no Running low To-do. The Expired To-do already covers it. The two lists are not meant to match one for one.
+The Running low To-do is not the server's Running low Suggestion. The browser lists a flagged Ingredient only when it has an unexpired Batch and is not on the Shopping List. The API (`runningLowGroup` in `suggestions.service.ts`) accepts any Batch, expired or not, and leaves out Ingredients on the active Shopping List and those already shown as a missing Staple or as Expired. So a flagged non-Staple Ingredient whose Batches are all expired and whose Expired Suggestion was dismissed shows as Running low on the server, but gives no Running low To-do. The Expired To-do already covers it. The two lists are not meant to match one for one.
