@@ -43,16 +43,33 @@ describe('GatorLogo', () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it('is a link with `href`, and still plays the Tap when clicked', () => {
+    render(<GatorLogo label="Go to Home" href="/" />);
+    const link = screen.getByRole('link', { name: 'Go to Home' });
+    expect(link.getAttribute('href')).toBe('/');
+    expect(screen.queryByRole('button')).toBeNull();
+    fireEvent.click(link);
+    expect(link.getAttribute('data-motion')).toBe('tap');
+  });
+
   it('draws the head inside the tile clip', () => {
     render(<GatorLogo label="Refresh" />);
     const head = document.querySelector('.head')!;
     expect(head.parentElement?.getAttribute('clip-path')).toMatch(/clipTile/);
   });
 
-  it('sizes the mark inside a button 6 px larger', () => {
+  it('fills a tile 6 px larger than the mark with the art', () => {
     render(<GatorLogo label="Refresh" size={42} />);
     expect(getComputedStyle(screen.getByRole('button')).width).toBe('48px');
-    expect(document.querySelector('svg')?.getAttribute('width')).toBe('42');
+    expect(document.querySelector('svg')?.getAttribute('width')).toBe('48');
+  });
+
+  it("drops the art's olive tile and clips the head to the whole button", () => {
+    render(<GatorLogo label="Refresh" />);
+    expect(document.querySelector('[fill^="url(#tileClay"]')).toBeNull();
+    const clip = document.querySelector('[id^="clipTile"] rect')!;
+    expect(clip.getAttribute('width')).toBe('200');
+    expect(clip.hasAttribute('rx')).toBe(false);
   });
 
   it('drops the head shadow and rims the head on Dark only', () => {

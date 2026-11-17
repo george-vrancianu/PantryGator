@@ -61,6 +61,11 @@ export const Tap: Story = {
   ),
 };
 
+/** As a link (`href`), the way the app header uses it to lead Home. */
+export const AsLink: Story = {
+  args: { label: 'PantryGator, go to Home', href: '#', size: 38 },
+};
+
 /** On the Dark theme, both sizes, idling. */
 export const Dark: Story = {
   render: () => (

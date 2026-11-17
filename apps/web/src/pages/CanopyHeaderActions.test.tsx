@@ -44,7 +44,12 @@ describe('Top-bar actions (ADR 0042)', () => {
     stub();
     renderInAppLayout(<PantryPage />, '/pantry');
     expect(names(topBar().getAllByRole('button'))).toEqual(['Add batch']);
-    expect(topBar().queryByRole('link')).toBeNull();
+    // The only link is the logo, back to Home (ADR 0042 amendment).
+    expect(
+      topBar()
+        .getAllByRole('link')
+        .map((link) => link.getAttribute('aria-label')),
+    ).toEqual(['PantryGator, go to Home']);
     expect(topBar().queryByText(/match items/i)).toBeNull();
   });
 
