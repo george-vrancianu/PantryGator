@@ -25,15 +25,13 @@ import { useExpiryTags, type Batch } from '../../../lib/pantry';
 import type { PantryRowHint } from '../hooks/usePantryRowHint';
 import type { PantryRow } from '../hooks/usePantryScreen';
 import { formatAmount } from '../../../lib/amount';
-import { useLiftIntoView } from '../hooks/useLiftIntoView';
+import { useOpenIntoView } from '../hooks/useOpenIntoView';
 import { BatchDetail } from './BatchDetail';
 import { IngredientActions } from './IngredientActions';
 import { useRunningLowToggle } from '../hooks/useRunningLowToggle';
 import { usePantryStaple } from '../hooks/usePantryStaple';
 import { RowFlash, flashHost } from '../../../components/RowFlash';
-import { keyframesSx } from '../../../lib/keyframesSx';
 import { rowKeyHintIds } from './RowKeyHints';
-import { LIFT_EASING, LIFT_MS } from './liftedBlock';
 
 /** The row springs back before the flag flips (Pantry batches handoff, section 6). */
 const FLAG_FLIP_MS = 220;
@@ -126,7 +124,7 @@ export function RollUpRow({
 
   // The last Batch was removed: if focus was on its row it is on the list or <body> now, so place it.
   const item = useRef<HTMLLIElement>(null);
-  useLiftIntoView(item, expanded && !rollUp.gone);
+  useOpenIntoView(item, expanded && !rollUp.gone);
   const onRowGoneNow = useRef(onRowGone);
   useLayoutEffect(() => {
     onRowGoneNow.current = onRowGone;
@@ -209,7 +207,7 @@ export function RollUpRow({
               gap: '12px',
               flexGrow: 1,
               minWidth: 0,
-              minHeight: expanded ? 64 : 60,
+              minHeight: 60,
               p: 0,
               border: 0,
               bgcolor: 'transparent',
@@ -309,58 +307,45 @@ export function RollUpRow({
             count: rollUp.batches.length,
           })}
           onKeyDown={closeFromInside}
-          sx={{
-            // The body grows open with the lift.
-            display: 'grid',
-            gridTemplateRows: '1fr',
-            ...keyframesSx('pp-lift-body', `${LIFT_MS}ms ${LIFT_EASING}`, {
-              from: { gridTemplateRows: '0fr' },
-              to: { gridTemplateRows: '1fr' },
-            }),
-          }}
         >
-          {/* The one grid track: the Batches, then the action row at the bottom of the card. */}
-          <Box sx={{ minHeight: 0, overflow: 'hidden' }}>
-            <Box
-              component="ul"
-              sx={{
-                m: 0,
-                p: 0,
-                pb: '4px',
-                listStyle: 'none',
-                borderTop: `1px solid ${tokens.color.divider}`,
-              }}
-            >
-              {rollUp.batches.map((batch, index) => (
-                <BatchDetail
-                  key={batch.id}
-                  batch={batch}
-                  index={index}
-                  peek={
-                    index === 0 &&
-                    rowHint.leader === panelId &&
-                    rowHint.hint.peek
-                  }
-                  onLearned={rowHint.hint.onLearned}
-                  today={today}
-                  onRemove={onRemoveBatch}
-                  onLeft={() =>
-                    rollUp.batches.length > 1
-                      ? toggle.current?.focus()
-                      : onRowGone()
-                  }
-                />
-              ))}
-            </Box>
-            <IngredientActions
-              name={rollUp.name}
-              unmatched={rollUp.unmatched}
-              staple={staple}
-              runningLow={rollUp.runningLow}
-              onToggleLow={() => flipLow({ fromRow: false })}
-              onAddBatch={onAddBatch}
-            />
+          {/* The Batches, then the action row at the bottom of the card. */}
+          <Box
+            component="ul"
+            sx={{
+              m: 0,
+              p: 0,
+              pb: '4px',
+              listStyle: 'none',
+              borderTop: `1px solid ${tokens.color.divider}`,
+            }}
+          >
+            {rollUp.batches.map((batch, index) => (
+              <BatchDetail
+                key={batch.id}
+                batch={batch}
+                index={index}
+                peek={
+                  index === 0 && rowHint.leader === panelId && rowHint.hint.peek
+                }
+                onLearned={rowHint.hint.onLearned}
+                today={today}
+                onRemove={onRemoveBatch}
+                onLeft={() =>
+                  rollUp.batches.length > 1
+                    ? toggle.current?.focus()
+                    : onRowGone()
+                }
+              />
+            ))}
           </Box>
+          <IngredientActions
+            name={rollUp.name}
+            unmatched={rollUp.unmatched}
+            staple={staple}
+            runningLow={rollUp.runningLow}
+            onToggleLow={() => flipLow({ fromRow: false })}
+            onAddBatch={onAddBatch}
+          />
         </Box>
       ) : null}
     </Box>

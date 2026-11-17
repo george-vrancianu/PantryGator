@@ -5,7 +5,7 @@ import type { StorageLocation } from '../../../lib/catalog';
 import type { Batch } from '../../../lib/pantry';
 import type { PantryRowHint } from '../hooks/usePantryRowHint';
 import type { OpenIngredientKey, PantryRow } from '../hooks/usePantryScreen';
-import { blockEdges, liftedBlockSx } from './liftedBlock';
+import { ingredientBlockSx } from './ingredientBlock';
 import { RollUpRow } from './RollUpRow';
 
 type Props = {
@@ -37,7 +37,6 @@ export function LocationSection({
   const { t } = useTranslation('pantry');
   const headingId = useId();
   const heading = useRef<HTMLHeadingElement>(null);
-  const edges = blockEdges(rows);
   return (
     <Box component="section" aria-labelledby={headingId} sx={{ mb: 2 }}>
       <Typography
@@ -51,12 +50,16 @@ export function LocationSection({
       >
         {`${t(`common:locations.${location}`)} · ${batchCount}`}
       </Typography>
-      {/* The Location card is a stack of row blocks, so the open one can lift out of it. */}
+      {/* The Location card is a stack of row blocks; the open one shows its rail. */}
       <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
         {rows.map((row, index) => (
           <RollUpRow
             key={row.key}
-            sx={liftedBlockSx(edges[index])}
+            sx={ingredientBlockSx({
+              open: row.open,
+              first: index === 0,
+              last: index === rows.length - 1,
+            })}
             rollUp={row}
             today={today}
             onToggle={() => onToggleOpen(row.openKey)}
