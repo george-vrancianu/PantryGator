@@ -218,6 +218,10 @@ _Avoid_: Capture, upload
 The Scans and Barcode Lookups a Member takes from opening the camera until they are added or discarded. It is held in the app, in memory, and each Scan in it is read in the background while the Member keeps scanning. Each Barcode Lookup in it is one card, looked up at once.
 _Avoid_: Batch (a Batch is a Pantry purchase), queue
 
+**Background Read**:
+A Scan, a Voice Note or a Recipe from Link being read while the Member carries on with something else. Every Background Read shows in the one strip above the Dock until it is reviewed or discarded. A Barcode Lookup is never one, because it is answered at once.
+_Avoid_: Job, task, queue item
+
 **Scan Mode**:
 Product, Receipt, Plate, or Ingredients.
 
