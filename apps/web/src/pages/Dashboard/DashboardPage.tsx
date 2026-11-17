@@ -15,40 +15,43 @@ import { translateApiError } from '../../i18n/translateApiError';
 import { useDashboardLayout } from '../../lib/dashboard';
 import { greetingKeyForHour } from '../../lib/greeting';
 import { useGridColumns } from '../../lib/layoutColumns';
+import { useToday } from '../../lib/useToday';
+import { CalendarDay } from './components/CalendarDay';
 import { PantryHealthCluster } from './components/PantryHealthCluster';
 import { WIDGET_REGISTRY } from './widgets/registry';
 
 /** How far Pantry Health moves down in the header: added above it, taken from the room above the sheet. */
 const HEADER_SHIFT = 10;
 
-/** The Dashboard: date, greeting, Settings in the top bar, Pantry Health in the header, the Member's grid of Widgets and the Customise link under them. */
+/** The Dashboard: greeting and Settings in the top bar, Pantry Health and today's calendar page in the header, the Member's grid of Widgets and the Customise link under them. */
 export function DashboardPage() {
-  const { t, i18n } = useTranslation('dashboard');
+  const { t } = useTranslation('dashboard');
   const layout = useDashboardLayout();
   const columns = useGridColumns();
   // oxlint-disable-next-line react/purity -- "today" must follow the clock across midnight; freezing it would leave a Member on a stale day
   const now = new Date();
-  const date = new Intl.DateTimeFormat(i18n.language, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(now);
+  const today = useToday();
 
   return (
     <Screen
       title={t(`greeting.${greetingKeyForHour(now.getHours())}`)}
-      status={date}
       header={
         // flow-root keeps the negative margin inside, so the header region measures the shorter height.
         <Box sx={{ display: 'flow-root' }}>
           <Box
             sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
               // Pantry Health sits lower: more room under the top bar, less above the sheet.
               pt: `${HEADER_SHIFT}px`,
               mb: `-${HEADER_SHIFT}px`,
             }}
           >
-            <PantryHealthCluster />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <PantryHealthCluster />
+            </Box>
+            <CalendarDay date={today} />
           </Box>
         </Box>
       }
