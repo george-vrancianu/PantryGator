@@ -478,14 +478,15 @@ export class PantryService {
     rows: BatchRow[],
     locale: CatalogLocale,
   ): Promise<BatchView[]> {
-    const placements = await loadIngredientPlacements(
-      this.database,
-      catalogScope(familyId),
-      locale,
-      rows.flatMap((r) => (r.ingredientId ? [r.ingredientId] : [])),
-    );
-
-    const expiryDays = await this.expiryDaysByLeaf(familyId, rows);
+    const [placements, expiryDays] = await Promise.all([
+      loadIngredientPlacements(
+        this.database,
+        catalogScope(familyId),
+        locale,
+        rows.flatMap((r) => (r.ingredientId ? [r.ingredientId] : [])),
+      ),
+      this.expiryDaysByLeaf(familyId, rows),
+    ]);
 
     return rows.map((row) => ({
       id: row.id,
@@ -521,15 +522,17 @@ export class PantryService {
   ): Promise<Map<string, number | null>> {
     const leafIds = [...new Set(rows.map((row) => row.leafCategoryId))];
     if (leafIds.length === 0) return new Map();
-    const overrides = await this.settings.expiryOverridesOf(familyId);
-    const categories = await this.database
-      .select({ leaf: leafCategories, parent: parentCategories })
-      .from(leafCategories)
-      .innerJoin(
-        parentCategories,
-        eq(leafCategories.parentId, parentCategories.id),
-      )
-      .where(inArray(leafCategories.id, leafIds));
+    const [overrides, categories] = await Promise.all([
+      this.settings.expiryOverridesOf(familyId),
+      this.database
+        .select({ leaf: leafCategories, parent: parentCategories })
+        .from(leafCategories)
+        .innerJoin(
+          parentCategories,
+          eq(leafCategories.parentId, parentCategories.id),
+        )
+        .where(inArray(leafCategories.id, leafIds)),
+    ]);
     return new Map(
       categories.map(({ leaf, parent }) => [
         leaf.id,

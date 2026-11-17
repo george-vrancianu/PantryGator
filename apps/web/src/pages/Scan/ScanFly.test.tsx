@@ -12,7 +12,13 @@ vi.mock('../../lib/camera', async () =>
 );
 vi.mock('../../lib/image', async (importActual) => ({
   ...(await importActual<typeof import('../../lib/image')>()),
-  resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
+  // A capped resize is a small thumbnail; the default is the full-size image.
+  resizeImage: (_source: Blob, _turn?: number, maxEdge?: number) =>
+    Promise.resolve(
+      maxEdge
+        ? 'data:image/jpeg;base64,c21hbGw='
+        : 'data:image/jpeg;base64,YQ==',
+    ),
 }));
 
 function renderScan(route = '/scan?mode=product') {
@@ -69,6 +75,22 @@ describe('Capture feedback and the fly to the stack', () => {
     expect(stackCount()).toBe(1);
     expect(screen.getByTestId('scan-fly')).toBeInTheDocument();
     expect(screen.queryByTestId('scan-flash')).toBeNull();
+  });
+
+  it('flies a full-size frame of a Barcode card but stores a small thumbnail', async () => {
+    renderScan('/scan?mode=barcode');
+    await vi.waitFor(() => expect(fakeCamera.emit).not.toBeNull());
+    await act(async () => emitBarcode('4006381333931'));
+    await flush();
+    expect(screen.getByTestId('scan-fly')).toHaveAttribute(
+      'src',
+      'data:image/jpeg;base64,YQ==',
+    );
+    const layer = screen.getByTestId('stack-layer');
+    expect(layer.querySelector('img')).toHaveAttribute(
+      'src',
+      'data:image/jpeg;base64,c21hbGw=',
+    );
   });
 
   describe('under reduced motion', () => {
