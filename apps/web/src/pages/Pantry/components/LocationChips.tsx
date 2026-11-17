@@ -1,4 +1,4 @@
-import { Box, LocationChip } from '@pocket-pantry/ui';
+import { Box, LocationChip, mask } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { FILTERS, type PantryFilter } from '../../../lib/pantry';
 
@@ -28,7 +28,7 @@ export function LocationChips({ filter, onFilterChange, counts }: Props) {
         overflowX: 'auto',
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': { display: 'none' },
-        maskImage: 'linear-gradient(90deg, #000 84%, transparent 100%)',
+        maskImage: mask.chipsEdge,
       }}
     >
       {FILTERS.map((chip) => (

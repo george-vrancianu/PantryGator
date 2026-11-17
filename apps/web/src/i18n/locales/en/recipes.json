@@ -366,6 +366,7 @@
     "baseGone": "The Base Recipe this Recipe Draft was a Variant of is gone. It opens as a New Recipe and will be saved as a Base Recipe."
   },
   "explore": {
+    "status": "Catalog Recipes",
     "title": "Explore",
     "menuItem": "From Explore",
     "menuNew": "new",

@@ -1,12 +1,12 @@
-import { Box, ShoppingIcon, tokens, displayType } from '@pocket-pantry/ui';
+import { Box, ShoppingIcon, hero } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { firstUncheckedNames } from '../../../lib/dashboard';
 import { useShoppingList } from '../../../lib/shopping';
-import { WidgetCard, WidgetTitle } from './WidgetCard';
+import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 
-/** Unchecked Shopping Items on the butter card: the count and the first few names. */
+/** Unchecked Shopping Items on the dark hero card: the count and the first few names. */
 export function ShoppingWidget({ size, columns }: WidgetProps) {
   const { t } = useTranslation('dashboard');
   const list = useShoppingList();
@@ -19,37 +19,21 @@ export function ShoppingWidget({ size, columns }: WidgetProps) {
       label={t('widgets.shopping.title')}
       size={size}
       columns={columns}
-      tone="butter"
+      tone="hero"
       to="/shopping"
       isLoading={list.isPending}
       error={list.error ? translateApiError(t, list.error) : null}
     >
-      <WidgetTitle
-        icon={<ShoppingIcon size={16} />}
-        color={tokens.color.butterInk}
-      >
+      <WidgetTitle icon={<ShoppingIcon size={14} />} color={hero.muted}>
         {t('widgets.shopping.title')}
       </WidgetTitle>
-      <Box
-        component="p"
-        sx={{
-          m: 0,
-          mt: '8px',
-          ...displayType,
-          fontSize: 40,
-          lineHeight: 1,
-        }}
-      >
-        {list.data?.summary.remaining ?? 0}
-      </Box>
-      <Box
-        component="p"
-        sx={{ m: 0, mt: '2px', fontSize: 13, fontWeight: 600 }}
-      >
-        {t('widgets.shopping.itemsToBuy', {
+      <WidgetFigure
+        value={list.data?.summary.remaining ?? 0}
+        caption={t('widgets.shopping.itemsToBuy', {
           count: list.data?.summary.remaining ?? 0,
         })}
-      </Box>
+        numberColor={hero.num}
+      />
       <Box
         component="p"
         sx={{
@@ -57,7 +41,9 @@ export function ShoppingWidget({ size, columns }: WidgetProps) {
           mt: 'auto',
           pt: '8px',
           fontSize: 12,
-          color: tokens.color.butterInk,
+          fontWeight: 500,
+          lineHeight: 1.35,
+          color: hero.muted,
         }}
       >
         {names.length === 0

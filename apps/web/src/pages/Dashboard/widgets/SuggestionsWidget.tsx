@@ -1,4 +1,4 @@
-import { Box, ShoppingIcon, tokens, displayType } from '@pocket-pantry/ui';
+import { Box, ShoppingIcon, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { localIso } from '../../../lib/pantry';
@@ -7,7 +7,7 @@ import {
   useSuggestions,
   WIDGET_SUGGESTION_COUNT,
 } from '../../../lib/suggestions';
-import { WidgetCard, WidgetTitle } from './WidgetCard';
+import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 
 /** How many Ingredients are gone from the Pantry, and the first few by name; the card opens the Shopping List. */
@@ -30,27 +30,13 @@ export function SuggestionsWidget({ size, columns }: WidgetProps) {
       isLoading={suggestions.isPending}
       error={suggestions.error ? translateApiError(t, suggestions.error) : null}
     >
-      <WidgetTitle icon={<ShoppingIcon size={16} />}>
+      <WidgetTitle icon={<ShoppingIcon size={14} />}>
         {t('widgets.suggestions.title')}
       </WidgetTitle>
-      <Box
-        component="p"
-        sx={{
-          m: 0,
-          mt: '8px',
-          ...displayType,
-          fontSize: 40,
-          lineHeight: 1,
-        }}
-      >
-        {all.length}
-      </Box>
-      <Box
-        component="p"
-        sx={{ m: 0, mt: '2px', fontSize: 13, fontWeight: 600 }}
-      >
-        {t('widgets.suggestions.count', { count: all.length })}
-      </Box>
+      <WidgetFigure
+        value={all.length}
+        caption={t('widgets.suggestions.count', { count: all.length })}
+      />
       <Box
         component="p"
         sx={{

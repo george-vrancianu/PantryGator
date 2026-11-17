@@ -29,12 +29,28 @@ export const radius = {
   sheet: `calc(${pp('r-card')} + 8px)`,
   /** Header buttons and the gold key. */
   btn: pp('r-btn'),
+  /** The raised segment inside a Canopy track. */
+  seg: '5px',
+  /** The Canopy's count badge (Tags). */
+  badge: '4px',
+  /** A segment of the 4 px stock bar. */
+  bar: '1px',
   /** The Dock's mic / camera rocker. */
   cap: pp('r-cap'),
   /** Small labelled pills: the gain pill and the done pills. */
   tag: pp('r-tag'),
   /** Tags and pill buttons: round in every Theme. */
   pill: '999px',
+  /** A layer that takes its parent's corners (the Health lamp's glow layers). */
+  inherit: 'inherit',
+  /** The Health lamp's case. */
+  lamp: '7px',
+  /** The Gator bubble's count badge. */
+  bubbleBadge: '10px',
+  /** The Gator bubble's speech label. */
+  bubbleLabel: '8px',
+  /** The Canopy sheet: rounded on top only. */
+  sheetTop: `${pp('r-sheet')} ${pp('r-sheet')} 0 0`,
 } as const;
 
 /** A radius for an element nested `gap` px inside one with `outer`, so the curves stay concentric. */
@@ -48,6 +64,8 @@ export const shadow = {
   /** Sheets, popovers, toasts, the dock. */
   float: pp('shadow-float'),
   segment: pp('shadow-seg'),
+  /** A tile recessed into the sheet (the empty Meal plan's icon tile). */
+  recess: pp('shadow-well'),
   /** The selected Location chip's lift. */
   chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
 } as const;
@@ -90,6 +108,9 @@ export const canopy = {
   field: pp('canopy-field'),
   fieldLine: pp('canopy-field-line'),
   fieldShadow: pp('shadow-canopy-field'),
+  /** The raised segment of a track on the header (Settings You / Family): fixed cream with dark text in both Themes, as the Canopy is always dark. */
+  segOn: '#F8F7F2',
+  segOnInk: '#141A16',
   /** A progress bar's track on the header, with its inner shadow. */
   progressTrack: 'rgba(255,255,255,.16)',
   progressShadow: 'inset 0 1px 1px rgba(0,0,0,.3)',
@@ -109,10 +130,35 @@ export const healthLamp = {
   stale: pp('lamp-stale'),
   window: pp('lamp-window'),
   windowOff: pp('lamp-window-off'),
-  /** The lamp case's corner radius. */
-  radius: '7px',
   /** The recess shadow inside an unlit or lit window. */
   windowShadow: 'inset 0 1px 3px rgba(0,0,0,.5)',
+} as const;
+
+/** Alpha masks (black is the visible part, so these are not Theme colours): the Canopy texture's fade and its moving window, and the Location chips' right-edge fade. */
+export const mask = {
+  textureFade:
+    'linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%)',
+  textureWindow:
+    'linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%)',
+  chipsEdge: 'linear-gradient(90deg, #000 84%, transparent 100%)',
+} as const;
+
+/** The Dashboard's one dark "hero" card (the Shopping tile; gold with dark text in Dark): fill, edge, lift and its text colours. */
+export const hero = {
+  /** Paint it with `background`. */
+  bg: pp('hero-bg'),
+  line: pp('hero-line'),
+  shadow: pp('shadow-hero'),
+  ink: pp('hero-ink'),
+  /** The big number. */
+  num: pp('hero-num'),
+  muted: pp('hero-muted'),
+} as const;
+
+/** The three segments of the Pantry tile's Location bar. */
+export const stockBar = {
+  second: pp('seg-mid'),
+  third: '#C9A545',
 } as const;
 
 /** Bar and meter tracks. */
@@ -162,6 +208,8 @@ export const color = {
   /** Text and icons on an `accentTint` fill. */
   accentOnTint: palette('pp-accentOnTint'),
   lineStrong: palette('pp-lineStrong'),
+  /** The second ink: captions and unselected text a step softer than the ink. */
+  ink2: pp('ink-2'),
   /** The recording colour (Voice Notes): the urgent foreground. */
   rec: palette('error-main'),
   box: palette('pp-box'),

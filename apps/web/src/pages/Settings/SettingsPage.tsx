@@ -20,19 +20,22 @@ export function SettingsPage() {
     <Screen
       title={t('title')}
       back={{ label: t('screenHeader:back'), href: '/' }}
+      header={
+        <Box sx={{ mt: 2 }}>
+          <SegmentedTabs<SettingsTab>
+            onCanopy
+            label={t('tabs.label')}
+            id={id}
+            tabs={[
+              { value: 'you', label: t('tabs.you') },
+              { value: 'family', label: t('tabs.family') },
+            ]}
+            value={tab}
+            onChange={selectTab}
+          />
+        </Box>
+      }
     >
-      <Box sx={{ mb: 2 }}>
-        <SegmentedTabs<SettingsTab>
-          label={t('tabs.label')}
-          id={id}
-          tabs={[
-            { value: 'you', label: t('tabs.you') },
-            { value: 'family', label: t('tabs.family') },
-          ]}
-          value={tab}
-          onChange={selectTab}
-        />
-      </Box>
       <Box
         role="tabpanel"
         id={segmentedTabPanelId(id, tab)}

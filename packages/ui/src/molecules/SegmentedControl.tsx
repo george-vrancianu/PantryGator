@@ -90,6 +90,8 @@ export type SegmentedControlProps<T extends string> = GroupName & {
    * being cut.
    */
   dense?: boolean;
+  /** The small variant (Canopy handoff 5): 12.5 px labels, for a track under a caption. Ignored with `dense`, which sizes its own. */
+  small?: boolean;
 };
 
 /** A row of toggle buttons where exactly one is pressed. */
@@ -101,6 +103,7 @@ export function SegmentedControl<T extends string>({
   onChange,
   fullWidth: wide = false,
   dense = false,
+  small = false,
 }: SegmentedControlProps<T>) {
   // Dense sizes its labels against the track's width, so the track always fills its container.
   const fullWidth = wide || dense;
@@ -109,7 +112,9 @@ export function SegmentedControl<T extends string>({
         options.map((option) => option.label),
         options.filter((option) => (option.badge ?? 0) > 0).length,
       )
-    : 14;
+    : small
+      ? 12.5
+      : 14;
   return (
     <Box
       role="group"

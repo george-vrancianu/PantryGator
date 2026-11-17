@@ -88,7 +88,7 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
               mb: '6px',
             }}
           >
-            <WidgetTitle icon={<RecipesIcon size={16} />}>
+            <WidgetTitle icon={<RecipesIcon size={14} />}>
               {t('widgets.cookTonight.title')}
             </WidgetTitle>
             <Box

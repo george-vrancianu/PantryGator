@@ -1,6 +1,9 @@
 import {
   Alert,
   Box,
+  canopy,
+  Card,
+  color,
   displayType,
   plusBottomInset,
   radius,
@@ -31,7 +34,7 @@ import {
   type RecipeBrowse,
   type RecipeListItem,
 } from '../../lib/recipes';
-import { RecipeFilters } from './components/RecipeFilters';
+import { RecipeFilters, TagFilterRows } from './components/RecipeFilters';
 import { SectionLabel } from './components/SectionLabel';
 import { TagNoMatch } from './components/TagNoMatch';
 
@@ -115,6 +118,12 @@ export function ExplorePage() {
         cookTonight.data?.hiddenByAllergiesCount ?? 0,
       );
 
+  const tagFilter = {
+    scope: 'catalog',
+    showHidden,
+    resultCount: recipes.data ? items.length : undefined,
+  } as const;
+
   const group = (
     label: string,
     rows: RecipeListItem[],
@@ -134,6 +143,7 @@ export function ExplorePage() {
           filtering={filtering}
           matchedTagIds={browse.tagIds}
           hideCanMake={options.hideCanMake ?? false}
+          grouped
           onOpen={() => {
             setQuick(recipe);
             setQuickOpen(true);
@@ -147,6 +157,7 @@ export function ExplorePage() {
     <>
       <Screen
         title={t('recipes:explore.title')}
+        status={t('recipes:explore.status')}
         back={{
           label:
             added > 0
@@ -158,22 +169,29 @@ export function ExplorePage() {
             if (isPlainClick(event)) exploreAdds.reset();
           },
         }}
+        header={
+          <Box sx={{ mt: '14px' }}>
+            <Box sx={{ fontSize: 13.5, color: canopy.muted, lineHeight: 1.45 }}>
+              {t('recipes:explore.subline')}
+            </Box>
+            <Box sx={{ mt: '14px' }}>
+              <RecipeFilters
+                onCanopy
+                value={browse}
+                onChange={setBrowse}
+                searchLabel={t('recipes:explore.search')}
+                tags={tagFilter}
+              />
+            </Box>
+          </Box>
+        }
       />
       <Stack spacing={1.5} useFlexGap>
-        <Box
-          sx={{ fontSize: 13.5, color: tokens.color.muted, lineHeight: 1.4 }}
-        >
-          {t('recipes:explore.subline')}
-        </Box>
-        <RecipeFilters
+        <TagFilterRows
           value={browse}
           onChange={setBrowse}
-          searchLabel={t('recipes:explore.search')}
-          tags={{
-            scope: 'catalog',
-            showHidden,
-            resultCount: recipes.data ? items.length : undefined,
-          }}
+          bleed={false}
+          {...tagFilter}
         />
         <HiddenByAllergiesNote
           count={hiddenCount}
@@ -249,13 +267,14 @@ function Group({
       <SectionLabel id={headingId} count={rows.length}>
         {label}
       </SectionLabel>
-      <Box
+      <Card
         component="ul"
+        variant="list"
         aria-labelledby={headingId}
-        sx={{ listStyle: 'none', m: 0, p: 0 }}
+        sx={{ listStyle: 'none', m: 0, p: 0, overflow: 'hidden' }}
       >
         {shown.map(render)}
-      </Box>
+      </Card>
       {hidden > 0 ? (
         <Box
           component="button"
@@ -264,10 +283,11 @@ function Group({
           sx={{
             display: 'block',
             width: '100%',
-            mt: '8px',
-            py: '12px',
-            border: `1.5px dashed ${tokens.color.line}`,
-            borderRadius: radius.control,
+            mt: '12px',
+            height: 48,
+            boxSizing: 'border-box',
+            border: `1px dashed ${color.lineStrong}`,
+            borderRadius: radius.btn,
             bgcolor: 'transparent',
             color: tokens.color.accent,
             font: 'inherit',

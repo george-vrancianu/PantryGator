@@ -38,6 +38,31 @@ export const Interactive: StoryObj<typeof SegmentedControl> = {
   render: () => <Segments />,
 };
 
+function SmallSegments() {
+  const [value, setValue] = useState<'same' | 'en' | 'ro'>('same');
+  return (
+    <Box sx={{ p: 3 }}>
+      <SegmentedControl
+        small
+        fullWidth
+        label="Catalog Language"
+        options={[
+          { value: 'same', label: 'Same as UI' },
+          { value: 'en', label: 'English' },
+          { value: 'ro', label: 'Română' },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    </Box>
+  );
+}
+
+/** The small variant: 12.5 px labels (Settings: Catalog Language, Scan Language). */
+export const Small: StoryObj<typeof SegmentedControl> = {
+  render: () => <SmallSegments />,
+};
+
 type Location = 'fridge' | 'freezer' | 'cupboard' | 'spices';
 type Lang = 'en' | 'ro' | 'da';
 

@@ -1,21 +1,21 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, canopy, displayType, radius, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
 /**
- * A small pill holding a number: the Tags button's count (`solid`, on the accent) and the relax
+ * A small pill holding a number: the Tags button's count (`solid`, on the accent; `gold` on the Canopy) and the relax
  * buttons' counts (`tint`). Decorative; the control it sits in carries the accessible name.
  */
 export function CountBadge({
   tone,
   children,
 }: {
-  tone: 'solid' | 'tint';
+  tone: 'solid' | 'tint' | 'gold';
   children: ReactNode;
 }) {
   return (
     <Box
       component="span"
-      aria-hidden={tone === 'solid' ? true : undefined}
+      aria-hidden={tone === 'tint' ? undefined : true}
       sx={{
         minWidth: 20,
         height: 20,
@@ -24,15 +24,23 @@ export function CountBadge({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '999px',
+        borderRadius: radius.pill,
+        ...(tone === 'gold' && { borderRadius: radius.badge }),
         bgcolor:
-          tone === 'solid' ? tokens.color.accent : tokens.color.accentTint,
+          tone === 'gold'
+            ? canopy.gold
+            : tone === 'solid'
+              ? tokens.color.accent
+              : tokens.color.accentTint,
         color:
-          tone === 'solid'
-            ? 'var(--mui-palette-pp-accentInk)'
-            : tokens.color.accentOnTint,
+          tone === 'gold'
+            ? canopy.goldInk
+            : tone === 'solid'
+              ? 'var(--mui-palette-pp-accentInk)'
+              : tokens.color.accentOnTint,
+        fontFamily: tone === 'gold' ? displayType.fontFamily : undefined,
         fontSize: 11.5,
-        fontWeight: 700,
+        fontWeight: tone === 'gold' ? 800 : 700,
         fontVariantNumeric: 'tabular-nums',
       }}
     >
