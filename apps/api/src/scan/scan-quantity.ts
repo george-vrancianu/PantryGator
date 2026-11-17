@@ -3,15 +3,15 @@ import type { ingredientUnit } from '../database/schema';
 
 type PantryUnit = (typeof ingredientUnit.enumValues)[number];
 
-export type ReceiptQuantityInput = {
+export type ScanQuantityInput = {
   quantityType: 'count' | 'package_size' | 'measured' | null;
   purchasedCount: number | null;
   quantityPerItem: number | null;
   quantityUnit: string | null;
 };
 
-export type DerivedReceiptQuantity = {
-  quantityType: Exclude<ReceiptQuantityInput['quantityType'], null>;
+export type DerivedScanQuantity = {
+  quantityType: Exclude<ScanQuantityInput['quantityType'], null>;
   purchasedCount: number;
   quantityPerItem: number | null;
   quantityUnit: string | null;
@@ -112,7 +112,7 @@ function roundQuantity(value: number): number {
 
 function extractPrintedQuantity(
   sourceText: string,
-): Pick<ReceiptQuantityInput, 'quantityPerItem' | 'quantityUnit'> | null {
+): Pick<ScanQuantityInput, 'quantityPerItem' | 'quantityUnit'> | null {
   const matches = [
     ...sourceText.matchAll(/(\d+(?:[.,]\d+)?)\s*(mg|kg|g|ml|cl|l)\b/giu),
   ];
@@ -128,10 +128,10 @@ function extractPrintedQuantity(
   };
 }
 
-export function deriveReceiptQuantity(
-  input: ReceiptQuantityInput,
+export function deriveScanQuantity(
+  input: ScanQuantityInput,
   sourceText = '',
-): DerivedReceiptQuantity | null {
+): DerivedScanQuantity | null {
   if (!input.quantityType || !input.purchasedCount) return null;
 
   const printedQuantity = extractPrintedQuantity(sourceText);

@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Unit } from '../lib/catalog';
 import { fitChips } from '../lib/fitChips';
+import { haptic, HAPTIC_TICK_MS } from '../lib/haptic';
 import {
   parseTypedNumber,
   usualAmountsAscending,
@@ -10,8 +11,6 @@ import {
   type AmountScale,
 } from '../lib/usualAmounts';
 import { segmentSx, stripSx, STRIP_DIVIDER } from './amountStrip';
-
-const HAPTIC_MS = 6;
 
 export type UsualAmountRowProps = {
   /** The Ingredient's name, for the group's accessible name. */
@@ -124,7 +123,7 @@ export function UsualAmountRow({
               unit: unitLabel,
             })}
             onClick={() => {
-              navigator.vibrate?.(HAPTIC_MS);
+              haptic(HAPTIC_TICK_MS);
               onPick(value);
             }}
             sx={segmentSx(selected)}

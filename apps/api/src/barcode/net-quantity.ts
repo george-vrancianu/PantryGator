@@ -1,4 +1,4 @@
-import { toPantryQuantityFromText } from '../scan/receipt-quantity';
+import { toPantryQuantityFromText } from '../scan/scan-quantity';
 
 /** An Open Food Facts quantity such as "200 g" or "1,5 l" as a Pantry quantity and unit; a multipack, an unknown unit or free text gives none. */
 export function parseNetQuantity(

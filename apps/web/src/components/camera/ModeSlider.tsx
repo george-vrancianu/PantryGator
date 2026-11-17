@@ -8,8 +8,10 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '../../lib/cameraMode';
+import { haptic, HAPTIC_TICK_MS } from '../../lib/haptic';
 import { CreditPrice } from '../CreditPrice';
 import { useCreditPrice } from '../../lib/credits';
+import { isBarcodeMode } from '../../lib/scanSession';
 import { MODE_SLIDER_HEIGHT } from '../../lib/scanGuides';
 import {
   dragOffset,
@@ -25,8 +27,6 @@ import { glassFocusRing } from './glass';
  * limit the swipe to the slider itself if device testing shows accidental mode changes.
  */
 export const VIEWFINDER_SWIPE = true;
-
-const HAPTIC_MS = 6;
 
 /** The arrow keys that step to the next and the previous mode. */
 export type ModeKeys = { next: readonly string[]; previous: readonly string[] };
@@ -92,7 +92,7 @@ export function useFocusFollowsMode(
   useEffect(() => {
     if (previous.current === mode) return;
     previous.current = mode;
-    navigator.vibrate?.(HAPTIC_MS);
+    haptic(HAPTIC_TICK_MS);
     if (group.current?.contains(document.activeElement)) {
       group.current
         .querySelector<HTMLElement>('[aria-checked="true"]')
@@ -114,7 +114,7 @@ export function ModeLabel({
   return (
     <>
       {t(`mode.${mode}`)}
-      {active && mode !== 'barcode' && price ? (
+      {active && !isBarcodeMode(mode) && price ? (
         <Box
           component="span"
           sx={{ fontWeight: 600, textTransform: 'none', ml: 0.75 }}
