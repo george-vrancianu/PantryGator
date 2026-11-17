@@ -3,6 +3,10 @@
   "loading": "Indlæser",
   "confirm": "Bekræft",
   "cancel": "Annuller",
+  "sheet": {
+    "close": "Luk",
+    "back": "Tilbage"
+  },
   "retry": "Prøv igen",
   "units": {
     "g": "g",
