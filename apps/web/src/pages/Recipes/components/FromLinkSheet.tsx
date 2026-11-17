@@ -7,6 +7,7 @@ import {
   Typography,
   radius,
 } from '@pocket-pantry/ui';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CreditPrice } from '../../../components/CreditPrice';
@@ -80,6 +81,7 @@ function FromLinkBody({
   const onSubmitted = onClose;
   const { t } = useTranslation('recipes');
   const formId = useId();
+  const navigate = useNavigate();
   const linkPrice = useCreditPrice('link-page');
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState<ReadingLanguage>('catalog');
@@ -147,7 +149,14 @@ function FromLinkBody({
       title={t('fromLink.heading')}
       primary={
         duplicate
-          ? undefined
+          ? {
+              label: t('fromLink.duplicate.open'),
+              onClick: () => {
+                // Close first: closing edits the address, and the Recipe's must come last.
+                onSubmitted();
+                navigate(`/recipes/${duplicate.recipeId}`);
+              },
+            }
           : {
               label: checking ? t('fromLink.checking') : t('fromLink.submit'),
               form: formId,
@@ -155,15 +164,18 @@ function FromLinkBody({
               disabled: input === '',
             }
       }
+      secondary={
+        duplicate
+          ? {
+              label: t('fromLink.duplicate.readAgain'),
+              onClick: duplicate.read,
+            }
+          : undefined
+      }
     >
       {duplicate ? (
         <Box sx={{ px: 2.5, pt: 1, pb: 2.5 }}>
-          <AlreadyInRecipes
-            ref={duplicateHeading}
-            recipeId={duplicate.recipeId}
-            onOpen={onSubmitted}
-            onReadAgain={duplicate.read}
-          />
+          <AlreadyInRecipes ref={duplicateHeading} />
         </Box>
       ) : (
         <Stack

@@ -340,6 +340,15 @@ export function QuickViewSheet({
         <Link
           href={recipeHref({ id: recipe.id, owner: 'catalog' })}
           onClick={(event) => {
+            // Modified and middle clicks keep the link's own behaviour.
+            if (
+              event.button !== 0 ||
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            )
+              return;
             event.preventDefault();
             openPreview(recipe.id);
           }}

@@ -663,7 +663,7 @@ describe('"From a link" sheet and the link-read holder', () => {
       setup(duplicateRoute);
       await submit(user, link);
       await screen.findByText('Already in your Recipes');
-      await user.click(screen.getByRole('link', { name: 'Open' }));
+      await user.click(screen.getByRole('button', { name: 'Open' }));
       expect(await screen.findByText('Detail of the recipe')).toBeVisible();
       expect(screen.getByText('at /recipes/r-1')).toBeVisible();
       await waitFor(() => expect(sheet()).toBeNull());

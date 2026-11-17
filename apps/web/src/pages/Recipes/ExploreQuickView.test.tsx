@@ -186,6 +186,7 @@ function setup(route = '/recipes/explore') {
       <Routes>
         <Route path="/recipes/explore" element={<ExplorePage />} />
         <Route path="/recipes/explore/:id" element={<RecipePreviewPage />} />
+        <Route path="/recipes/copy-1" element={<p>family recipe copy-1</p>} />
         <Route path="/recipes/:id" element={<RecipeDetailPage />} />
         <Route
           path="/recipes/:id/variant/new"
@@ -315,14 +316,14 @@ describe('Explore quick view', () => {
     await user().click(
       within(dialog).getByRole('button', { name: 'Add to your Recipes' }),
     );
-    expect(
-      await within(dialog).findByRole('button', {
-        name: 'In your Recipes · Open',
-      }),
-    ).toBeVisible();
+    const open = await within(dialog).findByRole('button', {
+      name: 'In your Recipes · Open',
+    });
     expect(
       within(dialog).getByText(/Your copy is yours to change/),
     ).toBeVisible();
+    await user().click(open);
+    expect(await screen.findByText('family recipe copy-1')).toBeVisible();
   });
 
   it('raises the Back badge for an add made in the quick view', async () => {
