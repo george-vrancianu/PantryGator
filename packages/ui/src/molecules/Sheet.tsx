@@ -167,7 +167,6 @@ export function Sheet({
             width: 38,
             height: 4,
             mt: '9px',
-            mb: '3px',
             mx: 'auto',
             borderRadius: radius.handle,
             backgroundColor: themeColor.lineStrong,

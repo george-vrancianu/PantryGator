@@ -116,7 +116,7 @@ export function AddSheet({
                 px: '5px',
                 display: 'grid',
                 placeItems: 'center',
-                borderRadius: radius.tag,
+                borderRadius: radius.box,
                 backgroundColor: dock.on,
                 color: canopy.segOnInk,
                 fontSize: 11.5,

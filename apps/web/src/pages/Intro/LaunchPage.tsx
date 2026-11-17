@@ -7,10 +7,12 @@ import {
   displayType,
   Gator,
   Link,
+  plusBottomInset,
   radius,
   SAFE_TOP,
   Typography,
 } from '@pocket-pantry/ui';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CanopyTexture } from '../../components/layout/CanopyTexture';
@@ -23,6 +25,24 @@ const UNDER_SHEET = 74;
 /** Between Gator's feet and the sheet's top edge. */
 const SHEET_GAP = 18;
 
+/** Gator's full size (the board's 336), and the share of the viewport height it may take so Get started stays above the fold. */
+const GATOR_SIZE = 336;
+const GATOR_MAX_VH = 0.38;
+
+const fitGator = () =>
+  Math.min(GATOR_SIZE, Math.round(window.innerHeight * GATOR_MAX_VH));
+
+/** Gator's size: 336, scaled down on short phones (375x667 gets about 253). */
+function useGatorSize() {
+  const [size, setSize] = useState(fitGator);
+  useEffect(() => {
+    const onResize = () => setSize(fitGator());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return size;
+}
+
 /**
  * What a signed-out visitor sees on any route. "I already have an account" opens Log in and carries the
  * page they asked for, so Log in returns to it.
@@ -30,6 +50,7 @@ const SHEET_GAP = 18;
 export function LaunchPage() {
   const { t } = useTranslation(['onboarding', 'common']);
   const gatorAlt = useGatorAlt();
+  const gatorSize = useGatorSize();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.pathname + location.search;
@@ -51,6 +72,8 @@ export function LaunchPage() {
             position: 'relative',
             overflow: 'hidden',
             flex: '1 0 auto',
+            display: 'flex',
+            flexDirection: 'column',
             background: canopy.bg,
             backgroundColor: canopy.base,
             color: canopy.ink,
@@ -98,7 +121,8 @@ export function LaunchPage() {
           <Box
             sx={{
               position: 'relative',
-              mt: '24px',
+              mt: 'auto',
+              pt: '24px',
               display: 'flex',
               justifyContent: 'center',
             }}
@@ -119,7 +143,7 @@ export function LaunchPage() {
             />
             <Gator
               mood="shopping-buddy"
-              size={336}
+              size={gatorSize}
               loop="signature"
               alt={gatorAlt('shopping-buddy')}
             />
@@ -137,7 +161,7 @@ export function LaunchPage() {
             flexDirection: 'column',
             gap: '28px',
             background: canopy.sheetBg,
-            borderRadius: radius.sheetTop,
+            borderRadius: radius.introSheet,
             boxShadow: canopy.sheetShadow,
             color: 'text.primary',
           }}
@@ -159,7 +183,7 @@ export function LaunchPage() {
               display: 'flex',
               flexDirection: 'column',
               gap: '4px',
-              pb: '34px',
+              pb: plusBottomInset(34),
               width: '100%',
               maxWidth: 420,
               alignSelf: 'center',

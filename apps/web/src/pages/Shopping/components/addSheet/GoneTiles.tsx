@@ -86,7 +86,7 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
             aria-label={t('suggestions.dismiss', { name })}
             onClick={() => dismissTile(suggestion)}
             sx={{
-              width: 40,
+              width: 44,
               height: 44,
               display: 'grid',
               placeItems: 'center',

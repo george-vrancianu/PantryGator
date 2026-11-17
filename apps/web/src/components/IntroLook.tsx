@@ -46,7 +46,7 @@ export function IntroLook({
         fontFamily: bodyFont,
       }}
     >
-      <SafeAreaBand color={groundColour} />
+      {ground === 'canopy' ? null : <SafeAreaBand color={groundColour} />}
       {children}
     </Box>
   );

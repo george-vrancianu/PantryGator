@@ -53,6 +53,8 @@ export const radius = {
   handle: '2px',
   /** The Canopy sheet: rounded on top only. */
   sheetTop: `${pp('r-sheet')} ${pp('r-sheet')} 0 0`,
+  /** The Intro's sheet over the Canopy: 22 in every Theme (Canopy handoff 2.2, 7.8). */
+  introSheet: '22px 22px 0 0',
 } as const;
 
 /** A radius for an element nested `gap` px inside one with `outer`, so the curves stay concentric. */
