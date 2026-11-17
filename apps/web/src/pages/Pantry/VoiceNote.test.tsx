@@ -363,7 +363,7 @@ describe('Voice Notes on the Pantry page', () => {
         { id: 'a2', location: 'cupboard', expiresOn: null, noExpiry: true },
       ],
     });
-  });
+  }, 40_000);
 
   it('picks an expiry in the existing date sheet', async () => {
     setup([

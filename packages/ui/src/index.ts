@@ -7,6 +7,7 @@ export {
   bodyFont,
   border,
   canopy,
+  dock,
   healthDial,
   healthLamp,
   hero,

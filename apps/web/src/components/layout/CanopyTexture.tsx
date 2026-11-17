@@ -56,13 +56,14 @@ function useTextureFade(name: TextureName, hold: boolean) {
 /**
  * The page texture behind the Canopy header, and the glint that crosses it. Mounted once in the
  * layout: the glint is one element for the whole session, so its 10 s loop keeps going across
- * navigation; only the artwork inside it cross-fades.
+ * navigation; only the artwork inside it cross-fades. Given `texture`, it draws that one whatever the path.
  */
-export function CanopyTexture() {
+export function CanopyTexture({ texture }: { texture?: TextureName } = {}) {
   const { pathname } = useLocation();
   const reduced = usePrefersReducedMotion();
   const hidden = usePageHidden();
-  const wanted = textureFor(pathname);
+  // Outside the layout (the Intro) the screen names its own texture.
+  const wanted = texture ?? textureFor(pathname);
   const { name, leaving } = useTextureFade(wanted, !reduced);
   const play = hidden ? 'paused' : 'running';
 

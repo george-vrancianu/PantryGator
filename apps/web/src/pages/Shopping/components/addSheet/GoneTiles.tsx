@@ -1,4 +1,4 @@
-import { Box, Link, tokens, focusRing } from '@pocket-pantry/ui';
+import { Box, CloseIcon, Link, tokens, focusRing } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '../../../../components/catalogSearch/emptyState/context';
 import { IngredientTile } from '../../../../components/catalogSearch/emptyState/IngredientTile';
@@ -86,24 +86,20 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
             aria-label={t('suggestions.dismiss', { name })}
             onClick={() => dismissTile(suggestion)}
             sx={{
-              width: 24,
-              height: 24,
+              width: 44,
+              height: 44,
               display: 'grid',
               placeItems: 'center',
               p: 0,
-              font: 'inherit',
-              fontSize: 16,
-              lineHeight: 1,
               color: color.muted,
               background: 'none',
               border: 0,
-              borderRadius: '50%',
               cursor: 'pointer',
-              '&:hover': { backgroundColor: color.subtle },
+              '&:hover': { color: color.ink },
               ...focusRing,
             }}
           >
-            <span aria-hidden="true">×</span>
+            <CloseIcon size={16} />
           </Box>
         }
       />
@@ -115,7 +111,18 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
       count={all.length > 0 ? all.length : undefined}
       none={t('suggestions.goneNone')}
       action={
-        <Link href="/shopping/staples" sx={{ fontSize: 13, fontWeight: 700 }}>
+        <Link
+          href="/shopping/staples"
+          sx={{
+            height: 44,
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: 'normal',
+            textTransform: 'none',
+          }}
+        >
           {t('suggestions.manage')}
         </Link>
       }

@@ -10,6 +10,8 @@ import {
   AlertIcon,
   CloseIcon,
   IconButton,
+  canopy,
+  displayType,
   radius,
   useToast,
   shadow,
@@ -342,30 +344,63 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
       header={
         <Box
           sx={{
-            px: 2.5,
-            pt: 1.5,
-            pb: 1.5,
-            ...(setupLook
-              ? { display: 'flex', alignItems: 'center', gap: '12px' }
-              : {}),
+            p: '14px 16px 0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
           }}
         >
-          {setupLook ? (
-            <Gator mood="happy" size={72} alt={gatorAlt('happy')} />
-          ) : null}
-          <Box>
+          <Box
+            sx={{
+              width: 58,
+              height: 58,
+              flex: 'none',
+              borderRadius: radius.btn,
+              background: canopy.gatorTile,
+              overflow: 'hidden',
+              display: 'grid',
+              placeItems: 'center',
+              boxShadow: canopy.gatorTileShadow,
+            }}
+          >
+            {setupLook ? (
+              <Gator mood="happy" size={58} alt={gatorAlt('happy')} />
+            ) : (
+              <Gator mood="happy" size={58} decorative />
+            )}
+          </Box>
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '7px',
+            }}
+          >
             <Typography
               component="h2"
-              variant="h2"
               tabIndex={-1}
               ref={title}
-              sx={{ outline: 'none' }}
+              sx={{
+                ...displayType,
+                fontSize: 23,
+                fontWeight: 800,
+                letterSpacing: '-0.04em',
+                lineHeight: 1.05,
+                outline: 'none',
+              }}
             >
               {heading}
             </Typography>
             {setupLook ? null : (
               <Typography
-                sx={{ fontSize: 13, color: palette('text-secondary') }}
+                sx={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  lineHeight: 1.2,
+                  color: palette('text-secondary'),
+                }}
               >
                 {subline}
               </Typography>
@@ -409,8 +444,9 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: '14px',
           px: 2,
+          pt: 2,
           pb: 2,
         }}
       >
@@ -554,11 +590,11 @@ function Group({
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          px: '4px',
-          pb: '6px',
-          fontSize: 12,
+          px: '2px',
+          pb: '8px',
+          fontSize: 11,
           fontWeight: 700,
-          letterSpacing: '.07em',
+          letterSpacing: '.1em',
           textTransform: 'uppercase',
           color: palette('text-secondary'),
         }}
@@ -583,7 +619,10 @@ function Group({
             {tag}
           </Box>
         ) : null}
-        <Box component="span" sx={{ ml: 'auto' }}>
+        <Box
+          component="span"
+          sx={{ ml: 'auto', fontSize: 12, fontWeight: 600, letterSpacing: 0 }}
+        >
           {count}
         </Box>
       </Box>

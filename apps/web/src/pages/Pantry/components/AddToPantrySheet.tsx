@@ -6,6 +6,7 @@ import {
   displayType,
   IconButton,
   IngredientIcon,
+  radius,
   Sheet,
   useToast,
 } from '@pocket-pantry/ui';
@@ -120,31 +121,46 @@ export function AddToPantrySheet({
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            p: '4px 18px 10px',
+            p: '12px 16px 0',
           }}
         >
-          <Box sx={{ flex: 1, minWidth: 0, ...displayType, fontSize: 22 }}>
+          <Box
+            component="h2"
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              m: 0,
+              ...displayType,
+              fontSize: 25,
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              lineHeight: 1,
+            }}
+          >
             {t('form.title')}
           </Box>
           {added.length > 0 ? (
-            <Button size="sm" shape="pill" onClick={leave}>
+            <Button
+              onClick={leave}
+              sx={{ height: 44, borderRadius: radius.control }}
+            >
               {t('form.done')}
             </Button>
           ) : (
             <IconButton
               label={t('form.close')}
-              tone="neutral"
-              size={40}
+              tone="well"
+              size={44}
               onClick={leave}
             >
-              <CloseIcon size={18} />
+              <CloseIcon size={19} />
             </IconButton>
           )}
         </Box>
       }
       footer={
         submit ? (
-          <Box sx={{ p: '12px 18px' }}>
+          <Box sx={{ p: '12px 16px' }}>
             <Button
               type="submit"
               form={formId}
@@ -157,7 +173,7 @@ export function AddToPantrySheet({
         ) : null
       }
     >
-      <Box sx={{ p: '0 18px 20px' }}>
+      <Box sx={{ p: '16px 16px 20px' }}>
         {added.length > 0 ? (
           <Box
             component="ul"
@@ -167,8 +183,8 @@ export function AddToPantrySheet({
               alignItems: 'center',
               gap: '6px',
               listStyle: 'none',
-              m: '0 -18px 12px',
-              p: '0 18px',
+              m: '0 -16px 12px',
+              p: '0 16px',
               overflowX: 'auto',
             }}
           >

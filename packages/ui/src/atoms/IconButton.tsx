@@ -1,7 +1,12 @@
 import MuiIconButton from '@mui/material/IconButton';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { tokens } from '../theme/tokens';
-import { canopy, radius } from '../theme/themeVars';
+import {
+  canopy,
+  color as themeColor,
+  radius,
+  shadow,
+} from '../theme/themeVars';
 
 export type IconButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -17,6 +22,7 @@ export type IconButtonProps = Omit<
    * `accentOutline` is the quiet primary action: white with an accent border;
    * `neutral` is a toggle at rest, filled with the chip colour so it stands off a card;
    * `soon` is a pressed toggle in the expiry `soon` pair (Running low);
+   * `well` is the sheet's Close: a recessed 6 pt-radius square (Canopy 5);
    * `canopyChip` (Back) and `key` (the gold "+") are the Canopy header's square buttons, radius 8.
    */
   tone?:
@@ -28,6 +34,7 @@ export type IconButtonProps = Omit<
     | 'accentOutline'
     | 'neutral'
     | 'soon'
+    | 'well'
     | 'canopyChip'
     | 'key';
   /** Width and height in px: 44 for headers, 40 inside dense form rows, 34 inside a pill. */
@@ -99,6 +106,12 @@ export function IconButton({
       border: `1px solid ${color.urgentBorder}`,
       '&:hover': { backgroundColor: color.urgentRow },
     },
+    well: {
+      backgroundColor: themeColor.fieldBg,
+      color: themeColor.ink2,
+      boxShadow: shadow.recess,
+      '&:hover': { filter: 'brightness(.97)' },
+    },
     canopyChip: {
       backgroundColor: canopy.chip,
       color: canopy.ink,
@@ -129,7 +142,9 @@ export function IconButton({
         flexShrink: 0,
         ...(tone === 'canopyChip' || tone === 'key'
           ? { borderRadius: radius.btn }
-          : {}),
+          : tone === 'well'
+            ? { borderRadius: radius.control }
+            : {}),
         ...toneStyles,
         ...(ariaDisabled ? { opacity: 0.35, cursor: 'default' } : {}),
         '&:focus-visible': {
