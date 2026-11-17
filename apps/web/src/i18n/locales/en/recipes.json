@@ -192,6 +192,10 @@
     "toBuy_other": "{{count}} to buy",
     "addMissing_one": "Add {{count}} missing to Shopping List",
     "addMissing_other": "Add {{count}} missing to Shopping List",
+    "addMissingShort_one": "Add {{count}} missing",
+    "addMissingShort_other": "Add {{count}} missing",
+    "coverageCount": "{{covered}} of {{total}}",
+    "coverageLabel": "in your Pantry",
     "addedList": "Added to your list",
     "onListShort": "on list",
     "addLine": "Add {{name}} to Shopping List",
@@ -264,7 +268,8 @@
     "oneShort_one": "{{count}} Recipe is one ingredient short",
     "oneShort_other": "{{count}} Recipes are one ingredient short",
     "nothingInPantry": "Nothing to cook from your Pantry yet",
-    "addWhatYouHave": "Add what you have"
+    "addWhatYouHave": "Add what you have",
+    "seeThem": "See them"
   },
   "cookTonightPage": {
     "title": "Cook tonight",

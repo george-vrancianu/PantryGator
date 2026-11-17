@@ -2,6 +2,7 @@
   "title": "Cumpărături",
   "summary": {
     "toBuy": "{{count}} de cumpărat",
+    "toBuyLabel": "de cumpărat",
     "inBasket": "{{checked}} din {{total}} bifate",
     "progress": "Progresul listei de cumpărături",
     "tickedOff_one": "{{count}} produs bifat",

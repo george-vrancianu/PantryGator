@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import { canopy, radius } from '../theme/themeVars';
 
 export type ProgressBarProps = {
   /** Accessible name of the bar. */
@@ -8,6 +9,8 @@ export type ProgressBarProps = {
   max: number;
   /** `large` is 8 px high, `default` 6. */
   size?: 'default' | 'large';
+  /** `canopy` is the 5 px gold bar on the Canopy header (Canopy handoff section 7.2). */
+  tone?: 'canopy';
 };
 
 /** Themes handoff section 4: an `accent` fill on the `chip` track. */
@@ -16,8 +19,13 @@ export function ProgressBar({
   value,
   max,
   size = 'default',
+  tone,
 }: ProgressBarProps) {
-  const height = size === 'large' ? 8 : 6;
+  const onCanopy = tone === 'canopy';
+  const height = onCanopy ? 5 : size === 'large' ? 8 : 6;
+  const corner = onCanopy
+    ? { borderRadius: radius.tag }
+    : { borderRadius: radius.pill };
   const percent =
     max > 0 ? Math.min(100, Math.max(0, Math.round((value / max) * 100))) : 0;
   return (
@@ -29,8 +37,13 @@ export function ProgressBar({
       aria-valuenow={percent}
       sx={{
         height,
-        borderRadius: '999px',
-        backgroundColor: 'pp.chip',
+        ...corner,
+        ...(onCanopy
+          ? {
+              backgroundColor: canopy.progressTrack,
+              boxShadow: canopy.progressShadow,
+            }
+          : { backgroundColor: 'pp.chip' }),
         overflow: 'hidden',
       }}
     >
@@ -38,8 +51,8 @@ export function ProgressBar({
         sx={{
           height,
           width: `${percent}%`,
-          borderRadius: '999px',
-          backgroundColor: 'pp.accent',
+          ...corner,
+          backgroundColor: onCanopy ? canopy.gold : 'pp.accent',
         }}
       />
     </Box>

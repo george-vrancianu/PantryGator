@@ -98,6 +98,11 @@ export {
 } from './atoms/Button';
 export { Card, type CardProps } from './atoms/Card';
 export { Chip, type ChipProps } from './atoms/Chip';
+export {
+  CanopySearchField,
+  type CanopySearchFieldProps,
+} from './atoms/CanopySearchField';
+export { LocationChip, type LocationChipProps } from './atoms/LocationChip';
 export { Checkbox, type CheckboxProps } from './atoms/Checkbox';
 export { Collapse, type CollapseProps } from './atoms/Collapse';
 export { Popper, type PopperProps } from './atoms/Popper';

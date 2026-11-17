@@ -22,6 +22,18 @@ describe('HeaderButton', () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
+  it('can carry a longer accessible name that contains its label', () => {
+    renderWithTheme(
+      <HeaderButton tone="key" aria-label="Add 3 missing to Shopping List">
+        Add 3 missing
+      </HeaderButton>,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Add 3 missing to Shopping List' })
+        .textContent,
+    ).toBe('Add 3 missing');
+  });
+
   it('is a link when given an href', () => {
     renderWithTheme(<HeaderButton href="/settings">Settings</HeaderButton>);
     expect(

@@ -48,6 +48,8 @@ export const shadow = {
   /** Sheets, popovers, toasts, the dock. */
   float: pp('shadow-float'),
   segment: pp('shadow-seg'),
+  /** The selected Location chip's lift. */
+  chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
 } as const;
 
 /** The Canopy (the green header band) and the working sheet it sits behind (Canopy handoff section 3). */
@@ -69,16 +71,28 @@ export const canopy = {
   /** The header buttons' fill (labelled secondary actions and Back) and its 1px line. */
   chip: pp('canopy-chip'),
   chipLine: pp('canopy-chip-line'),
+  /** The 1px rules on the Canopy (between the Recipe facts). */
+  line: pp('canopy-line'),
   /** The gold key: the page's primary action (the "+" and Save). Paint `keyBg` with `background`. */
   keyBg: pp('key-bg'),
   keyLine: pp('key-line'),
   keyShadow: pp('shadow-key'),
   goldInk: pp('gold-ink'),
   gold: pp('gold'),
+  /** A gold-outlined tag on the Canopy (the "Your family's" tag on a Recipe): its fill and 1px line. */
+  goldTint: 'rgba(232,203,124,.16)',
+  goldLine: 'rgba(232,203,124,.4)',
   /** The glint copy of the texture. */
   texGlint: pp('tex-glint'),
   /** The 1px inner highlight on a header chip. */
   chipHighlight: 'inset 0 1px 0 rgba(255,255,255,.08)',
+  /** The search field and tracks recessed into the header, with their line and inner shadow. */
+  field: pp('canopy-field'),
+  fieldLine: pp('canopy-field-line'),
+  fieldShadow: pp('shadow-canopy-field'),
+  /** A progress bar's track on the header, with its inner shadow. */
+  progressTrack: 'rgba(255,255,255,.16)',
+  progressShadow: 'inset 0 1px 1px rgba(0,0,0,.3)',
 } as const;
 
 /** Pantry Health on the Canopy: the dial's band ends and the lamps' windows and lit colours (always on the dark header). */

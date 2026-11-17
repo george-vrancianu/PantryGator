@@ -20,7 +20,8 @@ import { ShelfCard } from './components/ShelfCard';
 import { AddToPantrySheet } from './components/AddToPantrySheet';
 import { LocationSection } from './components/LocationSection';
 import { RowKeyHints } from './components/RowKeyHints';
-import { PantryFilters } from './components/PantryFilters';
+import { LocationChips } from './components/LocationChips';
+import { PantrySearch } from './components/PantrySearch';
 import { usePantryRowHint } from './hooks/usePantryRowHint';
 import { usePantryScreen } from './hooks/usePantryScreen';
 
@@ -57,6 +58,14 @@ export function PantryPage() {
       <Screen
         title={t('pantry:title')}
         status={screen.isEmpty ? t('pantry:empty.subtitle') : undefined}
+        header={
+          !screen.isEmpty && !screen.error ? (
+            <PantrySearch
+              query={screen.query}
+              onQueryChange={screen.setQuery}
+            />
+          ) : undefined
+        }
         primary={{
           label: t('pantry:add'),
           icon: <PlusIcon size={20} />,
@@ -91,9 +100,7 @@ export function PantryPage() {
             />
           ) : null}
           {!screen.isEmpty && !screen.isLoading && !screen.error ? (
-            <PantryFilters
-              query={screen.query}
-              onQueryChange={screen.setQuery}
+            <LocationChips
               filter={screen.filter}
               onFilterChange={screen.setFilter}
               counts={screen.counts}

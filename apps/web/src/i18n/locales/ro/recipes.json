@@ -204,6 +204,11 @@
     "addMissing_one": "Adaugă {{count}} ingredient lipsă în lista de cumpărături",
     "addMissing_few": "Adaugă {{count}} ingrediente lipsă în lista de cumpărături",
     "addMissing_other": "Adaugă {{count}} de ingrediente lipsă în lista de cumpărături",
+    "addMissingShort_one": "Adaugă {{count}} ingredient lipsă",
+    "addMissingShort_few": "Adaugă {{count}} ingrediente lipsă",
+    "addMissingShort_other": "Adaugă {{count}} de ingrediente lipsă",
+    "coverageCount": "{{covered}} din {{total}}",
+    "coverageLabel": "în Cămara ta",
     "addedList": "Adăugat în listă",
     "onListShort": "pe listă",
     "addLine": "Adaugă {{name}} în lista de cumpărături",
@@ -285,7 +290,8 @@
     "oneShort_few": "{{count}} rețete mai au nevoie de un ingredient",
     "oneShort_other": "{{count}} de rețete mai au nevoie de un ingredient",
     "nothingInPantry": "Nimic de gătit din Cămara ta încă",
-    "addWhatYouHave": "Adaugă ce ai"
+    "addWhatYouHave": "Adaugă ce ai",
+    "seeThem": "Vezi-le"
   },
   "cookTonightPage": {
     "title": "Gătește diseară",

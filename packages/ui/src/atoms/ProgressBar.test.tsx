@@ -31,4 +31,11 @@ describe('ProgressBar', () => {
         .getAttribute('aria-valuenow'),
     ).toBe('25');
   });
+
+  it('is a 5 px gold bar on the Canopy that still reports its progress', () => {
+    render(<ProgressBar tone="canopy" label="Bought" value={1} max={4} />);
+    const bar = screen.getByRole('progressbar', { name: 'Bought' });
+    expect(bar.getAttribute('aria-valuenow')).toBe('25');
+    expect(getComputedStyle(bar).height).toBe('5px');
+  });
 });
