@@ -7,6 +7,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '../../lib/catalog';
 import { defaultExpiryDate, type Batch } from '../../lib/pantry';
@@ -3320,7 +3321,20 @@ describe('PantryPage', () => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
         const calls = stubManaged(batches, options);
-        renderWithProviders(<PantryPage />);
+        renderWithProviders(
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <PantryPage />
+                  <Link to="/other">Leave</Link>
+                </>
+              }
+            />
+            <Route path="/other" element={<p>Elsewhere</p>} />
+          </Routes>,
+        );
         const toggle = await screen.findByRole('button', { name: /^Milk/ });
         await user.click(toggle);
         return { user, toggle, calls };
@@ -3344,6 +3358,64 @@ describe('PantryPage', () => {
           ),
         );
         expect(batchRows()).toHaveLength(1);
+      });
+
+      it('sends the delete when the Member leaves the page during the Undo window', async () => {
+        const { user, calls } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        expect(deletes(calls)).toHaveLength(0);
+
+        await user.click(screen.getByRole('link', { name: 'Leave' }));
+
+        expect(await screen.findByText('Elsewhere')).toBeVisible();
+        await waitFor(() =>
+          expect(deletes(calls).map((c) => c.key)).toEqual([
+            'DELETE /api/pantry/batches/milk-2',
+          ]),
+        );
+        await waitFor(() =>
+          expect(screen.queryByText('Removed Milk')).toBeNull(),
+        );
+      });
+
+      it('sends the delete on pagehide', async () => {
+        const { user, calls } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        expect(deletes(calls)).toHaveLength(0);
+
+        act(() => {
+          window.dispatchEvent(new Event('pagehide'));
+        });
+
+        await waitFor(() =>
+          expect(deletes(calls).map((c) => c.key)).toEqual([
+            'DELETE /api/pantry/batches/milk-2',
+          ]),
+        );
+      });
+
+      it('keeps the Batch hidden when a refetch lands while the delete waits', async () => {
+        const { user, calls } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        await waitFor(() => expect(batchRows()).toHaveLength(1));
+
+        // The server still holds the Batch (the delete has not been sent), and the list refetches.
+        act(() => {
+          focusManager.setFocused(false);
+          focusManager.setFocused(true);
+        });
+        await waitFor(() =>
+          expect(calls.filter((c) => c.key === 'GET /api/pantry')).toHaveLength(
+            2,
+          ),
+        );
+
+        expect(batchRows()).toHaveLength(1);
+        expect(screen.getByText('Removed Milk')).toBeInTheDocument();
+        expect(deletes(calls)).toHaveLength(0);
       });
 
       it('brings the Batch back with an error toast when the delete fails', async () => {
