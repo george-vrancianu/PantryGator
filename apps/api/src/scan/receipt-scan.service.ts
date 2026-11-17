@@ -10,7 +10,7 @@ import { MeteredAiService } from '../usage/metered-ai.service';
 import type { CatalogLocale, ScanLanguage } from '../catalog/catalog.schemas';
 import { catalogIndexInstruction } from '../ingredients/ingredient-catalog';
 import { IngredientCatalogService } from '../ingredients/ingredient-catalog.service';
-import { deriveReceiptQuantity } from './receipt-quantity';
+import { deriveScanQuantity } from './scan-quantity';
 import { fallbackNamePrompt, scanLanguagePrompt } from './scan-language';
 import {
   receiptScanModelJsonSchema,
@@ -129,7 +129,7 @@ export class ReceiptScanService {
             };
           }
 
-          const derivedQuantity = deriveReceiptQuantity(line, line.sourceText);
+          const derivedQuantity = deriveScanQuantity(line, line.sourceText);
 
           const match = this.ingredientCatalog.validateMatch(
             catalog,

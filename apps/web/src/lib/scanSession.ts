@@ -130,7 +130,9 @@ const waiting = (state: SessionState) => {
 /** Barcode cards are looked up at once and never wait for, or count against, the Scan Cap. */
 export const isBarcodeMode = (mode: CameraMode): mode is 'barcode' =>
   mode === 'barcode';
-export const isBarcodeCard = (scan: Pick<SessionScan, 'mode'>) =>
+export const isBarcodeCard = (
+  scan: Pick<SessionScan, 'mode'>,
+): scan is Pick<SessionScan, 'mode'> & { mode: 'barcode' } =>
   isBarcodeMode(scan.mode);
 
 /** The copy key (`failed` or `lookupFailed`) that says a card failed: a Barcode card did a lookup, not a read. */

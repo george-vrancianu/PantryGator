@@ -2,7 +2,7 @@ import {
   parseReceiptScanOutput,
   ReceiptScanOutputError,
 } from './receipt-scan.schemas';
-import { deriveReceiptQuantity } from './receipt-quantity';
+import { deriveScanQuantity } from './scan-quantity';
 
 describe('receipt scan schemas', () => {
   const emptyReceipt = { merchantName: null, purchaseDate: null, lines: [] };
@@ -171,7 +171,7 @@ describe('receipt scan schemas', () => {
 
   it('derives package totals from a size embedded in the receipt name', () => {
     expect(
-      deriveReceiptQuantity(
+      deriveScanQuantity(
         {
           quantityType: 'package_size',
           purchasedCount: 2,
@@ -192,7 +192,7 @@ describe('receipt scan schemas', () => {
 
   it('handles locale-formatted measured quantities and plain counts', () => {
     expect(
-      deriveReceiptQuantity(
+      deriveScanQuantity(
         {
           quantityType: 'measured',
           purchasedCount: 1,
@@ -204,7 +204,7 @@ describe('receipt scan schemas', () => {
     ).toMatchObject({ quantity: 1.24, unit: 'kg' });
 
     expect(
-      deriveReceiptQuantity({
+      deriveScanQuantity({
         quantityType: 'count',
         purchasedCount: 3,
         quantityPerItem: null,
@@ -215,7 +215,7 @@ describe('receipt scan schemas', () => {
 
   it('promotes a count to package size when the printed line contains a unit', () => {
     expect(
-      deriveReceiptQuantity(
+      deriveScanQuantity(
         {
           quantityType: 'count',
           purchasedCount: 1,
