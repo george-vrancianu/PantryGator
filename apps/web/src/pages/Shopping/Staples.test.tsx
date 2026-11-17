@@ -552,6 +552,69 @@ describe('StaplesPage', () => {
     });
   });
 
+  describe('removing a Staple, leaving and refetching', () => {
+    const setup = async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const { fetchMock, calls } = stubApi({
+        'GET /api/staples': () => Response.json({ staples: [staple()] }),
+        'DELETE /api/staples/s1': () => new Response(null, { status: 204 }),
+      });
+      vi.stubGlobal('fetch', fetchMock);
+      const view = renderWithProviders(<StaplesPage />);
+      await screen.findByRole('group', { name: 'Milk' });
+      act(() => rowOf('Milk').focus());
+      await user.keyboard('{Delete}');
+      await user.click(screen.getByRole('button', { name: 'Remove' }));
+      await waitFor(() =>
+        expect(screen.queryByRole('group', { name: 'Milk' })).toBeNull(),
+      );
+      expect(await screen.findByText('Removed Milk')).toBeVisible();
+      expect(deletes(calls)).toEqual([]);
+      return { calls, unmount: view.unmount };
+    };
+
+    it('sends the delete when the Member leaves the page during the Undo window', async () => {
+      const { calls, unmount } = await setup();
+
+      unmount();
+
+      await waitFor(() =>
+        expect(deletes(calls)).toEqual(['DELETE /api/staples/s1']),
+      );
+    });
+
+    it('sends the delete on pagehide', async () => {
+      const { calls } = await setup();
+
+      act(() => {
+        window.dispatchEvent(new Event('pagehide'));
+      });
+
+      await waitFor(() =>
+        expect(deletes(calls)).toEqual(['DELETE /api/staples/s1']),
+      );
+    });
+
+    it('keeps the row hidden when a refetch lands while the delete waits', async () => {
+      const { calls } = await setup();
+
+      // The server still lists the Staple (the delete has not been sent), and the list refetches.
+      act(() => {
+        window.dispatchEvent(new Event('visibilitychange'));
+      });
+      await waitFor(() =>
+        expect(
+          calls.filter((c) => c.key === 'GET /api/staples').length,
+        ).toBeGreaterThan(1),
+      );
+
+      expect(screen.queryByRole('group', { name: 'Milk' })).toBeNull();
+      expect(screen.getByText('Removed Milk')).toBeVisible();
+      expect(deletes(calls)).toEqual([]);
+    });
+  });
+
   describe('removing a Staple, further cases', () => {
     const removeMilk = async () => {
       const row = rowOf('Milk');

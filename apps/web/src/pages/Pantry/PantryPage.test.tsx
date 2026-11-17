@@ -3320,10 +3320,10 @@ describe('PantryPage', () => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
         const calls = stubManaged(batches, options);
-        renderWithProviders(<PantryPage />);
+        const { unmount } = renderWithProviders(<PantryPage />);
         const toggle = await screen.findByRole('button', { name: /^Milk/ });
         await user.click(toggle);
-        return { user, toggle, calls };
+        return { user, toggle, calls, unmount };
       }
       const deletes = (calls: { key: string }[]) =>
         calls.filter((c) => c.key.startsWith('DELETE'));
@@ -3344,6 +3344,60 @@ describe('PantryPage', () => {
           ),
         );
         expect(batchRows()).toHaveLength(1);
+      });
+
+      it('sends the delete when the Member leaves the page during the Undo window', async () => {
+        const { user, calls, unmount } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        expect(deletes(calls)).toHaveLength(0);
+
+        unmount();
+
+        await waitFor(() =>
+          expect(deletes(calls).map((c) => c.key)).toEqual([
+            'DELETE /api/pantry/batches/milk-2',
+          ]),
+        );
+      });
+
+      it('sends the delete on pagehide', async () => {
+        const { user, calls } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        expect(deletes(calls)).toHaveLength(0);
+
+        act(() => {
+          window.dispatchEvent(new Event('pagehide'));
+        });
+
+        await waitFor(() =>
+          expect(deletes(calls).map((c) => c.key)).toEqual([
+            'DELETE /api/pantry/batches/milk-2',
+          ]),
+        );
+      });
+
+      it('keeps the Batch hidden when a refetch lands while the delete waits', async () => {
+        const { user, calls } = await openMilk();
+        await removeBatch(user);
+        await screen.findByText('Removed Milk');
+        await waitFor(() => expect(batchRows()).toHaveLength(1));
+
+        // The server still holds the Batch (the delete has not been sent), and the list refetches.
+        act(() => {
+          focusManager.setFocused(false);
+          focusManager.setFocused(true);
+        });
+        await waitFor(() =>
+          expect(calls.filter((c) => c.key === 'GET /api/pantry')).toHaveLength(
+            2,
+          ),
+        );
+
+        expect(batchRows()).toHaveLength(1);
+        expect(screen.getByText('Removed Milk')).toBeInTheDocument();
+        expect(deletes(calls)).toHaveLength(0);
       });
 
       it('brings the Batch back with an error toast when the delete fails', async () => {
