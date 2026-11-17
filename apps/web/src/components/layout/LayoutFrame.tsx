@@ -5,6 +5,7 @@ import {
   gutterLeft,
   gutterRight,
   palette,
+  radius,
   SAFE_TOP,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
@@ -186,7 +187,7 @@ export function LayoutFrame({ outlet, withDock, dockClearance, wide }: Props) {
             overflow: 'hidden',
             mt: `-${CANOPY_UNDER_SHEET}px`,
             background: canopy.sheetBg,
-            borderRadius: `${canopy.sheetRadius} ${canopy.sheetRadius} 0 0`,
+            borderRadius: radius.sheetTop,
             boxShadow: canopy.sheetShadow,
           }}
         >

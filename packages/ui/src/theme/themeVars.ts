@@ -41,6 +41,16 @@ export const radius = {
   tag: pp('r-tag'),
   /** Tags and pill buttons: round in every Theme. */
   pill: '999px',
+  /** A layer that takes its parent's corners (the Health lamp's glow layers). */
+  inherit: 'inherit',
+  /** The Health lamp's case. */
+  lamp: '7px',
+  /** The Gator bubble's count badge. */
+  bubbleBadge: '10px',
+  /** The Gator bubble's speech label. */
+  bubbleLabel: '8px',
+  /** The Canopy sheet: rounded on top only. */
+  sheetTop: `${pp('r-sheet')} ${pp('r-sheet')} 0 0`,
 } as const;
 
 /** A radius for an element nested `gap` px inside one with `outer`, so the curves stay concentric. */
@@ -54,6 +64,9 @@ export const shadow = {
   /** Sheets, popovers, toasts, the dock. */
   float: pp('shadow-float'),
   segment: pp('shadow-seg'),
+  /** A tile recessed into the sheet (the empty Meal plan's icon tile). */
+  recess:
+    'inset 0 1px 2px rgba(20,30,22,.18), inset 0 0 0 1px rgba(20,30,22,.05)',
   /** The selected Location chip's lift. */
   chipOn: '0 6px 10px -6px rgba(10,16,12,.6)',
 } as const;
@@ -118,10 +131,17 @@ export const healthLamp = {
   stale: pp('lamp-stale'),
   window: pp('lamp-window'),
   windowOff: pp('lamp-window-off'),
-  /** The lamp case's corner radius. */
-  radius: '7px',
   /** The recess shadow inside an unlit or lit window. */
   windowShadow: 'inset 0 1px 3px rgba(0,0,0,.5)',
+} as const;
+
+/** Alpha masks (black is the visible part, so these are not Theme colours): the Canopy texture's fade and its moving window, and the Location chips' right-edge fade. */
+export const mask = {
+  textureFade:
+    'linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%)',
+  textureWindow:
+    'linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%)',
+  chipsEdge: 'linear-gradient(90deg, #000 84%, transparent 100%)',
 } as const;
 
 /** The Dashboard's one dark "hero" card (the Shopping tile; gold with dark text in Dark): fill, edge, lift and its text colours. */

@@ -1,4 +1,5 @@
 import {
+  ArrowRightIcon,
   BangIcon,
   Box,
   Button,
@@ -7,6 +8,7 @@ import {
   displayType,
   focusRing,
   radius,
+  shadow,
   PlusIcon,
   ShoppingIcon,
   Tag,
@@ -512,11 +514,12 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: radius.control,
-                bgcolor: tokens.color.accentTint,
-                color: tokens.color.accentOnTint,
+                bgcolor: tokens.color.chipNeutral,
+                boxShadow: shadow.recess,
+                color: color.ink2,
               }}
             >
-              <CalendarIcon size={18} />
+              <CalendarIcon size={19} />
             </Box>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box
@@ -525,11 +528,21 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                 sx={{
                   ...plainAction,
                   display: 'flex',
-                  alignItems: 'center',
+                  // The label and the line under it are both 44 pt targets that
+                  // must not overlap. The text block is 11 (label) + 6 (gap) +
+                  // 18 (line) = 35 px. The label's box is 44 tall and ends at
+                  // the line's top: it reaches 44 - 17 = 27 px above the label
+                  // text (mt -27 keeps 17 px in the layout), its text sits at
+                  // the bottom with 6 px of padding. The line's box (below)
+                  // starts there and reaches 44 - 18 = 26 px below its text.
+                  // The boxes meet at the boundary, so nothing overlaps.
+                  boxSizing: 'border-box',
+                  alignItems: 'flex-end',
                   minHeight: 44,
-                  my: '-13px',
+                  pb: '6px',
+                  mt: '-27px',
                   fontSize: 11,
-                  lineHeight: 1,
+                  lineHeight: '11px',
                   fontWeight: 700,
                   letterSpacing: '.1em',
                   textTransform: 'uppercase',
@@ -544,8 +557,13 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   to={`/meal-plans/${view.nextPlanId}`}
                   sx={{
                     ...emptyAction,
+                    display: 'flex',
                     justifyContent: 'flex-start',
-                    my: '-13px',
+                    // Text at the top of its 44 pt box; the box reaches 26 px
+                    // below (see the label above).
+                    alignItems: 'flex-start',
+                    lineHeight: '18px',
+                    mb: '-26px',
                     fontSize: 15,
                     fontWeight: 600,
                     color: tokens.color.ink,
@@ -560,8 +578,8 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   component="span"
                   sx={{
                     display: 'block',
-                    mt: '4px',
                     fontSize: 15,
+                    lineHeight: '18px',
                     fontWeight: 600,
                     color: tokens.color.ink,
                   }}
@@ -578,10 +596,10 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     ? `/meal-plans/${view.plan?.id}`
                     : `/meal-plans/new?start=${todayIso}`
                 }
-                sx={emptyAction}
+                sx={{ ...emptyAction, gap: '4px' }}
               >
                 {t('mealPlan.planWeek')}
-                <span aria-hidden="true"> →</span>
+                <ArrowRightIcon size={15} aria-hidden="true" />
               </Box>
             ) : null}
           </Box>

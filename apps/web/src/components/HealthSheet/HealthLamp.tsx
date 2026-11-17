@@ -8,6 +8,7 @@ import {
   LampLowIcon,
   LampNothingNewIcon,
   LampSoonIcon,
+  radius,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import type { ComponentType } from 'react';
@@ -75,7 +76,7 @@ export function HealthLamp({ light, size = 40, check = false }: Props) {
     inset: 0,
     display: 'grid',
     placeItems: 'center',
-    borderRadius: 'inherit',
+    borderRadius: radius.inherit,
     transition: fade,
   } as const;
 
@@ -92,7 +93,7 @@ export function HealthLamp({ light, size = 40, check = false }: Props) {
         flex: 'none',
         boxSizing: 'border-box',
         display: 'block',
-        borderRadius: healthLamp.radius,
+        borderRadius: radius.lamp,
         boxShadow: healthLamp.windowShadow,
         background: healthLamp.windowOff,
         border: `1px solid ${mix(canopy.ink, 9)}`,

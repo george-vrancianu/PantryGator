@@ -19,6 +19,7 @@ import {
   CircleAlert,
   CircleCheck,
   ArrowLeft,
+  ArrowRight,
   ArrowLeftRight,
   Users,
   GitBranch,
@@ -389,6 +390,7 @@ export const WarningIcon = lucide(TriangleAlert);
 export const AlertIcon = lucide(CircleAlert);
 export const CheckCircleIcon = lucide(CircleCheck);
 export const ArrowLeftIcon = lucide(ArrowLeft);
+export const ArrowRightIcon = lucide(ArrowRight);
 export const SwapIcon = lucide(ArrowLeftRight);
 export const PeopleIcon = lucide(Users);
 export const BranchIcon = lucide(GitBranch);

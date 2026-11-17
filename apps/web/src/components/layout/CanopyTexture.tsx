@@ -1,4 +1,4 @@
-import { Box, canopy, usePrefersReducedMotion } from '@pocket-pantry/ui';
+import { Box, canopy, mask, usePrefersReducedMotion } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
@@ -9,8 +9,8 @@ import {
 } from './canopyTexture';
 import { TRANSITION_MS } from './timing';
 
-const MASK = `linear-gradient(205deg, #000 8%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0.2) 100%)`;
-const WINDOW = `linear-gradient(100deg, transparent 0%, #000 50%, transparent 100%)`;
+const MASK = mask.textureFade;
+const WINDOW = mask.textureWindow;
 
 /** True while the page is hidden: the loops pause so they do not burn battery in the background. */
 function usePageHidden() {
