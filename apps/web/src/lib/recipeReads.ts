@@ -166,8 +166,6 @@ export function createRecipeReads() {
   const forced = new Set<number>();
   /** Reads already tried again after a network error: one automatic retry each. */
   const retried = new Set<number>();
-  /** How many failed or capped reads the strip has announced as an alert. Outlives the strip, which remounts. */
-  let announcedFailed = 0;
   /** The pending automatic retry of a read: it keeps its slot meanwhile. */
   const retryTimers = new Map<number, ReturnType<typeof setTimeout>>();
 
@@ -387,10 +385,6 @@ export function createRecipeReads() {
       pump();
     },
     discard,
-    announcedFailed: () => announcedFailed,
-    announceFailed(failed: number) {
-      announcedFailed = failed;
-    },
     /** Drops every read silently (sign-out). */
     clear() {
       controllers.forEach((controller) => controller.abort());
@@ -399,7 +393,6 @@ export function createRecipeReads() {
       retried.clear();
       retryTimers.forEach((timer) => clearTimeout(timer));
       retryTimers.clear();
-      announcedFailed = 0;
       set([]);
     },
   };
