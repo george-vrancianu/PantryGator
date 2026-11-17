@@ -7,6 +7,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '../../lib/catalog';
 import { defaultExpiryDate, type Batch } from '../../lib/pantry';
@@ -3320,10 +3321,23 @@ describe('PantryPage', () => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
         const calls = stubManaged(batches, options);
-        const { unmount } = renderWithProviders(<PantryPage />);
+        renderWithProviders(
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <PantryPage />
+                  <Link to="/other">Leave</Link>
+                </>
+              }
+            />
+            <Route path="/other" element={<p>Elsewhere</p>} />
+          </Routes>,
+        );
         const toggle = await screen.findByRole('button', { name: /^Milk/ });
         await user.click(toggle);
-        return { user, toggle, calls, unmount };
+        return { user, toggle, calls };
       }
       const deletes = (calls: { key: string }[]) =>
         calls.filter((c) => c.key.startsWith('DELETE'));
@@ -3347,17 +3361,21 @@ describe('PantryPage', () => {
       });
 
       it('sends the delete when the Member leaves the page during the Undo window', async () => {
-        const { user, calls, unmount } = await openMilk();
+        const { user, calls } = await openMilk();
         await removeBatch(user);
         await screen.findByText('Removed Milk');
         expect(deletes(calls)).toHaveLength(0);
 
-        unmount();
+        await user.click(screen.getByRole('link', { name: 'Leave' }));
 
+        expect(await screen.findByText('Elsewhere')).toBeVisible();
         await waitFor(() =>
           expect(deletes(calls).map((c) => c.key)).toEqual([
             'DELETE /api/pantry/batches/milk-2',
           ]),
+        );
+        await waitFor(() =>
+          expect(screen.queryByText('Removed Milk')).toBeNull(),
         );
       });
 

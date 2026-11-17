@@ -6,6 +6,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '../../lib/catalog';
 import type { ShoppingList } from '../../lib/shopping';
@@ -561,7 +562,20 @@ describe('StaplesPage', () => {
         'DELETE /api/staples/s1': () => new Response(null, { status: 204 }),
       });
       vi.stubGlobal('fetch', fetchMock);
-      const view = renderWithProviders(<StaplesPage />);
+      renderWithProviders(
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <StaplesPage />
+                <Link to="/other">Leave</Link>
+              </>
+            }
+          />
+          <Route path="/other" element={<p>Elsewhere</p>} />
+        </Routes>,
+      );
       await screen.findByRole('group', { name: 'Milk' });
       act(() => rowOf('Milk').focus());
       await user.keyboard('{Delete}');
@@ -571,16 +585,21 @@ describe('StaplesPage', () => {
       );
       expect(await screen.findByText('Removed Milk')).toBeVisible();
       expect(deletes(calls)).toEqual([]);
-      return { calls, unmount: view.unmount };
+      return { user, calls };
     };
 
     it('sends the delete when the Member leaves the page during the Undo window', async () => {
-      const { calls, unmount } = await setup();
+      const { user, calls } = await setup();
 
-      unmount();
+      await user.click(screen.getByRole('link', { name: 'Leave' }));
+
+      expect(await screen.findByText('Elsewhere')).toBeVisible();
 
       await waitFor(() =>
         expect(deletes(calls)).toEqual(['DELETE /api/staples/s1']),
+      );
+      await waitFor(() =>
+        expect(screen.queryByText('Removed Milk')).toBeNull(),
       );
     });
 
@@ -604,9 +623,9 @@ describe('StaplesPage', () => {
         window.dispatchEvent(new Event('visibilitychange'));
       });
       await waitFor(() =>
-        expect(
-          calls.filter((c) => c.key === 'GET /api/staples').length,
-        ).toBeGreaterThan(1),
+        expect(calls.filter((c) => c.key === 'GET /api/staples')).toHaveLength(
+          2,
+        ),
       );
 
       expect(screen.queryByRole('group', { name: 'Milk' })).toBeNull();
