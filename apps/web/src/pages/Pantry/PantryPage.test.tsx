@@ -2866,7 +2866,7 @@ describe('PantryPage', () => {
       });
     });
 
-    describe('the lifted Ingredient card', () => {
+    describe('the open Ingredient card', () => {
       const fridgeOfFour = () =>
         ['Butter', 'Eggs', 'Milk', 'Yogurt'].map((name, index) =>
           batch({
@@ -2904,48 +2904,32 @@ describe('PantryPage', () => {
         ]);
       });
 
-      it('lifts the open Ingredient, and its neighbours round the corners next to it', async () => {
+      it('opens an Ingredient in place: no block changes its corners or margins', async () => {
         const user = userEvent.setup();
         stubManaged(fridgeOfFour());
         renderWithProviders(<PantryPage />);
-        await user.click(await screen.findByRole('button', { name: /^Eggs/ }));
+        await screen.findByRole('button', { name: /^Milk/ });
+        const closed = blocks().map(corners);
 
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', '0', '0'],
-          ['0', '0', 'r', 'r'],
-        ]);
-        expect(blocks()[1]).toHaveStyle({
-          marginTop: '10px',
-          marginBottom: '10px',
-          marginLeft: '-6px',
-          marginRight: '-6px',
-        });
-        expect(blocks()[0]).toHaveStyle({ marginTop: '0px' });
-      });
-
-      it('rounds all four corners of an open first or last block', async () => {
-        const user = userEvent.setup();
-        stubManaged(fridgeOfFour());
-        renderWithProviders(<PantryPage />);
-        await user.click(
-          await screen.findByRole('button', { name: /^Butter/ }),
-        );
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', 'r', 'r'],
-          ['r', 'r', '0', '0'],
-          ['0', '0', '0', '0'],
-          ['0', '0', 'r', 'r'],
-        ]);
-
-        await user.click(screen.getByRole('button', { name: /^Yogurt/ }));
-        expect(blocks().map(corners)).toEqual([
-          ['r', 'r', '0', '0'],
-          ['0', '0', '0', '0'],
-          ['0', '0', 'r', 'r'],
-          ['r', 'r', 'r', 'r'],
-        ]);
+        for (const name of ['Butter', 'Eggs', 'Yogurt']) {
+          const toggle = screen.getByRole('button', {
+            name: new RegExp(`^${name}`),
+          });
+          await user.click(toggle);
+          expect(toggle).toHaveAttribute('aria-expanded', 'true');
+          expect(blocks().map(corners)).toEqual(closed);
+          // No block sets a margin, so none moves out of the card.
+          for (const block of blocks()) {
+            const style = getComputedStyle(block);
+            for (const side of [
+              style.marginTop,
+              style.marginRight,
+              style.marginBottom,
+              style.marginLeft,
+            ])
+              expect(['', '0', '0px']).toContain(side);
+          }
+        }
       });
 
       it('numbers the Batch rows, with the amount and date, the Product Description and the tag', async () => {
@@ -3039,7 +3023,7 @@ describe('PantryPage', () => {
           return scrollBy;
         }
 
-        it('scrolls the card clear of the Dock once it has lifted', async () => {
+        it('scrolls the card clear of the Dock once it has opened', async () => {
           const scrollBy = await openWithBottomAt(760);
           expect(scrollBy).not.toHaveBeenCalled();
           await act(() => vi.advanceTimersByTimeAsync(300));
