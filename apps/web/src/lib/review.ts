@@ -8,9 +8,9 @@ import {
 import { defaultExpiryDate, parseQuantity, type NewBatch } from './pantry';
 import { isIsoDate } from './dateFormat';
 import { isValidBarcode } from './gtin';
-import type { CameraMode } from './cameraMode';
+import { isBarcodeMode, type CameraMode } from './cameraMode';
 import type { ExclusionReason, ProposedLine } from './scan';
-import { isBarcodeMode, type SessionScan } from './scanSession';
+import type { SessionScan } from './scanSession';
 
 const FALLBACK_UNIT: Unit = 'pcs';
 

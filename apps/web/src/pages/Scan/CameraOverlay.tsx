@@ -448,7 +448,7 @@ export function CameraOverlay({
                   setMode(picked);
                   dismissCard();
                   setFailed(null);
-                  if (picked === 'barcode') setPendingCode(null);
+                  if (isBarcodeMode(picked)) setPendingCode(null);
                 }}
               />
             ) : (
