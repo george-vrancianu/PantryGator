@@ -26,6 +26,12 @@ import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm
 
 type FormState = { draft: FamilyDraft; guidance: GuidanceDraft | null };
 
+/** The route element: a page per Recipe id, so moving between Recipes keeps nothing of the one left. */
+export function EditFamilyRecipeRoute() {
+  const { id = '' } = useParams();
+  return <EditFamilyRecipePage key={id} />;
+}
+
 /** Edit one of the Family's own Recipes, with its own Tips below. */
 export function EditFamilyRecipePage() {
   const { t } = useTranslation(['recipes', 'common', 'errors']);
@@ -59,7 +65,7 @@ export function EditFamilyRecipePage() {
     error: unknown;
   } | null>(null);
   /** The Recipe document as last stored (what the form reseeded with): a Save with the same document does not resend it. */
-  const storedRecipe = useRef<string | null>(null);
+  const [storedRecipe, setStoredRecipe] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   /** The form as it is now, reported on every change; read when the Member leaves. */
@@ -71,7 +77,7 @@ export function EditFamilyRecipePage() {
   const hasUnsaved = (now: typeof formNow.current) => {
     if (!now || !recipe) return false;
     const recipeBase =
-      storedRecipe.current ?? JSON.stringify(documentOf(draftOfEdit(recipe)));
+      storedRecipe ?? JSON.stringify(documentOf(draftOfEdit(recipe)));
     if (linkRemoved || JSON.stringify(documentOf(now.draft)) !== recipeBase)
       return true;
     const guidanceBase = savedGuidance ?? toGuidanceDraft(recipe);
@@ -199,12 +205,10 @@ export function EditFamilyRecipePage() {
         setSaved(false);
         setFailure(null);
         try {
-          if (storedRecipe.current !== key) {
+          if (storedRecipe !== key) {
             try {
               const stored = await update.mutateAsync(body);
-              storedRecipe.current = JSON.stringify(
-                documentOf(draftOfEdit(stored)),
-              );
+              setStoredRecipe(JSON.stringify(documentOf(draftOfEdit(stored))));
               setLinkRemoved(false);
               setRecipeSaves((count) => count + 1);
             } catch (error) {

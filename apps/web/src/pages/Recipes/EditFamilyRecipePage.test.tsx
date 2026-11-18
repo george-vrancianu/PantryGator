@@ -11,7 +11,9 @@ import type { FamilyRecipeEdit } from '@/lib/familyRecipes';
 import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
 import { stubRowLayout } from '@/test/layout';
 import { stubViewport } from '@/test/viewport';
-import { stubApi } from '@/test/render';
+import { Link, Route, Routes } from 'react-router-dom';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { EditFamilyRecipeRoute } from './EditFamilyRecipePage';
 import type { RecipeTag } from '@/lib/tags';
 import {
   tag,
@@ -2167,5 +2169,52 @@ describe('Edit: Undo, status and badge after a Save (#586 review)', () => {
     expect(
       screen.getByRole('tab', { name: 'Details, Needs attention' }),
     ).toBeVisible();
+  });
+});
+
+describe('EditFamilyRecipeRoute', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('keeps nothing of the Recipe it was on when the Member moves to another', async () => {
+    const user = userEvent.setup({ delay: null });
+    const linked = (id: string): FamilyRecipeEdit => ({
+      ...saved,
+      id,
+      sourceLink: `https://www.example.com/${id}`,
+      sourceLanguage: null,
+    });
+    const { fetchMock } = stubApi({
+      'GET /api/recipes/filters': () => Response.json({ eatingMoments: [] }),
+      'GET /api/recipes/tags': () => Response.json([]),
+      'GET /api/recipes/g/edit': () => Response.json(linked('g')),
+      'GET /api/recipes/h/edit': () => Response.json(linked('h')),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithProviders(
+      <Routes>
+        <Route
+          path="/recipes/:id/edit"
+          element={
+            <>
+              <Link to="/recipes/h/edit">other</Link>
+              <EditFamilyRecipeRoute />
+            </>
+          }
+        />
+      </Routes>,
+      { route: '/recipes/g/edit' },
+    );
+    await openTab(user, 'Details');
+    await user.click(
+      await screen.findByRole('button', { name: 'Remove link' }),
+    );
+    // Leaving with the removal unsaved asks first; the Member agrees.
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    await user.click(screen.getByRole('link', { name: 'other' }));
+    confirm.mockRestore();
+    await openTab(user, 'Details');
+    expect(
+      await screen.findByRole('link', { name: /From example\.com/ }),
+    ).toHaveAttribute('href', 'https://www.example.com/h');
   });
 });
