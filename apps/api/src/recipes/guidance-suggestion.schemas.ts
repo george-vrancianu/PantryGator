@@ -9,12 +9,7 @@ import {
   type GuidanceBody,
   type PairingInput,
 } from './recipe-guidance.schemas';
-import {
-  familyLineInput,
-  lineInput,
-  recipeDocument,
-  MAX_LINES,
-} from './recipes.schemas';
+import { familyLineInput, recipeDocument, MAX_LINES } from './recipes.schemas';
 
 /** Structured-output schema name of a Suggest Guidance answer. */
 export const GUIDANCE_SUGGESTION_SCHEMA_NAME = 'recipe_guidance_suggestion';
@@ -155,14 +150,14 @@ export function emptyGuidanceFields(
 
 /**
  * Suggest Guidance for a Catalog Recipe (an Admin): what the editor holds now, with Catalog
- * lines (an Ingredient or not yet chosen), and the Guidance already on the form.
+ * lines (an Ingredient or an Unmatched name, as in the Family request), and the Guidance already on the form.
  */
 export const adminSuggestGuidanceBody = z
   .object({
     recipe: recipeDocument.extend({
       title: recipeDocument.shape.title.optional(),
       servings: recipeDocument.shape.servings.optional(),
-      lines: z.array(lineInput).max(MAX_LINES).default([]),
+      lines: z.array(familyLineInput).max(MAX_LINES).default([]),
     }),
     guidance: formGuidance,
     /** The saved Catalog Recipe being edited, if any: Pairings may never link to it. */

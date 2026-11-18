@@ -7,6 +7,7 @@ import { seedId } from '../src/catalog/seed/seed-catalog';
 import { DATABASE } from '../src/database/database.constants';
 import type { Database } from '../src/database/database.types';
 import {
+  catalogTranslations,
   eatingMoments,
   ingredientAllergens,
   recipeEatingMoments,
@@ -452,6 +453,30 @@ describe('Suggest Guidance (integration)', () => {
       expect(prompts[0].prompt).toContain('Milk');
       // An Ingredient with the Allergen is never offered, so the model cannot link to it.
       expect(() => catalogIndexIn(prompts[0].prompt, 'Parmesan')).toThrow();
+    });
+
+    it("names the Member's Allergies in their Catalog Language", async () => {
+      await settings
+        .put('/preferences', { locale: 'en', catalogLanguage: 'ro' })
+        .expect(200);
+      await settings.put('/allergies', { allergenIds: [MILK] }).expect(200);
+      const roName = (
+        await database
+          .select({ value: catalogTranslations.value })
+          .from(catalogTranslations)
+          .where(
+            and(
+              eq(catalogTranslations.entityType, 'allergen'),
+              eq(catalogTranslations.entityId, MILK),
+              eq(catalogTranslations.locale, 'ro'),
+              eq(catalogTranslations.kind, 'name'),
+            ),
+          )
+      )[0].value;
+      expect(roName).not.toBe('Milk');
+      propose(idea());
+      await pairingsOf();
+      expect(prompts[0].prompt).toContain(`Allergies to: ${roName}.`);
     });
 
     it('avoids the Allergies of the other Members of the Family', async () => {

@@ -264,7 +264,12 @@ export function useSetGuidance(id: string) {
 /** What Suggest Guidance sends for a Catalog Recipe: the editor as it is now, and the Guidance on the form. */
 export type SuggestCatalogGuidanceRequest = {
   recipe: Partial<Pick<RecipeDocument, 'title' | 'servings'>> &
-    Omit<RecipeDocument, 'title' | 'servings'>;
+    Omit<RecipeDocument, 'title' | 'servings' | 'lines'> & {
+      /** A line without an Ingredient carries its typed name, as on the Family request. */
+      lines: Array<
+        RecipeDocument['lines'][number] & { rawName: string | null }
+      >;
+    };
   guidance: GuidanceInput;
   /** The saved Catalog Recipe being edited. */
   recipeId?: string;

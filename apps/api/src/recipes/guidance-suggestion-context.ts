@@ -1,5 +1,7 @@
 import { and, asc, eq, inArray, isNull } from 'drizzle-orm';
+import { catalogScope } from '../catalog/catalog-scope';
 import type { CatalogLocale } from '../catalog/catalog.schemas';
+import { loadDisplayNames } from '../catalog/display-names';
 import type { Executor } from '../database/database.types';
 import {
   allergens,
@@ -31,6 +33,25 @@ export type SuggestionContext = {
    */
   unsafeLinkIds: ReadonlySet<string>;
 };
+
+/** The most Catalog Recipes the prompt offers as links, so a big Catalog cannot bloat it. */
+export const MAX_LINKABLE_RECIPES = 100;
+
+/**
+ * At most `MAX_LINKABLE_RECIPES` of `rows`: the most recently updated first, ties by id, so the
+ * same Catalog always gives the same list.
+ */
+export function capLinkableRecipes<T extends { id: string; updatedAt: Date }>(
+  rows: readonly T[],
+): T[] {
+  return [...rows]
+    .sort(
+      (a, b) =>
+        b.updatedAt.getTime() - a.updatedAt.getTime() ||
+        (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+    )
+    .slice(0, MAX_LINKABLE_RECIPES);
+}
 
 /** For requests that do not ask for Pairings: nothing to link to, nothing to avoid. */
 export const NO_CONTEXT: SuggestionContext = {
@@ -69,12 +90,23 @@ export async function memberSuggestionContext(
     familyId,
   );
   const avoidIds = [...new Set(allergies.map((a) => a.allergenId))];
-  const avoidAllergens = avoidIds.length
+  const allergenRows = avoidIds.length
     ? await executor
         .select({ id: allergens.id, name: allergens.name })
         .from(allergens)
         .where(inArray(allergens.id, avoidIds))
     : [];
+  // Named in the Member's Catalog Language, falling back to the base name.
+  const allergenNames = await loadDisplayNames(
+    executor,
+    catalogScope(familyId),
+    input.locale,
+    avoidIds,
+  );
+  const avoidAllergens = allergenRows.map((row) => ({
+    id: row.id,
+    name: allergenNames.pick('allergen', row.id, row.name),
+  }));
 
   const unsafeIngredients = avoidIds.length
     ? new Set(
@@ -132,9 +164,12 @@ export async function memberSuggestionContext(
         (i) => !unsafeIngredients.has(i.id),
       ),
     },
-    linkableRecipes: own
-      .filter((r) => !unsafeRecipes.has(r.id))
-      .map((r) => ({ id: r.id, title: titles.get(r.id) ?? r.title })),
+    linkableRecipes: capLinkableRecipes(
+      own.filter((r) => !unsafeRecipes.has(r.id)),
+    ).map((r) => ({
+      id: r.id,
+      title: titles.get(r.id) ?? r.title,
+    })),
     avoidAllergens,
     unsafeLinkIds,
   };
@@ -150,12 +185,18 @@ export async function catalogSuggestionContext(
   },
 ): Promise<SuggestionContext> {
   const rows = await executor
-    .select({ id: recipes.id, title: recipes.title })
+    .select({
+      id: recipes.id,
+      title: recipes.title,
+      updatedAt: recipes.updatedAt,
+    })
     .from(recipes)
     .where(and(isNull(recipes.archivedAt), isNull(recipes.familyId)));
   return {
     catalog: input.catalog,
-    linkableRecipes: rows.filter((r) => r.id !== input.recipeId),
+    linkableRecipes: capLinkableRecipes(
+      rows.filter((r) => r.id !== input.recipeId),
+    ).map((r) => ({ id: r.id, title: r.title })),
     avoidAllergens: [],
     unsafeLinkIds: new Set<string>(),
   };

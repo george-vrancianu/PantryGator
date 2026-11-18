@@ -55,6 +55,7 @@ export function RecipeGuidance({ recipe, catalog, page }: Props) {
       suggestCatalogGuidance({
         recipe: suggestionRecipeOf(
           page ?? draftOf(recipe, catalog, i18n.language),
+          'admin',
         ),
         guidance,
         recipeId: recipe.id,
