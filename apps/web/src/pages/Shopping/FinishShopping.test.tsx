@@ -216,7 +216,9 @@ describe('Finish Shopping review', () => {
     await user.click(parmesan.getByRole('button', { name: /^Expires,/ }));
     const sheet = await screen.findByRole('dialog', { name: 'Expires' });
     await user.click(sheetButton(sheet, 'No expiry'));
-    await user.click(sheetButton(sheet, 'Done'));
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
+    );
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
     );
