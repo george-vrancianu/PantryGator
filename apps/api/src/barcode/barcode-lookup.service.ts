@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  type OnModuleDestroy,
+} from '@nestjs/common';
 import { and, eq, inArray, isNull, lt, or } from 'drizzle-orm';
 import { DATABASE } from '../database/database.constants';
 import type { Database } from '../database/database.types';
@@ -43,7 +48,7 @@ const DESCRIPTION_MAX = 200;
  * matched by exact name or Synonym, then by the Catalog search.
  */
 @Injectable()
-export class BarcodeLookupService {
+export class BarcodeLookupService implements OnModuleDestroy {
   private readonly logger = new Logger(BarcodeLookupService.name);
   private lastSweepAt = 0;
   /** The sweep in flight, so overlapping lookups start only one. */
@@ -62,6 +67,16 @@ export class BarcodeLookupService {
     private readonly throttle: OpenFoodFactsThrottle,
     @Inject(DATABASE) private readonly database: Database,
   ) {}
+
+  /** Resolves when the sweep in flight (if any) is done; it never rejects. */
+  sweepSettled(): Promise<void> {
+    return this.sweeping ?? Promise.resolve();
+  }
+
+  /** A sweep must not outlive the database pool, which closes later in shutdown. */
+  async onModuleDestroy(): Promise<void> {
+    await this.sweepSettled();
+  }
 
   async lookup(
     memberId: string,
@@ -118,19 +133,18 @@ export class BarcodeLookupService {
 
   /** Deletes up to SWEEP_BATCH rows past their TTL (a hit 30 days, a "not found" 1 day). */
   private async deleteExpired(now: number): Promise<void> {
-    const expired = and(
-      or(
-        and(
-          isNull(openFoodFactsCache.product),
-          lt(openFoodFactsCache.fetchedAt, new Date(now - NOT_FOUND_TTL_MS)),
-        ),
-        lt(openFoodFactsCache.fetchedAt, new Date(now - HIT_TTL_MS)),
+    const expired = or(
+      and(
+        isNull(openFoodFactsCache.product),
+        lt(openFoodFactsCache.fetchedAt, new Date(now - NOT_FOUND_TTL_MS)),
       ),
+      lt(openFoodFactsCache.fetchedAt, new Date(now - HIT_TTL_MS)),
     );
     const batch = this.database
       .select({ barcode: openFoodFactsCache.barcode })
       .from(openFoodFactsCache)
       .where(expired)
+      .orderBy(openFoodFactsCache.fetchedAt) // oldest first
       .limit(SWEEP_BATCH);
     await this.database
       .delete(openFoodFactsCache)
