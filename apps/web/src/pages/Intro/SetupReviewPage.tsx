@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { IntroLook } from '../../components/IntroLook';
-import { useSnapLeave } from '../../components/Setup/useSnapLeave';
-import { SetupReviewView } from '../../components/Setup/SetupReviewView';
-import { INTRO_CAMERA_PATH, INTRO_REVIEW_PATH } from '../../lib/intro';
-import { readScans } from '../../lib/scanReads';
+import { IntroLook } from '@/components/IntroLook';
+import { useSnapLeave } from './hooks/useSnapLeave';
+import { SetupReviewView } from './components/SetupReviewView/SetupReviewView';
+import { INTRO_CAMERA_PATH, INTRO_REVIEW_PATH } from '@/lib/intro';
+import { readScans } from '@/lib/scanReads';
 import {
   dispatchScanSession,
   scanDisplayState,
   useScanSession,
-} from '../../lib/scanSession';
-import { useIntro } from '../../lib/useIntro';
-import { ReviewPage } from '../Review/ReviewPage';
+} from '@/lib/scanSession';
+import { useIntro } from '@/lib/useIntro';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 
 /**
  * The Setup line editor of one card of the Scan Session: the real line editor in the Intro's frame with

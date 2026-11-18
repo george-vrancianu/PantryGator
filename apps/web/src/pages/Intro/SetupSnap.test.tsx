@@ -1,9 +1,9 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from '../../App';
-import { stubSetupMember, Where } from '../../test/intro';
-import { renderWithProviders } from '../../test/render';
+import { App } from '@/App';
+import { stubSetupMember, Where } from '@/test/intro';
+import { renderWithProviders } from '@/test/render';
 
 async function openSnap() {
   stubSetupMember();

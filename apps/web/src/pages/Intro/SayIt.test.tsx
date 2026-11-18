@@ -8,16 +8,12 @@ import {
   stubVoiceFetch,
   talkButton,
   voiceAction,
-} from '../../test/voice';
-import { App } from '../../App';
-import { goToSayIt, stubSetupMember, Where } from '../../test/intro';
-import { renderWithProviders } from '../../test/render';
-import { scanLanguagePreference } from '../../test/scan';
-import {
-  holdLongEnough,
-  pressDown,
-  useVoiceTimers,
-} from '../../test/voiceHold';
+} from '@/test/voice';
+import { App } from '@/App';
+import { goToSayIt, stubSetupMember, Where } from '@/test/intro';
+import { renderWithProviders } from '@/test/render';
+import { scanLanguagePreference } from '@/test/scan';
+import { holdLongEnough, pressDown, useVoiceTimers } from '@/test/voiceHold';
 
 const where = () => screen.getByLabelText('Where').textContent;
 

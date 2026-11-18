@@ -1,14 +1,11 @@
-import {
-  Box,
-  CheckIcon,
-  color,
-  focusRingStyle,
-  radius,
-  tokens,
-  Typography,
-  visuallyHidden,
-} from '@pocket-pantry/ui';
 import { useId, type ReactNode } from 'react';
+import { Box } from '../atoms/Layout';
+import { CheckIcon } from '../atoms/icons';
+import { Typography } from '../atoms/Typography';
+import { focusRingStyle } from '../theme/focusRing';
+import { tokens } from '../theme/tokens';
+import { color, radius } from '../theme/themeVars';
+import { visuallyHidden } from '../theme/visuallyHidden';
 
 export type Choice<T extends string> = {
   value: T;

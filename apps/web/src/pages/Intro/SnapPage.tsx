@@ -2,6 +2,7 @@ import {
   aboveDock,
   Box,
   Button,
+  ChoiceRadioGroup,
   color,
   DOCK_HEIGHT,
   IngredientsScanIcon,
@@ -11,21 +12,20 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppDock } from '../../components/AppDock';
-import { ChoiceRadioGroup } from '../../components/ChoiceRadioGroup';
-import { IntroLook } from '../../components/IntroLook';
-import { creamFocus } from '../../components/Setup/creamFocus';
-import { GatorBubble } from '../../components/Setup/GatorBubble';
-import { SetupCallout } from '../../components/Setup/SetupCallout';
-import { useSnapLeave } from '../../components/Setup/useSnapLeave';
-import { SetupOliveTopRow } from '../../components/Setup/SetupOliveTopRow';
+import { AppDock } from '@/components/AppDock';
+import { IntroLook } from '@/components/IntroLook';
+import { creamFocus } from './components/creamFocus';
+import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
+import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
+import { useSnapLeave } from './hooks/useSnapLeave';
+import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
 import {
   INTRO_CAMERA_PATH,
   INTRO_REVIEW_PATH,
   introPath,
   skipStep,
-} from '../../lib/intro';
-import { pendingCount, useScanSession } from '../../lib/scanSession';
+} from '@/lib/intro';
+import { pendingCount, useScanSession } from '@/lib/scanSession';
 
 type Pick = 'ingredients' | 'receipt';
 
@@ -66,9 +66,9 @@ export function SnapPage() {
       >
         <SetupOliveTopRow skipTo={SKIP_TO} leave={leave} />
 
-        <GatorBubble live mt="24px">
+        <GatorSpeech live mt="24px">
           {t(`snap.bubble.${pick}`)}
-        </GatorBubble>
+        </GatorSpeech>
 
         {taken > 0 ? (
           <Box

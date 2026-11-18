@@ -1,8 +1,8 @@
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { IntroProvider } from '../../lib/useIntro';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { IntroProvider } from '@/lib/useIntro';
 import { AllSetPage } from './AllSetPage';
 
 describe('the All set page', () => {

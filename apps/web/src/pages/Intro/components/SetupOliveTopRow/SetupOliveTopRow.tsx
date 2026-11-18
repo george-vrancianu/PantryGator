@@ -4,8 +4,8 @@ import {
   linkButtonStyle,
   SetupNextButton,
   type SetupLeave,
-} from './SetupLeave';
-import { SetupProgress } from './SetupProgress';
+} from '../SetupLeave/SetupLeave';
+import { SetupProgress } from '../SetupProgress/SetupProgress';
 
 const skipStyle = {
   color: color.cardBg,

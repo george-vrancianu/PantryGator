@@ -2,12 +2,12 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useNavigate } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from '../../App';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine } from '../../lib/scan';
-import { preferenceSaves, stubSetupMember, Where } from '../../test/intro';
-import { renderWithProviders } from '../../test/render';
-import { closeBubbleSheet, openBubbleSheet } from '../../test/voiceDom';
+import { App } from '@/App';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine } from '@/lib/scan';
+import { preferenceSaves, stubSetupMember, Where } from '@/test/intro';
+import { renderWithProviders } from '@/test/render';
+import { closeBubbleSheet, openBubbleSheet } from '@/test/voiceDom';
 import {
   flush,
   photoStack,
@@ -15,13 +15,13 @@ import {
   shutter,
   stackCount,
   takeScan,
-} from '../../test/scan';
+} from '@/test/scan';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: () => Promise.resolve('data:image/jpeg;base64,Y3JvcA=='),
 }));

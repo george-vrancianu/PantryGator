@@ -19,27 +19,23 @@ import {
   talkButton,
   voiceAction,
   voiceIngredient,
-} from '../../test/voice';
-import { App } from '../../App';
+} from '@/test/voice';
+import { App } from '@/App';
 import {
   goToSayIt,
   preferenceSaves,
   stubSetupMember,
   Where,
-} from '../../test/intro';
-import { renderWithProviders } from '../../test/render';
-import { photoStack, shutter, stackCount, takeScan } from '../../test/scan';
-import {
-  pressDown,
-  holdLongEnough,
-  useVoiceTimers,
-} from '../../test/voiceHold';
+} from '@/test/intro';
+import { renderWithProviders } from '@/test/render';
+import { photoStack, shutter, stackCount, takeScan } from '@/test/scan';
+import { pressDown, holdLongEnough, useVoiceTimers } from '@/test/voiceHold';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: () => Promise.resolve('data:image/jpeg;base64,Y3JvcA=='),
 }));

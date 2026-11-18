@@ -9,28 +9,28 @@ import {
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppDock } from '../../components/AppDock';
-import { IntroLook } from '../../components/IntroLook';
-import { creamFocus } from '../../components/Setup/creamFocus';
-import { GatorBubble } from '../../components/Setup/GatorBubble';
-import { SetupCallout } from '../../components/Setup/SetupCallout';
-import { useSetupLeave } from '../../components/Setup/SetupLeave';
-import { SetupOliveTopRow } from '../../components/Setup/SetupOliveTopRow';
-import { VoiceNote, type VoiceNoteSettings } from '../../components/VoiceNote';
+import { AppDock } from '@/components/AppDock';
+import { IntroLook } from '@/components/IntroLook';
+import { creamFocus } from './components/creamFocus';
+import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
+import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
+import { useSetupLeave } from './components/SetupLeave/SetupLeave';
+import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
+import { VoiceNote, type VoiceNoteSettings } from '@/components/VoiceNote';
 import {
   useDockRaised,
   VoiceHostProvider,
   VoiceHostSlot,
-} from '../../components/voice/VoiceHost';
-import { introPath, nextStep, savedByVoice, skipStep } from '../../lib/intro';
-import { useAutoAdvance, useIntro } from '../../lib/useIntro';
+} from '@/components/voice/VoiceHost';
+import { introPath, nextStep, savedByVoice, skipStep } from '@/lib/intro';
+import { useAutoAdvance, useIntro } from '@/lib/useIntro';
 import {
   useVoiceConfig,
   type VoiceApplyResult,
   type VoiceReviewAction,
-} from '../../lib/voice';
-import { useVoiceNoteState, voiceNote } from '../../lib/voiceNote';
-import { aboveMic, PILL_OFFSET, VOICE_LAYER } from '../../lib/voicePlacement';
+} from '@/lib/voice';
+import { useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
+import { aboveMic, PILL_OFFSET, VOICE_LAYER } from '@/lib/voicePlacement';
 
 /** Where Skip goes without a confirm: the Intro module's rule, never a path written here. */
 const SKIP_TO = introPath(skipStep('say-it'));
@@ -187,9 +187,9 @@ function SayItScreen() {
           </Box>
         ) : null}
 
-        <GatorBubble>
+        <GatorSpeech>
           {voice === 'off' ? t('sayIt.noVoice.bubble') : t('sayIt.bubble')}
-        </GatorBubble>
+        </GatorSpeech>
 
         {voice === 'off' ? null : (
           <Box

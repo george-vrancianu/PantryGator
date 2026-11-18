@@ -4,8 +4,8 @@ import {
   linkButtonStyle,
   SetupNextButton,
   type SetupLeave,
-} from './SetupLeave';
-import { SetupProgress } from './SetupProgress';
+} from '../SetupLeave/SetupLeave';
+import { SetupProgress } from '../SetupProgress/SetupProgress';
 
 const linkSx = { ...linkButtonStyle, color: tokens.color.accent } as const;
 

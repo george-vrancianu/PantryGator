@@ -55,6 +55,7 @@ const GROUP_HINTS = {
   ],
   auth: ['AuthShell', 'LanguageSwitcher'],
   mealPlan: ['MealPlanPopover'],
+  intro: ['SetupCallout'],
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
