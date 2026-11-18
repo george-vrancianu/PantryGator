@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AppDock } from '@/components/layout/AppDock/AppDock';
-import { creamFocus } from './components/creamFocus';
+import { creamFocus } from './hooks/creamFocus';
 import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSnapLeave } from './hooks/useSnapLeave';
