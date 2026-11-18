@@ -66,7 +66,7 @@ export function shoppingCheckHandler(
             {
               ...subjectOf(draft, 'name'),
               ...(quantity === null || unit === null ? {} : { quantity, unit }),
-              source: 'manual',
+              source: 'voice',
             },
             ctx.locale,
           );

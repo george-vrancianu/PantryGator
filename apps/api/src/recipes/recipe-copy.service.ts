@@ -15,6 +15,7 @@ import {
 } from '../database/schema';
 import { SettingsService } from '../settings/settings.service';
 import { copyRecipeTags } from '../tags/recipe-tags';
+import { recordUnmatched } from '../unmatched/unmatched-entries';
 import { recipeNotFound } from './recipe-errors';
 import { writeGuidanceChecked } from './recipe-guidance-write';
 import { lockFamilyRow } from './recipe-locks';
@@ -111,19 +112,34 @@ export class RecipeCopyService {
       // A Catalog Recipe carries only Catalog Tags; the copy starts with all of them.
       await copyRecipeTags(tx, sourceId, copyId);
       if (resolved.lines.length > 0) {
-        await tx.insert(recipeIngredientLines).values(
-          resolved.lines.map((line, position) => ({
-            id: randomUUID(),
-            recipeId: copyId,
-            position,
-            ingredientId: line.ingredientId,
-            rawName: names.get(line.id)?.rawName ?? null,
-            normalizedName: names.get(line.id)?.normalizedName ?? null,
-            quantity: line.quantity,
-            unit: line.unit,
-            optional: line.optional,
-            note: line.note,
-          })),
+        const lines = resolved.lines.map((line, position) => ({
+          id: randomUUID(),
+          recipeId: copyId,
+          position,
+          ingredientId: line.ingredientId,
+          rawName: names.get(line.id)?.rawName ?? null,
+          normalizedName: names.get(line.id)?.normalizedName ?? null,
+          quantity: line.quantity,
+          unit: line.unit,
+          optional: line.optional,
+          note: line.note,
+        }));
+        await tx.insert(recipeIngredientLines).values(lines);
+        // Unmatched lines are queued for Admin matching, as a Family save does.
+        await recordUnmatched(
+          tx,
+          lines.flatMap((line) =>
+            line.rawName !== null && line.normalizedName !== null
+              ? [
+                  {
+                    rawName: line.rawName,
+                    locale,
+                    source: 'recipe' as const,
+                    ingredientLineId: line.id,
+                  },
+                ]
+              : [],
+          ),
         );
       }
       const stepIds = new Map<string, string>();

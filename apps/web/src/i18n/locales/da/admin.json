@@ -99,7 +99,8 @@
       "ingredients": "Ingredienser",
       "manual": "Indtastet",
       "finish_shopping": "Afslut indkøb",
-      "recipe": "Opskrift"
+      "recipe": "Opskrift",
+      "voice": "Stemmenote"
     },
     "resolve": "Afklar",
     "resolveName": "Afklar {{name}}",

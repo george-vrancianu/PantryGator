@@ -621,7 +621,7 @@ export const batches = pgTable(
   ],
 );
 
-// Where an Unmatched name was saved from: a Scan Mode, a typed entry, or Finish Shopping.
+// Where an Unmatched name was saved from: a Scan Mode, a typed entry, a Voice Note, or Finish Shopping.
 export const unmatchedSource = pgEnum('unmatched_source', [
   'product',
   'receipt',
@@ -630,6 +630,7 @@ export const unmatchedSource = pgEnum('unmatched_source', [
   'manual',
   'finish_shopping',
   'recipe',
+  'voice',
 ]);
 
 // The Admin review queue: one row per Unmatched Batch or Shopping Item, recording the
