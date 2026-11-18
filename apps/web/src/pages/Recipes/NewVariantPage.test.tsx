@@ -271,6 +271,31 @@ describe('NewVariantPage', () => {
     );
   });
 
+  it('gives the draft error a Back to the Recipe', async () => {
+    setup('/recipes/x/variant/new', {
+      'GET /api/recipes/x/variant-draft': () =>
+        Response.json(
+          { code: 'recipes.parent_archived', params: {} },
+          { status: 409 },
+        ),
+    });
+    await screen.findByRole('alert');
+    expect(screen.getByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      '/recipes/x',
+    );
+  });
+
+  it('gives the loading draft a Back to the Recipe', async () => {
+    setup('/recipes/x/variant/new', {
+      'GET /api/recipes/x/variant-draft': () => new Promise<Response>(() => {}),
+    });
+    expect(await screen.findByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      '/recipes/x',
+    );
+  });
+
   it('blocks saving without a title', async () => {
     setup('/recipes/x/variant/new', {
       'GET /api/recipes/x/variant-draft': () =>

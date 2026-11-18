@@ -224,6 +224,159 @@ describe('Shopping Template screens', () => {
     );
   });
 
+  it('keeps a second row removal when the first save lands before its fly-off ends', async () => {
+    const { calls } = statefulTemplate([milk, eggs, bread]);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await screen.findByRole('group', { name: 'Eggs' });
+
+    const removeIn = async (name: string) => {
+      const row = screen.getByRole('group', { name });
+      act(() => row.focus());
+      await user.keyboard('{Delete}');
+      await user.click(within(row).getByRole('button', { name: 'Remove' }));
+    };
+    await removeIn('Eggs');
+    // Eggs saves (and the lines get new ids) while Bread is still collapsing.
+    await act(() => vi.advanceTimersByTimeAsync(150));
+    await removeIn('Bread');
+    await act(() => vi.advanceTimersByTimeAsync(1500));
+
+    await waitFor(() => expect(patches(calls)).toHaveLength(2));
+    expect(patches(calls)[1]).toEqual({
+      lines: [{ ingredientId: 'milk-id', quantity: 1, unit: 'l' }],
+    });
+    await waitFor(() =>
+      expect(
+        screen.getAllByRole('group').map((g) => g.getAttribute('aria-label')),
+      ).toEqual(['Milk']),
+    );
+  });
+
+  it('removes the line with the right unit when two lines share an Ingredient', async () => {
+    const milkCups: TemplateLine = { ...milk, id: 'l9', unit: 'pcs' };
+    const { calls, fetchMock } = statefulTemplate([milk, milkCups, eggs]);
+    let releaseSaves: () => void = () => undefined;
+    const savesGate = new Promise<void>((resolve) => (releaseSaves = resolve));
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) =>
+      init?.method === 'PATCH'
+        ? savesGate.then(() => fetchMock(input, init))
+        : fetchMock(input, init),
+    );
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await screen.findAllByRole('group', { name: 'Milk' });
+    const [, cupRow] = screen.getAllByRole('group', { name: 'Milk' });
+    act(() => screen.getByRole('group', { name: 'Eggs' }).focus());
+    await user.keyboard('{Delete}');
+    await user.click(
+      within(screen.getByRole('group', { name: 'Eggs' })).getByRole('button', {
+        name: 'Remove',
+      }),
+    );
+    act(() => cupRow.focus());
+    await user.keyboard('{Delete}');
+    await user.click(within(cupRow).getByRole('button', { name: 'Remove' }));
+    await act(() => vi.advanceTimersByTimeAsync(700));
+    releaseSaves();
+
+    await waitFor(() => expect(patches(calls)).toHaveLength(2));
+    expect(patches(calls)[1]).toEqual({
+      lines: [{ ingredientId: 'milk-id', quantity: 1, unit: 'l' }],
+    });
+  });
+
+  it('does nothing when the line to remove is already gone', async () => {
+    const { calls, fetchMock } = statefulTemplate([milk, eggs, bread]);
+    let releaseSaves: () => void = () => undefined;
+    const savesGate = new Promise<void>((resolve) => (releaseSaves = resolve));
+    let first = true;
+    vi.stubGlobal(
+      'fetch',
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (init?.method !== 'PATCH') return fetchMock(input, init);
+        await savesGate;
+        await fetchMock(input, init);
+        // The first save's reply says Eggs is gone too (removed elsewhere).
+        if (first) {
+          first = false;
+          return Response.json({ ...taco, lines: [milk] });
+        }
+        return fetchMock(input, init);
+      },
+    );
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await screen.findByRole('group', { name: 'Eggs' });
+    for (const name of ['Bread', 'Eggs']) {
+      const row = screen.getByRole('group', { name });
+      act(() => row.focus());
+      await user.keyboard('{Delete}');
+      await user.click(within(row).getByRole('button', { name: 'Remove' }));
+    }
+    await act(() => vi.advanceTimersByTimeAsync(700));
+    releaseSaves();
+    await act(() => vi.advanceTimersByTimeAsync(700));
+
+    expect(patches(calls)).toHaveLength(1);
+    expect(screen.getByText('Removed Bread')).toBeVisible();
+    expect(screen.queryByText('Removed Eggs')).toBeNull();
+  });
+
+  it('does not hand the key of a row being removed to the identical line that stays', async () => {
+    statefulTemplate([milk, { ...milk, id: 'l9' }]);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const [first] = await screen.findAllByRole('group', { name: 'Milk' });
+    act(() => first!.focus());
+    await user.keyboard('{Delete}');
+    await user.click(within(first!).getByRole('button', { name: 'Remove' }));
+    await act(() => vi.advanceTimersByTimeAsync(1500));
+    expect(await screen.findByText('Removed Milk')).toBeVisible();
+
+    const remaining = screen.getAllByRole('group', { name: 'Milk' });
+    expect(remaining).toHaveLength(1);
+    expect(remaining[0]).not.toBe(first);
+    expect(
+      within(remaining[0]!).queryByRole('button', { name: 'Remove' }),
+    ).toBeNull();
+  });
+
+  it('focuses the restored row when Undo is pressed while the save that empties the Template is in flight', async () => {
+    const { fetchMock } = statefulTemplate([eggs, bread]);
+    let releaseSecond: () => void = () => undefined;
+    const secondGate = new Promise<void>(
+      (resolve) => (releaseSecond = resolve),
+    );
+    let n = 0;
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) =>
+      init?.method === 'PATCH' && ++n === 2
+        ? secondGate.then(() => fetchMock(input, init))
+        : fetchMock(input, init),
+    );
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await screen.findByRole('group', { name: 'Eggs' });
+    for (const name of ['Eggs', 'Bread']) {
+      const row = screen.getByRole('group', { name });
+      act(() => row.focus());
+      await user.keyboard('{Delete}');
+      await user.click(within(row).getByRole('button', { name: 'Remove' }));
+    }
+    await act(() => vi.advanceTimersByTimeAsync(700));
+    // Eggs is saved and its Undo shows; the save that removes Bread is still in flight.
+    await user.click(await screen.findByRole('button', { name: 'Undo' }));
+    releaseSecond();
+    await act(() => vi.advanceTimersByTimeAsync(700));
+
+    expect(await screen.findByRole('group', { name: 'Eggs' })).toHaveFocus();
+  });
+
   it('opens the sheet when a line is held for 500 ms', async () => {
     statefulTemplate([milk]);
     renderEditor();
@@ -452,6 +605,21 @@ describe('Shopping Template screens', () => {
     await waitFor(() =>
       expect(screen.getByText(/no lines yet/i)).toHaveFocus(),
     );
+  });
+
+  it('moves focus to the restored row when Undo refills an emptied Template', async () => {
+    statefulTemplate([milk]);
+    renderEditor();
+    const user = userEvent.setup();
+    await screen.findByRole('group', { name: 'Milk' });
+    await removeLine(user, 'Milk');
+    await waitFor(() =>
+      expect(screen.getByText(/no lines yet/i)).toHaveFocus(),
+    );
+
+    await user.click(await screen.findByRole('button', { name: 'Undo' }));
+
+    expect(await screen.findByRole('group', { name: 'Milk' })).toHaveFocus();
   });
 
   describe('adding a line with the shared search', () => {

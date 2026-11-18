@@ -177,10 +177,10 @@ export function RecipeStepsSection({
                 const number = index + 1;
                 const tips = tipCount(step);
                 const flagged =
-                  problems.steps[step.key] === 'text' &&
+                  problems.steps[step.key]?.text === true &&
                   touchedSteps.has(step.key);
                 const timerOpen = openTimers.has(step.key) || step.timer !== '';
-                const timerFlagged = problems.steps[step.key] === 'timer';
+                const timerFlagged = problems.steps[step.key]?.timer === true;
                 const timerErrorId = `step-${step.key}-timer-error`;
                 return (
                   <SortableItem
@@ -409,6 +409,20 @@ export function RecipeStepsSection({
                                     },
                                   )}
                                   actions={stepTips.actions}
+                                  order={{
+                                    up: t('admin:recipe.steps.moveTipUp', {
+                                      n: tipIndex + 1,
+                                      step: number,
+                                    }),
+                                    down: t('admin:recipe.steps.moveTipDown', {
+                                      n: tipIndex + 1,
+                                      step: number,
+                                    }),
+                                    first: tipIndex === 0,
+                                    last:
+                                      tipIndex ===
+                                      stepTips.of(step.id!).length - 1,
+                                  }}
                                 />
                               ))}
                               {addingTip.has(step.id) ? (

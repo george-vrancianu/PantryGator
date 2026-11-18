@@ -1,9 +1,11 @@
 import { Alert, Link, Spinner, Stack, Typography } from '@pocket-pantry/ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { RemovableSourceLink } from './components/SourceLink/SourceLink';
+import { ApiError } from '@/lib/api';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   useFamilyRecipeEdit,
@@ -21,10 +23,22 @@ import {
 } from '@/lib/guidanceDraft';
 import { recipesQueryKey } from '@/lib/recipes';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
-import { documentOf, draftOfEdit, type FamilyDraft } from './hooks/familyDraft';
+import {
+  documentOf,
+  draftOfEdit,
+  keysOf,
+  rebasedOnStored,
+  type FamilyDraft,
+} from './hooks/familyDraft';
 import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
 
 type FormState = { draft: FamilyDraft; guidance: GuidanceDraft | null };
+
+/** The route element: a page per Recipe id, so moving between Recipes keeps nothing of the one left. */
+export function EditFamilyRecipeRoute() {
+  const { id = '' } = useParams();
+  return <EditFamilyRecipePage key={id} />;
+}
 
 /** Edit one of the Family's own Recipes, with its own Tips below. */
 export function EditFamilyRecipePage() {
@@ -36,13 +50,28 @@ export function EditFamilyRecipePage() {
   const momentOptions = useMomentOptions();
   const tipWrites = useFamilyTipWrites(id);
   // Deleting a Tip waits for its Undo window to end (ADR 0009).
-  const tipRemoval = useDeferredRemoval(
-    [...recipesQueryKey, 'edit', id],
-    tipWrites.remove.mutateAsync,
-  );
+  const queryClient = useQueryClient();
+  const editKey = [...recipesQueryKey, 'edit', id];
+  const tipRemoval = useDeferredRemoval(editKey, async (tipId: string) => {
+    try {
+      await tipWrites.remove.mutateAsync(tipId);
+    } catch (error) {
+      // A Tip that is already gone is deleted: saving the Recipe without its Step took it, inside the Undo window.
+      if (!(
+        error instanceof ApiError && error.code === 'recipes.tip_not_found'
+      ))
+        throw error;
+      await queryClient.invalidateQueries({ queryKey: editKey });
+    }
+  });
   const recipe = query.data;
   /** Bumped when the Recipe is stored so the form reseeds with the new line and Step ids. */
   const [recipeSaves, setRecipeSaves] = useState(0);
+  /** Set when a Save lands over edits made in flight: the live draft takes the stored ids instead of being reseeded. */
+  const [rebase, setRebase] = useState<{
+    id: number;
+    apply: (draft: FamilyDraft) => FamilyDraft;
+  }>();
   /** Bumped when the Guidance is stored so its card reseeds; a Recipe-only save keeps Guidance edits. */
   const [guidanceSaves, setGuidanceSaves] = useState(0);
   /** The Member dropped the Source Link; it is only sent (and gone) once they save. */
@@ -59,7 +88,7 @@ export function EditFamilyRecipePage() {
     error: unknown;
   } | null>(null);
   /** The Recipe document as last stored (what the form reseeded with): a Save with the same document does not resend it. */
-  const storedRecipe = useRef<string | null>(null);
+  const [storedRecipe, setStoredRecipe] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   /** The form as it is now, reported on every change; read when the Member leaves. */
@@ -71,7 +100,7 @@ export function EditFamilyRecipePage() {
   const hasUnsaved = (now: typeof formNow.current) => {
     if (!now || !recipe) return false;
     const recipeBase =
-      storedRecipe.current ?? JSON.stringify(documentOf(draftOfEdit(recipe)));
+      storedRecipe ?? JSON.stringify(documentOf(draftOfEdit(recipe)));
     if (linkRemoved || JSON.stringify(documentOf(now.draft)) !== recipeBase)
       return true;
     const guidanceBase = savedGuidance ?? toGuidanceDraft(recipe);
@@ -79,6 +108,24 @@ export function EditFamilyRecipePage() {
       now.guidance !== null &&
       JSON.stringify(toGuidanceInput(now.guidance)) !==
         JSON.stringify(toGuidanceInput(guidanceBase))
+    );
+  };
+  /** Whether the form no longer holds the Recipe a Save sent: the Member kept editing while it was in flight. */
+  const recipeChangedSince = (document: ReturnType<typeof documentOf>) => {
+    const now = formNow.current;
+    return (
+      !!now &&
+      JSON.stringify(documentOf(now.draft)) !== JSON.stringify(document)
+    );
+  };
+  /** Likewise for the Guidance a Save sent. */
+  const guidanceChangedSince = (
+    guidance: ReturnType<typeof toGuidanceInput>,
+  ) => {
+    const now = formNow.current;
+    return (
+      !!now?.guidance &&
+      JSON.stringify(toGuidanceInput(now.guidance)) !== JSON.stringify(guidance)
     );
   };
   useLeaveGuard(
@@ -89,7 +136,10 @@ export function EditFamilyRecipePage() {
   const back = { label: t('recipes:back'), href: `/recipes/${id}` };
   // A failed delete is reported by the deferred-removal toast, not here.
   const tipError =
-    tipWrites.add.error ?? tipWrites.update.error ?? tipWrites.hide.error;
+    tipWrites.add.error ??
+    tipWrites.update.error ??
+    tipWrites.reorder.error ??
+    tipWrites.hide.error;
   const tips = (recipe?.tips ?? []).filter(
     (tip) => !tipRemoval.hiddenIds.has(tip.id),
   );
@@ -102,6 +152,22 @@ export function EditFamilyRecipePage() {
       tipRemoval.remove(tipId, '', t('recipes:family.tips.deleted'), {
         polite: true,
       }),
+    // The API takes every Tip of the Recipe: swap the Tip with its neighbour among the ones shown in its group.
+    // Blocked while a reorder is in flight: the list is stale until it returns, so a second move would undo the first.
+    moving: tipWrites.reorder.isPending,
+    move: (tipId: string, offset: -1 | 1) => {
+      if (tipWrites.reorder.isPending) return;
+      const all = (recipe?.tips ?? []).map((tip) => tip.id);
+      const own = tips.find((tip) => tip.id === tipId);
+      const group = tips.filter((tip) => tip.stepId === own?.stepId);
+      const neighbour =
+        group[group.findIndex((tip) => tip.id === tipId) + offset];
+      if (!own || !neighbour) return;
+      const from = all.indexOf(tipId);
+      const to = all.indexOf(neighbour.id);
+      [all[from], all[to]] = [all[to], all[from]];
+      tipWrites.reorder.mutate(all);
+    },
   };
   if (!recipe || recipe.archived) {
     return (
@@ -124,6 +190,7 @@ export function EditFamilyRecipePage() {
       // Tip writes refresh `recipe` but must not reset unsaved edits; a save reseeds.
       seedKey={`${recipe.id}-${recipeSaves}`}
       guidanceSeedKey={`${recipe.id}-${guidanceSaves}`}
+      rebase={rebase}
       header={{
         title: t('recipes:family.editHeading'),
         titleRef: headingRef,
@@ -195,18 +262,28 @@ export function EditFamilyRecipePage() {
         // `null` clears the link (and its language); leaving it out keeps both.
         const body = linkRemoved ? { ...document, sourceLink: null } : document;
         const key = JSON.stringify(body);
+        const sentKeys = formNow.current ? keysOf(formNow.current.draft) : null;
         setSaving(true);
         setSaved(false);
         setFailure(null);
         try {
-          if (storedRecipe.current !== key) {
+          if (storedRecipe !== key) {
             try {
               const stored = await update.mutateAsync(body);
-              storedRecipe.current = JSON.stringify(
-                documentOf(draftOfEdit(stored)),
-              );
+              setStoredRecipe(JSON.stringify(documentOf(draftOfEdit(stored))));
               setLinkRemoved(false);
-              setRecipeSaves((count) => count + 1);
+              if (!recipeChangedSince(document)) {
+                setRecipeSaves((count) => count + 1);
+              } else if (sentKeys) {
+                // Edits made while the Save was in flight stay: a reseed would drop them. The draft
+                // takes the ids the server now holds instead, and the row Undo toasts close.
+                const storedDraft = draftOfEdit(stored);
+                setRebase((last) => ({
+                  id: (last?.id ?? 0) + 1,
+                  apply: (draft) =>
+                    rebasedOnStored(draft, sentKeys, storedDraft),
+                }));
+              }
             } catch (error) {
               setFailure({ part: 'recipe', error });
               return;
@@ -219,7 +296,8 @@ export function EditFamilyRecipePage() {
             setFailure({ part: 'guidance', error });
             return;
           }
-          setGuidanceSaves((count) => count + 1);
+          if (!guidanceChangedSince(guidance))
+            setGuidanceSaves((count) => count + 1);
           setSaved(true);
         } finally {
           setSaving(false);

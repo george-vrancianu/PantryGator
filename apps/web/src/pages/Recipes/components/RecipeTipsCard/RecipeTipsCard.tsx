@@ -92,6 +92,14 @@ export function RecipeTipsCard({
               number: index + 1,
             })}
             actions={actions}
+            order={{
+              up: t('recipes:family.recipeTips.moveUp', { number: index + 1 }),
+              down: t('recipes:family.recipeTips.moveDown', {
+                number: index + 1,
+              }),
+              first: index === 0,
+              last: index === tips.length - 1,
+            }}
           />
         ))}
         {adding ? (

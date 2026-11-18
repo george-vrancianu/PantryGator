@@ -73,6 +73,8 @@ type Props = {
   seedKey?: string;
   /** Reseeds only the Guidance card from `guidance.initial`; defaults to `seedKey`. A Recipe-only reseed keeps the Member's Guidance edits. */
   guidanceSeedKey?: string;
+  /** Edit: ids changed under the draft (a Save landed while the Member kept editing). `apply` moves the live draft onto them without touching its text; a new `id` runs it once and closes the row Undo toasts. */
+  rebase?: { id: number; apply: (draft: FamilyDraft) => FamilyDraft };
   saving: boolean;
   error: unknown;
   /** How many own Tips a saved Step carries, for the warning before removing it. */
@@ -118,6 +120,7 @@ export function FamilyRecipeForm({
   initial,
   seedKey,
   guidanceSeedKey = seedKey,
+  rebase,
   saving,
   error,
   stepTipCount,
@@ -143,6 +146,11 @@ export function FamilyRecipeForm({
   if (seededWith !== seedKey) {
     setSeededWith(seedKey);
     setDraft(initial);
+  }
+  const [rebasedWith, setRebasedWith] = useState(rebase?.id);
+  if (rebase && rebasedWith !== rebase.id) {
+    setRebasedWith(rebase.id);
+    setDraft(rebase.apply);
   }
   const [guidanceSeededWith, setGuidanceSeededWith] = useState(guidanceSeedKey);
   if (guidanceSeededWith !== guidanceSeedKey) {
@@ -315,7 +323,7 @@ export function FamilyRecipeForm({
         >
           <>
             <RecipeLinesSection
-              seedKey={seedKey}
+              seedKey={`${seedKey}-${rebase?.id ?? 0}`}
               lines={draft.lines}
               problems={problems}
               focusKey={addedKey}
@@ -381,7 +389,7 @@ export function FamilyRecipeForm({
           <RecipeStepsSection
             steps={draft.steps}
             problems={problems}
-            seedKey={seedKey}
+            seedKey={`${seedKey}-${rebase?.id ?? 0}`}
             tipCount={(step) =>
               step.id && stepTipCount
                 ? stepTipCount(step.id)
