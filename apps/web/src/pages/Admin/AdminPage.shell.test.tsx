@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { AdminPage } from './AdminPage';
 import { AdminSectionPage } from './AdminSectionPage';
 

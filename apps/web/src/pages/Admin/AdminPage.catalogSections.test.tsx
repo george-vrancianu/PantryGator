@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { AdminSectionPage } from './AdminSectionPage';
 
 const catalog = {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { useJoinFamily, useJoinPreview } from '../../../lib/family';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useJoinFamily, useJoinPreview } from '@/lib/family';
 
 export type JoinFlow = ReturnType<typeof useJoinFlow>;
 
