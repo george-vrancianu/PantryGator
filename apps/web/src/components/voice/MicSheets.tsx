@@ -1,13 +1,9 @@
 import {
   Box,
-  Button,
   color,
-  gutterLeft,
-  gutterRight,
   MicIcon,
   MicOffIcon,
   palette,
-  plusBottomInset,
   radius,
   Sheet,
   Stack,
@@ -20,17 +16,6 @@ import type { VoiceDefaultTarget } from '../../lib/voice';
 import type { useMicPermission } from '../../lib/useMicPermission';
 
 const bold = { b: <b /> };
-
-const footerSx = {
-  display: 'flex',
-  gap: '12px',
-  pt: '12px',
-  pl: gutterLeft(16),
-  pr: gutterRight(16),
-  pb: plusBottomInset(20),
-  borderTop: `1px solid ${palette('pp-line')}`,
-  '& > :last-child': { flex: 1 },
-};
 
 function Hero({
   tone,
@@ -97,30 +82,18 @@ function Intro({
     <Sheet
       open={open}
       onClose={onClose}
-      label={t('intro.title')}
+      title={t('intro.title')}
       size="content"
-      footer={
-        <Box sx={footerSx}>
-          <Button variant="ghost" onClick={onClose} sx={{ height: 52 }}>
-            {t('intro.notNow')}
-          </Button>
-          <Button
-            startIcon={<MicIcon size={18} />}
-            onClick={onAllow}
-            disabled={requesting}
-          >
-            {t('intro.allow')}
-          </Button>
-        </Box>
-      }
+      primary={{
+        label: t('intro.allow'),
+        onClick: onAllow,
+        pending: requesting,
+      }}
     >
       <Stack spacing={2} sx={{ p: '20px 16px 16px' }}>
         <Hero tone="accent">
           <MicIcon size={34} />
         </Hero>
-        <Typography variant="h2" sx={{ textAlign: 'center' }}>
-          {t('intro.title')}
-        </Typography>
         <Typography sx={{ textAlign: 'center', color: 'text.secondary' }}>
           {t('intro.body')}
         </Typography>
@@ -210,26 +183,18 @@ function Blocked({
     <Sheet
       open={open}
       onClose={onClose}
-      label={t('blocked.title')}
+      title={t('blocked.title')}
       size="content"
-      footer={
-        <Box sx={footerSx}>
-          <Button variant="ghost" onClick={onClose} sx={{ height: 52 }}>
-            {t('blocked.close')}
-          </Button>
-          <Button onClick={onRecheck} disabled={requesting}>
-            {t('blocked.retry')}
-          </Button>
-        </Box>
-      }
+      primary={{
+        label: t('blocked.retry'),
+        onClick: onRecheck,
+        pending: requesting,
+      }}
     >
       <Stack spacing={2} sx={{ p: '20px 16px 16px' }}>
         <Hero tone="urgent" stillBlocked={stillBlocked}>
           <MicOffIcon size={34} />
         </Hero>
-        <Typography variant="h2" sx={{ textAlign: 'center' }}>
-          {t('blocked.title')}
-        </Typography>
         <Typography sx={{ textAlign: 'center', color: 'text.secondary' }}>
           {t('blocked.body')}
         </Typography>

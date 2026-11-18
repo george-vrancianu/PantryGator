@@ -21,7 +21,7 @@ export function isTextField(el: HTMLElement): boolean {
 }
 
 /**
- * The opening focus of a Sheet or Dialog (ADR 0039). Returns the function to
+ * The opening focus of a Sheet (ADR 0039). Returns the function to
  * call once the open transition ends. Focus moves to `initialFocus` unless the
  * Member already moved it to a control inside the sheet. Focus still on the
  * paper, or outside it (a tap on the scrim leaves it on the body), has not been
@@ -51,7 +51,7 @@ function textFieldHasFocus(): boolean {
 }
 
 /**
- * The closing focus of a Sheet or Dialog (ADR 0039): whether to skip putting
+ * The closing focus of a Sheet (ADR 0039): whether to skip putting
  * focus back where it was before the open. On iOS a tap on a button does not
  * focus it, so a text field the Member typed in earlier can still hold focus
  * when a sheet opens; restoring onto it as the sheet closes would raise the

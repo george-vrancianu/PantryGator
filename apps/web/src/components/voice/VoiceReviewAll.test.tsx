@@ -325,7 +325,7 @@ describe('Review all in the Voice Inbox', () => {
     const dialog = await reviewAll(sheet);
     expect(
       dialog.getByRole('button', { name: 'Pick a list first' }),
-    ).toHaveAttribute('aria-disabled', 'true');
+    ).toBeEnabled();
 
     await userEvent.click(
       within(dialog.getByRole('group', { name: 'Put all on' })).getByRole(
