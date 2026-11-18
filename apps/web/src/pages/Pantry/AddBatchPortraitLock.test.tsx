@@ -1,14 +1,14 @@
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { openOverlay, stubPantry } from '../../test/addBatch';
-import { stubScreen } from '../../test/screen';
+import { openOverlay, stubPantry } from '@/test/addBatch';
+import { stubScreen } from '@/test/screen';
 
 // The add-Batch camera locks to portrait on a phone in the app (ADR 0037) and unlocks on every exit.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,AAAA'),
 }));
 vi.mock('@capacitor/screen-orientation', () => ({

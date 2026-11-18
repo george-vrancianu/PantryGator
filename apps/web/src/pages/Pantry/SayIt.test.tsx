@@ -3,14 +3,10 @@ import { paintedColour } from '@pocket-pantry/ui/test/colour';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetVoiceEnvironment, stubVoiceFetch } from '../../test/voice';
-import { holdLongEnough, useVoiceTimers } from '../../test/voiceHold';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { AppLayout } from '../../components/AppLayout';
+import { resetVoiceEnvironment, stubVoiceFetch } from '@/test/voice';
+import { holdLongEnough, useVoiceTimers } from '@/test/voiceHold';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { AppLayout } from '@/components/AppLayout';
 import { PantryPage } from './PantryPage';
 
 function setup(voiceConfigured = true) {

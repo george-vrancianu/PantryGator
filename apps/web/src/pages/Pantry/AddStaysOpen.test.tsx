@@ -1,11 +1,11 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { Batch } from '../../lib/pantry';
-import { FLASH_HOLD_MS, resetRowFlash } from '../../lib/rowFlash';
-import { UNDO_WINDOW_MS } from '../../lib/useDeferredRemoval';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { Batch } from '@/lib/pantry';
+import { FLASH_HOLD_MS, resetRowFlash } from '@/lib/rowFlash';
+import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 
 const milk: CatalogSearchResult = {

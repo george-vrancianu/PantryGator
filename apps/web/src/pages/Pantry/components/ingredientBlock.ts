@@ -1,5 +1,5 @@
 import { border, color, palette, radius, shadow } from '@pocket-pantry/ui';
-import { keyframesSx } from '../../../lib/keyframesSx';
+import { keyframesSx } from '@/lib/keyframesSx';
 
 /** The open Ingredient's Batch rows: a light accent tint, alternating so they read as separate rows. */
 const batchTint = (index: number) =>

@@ -1,16 +1,16 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { IMAGE_PREPARATION } from '../../lib/scanImage';
-import { openOverlay, stubPantry } from '../../test/addBatch';
-import { emitBarcode, fakeCamera, shutter } from '../../test/scan';
-import { stubScreen } from '../../test/screen';
+import { IMAGE_PREPARATION } from '@/lib/scanImage';
+import { openOverlay, stubPantry } from '@/test/addBatch';
+import { emitBarcode, fakeCamera, shutter } from '@/test/scan';
+import { stubScreen } from '@/test/screen';
 
 // The add-Batch camera rotates its chrome back on a phone on the web, as the other two cameras do
 // (ADR 0037); the Scan page and the Intro camera are covered in pages/Scan/CameraRotateBack.test.tsx.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/scanImage', () => ({
+vi.mock('@/lib/scanImage', () => ({
   IMAGE_PREPARATION: {
     product: vi.fn(() => Promise.resolve('data:image/jpeg;base64,AAAA')),
     receipt: vi.fn(),

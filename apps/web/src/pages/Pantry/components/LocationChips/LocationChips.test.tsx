@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import { renderWithProviders } from '../../../test/render';
+import { renderWithProviders } from '@/test/render';
 import { LocationChips } from './LocationChips';
 
 /** The handoff's selected chip: the ink fill with card-coloured text. */

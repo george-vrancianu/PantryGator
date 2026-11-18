@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { expiryContext } from '@/components/expiryPicker/expiryContext';
 import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
 import { LocationToggle } from '@/components/pantry/LocationToggle/LocationToggle';
-import type { Batch, BatchEdit } from '../../../lib/pantry';
-import { useEditBatchForm } from '../hooks/useEditBatchForm';
-import { BatchAmountField } from './BatchAmountField';
+import type { Batch, BatchEdit } from '@/lib/pantry';
+import { useEditBatchForm } from '../../hooks/useEditBatchForm';
+import { BatchAmountField } from '../BatchAmountField/BatchAmountField';
 
 type Props = {
   batch: Batch;

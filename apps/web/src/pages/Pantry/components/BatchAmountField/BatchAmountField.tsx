@@ -2,8 +2,8 @@ import { Box } from '@pocket-pantry/ui';
 import { useState, type FocusEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountField } from '@/components/catalog/AmountField/AmountField';
-import type { Unit } from '../../../lib/catalog';
-import type { AmountScale } from '../../../lib/usualAmounts';
+import type { Unit } from '@/lib/catalog';
+import type { AmountScale } from '@/lib/usualAmounts';
 
 type Props = {
   /** Name of the Ingredient, for the amount's accessible name. */

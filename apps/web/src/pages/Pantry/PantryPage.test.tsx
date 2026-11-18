@@ -9,28 +9,20 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { defaultExpiryDate, type Batch } from '../../lib/pantry';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { defaultExpiryDate, type Batch } from '@/lib/pantry';
 import {
   calendarDay,
   calendarDays,
   quickPick,
   quickPickTiles,
   sheetButton,
-} from '../../test/expirySheet';
-import {
-  locationToggle,
-  pickLocation,
-  pressedLocation,
-} from '../../test/location';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { trackScrolling } from '../../test/scroll';
-import { stubMotion, stubViewport } from '../../test/viewport';
-import { typeNote } from '../../test/addBatch';
+} from '@/test/expirySheet';
+import { locationToggle, pickLocation, pressedLocation } from '@/test/location';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { trackScrolling } from '@/test/scroll';
+import { stubMotion, stubViewport } from '@/test/viewport';
+import { typeNote } from '@/test/addBatch';
 import { PantryPage } from './PantryPage';
 
 const inDays = (days: number) => defaultExpiryDate(days, new Date());

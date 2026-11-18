@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { LocationIcon } from '@/components/pantry/LocationIcon/LocationIcon';
-import { LOCATIONS, type StorageLocation } from '../../../lib/catalog';
+import { LOCATIONS, type StorageLocation } from '@/lib/catalog';
 
 type Props = {
   /** The group's accessible name. */

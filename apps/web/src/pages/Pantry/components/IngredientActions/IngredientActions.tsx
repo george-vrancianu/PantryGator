@@ -12,7 +12,7 @@ import {
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StapleToggleState } from '@/components/lists/useStapleToggle';
-import { keyframesSx } from '../../../lib/keyframesSx';
+import { keyframesSx } from '@/lib/keyframesSx';
 
 type Props = {
   /** The Ingredient's name, for the Add batch label. */

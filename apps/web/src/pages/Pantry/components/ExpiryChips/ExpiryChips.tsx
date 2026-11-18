@@ -12,8 +12,8 @@ import {
   dateAndRelativeDay,
   defaultExpiryDate,
   type IsoDate,
-} from '../../../lib/pantry';
-import { useToday } from '../../../lib/useToday';
+} from '@/lib/pantry';
+import { useToday } from '@/lib/useToday';
 
 /** Fixed quick picks, in days: 3 d, 1 wk, 2 wk, 1 mo (a month is 30 days). */
 const QUICK_DAYS = [3, 7, 14, 30] as const;

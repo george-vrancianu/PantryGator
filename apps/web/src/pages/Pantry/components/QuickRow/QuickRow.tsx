@@ -10,7 +10,7 @@ import {
 } from '@pocket-pantry/ui';
 import type { MouseEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CameraMode } from '../../../lib/cameraMode';
+import type { CameraMode } from '@/lib/cameraMode';
 
 type Props = {
   /** Set to the tile that opened the camera, so focus can return to it. */

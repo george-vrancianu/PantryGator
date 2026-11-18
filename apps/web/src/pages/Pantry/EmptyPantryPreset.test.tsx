@@ -7,15 +7,15 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { emitBarcode, fakeCamera } from '../../test/scan';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { emitBarcode, fakeCamera } from '@/test/scan';
 import { PantryPage } from './PantryPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,AAAA'),
 }));
 

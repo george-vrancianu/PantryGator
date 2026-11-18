@@ -7,22 +7,22 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { Batch } from '../../lib/pantry';
-import { clearPick, typeNote } from '../../test/addBatch';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { Batch } from '@/lib/pantry';
+import { clearPick, typeNote } from '@/test/addBatch';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 import {
   emitBarcode,
   fakeCamera,
   languageChip,
   queryLanguageChip,
-} from '../../test/scan';
+} from '@/test/scan';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,AAAA'),
 }));
 
