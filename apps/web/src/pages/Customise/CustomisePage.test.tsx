@@ -1,9 +1,9 @@
 import { fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubViewport } from '../../test/viewport';
-import { newWidgetId } from '../../lib/dashboardLayout';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
+import { newWidgetId } from '@/lib/dashboardLayout';
 import { CustomisePage } from './CustomisePage';
 
 afterEach(() => vi.unstubAllGlobals());

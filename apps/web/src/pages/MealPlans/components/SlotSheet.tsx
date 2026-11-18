@@ -13,7 +13,7 @@ import {
   issueDetail,
   readableAmount,
   reasonText,
-} from '../../../components/MealPlanPopover/mealPlanText';
+} from '@/components/mealPlan/MealPlanPopover/mealPlanText';
 import { ingredientKey, type PlanIssue } from '../../../lib/mealPlan';
 import type { AddMissingScope } from '../../../lib/mealPlan';
 import type { PlanSlot } from '../../../lib/mealPlanPage';

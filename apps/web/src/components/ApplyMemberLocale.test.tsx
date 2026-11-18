@@ -5,7 +5,7 @@ import { changeLocale } from '../i18n';
 import { useSaveLocale } from '../lib/settings';
 import { renderWithProviders, stubApi } from '../test/render';
 import { ApplyMemberLocale } from './ApplyMemberLocale';
-import { LanguageSwitcher } from './LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/auth/LanguageSwitcher/LanguageSwitcher';
 
 function stubPreferences(stored: 'en' | 'ro' | 'da' | null) {
   const preferences = {

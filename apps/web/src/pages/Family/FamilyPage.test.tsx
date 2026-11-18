@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Family } from '../../lib/family';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { Family } from '@/lib/family';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { FamilyPage } from './FamilyPage';
 
 const inDays = (days: number) =>

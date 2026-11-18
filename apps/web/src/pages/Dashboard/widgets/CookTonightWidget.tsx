@@ -5,22 +5,22 @@ import { Link } from 'react-router-dom';
 import {
   AllergenIndicator,
   allergenIndicatorLabel,
-} from '../../../components/AllergenIndicator';
-import { RowTags } from '../../../components/RowTags';
-import { CookTonightPanel } from '../../../components/CookTonightPanel';
-import { HiddenByAllergiesNote } from '../../../components/HiddenByAllergiesNote';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { recipeHref } from '../../../lib/recipeHref';
-import { useCookTonight, type CookTonightCard } from '../../../lib/cookTonight';
-import type { WidgetSize } from '../../../lib/dashboard';
-import { widgetSpan, type GridColumns } from '../../../lib/layoutColumns';
-import { localIso } from '../../../lib/pantry';
-import { rowTagNames } from '../../../lib/tags';
+} from '@/components/AllergenIndicator';
+import { RowTags } from '@/components/RowTags';
+import { CookTonightPanel } from '../components/CookTonightPanel/CookTonightPanel';
+import { HiddenByAllergiesNote } from '@/components/HiddenByAllergiesNote';
+import { translateApiError } from '@/i18n/translateApiError';
+import { recipeHref } from '@/lib/recipeHref';
+import { useCookTonight, type CookTonightCard } from '@/lib/cookTonight';
+import type { WidgetSize } from '@/lib/dashboard';
+import { widgetSpan, type GridColumns } from '@/lib/layoutColumns';
+import { localIso } from '@/lib/pantry';
+import { rowTagNames } from '@/lib/tags';
 import {
   hasNoFamilyRecipes,
   useRecipes,
   type RecipeBrowse,
-} from '../../../lib/recipes';
+} from '@/lib/recipes';
 import { WidgetCard, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 
