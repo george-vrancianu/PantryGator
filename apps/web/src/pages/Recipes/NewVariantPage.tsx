@@ -32,6 +32,9 @@ export function NewVariantPage() {
   const { id = '' } = useParams();
   const location = useLocation();
   const route = useRecipeDraftRoute();
+  // Started beside the route lookup, so the copy and the base's view are on their way while it answers (the form reads the same queries).
+  useVariantDraft(id);
+  useRecipe(id);
   const draftRoute = routePropsOf(route);
   const resuming = new URLSearchParams(location.search).has(DRAFT_PARAM);
   const title = t('recipes:family.newHeading');

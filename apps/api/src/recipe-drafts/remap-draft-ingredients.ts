@@ -55,7 +55,7 @@ export async function remapDraftIngredients(
                 FROM jsonb_array_elements(COALESCE(d.content #> '{guidance,pairings}', '[]'::jsonb))
                   WITH ORDINALITY AS p(pairing, pos)
               ), '[]'::jsonb))
-            ELSE d.content -> 'guidance' END),
+            ELSE COALESCE(d.content -> 'guidance', 'null'::jsonb) END),
         version = d.version + 1,
         updated_at = d.updated_at
     WHERE EXISTS (

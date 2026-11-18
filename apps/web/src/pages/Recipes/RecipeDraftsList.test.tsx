@@ -347,13 +347,17 @@ describe('Recipe Drafts list and discard', () => {
       summary({ id: ID_C, title: 'Third' }),
     ];
 
+    const deleteKeys = [ID_A, ID_B, ID_C].map(
+      (id) => `DELETE /api/recipe-drafts/${id}`,
+    );
+
     it('hides every row at once with one Undo toast, and deletes each only when the Undo is gone', async () => {
       const u = user();
       const calls = setup(
         three,
         Object.fromEntries(
-          [ID_A, ID_B, ID_C].map((id) => [
-            `DELETE /api/recipe-drafts/${id}`,
+          deleteKeys.map((key) => [
+            key,
             () => new Response(null, { status: 204 }),
           ]),
         ),
@@ -371,11 +375,31 @@ describe('Recipe Drafts list and discard', () => {
         deletes(calls)
           .map((c) => c.key)
           .sort(),
-      ).toEqual(
-        [ID_A, ID_B, ID_C]
-          .map((id) => `DELETE /api/recipe-drafts/${id}`)
-          .sort(),
+      ).toEqual([...deleteKeys].sort());
+    });
+
+    it('treats a Recipe Draft already gone (404) as discarded: no error toast, the rest still deleted', async () => {
+      const u = user();
+      const calls = setup(
+        three,
+        {
+          [`DELETE /api/recipe-drafts/${ID_A}`]: () =>
+            new Response(null, { status: 204 }),
+          [`DELETE /api/recipe-drafts/${ID_B}`]: () =>
+            Response.json(
+              { code: 'recipe_drafts.not_found', message: 'gone' },
+              { status: 404 },
+            ),
+          [`DELETE /api/recipe-drafts/${ID_C}`]: () =>
+            new Response(null, { status: 204 }),
+        },
+        '/recipes/drafts',
       );
+      await u.click(await screen.findByRole('button', { name: 'Discard all' }));
+      await elapse(UNDO_WINDOW_MS + 1500);
+      expect(deletes(calls)).toHaveLength(3);
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.queryByText(/not found/i)).toBeNull();
     });
 
     it('brings them all back on Undo and sends nothing', async () => {

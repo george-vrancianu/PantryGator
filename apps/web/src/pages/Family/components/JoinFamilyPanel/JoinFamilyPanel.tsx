@@ -19,6 +19,7 @@ export function JoinFamilyPanel({ flow }: { flow: JoinFlow }) {
             {t('joinWarning')}{' '}
             {t('joinBatches', { count: flow.preview.batches })}{' '}
             {t('joinShoppingItems', { count: flow.preview.shoppingItems })}
+            {/* Batches and Shopping Items always show; Recipe Drafts are rare, so "0 Recipe Drafts" would only be noise. */}
             {flow.preview.recipeDrafts > 0
               ? ` ${t('joinRecipeDrafts', { count: flow.preview.recipeDrafts })}`
               : null}

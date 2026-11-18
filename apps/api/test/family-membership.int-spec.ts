@@ -644,6 +644,15 @@ describe('Family membership: join, leave, remove, transfer, delete (integration)
           content: { title: 'Half a stew' } as never,
         })),
       );
+      // One past its 30 days but not yet swept (expiry is lazy): already lost, so not counted.
+      await database.insert(recipeDrafts).values({
+        id: randomUUID(),
+        memberId: joiner.userId,
+        familyId: mine,
+        kind: 'new_recipe' as const,
+        content: { title: 'Old stew' } as never,
+        updatedAt: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000),
+      });
 
       const code = (await familyOf(owner)).inviteCode;
       const preview = await call(

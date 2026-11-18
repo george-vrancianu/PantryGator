@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ApiError } from '@/lib/api';
 import { recipeDraftsListKey, useDeleteRecipeDraft } from '@/lib/recipeDrafts';
 import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
 
@@ -27,9 +28,22 @@ export function useRecipeDraftDiscard({
 }: { takeFromForm?: boolean } = {}) {
   const { t } = useTranslation('recipes');
   const remove = useDeleteRecipeDraft();
+  // One DELETE per Recipe Draft. One already gone (discarded on another device) answers 404: that is done, not a failure of the rest.
+  const removeAll = async (ids: string[]) => {
+    const results = await Promise.allSettled(
+      ids.map((id) => remove.mutateAsync(id)),
+    );
+    const failed = results.find(
+      (result): result is PromiseRejectedResult =>
+        result.status === 'rejected' &&
+        !(result.reason instanceof ApiError && result.reason.status === 404),
+    );
+    if (failed) throw failed.reason;
+  };
   const removal = useDeferredRemoval<string>(
     recipeDraftsListKey,
     remove.mutateAsync,
+    removeAll,
   );
   // The Undo toast is a polite status (CODING_STANDARDS).
   const discard = (id: string) =>

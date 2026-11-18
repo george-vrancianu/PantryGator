@@ -363,7 +363,6 @@ export function useResolveTag() {
   });
 }
 
-/** One Recipe with its text, plus its base, Variants and ingredient diff. */
 /**
  * For a lookup that waits on the answer (the base of a resumed Recipe Draft): a
  * Recipe that is gone or hidden answers 404 or 403 for good, so it settles at
@@ -378,10 +377,11 @@ export function retryUnlessGone(failureCount: number, error: unknown) {
   return failureCount < 2;
 }
 
+/** One Recipe with its text, plus its base, Variants and ingredient diff. */
 export function useRecipe(
   id: string,
   enabled = true,
-  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form). */
+  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form); `retryUnlessGone` to settle at once on a 404 or 403 and retry other failures. */
   retry?: boolean | typeof retryUnlessGone,
 ) {
   return useQuery({

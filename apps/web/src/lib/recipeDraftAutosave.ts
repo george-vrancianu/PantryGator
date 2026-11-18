@@ -27,6 +27,9 @@ export const AUTOSAVE_RETRY_DELAYS_MS = [3000, 6000, 12_000, 24_000, 30_000];
  * `conflict`: another device or tab saved a newer version; autosave has stopped
  * until the form is reloaded from the server.
  */
+/** The browser caps a `keepalive` body at 64 KB (bytes). */
+const KEEPALIVE_MAX_BYTES = 60_000;
+
 export type AutosaveStatus =
   'idle' | 'saving' | 'saved' | 'failed' | 'rejected' | 'conflict';
 
@@ -74,7 +77,11 @@ export type Autosave = {
   draftId: string | null;
   /** Sends what is pending now (after a request in flight); resolves to the Recipe Draft id, or null if there is none. Never rejects. */
   flush: () => Promise<string | null>;
-  /** The stored Recipe Draft is gone (a 404): create a new one from the form as it is, and carry on saving to that. */
+  /**
+   * The stored Recipe Draft is gone (a 404): create a new one from the form as it is, and carry on saving to that.
+   * Waits for a request in flight. The page's `?draft=` keeps the gone id until a create answers, so a create
+   * that fails (the cap) leaves a reload on the not-found alert.
+   */
   keepAsNew: () => void;
   /** The Recipe is being created: send nothing until `resume` (a Recipe Draft being consumed must not be updated). */
   pause: () => void;
@@ -163,7 +170,10 @@ export function useRecipeDraftAutosave(options: AutosaveOptions): Autosave {
           if (state.stopped || isUnchanged(sending)) break;
           // A failed save keeps saying so while it is retried.
           if (!state.failed) setStatus('saving');
-          const { keepalive } = state;
+          // A body over the browser's 64 KB cap for `keepalive` makes the fetch throw: send it plainly (a page that was only hidden is still alive).
+          const keepalive =
+            state.keepalive &&
+            new TextEncoder().encode(sending).length <= KEEPALIVE_MAX_BYTES;
           if (state.id === null) {
             const made = await writes.current.create({
               kind,
@@ -308,22 +318,30 @@ export function useRecipeDraftAutosave(options: AutosaveOptions): Autosave {
 
   const keepAsNew = useCallback(() => {
     const state = run.current;
-    if (state.stopped || state.busy) return;
-    if (state.timer) clearTimeout(state.timer);
-    state.timer = null;
-    state.id = null;
-    state.version = 0;
-    state.sent = null;
-    state.failed = false;
-    state.failures = 0;
-    setDraftId(null);
-    setError(null);
-    if (isUnchanged(JSON.stringify(latest.current.content))) {
-      setStatus('idle');
-      return;
-    }
-    setStatus('saving');
-    void drain();
+    const start = () => {
+      if (state.stopped) return;
+      // A request is in flight (edits go on being sent, and 404): the tap waits for it, not lost.
+      if (state.busy) {
+        void state.busy.then(start);
+        return;
+      }
+      if (state.timer) clearTimeout(state.timer);
+      state.timer = null;
+      state.id = null;
+      state.version = 0;
+      state.sent = null;
+      state.failed = false;
+      state.failures = 0;
+      setDraftId(null);
+      setError(null);
+      if (isUnchanged(JSON.stringify(latest.current.content))) {
+        setStatus('idle');
+        return;
+      }
+      setStatus('saving');
+      void drain();
+    };
+    start();
   }, [drain]);
 
   const resume = useCallback(() => {

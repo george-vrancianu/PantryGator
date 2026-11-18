@@ -22,11 +22,10 @@ export function RecipeDraftWriteNotice({
   onKeepAsNew?: () => void;
 }) {
   const { t } = useTranslation(['errors', 'recipes']);
-  const capped =
-    error instanceof ApiError && error.code === 'recipe_drafts.limit_reached';
+  const code = error instanceof ApiError ? error.code : null;
+  const capped = code === 'recipe_drafts.limit_reached';
   if (!capped && status !== 'rejected') return null;
-  const gone =
-    error instanceof ApiError && error.code === 'recipe_drafts.not_found';
+  const gone = code === 'recipe_drafts.not_found';
   return (
     <Alert>
       <Stack spacing={1}>

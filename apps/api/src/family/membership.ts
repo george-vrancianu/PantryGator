@@ -1,4 +1,4 @@
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import {
   batches,
   family,
@@ -8,6 +8,7 @@ import {
   user,
 } from '../database/schema';
 import type { Tx } from '../database/database.types';
+import { recipeDraftLive } from '../recipe-drafts/recipe-draft-expiry';
 import { withFreshInviteCode } from './invite-code';
 
 /**
@@ -64,7 +65,8 @@ export async function countFamilyData(
   const [{ n: draftCount }] = await tx
     .select({ n: count() })
     .from(recipeDrafts)
-    .where(eq(recipeDrafts.familyId, familyId));
+    // Expiry is lazy: a row past its 30 days is already lost, so it is not counted.
+    .where(and(eq(recipeDrafts.familyId, familyId), recipeDraftLive));
   return {
     batches: batchCount,
     shoppingItems: itemCount,

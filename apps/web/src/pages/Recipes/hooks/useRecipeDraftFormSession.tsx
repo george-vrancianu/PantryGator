@@ -19,6 +19,8 @@ export type RecipeDraftRouteProps = {
   /** The Recipe Draft the form was opened on, if resuming one. */
   resumed?: RecipeDraftView;
   onDraftId: (id: string) => void;
+  /** Drops the supplied fill from the history entry (see `useRecipeDraftRoute`). */
+  clearState: () => void;
   /** Reload the form on the latest Recipe Draft (a version conflict's "Load latest"). */
   onLoadLatest: (latest: RecipeDraftView) => void;
 };
