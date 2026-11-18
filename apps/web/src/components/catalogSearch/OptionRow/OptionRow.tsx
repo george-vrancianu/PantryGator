@@ -1,4 +1,4 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, palette, radius } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
 export type OptionRowProps = {
@@ -28,7 +28,6 @@ export function OptionRow({
   onSelect,
   children,
 }: OptionRowProps) {
-  const { color } = tokens;
   return (
     <Box
       component="li"
@@ -48,16 +47,16 @@ export function OptionRow({
         alignItems: 'center',
         gap: 1.5,
         cursor: 'pointer',
-        backgroundColor: active ? color.subtle : 'transparent',
+        backgroundColor: active ? palette('pp-subtle') : 'transparent',
         borderTop: first
           ? 0
           : rule === 'dashed'
-            ? `1px dashed ${color.tickBorder}`
-            : `1px solid ${color.divider}`,
+            ? `1px dashed ${palette('pp-box')}`
+            : `1px solid ${palette('divider')}`,
         opacity: dimmed ? 0.72 : 1,
         transition: 'opacity 200ms',
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-        '&:hover': { backgroundColor: color.subtle },
+        '&:hover': { backgroundColor: palette('pp-subtle') },
         ...(active
           ? {
               '&::before': {
@@ -68,7 +67,7 @@ export function OptionRow({
                 bottom: 10,
                 width: 3,
                 borderRadius: radius.tag,
-                backgroundColor: color.accent,
+                backgroundColor: palette('pp-accent'),
               },
             }
           : {}),

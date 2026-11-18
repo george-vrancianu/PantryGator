@@ -1,4 +1,4 @@
-import { Box, TagChip, tokens } from '@pocket-pantry/ui';
+import { Box, TagChip, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { rowTagNames, splitRowTags, type RecipeTag } from '@/lib/tags';
 
@@ -50,7 +50,7 @@ export function RowTags({ tags, matchedIds = [], meta = [] }: Props) {
             flexShrink: 0,
             fontSize: 12,
             fontWeight: 700,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
             fontVariantNumeric: 'tabular-nums',
           }}
         >
@@ -64,7 +64,7 @@ export function RowTags({ tags, matchedIds = [], meta = [] }: Props) {
             flexShrink: 0,
             fontSize: 13,
             fontWeight: 500,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
             whiteSpace: 'nowrap',
           }}
         >

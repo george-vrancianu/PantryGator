@@ -1,4 +1,4 @@
-import { Box, CloseIcon, IconButton, tokens, radius } from '@pocket-pantry/ui';
+import { Box, CloseIcon, IconButton, palette, radius } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogSearchResult } from '@/lib/catalog';
@@ -20,7 +20,6 @@ export function SelectedToken({
   /** Replaces the "{leaf} · {aisle}" line. */
   meta?: string;
 }) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   return (
     <Box
@@ -37,15 +36,15 @@ export function SelectedToken({
         pl: '12px',
         pr: '6px',
         borderRadius: radius.control,
-        backgroundColor: color.accentTint,
-        color: color.accentOnTint,
+        backgroundColor: palette('pp-accentTint'),
+        color: palette('pp-accentOnTint'),
         cursor: 'pointer',
       }}
     >
       <IngredientIconSlot
         ingredientId={selected.id}
         aisleId={selected.parentCategory.aisle.id}
-        color={color.accent}
+        color={palette('pp-accent')}
       />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box

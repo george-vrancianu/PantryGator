@@ -1,4 +1,4 @@
-import { Box, PeopleIcon, tokens, radius } from '@pocket-pantry/ui';
+import { Box, PeopleIcon, palette, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { RecipeOwner } from '@/lib/recipes';
 
@@ -18,8 +18,8 @@ export function OwnerBadge({ owner }: { owner: RecipeOwner }) {
         px: '8px',
         py: '3px',
         borderRadius: radius.tag,
-        bgcolor: tokens.color.butter,
-        color: tokens.color.butterInk,
+        bgcolor: palette('secondary-main'),
+        color: palette('secondary-contrastText'),
         fontSize: 11.5,
         fontWeight: 700,
         lineHeight: 1.2,

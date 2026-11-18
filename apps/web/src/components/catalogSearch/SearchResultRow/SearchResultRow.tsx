@@ -1,4 +1,4 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, palette, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
@@ -40,7 +40,6 @@ export function SearchResultRow({
   tag = null,
   onSelect,
 }: SearchResultRowProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   const meta = resultMeta(result);
   return (
@@ -77,7 +76,13 @@ export function SearchResultRow({
           <Highlighted text={result.name} query={query} />
           {result.owner === 'family' ? <FamilyTag /> : null}
         </Box>
-        <Box sx={{ fontSize: 13, fontWeight: 500, color: color.muted }}>
+        <Box
+          sx={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: palette('text-secondary'),
+          }}
+        >
           {meta}
         </Box>
       </Box>
@@ -91,9 +96,9 @@ export function SearchResultRow({
               flexShrink: 0,
               px: '6px',
               py: '2px',
-              border: `1px solid ${color.line}`,
+              border: `1px solid ${palette('pp-line')}`,
               borderRadius: radius.box,
-              color: color.muted,
+              color: palette('text-secondary'),
               fontSize: 11,
               fontWeight: 600,
             }}
@@ -108,8 +113,8 @@ export function SearchResultRow({
               px: '8px',
               py: '5px',
               borderRadius: radius.tag,
-              backgroundColor: color.chipNeutral,
-              color: color.muted,
+              backgroundColor: palette('pp-chip'),
+              color: palette('text-secondary'),
               fontSize: 11.5,
               fontWeight: 600,
             }}

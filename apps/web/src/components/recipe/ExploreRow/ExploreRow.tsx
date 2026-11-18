@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CookTonightCard } from '@/lib/cookTonight';
 import type { AddState } from '@/lib/addToFamily';
@@ -61,7 +61,7 @@ export function ExploreRow({
       above={
         filtering && recipe.base ? (
           <Box
-            sx={{ fontSize: 13, fontWeight: 600, color: tokens.color.accent }}
+            sx={{ fontSize: 13, fontWeight: 600, color: palette('pp-accent') }}
           >
             {t('variantOf', { base: recipe.base.title })}
           </Box>

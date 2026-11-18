@@ -1,4 +1,4 @@
-import { Box, tokens, radius, nestedRadius } from '@pocket-pantry/ui';
+import { Box, palette, radius, nestedRadius } from '@pocket-pantry/ui';
 
 const TITLE_WIDTHS = ['58%', '44%', '66%', '50%'];
 const META_WIDTHS = ['36%', '40%', '30%', '42%'];
@@ -13,7 +13,6 @@ const shimmer = {
 
 /** Four placeholder rows for the first load of a query; hidden from assistive tech. */
 export function SearchSkeleton({ animate }: { animate: boolean }) {
-  const { color } = tokens;
   const bar = (width: string, height: number, delay: number) => (
     <Box
       sx={{
@@ -22,14 +21,14 @@ export function SearchSkeleton({ animate }: { animate: boolean }) {
         width,
         height,
         borderRadius: radius.tag,
-        backgroundColor: color.chipNeutral,
+        backgroundColor: palette('pp-chip'),
         ...(animate
           ? {
               '&::after': {
                 content: '""',
                 position: 'absolute',
                 inset: 0,
-                background: `linear-gradient(90deg, transparent, ${tokens.color.surface}, transparent)`,
+                background: `linear-gradient(90deg, transparent, ${palette('background-paper')}, transparent)`,
                 opacity: 0.6,
                 animation: `pp-search-shimmer 1.4s ${delay}ms infinite`,
               },
@@ -51,7 +50,7 @@ export function SearchSkeleton({ animate }: { animate: boolean }) {
             display: 'flex',
             alignItems: 'center',
             gap: 1.5,
-            borderTop: index === 0 ? 0 : `1px solid ${color.divider}`,
+            borderTop: index === 0 ? 0 : `1px solid ${palette('divider')}`,
             ...(animate
               ? {
                   opacity: 0,
@@ -74,7 +73,7 @@ export function SearchSkeleton({ animate }: { animate: boolean }) {
                 width: 30,
                 height: 30,
                 borderRadius: nestedRadius(radius.control, 6),
-                backgroundColor: color.chipNeutral,
+                backgroundColor: palette('pp-chip'),
               }}
             />
           </Box>

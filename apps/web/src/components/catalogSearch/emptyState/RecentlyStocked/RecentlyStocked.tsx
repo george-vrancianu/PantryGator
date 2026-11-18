@@ -1,4 +1,4 @@
-import { tokens } from '@pocket-pantry/ui';
+import { palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useRecentlyStocked } from '@/lib/recentlyStocked';
 import { useShortAgo } from '../useShortAgo';
@@ -28,12 +28,12 @@ export function RecentlyStocked() {
                 ? {
                     glyph: '●',
                     text: t('search.stockedInPantry', { when }),
-                    color: tokens.color.accent,
+                    color: palette('pp-accent'),
                   }
                 : {
                     glyph: '+',
                     text: t('search.stockedGone', { when }),
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }
             }
             label={

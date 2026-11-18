@@ -1,4 +1,4 @@
-import { tokens } from '@pocket-pantry/ui';
+import { palette } from '@pocket-pantry/ui';
 
 /**
  * The look of the links "Plan your week", "Plan a meal", "Start a plan" and "Edit day": plain muted text, not a button.
@@ -10,6 +10,6 @@ export const plainAction = {
   fontSize: 12.5,
   fontWeight: 600,
   whiteSpace: 'nowrap',
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
   textDecoration: 'none',
 } as const;

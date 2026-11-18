@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -15,7 +15,7 @@ export function HiddenByAllergiesNote({
   const { t } = useTranslation('recipes');
   if (!count) return null;
   return (
-    <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+    <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
       <Box component="span">{t('hiddenByAllergies.note', { count })}</Box>
       {' · '}
       <Box
@@ -25,7 +25,7 @@ export function HiddenByAllergiesNote({
         sx={{
           font: 'inherit',
           fontWeight: 700,
-          color: tokens.color.accent,
+          color: palette('pp-accent'),
           background: 'none',
           border: 0,
           p: 0,
