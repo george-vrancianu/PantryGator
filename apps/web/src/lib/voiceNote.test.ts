@@ -731,6 +731,51 @@ describe('Voice Note module', () => {
     });
   });
 
+  describe('Back from a merged Review', () => {
+    async function merged() {
+      const ctx = setup();
+      await record(ctx.note, options);
+      await record(ctx.note, options);
+      ctx.answer(result('a'), 0);
+      ctx.answer(result('b'), 1);
+      await settle();
+      expect(ctx.note.openMerged()).toBe('opened');
+      return ctx;
+    }
+
+    it('returns to the Voice Inbox with the notes kept and their edits too, and tells the listener', async () => {
+      const { note } = await merged();
+      const heard = vi.fn();
+      note.onUnmerged(heard);
+      note.edit('a', { quantity: 9 });
+      note.unmerge();
+      expect(note.getState().phase).toBe('idle');
+      expect(note.getState().inbox).toMatchObject({ ready: 2 });
+      expect(heard).toHaveBeenCalledOnce();
+      // Opening one note shows its edit.
+      note.openReady();
+      expect(
+        note.getState().proposal!.actions.map((a) => a.quantity),
+      ).toContain(9);
+    });
+
+    it('does nothing when no merged Review is open', async () => {
+      const ctx = await inReview('a');
+      const heard = vi.fn();
+      ctx.note.onUnmerged(heard);
+      ctx.note.unmerge();
+      expect(ctx.note.getState().phase).toBe('review');
+      expect(heard).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while Apply is in flight', async () => {
+      const { note } = await merged();
+      note.applying();
+      note.unmerge();
+      expect(note.getState().phase).toBe('applying');
+    });
+  });
+
   describe('automatic retry', () => {
     it('sends a network error once more by itself, and reads the note if that works', async () => {
       const ctx = setup();

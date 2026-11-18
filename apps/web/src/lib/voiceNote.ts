@@ -479,6 +479,7 @@ export function createVoiceNote(
   let release: (() => void) | undefined;
   /** Told when a read settles, kept or failed (a kept read costs Credits). */
   const settledListeners = new Set<() => void>();
+  const unmergedListeners = new Set<() => void>();
   let notifier = adapters.notify;
   let capTimer: ReturnType<typeof setTimeout> | undefined;
   /** The microphone: being asked for, then live; and what the recording is for. */
@@ -1070,6 +1071,22 @@ export function createVoiceNote(
       store = { ...store, merged: notes.map((n) => n.id) };
       emit();
       return 'opened';
+    },
+
+    /**
+     * Back from a merged Review ("Review all") to the Voice Inbox: nothing is applied or discarded, the notes
+     * stay as they are with their edits, and `onUnmerged` listeners (the sheet of notes) are told. Not while Apply is in flight.
+     */
+    unmerge() {
+      if (!store.merged || phase() !== 'review') return;
+      store = { ...store, merged: undefined };
+      emit();
+      unmergedListeners.forEach((listener) => listener());
+    },
+    /** Told when Back left a merged Review. Returns the way to stop listening. */
+    onUnmerged(listener: () => void) {
+      unmergedListeners.add(listener);
+      return () => void unmergedListeners.delete(listener);
     },
 
     /** Review: drops a Voice Action. */
