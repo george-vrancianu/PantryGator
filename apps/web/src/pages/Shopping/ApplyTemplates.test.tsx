@@ -1,9 +1,9 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ShoppingList } from '../../lib/shopping';
-import type { Template, TemplateLine } from '../../lib/shoppingTemplates';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { ShoppingList } from '@/lib/shopping';
+import type { Template, TemplateLine } from '@/lib/shoppingTemplates';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { ShoppingPage } from './ShoppingPage';
 
 const produce = { id: 'a1', name: 'Fruit & veg', sortOrder: 1 };

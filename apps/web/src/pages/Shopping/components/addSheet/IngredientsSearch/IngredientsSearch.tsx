@@ -7,19 +7,19 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
-import { AmountField } from '../../../../components/AmountField';
-import { type CatalogSearchResult, type Unit } from '../../../../lib/catalog';
-import { parseAmountText } from '../../../../lib/pantry';
+import { AmountField } from '@/components/AmountField';
+import { type CatalogSearchResult, type Unit } from '@/lib/catalog';
+import { parseAmountText } from '@/lib/pantry';
 import {
   isOnList,
   uncheckedItems,
   useShoppingList,
   type NewShoppingItem,
   type ShoppingItem,
-} from '../../../../lib/shopping';
-import type { Suggestion, Suggestions } from '../../../../lib/suggestions';
-import { EmptySearch } from './EmptySearch';
-import { useSheetToast } from './useSheetToast';
+} from '@/lib/shopping';
+import type { Suggestion, Suggestions } from '@/lib/suggestions';
+import { EmptySearch } from '../EmptySearch/EmptySearch';
+import { useSheetToast } from '../useSheetToast';
 
 /** What was picked in the search: a Catalog match, or the typed text as an Unmatched item. */
 type Chosen =

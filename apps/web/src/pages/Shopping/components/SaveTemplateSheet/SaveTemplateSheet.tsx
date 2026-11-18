@@ -10,17 +10,17 @@ import {
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   SHOPPING_TOAST_MS,
   useShoppingList,
   type ShoppingItem,
-} from '../../../lib/shopping';
+} from '@/lib/shopping';
 import {
   MAX_TEMPLATES,
   useTemplateMutations,
   useTemplates,
-} from '../../../lib/shoppingTemplates';
+} from '@/lib/shoppingTemplates';
 
 export type SaveTemplateSheetProps = {
   open: boolean;

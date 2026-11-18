@@ -9,17 +9,17 @@ import {
   radius,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { useShoppingList, type ShoppingList } from '../../../lib/shopping';
-import { bulkBody, lineTag, lineTagKey } from '../../../lib/templateSelection';
-import { useSingleTemplateSelection } from '../../../lib/useSingleTemplateSelection';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useShoppingList, type ShoppingList } from '@/lib/shopping';
+import { bulkBody, lineTag, lineTagKey } from '@/lib/templateSelection';
+import { useSingleTemplateSelection } from '@/lib/useSingleTemplateSelection';
 import {
   useApplyTemplate,
   groupByAisle,
   useTemplate,
   type Template,
   type TemplateLine,
-} from '../../../lib/shoppingTemplates';
+} from '@/lib/shoppingTemplates';
 
 type Props = {
   templateId: string;

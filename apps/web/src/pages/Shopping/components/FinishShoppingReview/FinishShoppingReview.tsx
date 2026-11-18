@@ -7,10 +7,10 @@ import {
   radius,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AmountField } from '../../../components/AmountField';
-import { ExpiryField, expiryContext } from '../../../components/ExpiryPicker';
-import { LocationToggle } from '../../../components/LocationToggle';
-import { useFinishReview } from '../hooks/useFinishReview';
+import { AmountField } from '@/components/AmountField';
+import { ExpiryField, expiryContext } from '@/components/ExpiryPicker/index';
+import { LocationToggle } from '@/components/LocationToggle';
+import { useFinishReview } from '../../hooks/useFinishReview';
 
 type Props = { onDone: () => void; onCancel: () => void };
 

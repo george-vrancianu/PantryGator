@@ -8,21 +8,17 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
+import type { CatalogSearchResult } from '@/lib/catalog';
 import {
   SHOPPING_POLL_INTERVAL_MS,
   type ShoppingGroup,
   type ShoppingItem,
   type ShoppingList,
-} from '../../lib/shopping';
-import type { Template, TemplateLine } from '../../lib/shoppingTemplates';
+} from '@/lib/shopping';
+import type { Template, TemplateLine } from '@/lib/shoppingTemplates';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { stubMotion, stubViewport } from '../../test/viewport';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { stubMotion, stubViewport } from '@/test/viewport';
 import { Link, Route, Routes } from 'react-router-dom';
 import { ShoppingPage } from './ShoppingPage';
 

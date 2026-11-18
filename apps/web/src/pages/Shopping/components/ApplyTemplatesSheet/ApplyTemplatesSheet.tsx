@@ -19,12 +19,12 @@ import {
 import { useQueries } from '@tanstack/react-query';
 import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   SHOPPING_TOAST_MS,
   useShoppingList,
   type ShoppingList,
-} from '../../../lib/shopping';
+} from '@/lib/shopping';
 import {
   templateQueryOptions,
   useApplyTemplate,
@@ -32,7 +32,7 @@ import {
   type Template,
   type TemplateLine,
   type TemplateSummary,
-} from '../../../lib/shoppingTemplates';
+} from '@/lib/shoppingTemplates';
 import {
   bulkBody,
   emptySelection,
@@ -46,7 +46,7 @@ import {
   toggleLine,
   type Selection,
   type TemplateState,
-} from '../../../lib/templateSelection';
+} from '@/lib/templateSelection';
 
 export type ApplyTemplatesSheetProps = {
   open: boolean;

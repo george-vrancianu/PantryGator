@@ -8,12 +8,12 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ShoppingList } from '../../lib/shopping';
-import type { Staple } from '../../lib/staples';
-import type { Suggestion } from '../../lib/suggestions';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { SuggestionsWidget } from '../Dashboard/widgets/SuggestionsWidget';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ShoppingList } from '@/lib/shopping';
+import type { Staple } from '@/lib/staples';
+import type { Suggestion } from '@/lib/suggestions';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { SuggestionsWidget } from '@/pages/Dashboard/widgets/SuggestionsWidget';
 import { ShoppingPage } from './ShoppingPage';
 import { StaplesPage } from './StaplesPage';
 

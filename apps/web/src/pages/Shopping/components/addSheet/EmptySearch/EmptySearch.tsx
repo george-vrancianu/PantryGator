@@ -1,7 +1,7 @@
 import { Box } from '@pocket-pantry/ui';
-import type { Suggestion, Suggestions } from '../../../../lib/suggestions';
-import { GoneTiles } from './GoneTiles';
-import { RunningLowTiles } from './RunningLowTiles';
+import type { Suggestion, Suggestions } from '@/lib/suggestions';
+import { GoneTiles } from '../GoneTiles/GoneTiles';
+import { RunningLowTiles } from '../RunningLowTiles/RunningLowTiles';
 
 export type EmptySearchProps = {
   suggestions: Suggestions;

@@ -241,6 +241,39 @@ test('a feature group keeps its parts together: sub-groups stay inside, not move
   );
 });
 
+test('a camelCase sub-group inside an area stays together, one folder per component, hooks flat', () => {
+  const { rows } = run(
+    {
+      'pages/Shopping/ShoppingPage.tsx': `import { AddSheet } from './components/addSheet/AddSheet';\n`,
+      'pages/Shopping/components/addSheet/AddSheet.tsx': `import { useSheetToast } from './useSheetToast';\n${comp}`,
+      'pages/Shopping/components/addSheet/useSheetToast.ts': `export const useSheetToast = 1;\n`,
+    },
+    ['Shopping'],
+  );
+  assert.equal(
+    rows.get('pages/Shopping/components/addSheet/AddSheet.tsx').target,
+    'pages/Shopping/components/addSheet/AddSheet/AddSheet.tsx',
+  );
+  assert.equal(
+    rows.get('pages/Shopping/components/addSheet/useSheetToast.ts'),
+    undefined,
+  );
+});
+
+test('a component already in its folder inside a sub-group has nothing left to move', () => {
+  const { rows } = run(
+    {
+      'pages/Shopping/ShoppingPage.tsx': `import { AddSheet } from './components/addSheet/AddSheet/AddSheet';\n`,
+      'pages/Shopping/components/addSheet/AddSheet/AddSheet.tsx': comp,
+    },
+    ['Shopping'],
+  );
+  assert.equal(
+    rows.get('pages/Shopping/components/addSheet/AddSheet/AddSheet.tsx'),
+    undefined,
+  );
+});
+
 test('a module on the stays list keeps its place even when one page area imports it', () => {
   const { rows } = run(
     {

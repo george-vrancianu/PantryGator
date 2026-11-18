@@ -1,13 +1,13 @@
 import { Box, Sheet } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { NewShoppingItem } from '../../../../lib/shopping';
-import type { Suggestions } from '../../../../lib/suggestions';
+import type { NewShoppingItem } from '@/lib/shopping';
+import type { Suggestions } from '@/lib/suggestions';
 import {
   emptyIngredients,
   IngredientsSearch,
   type IngredientsState,
-} from './IngredientsSearch';
+} from '../IngredientsSearch/IngredientsSearch';
 
 export type AddSheetProps = {
   open: boolean;
