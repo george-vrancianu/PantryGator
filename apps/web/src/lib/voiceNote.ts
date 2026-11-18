@@ -145,7 +145,7 @@ export type VoiceNoteAdapters = {
   startMicrophone: () => Promise<MicrophoneSession>;
   /** Tells the Member something. Can also be attached later with `attachNotifier`. */
   notify?: (notice: VoiceNotice) => void;
-  /** How long a network error waits before its one automatic retry. Default `NETWORK_RETRY_DELAY_MS`; 0 retries at once. */
+  /** How long a network error waits before its one automatic retry. Default `NETWORK_RETRY_DELAY_MS`; 0 retries at once. A test seam: tests pass 0 to skip the wait. */
   retryDelayMs?: number;
 };
 

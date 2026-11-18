@@ -1,5 +1,10 @@
 import { shoppingListChangeQueryKeys } from './queryKeys';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/react-query';
 import { apiRequest } from './api';
 import type { Unit } from './catalog';
 import { normalizeName } from './normalizeName';
@@ -92,6 +97,29 @@ export const isOnList = (
     ? item.ingredientId === target.ingredientId
     : item.ingredientId === null &&
       normalizeName(item.name) === normalizeName(target.name);
+
+/**
+ * The cached Shopping List's line for an Ingredient, in the shape a Voice Action's `rows.shoppingItem` has;
+ * null when the list is not cached or has no such line.
+ */
+export const cachedShoppingRow = (
+  queryClient: QueryClient,
+  ingredientId: string,
+) => {
+  const list = queryClient.getQueryData<ShoppingList>(shoppingListQueryKey);
+  const item = list?.groups
+    .flatMap((group) => group.items)
+    .find((entry) => entry.ingredientId === ingredientId);
+  return item
+    ? {
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        checked: item.checked,
+      }
+    : null;
+};
 
 /** How often the list refetches, so other Members' changes show up without a reload. */
 export const SHOPPING_POLL_INTERVAL_MS = 10_000;

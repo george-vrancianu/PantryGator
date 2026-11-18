@@ -20,7 +20,7 @@ import type { CatalogSearchResult, Unit } from '@/lib/catalog';
 import { defaultExpiryDate, fullDate, useExpiryTags } from '@/lib/pantry';
 import { useToday } from '@/lib/useToday';
 import type { VoiceBatchRow, VoiceReviewAction } from '@/lib/voice';
-import { shoppingListQueryKey, type ShoppingList } from '@/lib/shopping';
+import { cachedShoppingRow } from '@/lib/shopping';
 import { voiceNote } from '@/lib/voiceNote';
 import {
   canChangeIngredient,
@@ -282,22 +282,6 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
   const queryClient = useQueryClient();
   const refocus = useRef(false);
   const name = displayName(action);
-  /** The new Match as the cached Shopping List has it, for Review's kind label (a ticked Shopping line, not an add). */
-  const onList = (ingredientId: string) => {
-    const list = queryClient.getQueryData<ShoppingList>(shoppingListQueryKey);
-    const item = list?.groups
-      .flatMap((group) => group.items)
-      .find((entry) => entry.ingredientId === ingredientId);
-    return item
-      ? {
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          unit: item.unit,
-          checked: item.checked,
-        }
-      : null;
-  };
 
   // Leaving the search with Escape puts focus back on "Change".
   useEffect(() => {
@@ -336,7 +320,9 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
               ingredient,
               name: null,
               ...(action.target === 'shopping'
-                ? { shoppingItem: onList(ingredient.id) }
+                ? {
+                    shoppingItem: cachedShoppingRow(queryClient, ingredient.id),
+                  }
                 : {}),
               // A Pantry add's Location and Default Expiry follow the new Match.
               ...(action.target === 'pantry'
