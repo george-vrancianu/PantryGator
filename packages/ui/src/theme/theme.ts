@@ -53,7 +53,6 @@ declare module '@mui/material/styles' {
     toastBg: string;
     toastInk: string;
     toastAction: string;
-    bezel: string;
     tomato: string;
     carrot: string;
     leaf: string;
@@ -109,7 +108,6 @@ const PALETTE_TOKENS: ReadonlySet<keyof ThemeTokens> = new Set([
   'toast-bg',
   'toast-ink',
   'toast-action',
-  'bezel',
   'pg-tomato',
   'pg-carrot',
   'pg-leaf',
@@ -151,7 +149,6 @@ function schemePalette(id: ThemeId): PaletteOptions {
       toastBg: t['toast-bg'],
       toastInk: t['toast-ink'],
       toastAction: t['toast-action'],
-      bezel: t.bezel,
       tomato: t['pg-tomato'],
       carrot: t['pg-carrot'],
       leaf: t['pg-leaf'],

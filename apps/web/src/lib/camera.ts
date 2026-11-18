@@ -84,13 +84,8 @@ type FocusConstraints = MediaTrackConstraints & {
   }>;
 };
 
-type TorchConstraints = MediaTrackConstraints & {
-  advanced?: Array<{ torch?: boolean }>;
-};
-
-type ZoomConstraints = MediaTrackConstraints & {
-  advanced?: Array<{ zoom?: number }>;
-};
+/** The torch and zoom constraints, which lib.dom does not type. */
+type TorchOrZoom = { torch: boolean } | { zoom: number };
 
 /** The zoom range a track reports in its capabilities. */
 export type ZoomRange = { min: number; max: number; step?: number };
@@ -182,34 +177,38 @@ export function useCamera() {
     return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
   }, []);
 
+  /** Applies one advanced constraint to the live video track; resolves to whether the camera took it. */
+  const applyAdvanced = useCallback(
+    async (constraint: TorchOrZoom): Promise<boolean> => {
+      const track = streamRef.current?.getVideoTracks()[0];
+      if (!track) return false;
+      try {
+        await track.applyConstraints({
+          advanced: [constraint],
+        } as MediaTrackConstraints);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [],
+  );
+
   /** Switches the torch where the device supports it; resolves to whether it did. */
-  const setTorch = useCallback(async (on: boolean): Promise<boolean> => {
-    const track = streamRef.current?.getVideoTracks()[0];
-    if (!track) return false;
-    try {
-      await track.applyConstraints({
-        advanced: [{ torch: on }],
-      } as TorchConstraints);
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
+  const setTorch = useCallback(
+    (on: boolean) => applyAdvanced({ torch: on }),
+    [applyAdvanced],
+  );
 
   /** Zooms the track to `level`, clamped to its capability; resolves to whether the camera took it. */
-  const setZoom = useCallback(async (level: number): Promise<boolean> => {
-    const track = streamRef.current?.getVideoTracks()[0];
-    const range = zoomRangeRef.current;
-    if (!track || !range) return false;
-    try {
-      await track.applyConstraints({
-        advanced: [{ zoom: clampZoom(level, range) }],
-      } as ZoomConstraints);
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
+  const setZoom = useCallback(
+    async (level: number): Promise<boolean> => {
+      const range = zoomRangeRef.current;
+      if (!range) return false;
+      return applyAdvanced({ zoom: clampZoom(level, range) });
+    },
+    [applyAdvanced],
+  );
 
   /**
    * Gets the camera ready for a Scan. Where single-shot focus is supported it focuses on the guide
@@ -219,18 +218,16 @@ export function useCamera() {
   const focusForScan = useCallback(
     (guideCentre: FocusPoint = { x: 0.5, y: FOCUS_POINT_Y }): FocusPass => {
       const track = streamRef.current?.getVideoTracks()[0];
-      let timer: ReturnType<typeof setTimeout> | undefined;
       let finish: () => void = () => {};
       const done = new Promise<void>((resolve) => (finish = resolve));
+      const timers: Array<ReturnType<typeof setTimeout>> = [];
+      const stop = () => {
+        timers.forEach(clearTimeout);
+        finish();
+      };
       if (!track || !focusSupportedRef.current) {
-        timer = setTimeout(finish, FOCUS_PAUSE_MS);
-        return {
-          done,
-          cancel: () => {
-            clearTimeout(timer);
-            finish();
-          },
-        };
+        timers.push(setTimeout(finish, FOCUS_PAUSE_MS));
+        return { done, cancel: stop };
       }
       let restored = false;
       const restore = () => {
@@ -245,7 +242,6 @@ export function useCamera() {
       let settled = false;
       let applied = false;
       let waited = false;
-      const timers: Array<ReturnType<typeof setTimeout>> = [];
       const settle = () => {
         if (settled) return;
         settled = true;
@@ -286,9 +282,8 @@ export function useCamera() {
         done,
         cancel: () => {
           settled = true;
-          timers.forEach(clearTimeout);
           restore();
-          finish();
+          stop();
         },
       };
     },

@@ -7,8 +7,6 @@
   "review": "Review",
   "scan": {
     "reviewSession": "Review {{title}}",
-    "failedAlert_one": "{{count}} Scan failed",
-    "failedAlert_other": "{{count}} Scans failed",
     "read_one": "{{count}} read",
     "read_other": "{{count}} read",
     "receipt_one": "{{count}} receipt",
@@ -34,9 +32,7 @@
     "outOfCredits": "Out of Credits",
     "retry": "Retry",
     "retryRead": "Retry reading {{what}}",
-    "pasteInstead": "Paste the text of {{what}} instead",
-    "failedAlert_one": "{{count}} recipe link failed",
-    "failedAlert_other": "{{count}} recipe links failed"
+    "pasteInstead": "Paste the text of {{what}} instead"
   },
   "plate": {
     "waiting": "Waiting to write {{dish}}",
@@ -51,9 +47,7 @@
     "discardRead": "Discard {{dish}}",
     "retryRead": "Retry writing {{dish}}",
     "readAgain": "Read the photo again",
-    "readAgainRead": "Read the photo for {{dish}} again",
-    "failedAlert_one": "{{count}} Plate Scan recipe failed",
-    "failedAlert_other": "{{count}} Plate Scan recipes failed"
+    "readAgainRead": "Read the photo for {{dish}} again"
   },
   "bubble": {
     "reading_one": "Gator is working: {{count}} being read",

@@ -10,7 +10,7 @@ import { resetReads } from '../../lib/scanReads';
 import { getScanSession, resetScanSession } from '../../lib/scanSession';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { takeScan } from '../../test/scan';
-import { openBubbleSheet } from '../../test/voice';
+import { openBubbleSheet } from '../../test/voiceDom';
 import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
 import { BackgroundHost } from '../../components/background/BackgroundHost';
 import { NewRecipePage } from '../Recipes/FamilyRecipePages';

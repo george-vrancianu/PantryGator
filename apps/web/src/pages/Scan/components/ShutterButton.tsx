@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import type { FocusPass } from '../../../lib/camera';
 import { BARCODE_GLYPH } from '../../../components/camera/barcodeGlyph';
 import { glassFocusRing, shade } from '../../../components/camera/glass';
+import { haptic, HAPTIC_TICK_MS } from '../../../lib/haptic';
 
-const HAPTIC_MS = 6;
 /** How long the pointer rests on the shutter before it counts as a hold. */
 export const HOLD_MS = 300;
 /** Pointer travel that still counts as resting (a hold) or as a tap. */
@@ -127,7 +127,7 @@ export function ShutterButton({
       }
       current.hold = 'holding';
       setHolding(true);
-      navigator.vibrate?.(HAPTIC_MS);
+      haptic(HAPTIC_TICK_MS);
       current.pass = activePass.current =
         latest.current.focusForScan?.() ?? null;
     }, HOLD_MS);

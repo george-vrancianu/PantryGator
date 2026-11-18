@@ -26,6 +26,8 @@ import { readBarcode, useCamera } from '../../lib/camera';
 import type { CameraMode } from '../../lib/cameraMode';
 import { useProductRead, type ProposedLine } from '../../lib/scan';
 import { IMAGE_PREPARATION } from '../../lib/scanImage';
+import { isBarcodeMode } from '../../lib/cameraMode';
+import { haptic, HAPTIC_READ_MS } from '../../lib/haptic';
 import { BarcodeResultCard } from '../../components/camera/BarcodeResultCard';
 import {
   CameraFrame,
@@ -221,12 +223,12 @@ export function CameraOverlay({
   const { mutate: lookUp } = barcodeLookup;
   const reading = card !== null;
   useEffect(() => {
-    if (mode !== 'barcode' || camera.status !== 'ready' || reading) return;
+    if (!isBarcodeMode(mode) || camera.status !== 'ready' || reading) return;
     return watchBarcodes((code) => {
       if (closed.current || lookupPending.current !== null) return;
       const seq = ++lookupSeq.current;
       lookupPending.current = seq;
-      navigator.vibrate?.(12);
+      haptic(HAPTIC_READ_MS);
       setCard({ code, lookup: null });
       lookUp(code, {
         onSuccess: (lookup) => {
@@ -261,7 +263,7 @@ export function CameraOverlay({
   };
 
   const shoot = async () => {
-    if (mode === 'barcode' || shooting.current) return;
+    if (isBarcodeMode(mode) || shooting.current) return;
     shooting.current = true;
     setFailed(null);
     try {
@@ -379,7 +381,7 @@ export function CameraOverlay({
           rect={guide}
           shot={shot}
           sliding={sliding}
-          scanLine={mode === 'barcode' && card === null}
+          scanLine={isBarcodeMode(mode) && card === null}
         />
         <CameraTopBar
           onClose={cancel}
@@ -390,7 +392,7 @@ export function CameraOverlay({
           }
           onInfo={() => setInfoOpen(true)}
           language={
-            <Fading hidden={mode === 'barcode'}>
+            <Fading hidden={isBarcodeMode(mode)}>
               <ScanLanguageChip
                 value={scanLanguage}
                 disabled={preparing}
@@ -412,7 +414,7 @@ export function CameraOverlay({
               >
                 {camera.status === 'unavailable'
                   ? t('overlay.noCamera')
-                  : mode === 'barcode' && card === null
+                  : isBarcodeMode(mode) && card === null
                     ? t('overlay.pointAtBarcode')
                     : null}
               </Typography>
@@ -420,7 +422,7 @@ export function CameraOverlay({
           }
           shutter={
             <ShutterButton
-              ring={mode === 'barcode'}
+              ring={isBarcodeMode(mode)}
               disabled={preparing || camera.status !== 'ready'}
               onShoot={() => {
                 fire();
@@ -446,7 +448,7 @@ export function CameraOverlay({
                   setMode(picked);
                   dismissCard();
                   setFailed(null);
-                  if (picked === 'barcode') setPendingCode(null);
+                  if (isBarcodeMode(picked)) setPendingCode(null);
                 }}
               />
             ) : (

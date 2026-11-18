@@ -442,6 +442,21 @@ describe('swiping an Ingredient row to toggle Running low', () => {
       expect(sweepsSeen).toEqual([]);
     });
 
+    it('shows the tint without animating when a Voice Action flags the row and the Pantry is read again', async () => {
+      // Applying a Voice Action flags the Ingredient on the server, with no flip from the row, and the
+      // Pantry read comes back with the flag set. It must snap, as the first load does.
+      const { queryClient, serverFlagged } = await renderPage();
+      expect(tint()).toBeNull();
+      serverFlagged.add('milk-id');
+      await act(async () => {
+        await queryClient.invalidateQueries({ queryKey: ['pantry'] });
+      });
+      await waitFor(() => expect(tint()).not.toBeNull());
+      expect(chip()).toBeVisible();
+      expect(sweepOf()).toBeNull();
+      expect(sweepsSeen).toEqual([]);
+    });
+
     it('snaps in both directions under reduced motion', async () => {
       vi.stubGlobal('matchMedia', (query: string) => ({
         matches: query.includes('reduce'),

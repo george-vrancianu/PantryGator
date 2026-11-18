@@ -286,9 +286,6 @@
     "addToList_other": "Adaugă {{count}} în Lista de cumpărături"
   },
   "inbox": {
-    "failedAlert_one": "{{count}} notă vocală a eșuat",
-    "failedAlert_few": "{{count}} note vocale au eșuat",
-    "failedAlert_other": "{{count}} de note vocale au eșuat",
     "retryNote": "Reîncearcă: {{preview}}",
     "retryOtherNote": "Reîncearcă în altă limbă: {{preview}}",
     "currentLanguage": "{{language}} (curentă)",

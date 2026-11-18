@@ -12,7 +12,7 @@ import type { RecipeFromLink, RecipeFromLinkDraft } from '../../lib/linkRecipe';
 import type { Locale } from '../../i18n';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { makeScrollable, pull } from '../../test/scroll';
-import { closeBubbleSheet, openBubbleSheet } from '../../test/voice';
+import { closeBubbleSheet, openBubbleSheet } from '../../test/voiceDom';
 import { NewRecipePage } from './FamilyRecipePages';
 import { RecipesPage } from './RecipesPage';
 
