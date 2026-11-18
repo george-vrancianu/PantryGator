@@ -1,8 +1,8 @@
 import { Box, tokens, focusRing, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useCatalogAisles } from '../../../lib/catalog';
-import { AisleSwatch } from '../AisleSwatch';
-import { useEmptyStateSearch } from './context';
+import { useCatalogAisles } from '@/lib/catalog';
+import { AisleSwatch } from '../../AisleSwatch/AisleSwatch';
+import { useEmptyStateSearch } from '../context';
 
 /**
  * "Browse by aisle": one chip per Aisle. Tapping one opens that Aisle's

@@ -6,7 +6,7 @@ import {
   type SetStateAction,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../../../../components/catalogSearch/CatalogSearch';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import { AmountField } from '../../../../components/AmountField';
 import { type CatalogSearchResult, type Unit } from '../../../../lib/catalog';
 import { parseAmountText } from '../../../../lib/pantry';

@@ -18,8 +18,8 @@ import {
   type Ref,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/BrowseByAisle';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import type { FamilyRecipeDocument } from '../../../lib/familyRecipes';
 import { useFamilyCatalog } from '../../../lib/familyCatalog';
 import type { GuidanceInput } from '../../../lib/adminRecipes';

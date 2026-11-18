@@ -15,20 +15,20 @@ import {
   type RefObject,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApiError } from '../../lib/api';
+import { ApiError } from '@/lib/api';
 import {
   useAliasSearch,
   useCreateFamilySynonym,
   type CatalogSearchResult,
-} from '../../lib/catalog';
-import { IngredientIconSlot } from '../IngredientIconSlot';
-import { OptionRow } from './OptionRow';
-import { resultMeta } from './SearchResultRow';
+} from '@/lib/catalog';
+import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { OptionRow } from '../OptionRow/OptionRow';
+import { resultMeta } from '../SearchResultRow/SearchResultRow';
 import {
   useReportedAction,
   type FormAction,
   type PickOutcome,
-} from './AddToCatalogForm';
+} from '../addToCatalogAction';
 
 export type AddToCatalogAliasProps = {
   /** The trimmed Name the Member is giving another name to. */

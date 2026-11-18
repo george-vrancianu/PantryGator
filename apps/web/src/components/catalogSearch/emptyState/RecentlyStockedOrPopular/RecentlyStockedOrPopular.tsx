@@ -1,7 +1,7 @@
-import { useRecentlyStocked } from '../../../lib/recentlyStocked';
-import { PopularToStart } from './PopularToStart';
-import { RecentlyStocked } from './RecentlyStocked';
-import { MAX_TILES } from './TileSection';
+import { useRecentlyStocked } from '@/lib/recentlyStocked';
+import { PopularToStart } from '../PopularToStart/PopularToStart';
+import { RecentlyStocked } from '../RecentlyStocked/RecentlyStocked';
+import { MAX_TILES } from '../TileSection/TileSection';
 
 /** Recently Stocked, or Popular to start once the Family has stocked nothing. Waits for the answer before showing either. */
 export function RecentlyStockedOrPopular() {

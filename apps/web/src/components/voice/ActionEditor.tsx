@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { AmountField } from '../AmountField';
 import { ExpiryTag } from '../ExpiryTag';
 import { LocationToggle } from '../LocationToggle';
-import { CatalogSearch } from '../catalogSearch/CatalogSearch';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import { ExpiryField, expiryContext } from '../ExpiryPicker';
 import type { CatalogSearchResult, Unit } from '../../lib/catalog';
 import { defaultExpiryDate, fullDate, useExpiryTags } from '../../lib/pantry';

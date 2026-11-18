@@ -1,5 +1,5 @@
 import { Box, tokens } from '@pocket-pantry/ui';
-import { fold } from '../../lib/fold';
+import { fold } from '@/lib/fold';
 
 /** Where the first case- and accent-insensitive match of `query` sits in `text`, as [start, end) of `text`. */
 export function matchRange(

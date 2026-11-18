@@ -2,8 +2,8 @@ import { Box, tokens } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
-import { NamePill } from '../../../components/catalogSearch/FamilyTag';
-import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
+import { NamePill } from '@/components/catalogSearch/FamilyTag/FamilyTag';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import {
   displayName,
   invalidFields,
