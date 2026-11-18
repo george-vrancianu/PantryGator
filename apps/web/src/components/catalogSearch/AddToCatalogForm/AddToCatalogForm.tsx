@@ -38,7 +38,7 @@ import {
   useReportedAction,
   type FormAction,
   type PickOutcome,
-} from '../addToCatalogShared';
+} from '../addToCatalogAction';
 
 type Mode = 'new' | 'alias';
 

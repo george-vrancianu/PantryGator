@@ -28,7 +28,7 @@ import {
   useReportedAction,
   type FormAction,
   type PickOutcome,
-} from '../addToCatalogShared';
+} from '../addToCatalogAction';
 
 export type AddToCatalogAliasProps = {
   /** The trimmed Name the Member is giving another name to. */
