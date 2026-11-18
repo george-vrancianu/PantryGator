@@ -359,7 +359,9 @@
     "conflictTitle": "Această ciornă de rețetă a fost modificată pe alt dispozitiv",
     "conflictHint": "Modificările de aici nu sunt salvate. Încarcă ultima ciornă salvată ca să continui de la ea.",
     "loadLatest": "Încarcă ultima ciornă salvată",
-    "loadLatestFailed": "Nu am putut încărca ultima ciornă salvată. Încearcă din nou."
+    "loadLatestFailed": "Nu am putut încărca ultima ciornă salvată. Încearcă din nou.",
+    "keepAsNew": "Păstrează ca ciornă de rețetă nouă",
+    "seeDrafts": "Vezi ciornele de rețete"
   },
   "drafts": {
     "entry": "Ciorne ({{count}})",
@@ -378,6 +380,10 @@
     "menu": "Opțiuni pentru {{name}}",
     "discard": "Elimină ciorna",
     "discarded": "Ciornă de rețetă eliminată",
+    "discardAll": "Elimină-le pe toate",
+    "discardedMany_one": "{{count}} ciornă de rețetă eliminată",
+    "discardedMany_few": "{{count}} ciorne de rețete eliminate",
+    "discardedMany_other": "{{count}} de ciorne de rețete eliminate",
     "removeQuestion": "Elimini {{name}}?",
     "context": "din ciornele tale de rețete",
     "removeAction": "Elimină {{name}}",

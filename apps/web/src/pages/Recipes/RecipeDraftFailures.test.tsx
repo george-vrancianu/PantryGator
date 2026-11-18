@@ -253,6 +253,16 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
       expect(sent(calls, POST)).toHaveLength(1);
       expect(screen.queryByText(FAILED)).toBeNull();
     });
+
+    it('links the cap notice to the Drafts list', async () => {
+      const user = typer();
+      setup({ [POST]: () => failure(409, 'recipe_drafts.limit_reached') });
+      await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
+      await elapse(1600);
+      expect(
+        await screen.findByRole('link', { name: 'See your Recipe Drafts' }),
+      ).toHaveAttribute('href', '/recipes/drafts');
+    });
   });
 
   describe('leaving the form', () => {
@@ -623,6 +633,53 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
         expect(screen.queryByText('Recipes page')).toBeNull();
       },
     );
+
+    it('offers to keep the form as a new Recipe Draft when the stored one is gone, and creates it from the form as it is', async () => {
+      const user = typer();
+      const calls = setup({
+        [POST]: () => created(),
+        [PUT]: () => failure(404, 'recipe_drafts.not_found'),
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      await user.click(
+        await screen.findByRole('button', {
+          name: 'Keep as a new Recipe Draft',
+        }),
+      );
+      await elapse(100);
+      expect(sent(calls, POST)).toHaveLength(2);
+      expect(sent(calls, POST)[1].body).toMatchObject({
+        content: { title: 'Gran stew' },
+      });
+      expect(await screen.findByText('Draft saved')).toBeVisible();
+      expect(
+        screen.queryByRole('button', { name: 'Keep as a new Recipe Draft' }),
+      ).toBeNull();
+      expect(screen.queryByText(new RegExp(NOT_FOUND))).toBeNull();
+      // Saved again: leaving asks nothing.
+      await user.click(screen.getByRole('link', { name: 'leave' }));
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it('does not offer it for a refusal other than a gone Recipe Draft', async () => {
+      const user = typer();
+      setup({
+        [POST]: () => created(),
+        [PUT]: () => failure(400, 'validation_failed'),
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      expect(
+        screen.queryByRole('button', { name: 'Keep as a new Recipe Draft' }),
+      ).toBeNull();
+    });
 
     it('keeps retrying 5xx, 408 and 429', async () => {
       const user = typer();

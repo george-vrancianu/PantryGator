@@ -340,6 +340,65 @@ describe('Recipe Drafts list and discard', () => {
     expect(gets()).toHaveLength(2);
   });
 
+  describe('discarding them all', () => {
+    const three = [
+      summary({}),
+      summary({ id: ID_B, title: 'Other' }),
+      summary({ id: ID_C, title: 'Third' }),
+    ];
+
+    it('hides every row at once with one Undo toast, and deletes each only when the Undo is gone', async () => {
+      const u = user();
+      const calls = setup(
+        three,
+        Object.fromEntries(
+          [ID_A, ID_B, ID_C].map((id) => [
+            `DELETE /api/recipe-drafts/${id}`,
+            () => new Response(null, { status: 204 }),
+          ]),
+        ),
+        '/recipes/drafts',
+      );
+      await u.click(await screen.findByRole('button', { name: 'Discard all' }));
+      expect(screen.queryByRole('link', { name: /Gran stew/ })).toBeNull();
+      expect(screen.queryByRole('link', { name: /Other/ })).toBeNull();
+      const toast = await screen.findByText('3 Recipe Drafts discarded');
+      expect(toast.closest('[role="status"]')).not.toBeNull();
+      await elapse(UNDO_WINDOW_MS - 500);
+      expect(deletes(calls)).toEqual([]);
+      await elapse(1500);
+      expect(
+        deletes(calls)
+          .map((c) => c.key)
+          .sort(),
+      ).toEqual(
+        [ID_A, ID_B, ID_C]
+          .map((id) => `DELETE /api/recipe-drafts/${id}`)
+          .sort(),
+      );
+    });
+
+    it('brings them all back on Undo and sends nothing', async () => {
+      const u = user();
+      const calls = setup(three, {}, '/recipes/drafts');
+      await u.click(await screen.findByRole('button', { name: 'Discard all' }));
+      await u.click(await screen.findByRole('button', { name: 'Undo' }));
+      expect(
+        screen.getAllByRole('link', { name: /Gran stew|Other|Third/ }),
+      ).toHaveLength(3);
+      await elapse(UNDO_WINDOW_MS * 2);
+      expect(deletes(calls)).toEqual([]);
+    });
+
+    it('is not offered for a single Recipe Draft', async () => {
+      setup([summary({})], {}, '/recipes/drafts');
+      expect(
+        await screen.findByRole('link', { name: /Gran stew/ }),
+      ).toBeVisible();
+      expect(screen.queryByRole('button', { name: 'Discard all' })).toBeNull();
+    });
+  });
+
   describe('discarding from a row', () => {
     const open = async (u: ReturnType<typeof user>, name = 'Gran stew') => {
       await u.click(

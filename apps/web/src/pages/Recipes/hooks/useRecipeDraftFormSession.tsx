@@ -103,7 +103,11 @@ export function useRecipeDraftFormSession({
 
   const notices: ReactNode = (
     <>
-      <RecipeDraftWriteNotice error={autosave.error} status={autosave.status} />
+      <RecipeDraftWriteNotice
+        error={autosave.error}
+        status={autosave.status}
+        onKeepAsNew={autosave.keepAsNew}
+      />
       {autosave.status === 'conflict' && draftId ? (
         <RecipeDraftConflictBanner draftId={draftId} onLoaded={onLoadLatest} />
       ) : null}

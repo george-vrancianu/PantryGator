@@ -34,6 +34,11 @@ export function useRecipeDraftDiscard({
   // The Undo toast is a polite status (CODING_STANDARDS).
   const discard = (id: string) =>
     removal.remove(id, '', t('drafts.discarded'), { polite: true });
+  /** Every given Recipe Draft as one discard: one Undo toast, which brings them all back. */
+  const discardMany = (ids: string[]) =>
+    removal.removeMany(ids, t('drafts.discardedMany', { count: ids.length }), {
+      polite: true,
+    });
   const location = useLocation();
   const navigate = useNavigate();
   const taken = useRef<string | null>(null);
@@ -53,5 +58,5 @@ export function useRecipeDraftDiscard({
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handedId, location.key]);
-  return { hiddenIds: removal.hiddenIds, discard };
+  return { hiddenIds: removal.hiddenIds, discard, discardMany };
 }

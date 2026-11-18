@@ -10,6 +10,7 @@ import {
   family,
   leafCategories,
   parentCategories,
+  recipeDrafts,
   shoppingItems,
   shoppingLists,
   user,
@@ -141,6 +142,7 @@ describe('Family membership: join, leave, remove, transfer, delete (integration)
       expect(preview.body).toEqual({
         batches: 0,
         shoppingItems: 0,
+        recipeDrafts: 0,
       });
       expect((await familyOf(joiner)).id).toBe(before.id);
     });
@@ -632,6 +634,16 @@ describe('Family membership: join, leave, remove, transfer, delete (integration)
       const joiner = await signUp('Joiner');
       const mine = (await familyOf(joiner)).id;
       await seed(mine);
+      // Recipe Drafts end with the move too (ADR 0028), so the warning counts them.
+      await database.insert(recipeDrafts).values(
+        [1, 2].map(() => ({
+          id: randomUUID(),
+          memberId: joiner.userId,
+          familyId: mine,
+          kind: 'new_recipe' as const,
+          content: { title: 'Half a stew' } as never,
+        })),
+      );
 
       const code = (await familyOf(owner)).inviteCode;
       const preview = await call(
@@ -642,12 +654,19 @@ describe('Family membership: join, leave, remove, transfer, delete (integration)
       expect(preview.body).toEqual({
         batches: 3,
         shoppingItems: 4,
+        recipeDrafts: 2,
       });
       expect(await dataOf(mine)).toEqual({ batches: 3, lists: 2, items: 4 });
 
       await call(joiner, 'post', '/join', { code }).expect(201);
       expect(await familyExists(mine)).toBe(false);
       expect(await dataOf(mine)).toEqual({ batches: 0, lists: 0, items: 0 });
+      expect(
+        await database
+          .select()
+          .from(recipeDrafts)
+          .where(eq(recipeDrafts.memberId, joiner.userId)),
+      ).toEqual([]);
     });
 
     it('leaves the target Family data alone when someone joins', async () => {

@@ -25,6 +25,7 @@ export function useFamily() {
 export type JoinPreview = {
   batches: number;
   shoppingItems: number;
+  recipeDrafts: number;
 };
 
 /** Validates the code and returns what joining would delete. Changes nothing. */
