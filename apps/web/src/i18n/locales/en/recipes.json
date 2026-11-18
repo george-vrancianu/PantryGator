@@ -160,6 +160,8 @@
       "delete": "Delete Recipe Tip {{number}}",
       "new": "New Recipe Tip",
       "cancelNew": "Cancel the new Recipe Tip",
+      "moveUp": "Move Recipe Tip {{number}} up",
+      "moveDown": "Move Recipe Tip {{number}} down",
       "add": "Add a Recipe Tip"
     },
     "details": {

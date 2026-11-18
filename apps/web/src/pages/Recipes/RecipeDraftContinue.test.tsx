@@ -197,6 +197,46 @@ describe('Continue your draft? prompt', () => {
     expect(screen.getByLabelText(/^Title/)).toHaveValue('x');
   });
 
+  it.each([
+    ['/recipes/new', '/recipes'],
+    [`/recipes/${BASE}/variant/new`, `/recipes/${BASE}`],
+  ])('gives the prompt on %s a Back to %s', async (route, href) => {
+    setup(
+      route,
+      list([summary(A), summary(C, { kind: 'variant', baseRecipeId: BASE })]),
+    );
+    await screen.findByText(PROMPT);
+    expect(screen.getByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      href,
+    );
+  });
+
+  it.each([
+    ['/recipes/new', '/recipes'],
+    [`/recipes/${BASE}/variant/new`, `/recipes/${BASE}`],
+  ])('gives the loading list on %s a Back to %s', async (route, href) => {
+    setup(route, {
+      'GET /api/recipe-drafts': () => new Promise<Response>(() => {}),
+    });
+    expect(await screen.findByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      href,
+    );
+  });
+
+  it('gives a Recipe Draft that cannot be opened a Back to the Variant base', async () => {
+    setup(`/recipes/${BASE}/variant/new?draft=${A}`, {
+      [`GET /api/recipe-drafts/${A}`]: () =>
+        Response.json({ code: 'internal', params: {} }, { status: 500 }),
+    });
+    await screen.findByRole('alert');
+    expect(screen.getByRole('link', { name: 'Back' })).toHaveAttribute(
+      'href',
+      `/recipes/${BASE}`,
+    );
+  });
+
   it('shows the form at once when there are no New Recipe drafts (Variant drafts do not count)', async () => {
     setup(
       '/recipes/new',

@@ -11,7 +11,9 @@ import type { FamilyRecipeEdit } from '@/lib/familyRecipes';
 import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
 import { stubRowLayout } from '@/test/layout';
 import { stubViewport } from '@/test/viewport';
-import { stubApi } from '@/test/render';
+import { Link, Route, Routes } from 'react-router-dom';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { EditFamilyRecipeRoute } from './EditFamilyRecipePage';
 import type { RecipeTag } from '@/lib/tags';
 import {
   tag,
@@ -2209,5 +2211,373 @@ describe('Edit: Undo, status and badge after a Save (#586 review)', () => {
     expect(
       screen.getByRole('tab', { name: 'Details, Needs attention' }),
     ).toBeVisible();
+  });
+});
+
+describe('EditFamilyRecipeRoute', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('keeps nothing of the Recipe it was on when the Member moves to another', async () => {
+    const user = userEvent.setup({ delay: null });
+    const linked = (id: string): FamilyRecipeEdit => ({
+      ...saved,
+      id,
+      sourceLink: `https://www.example.com/${id}`,
+      sourceLanguage: null,
+    });
+    const { fetchMock } = stubApi({
+      'GET /api/recipes/filters': () => Response.json({ eatingMoments: [] }),
+      'GET /api/recipes/tags': () => Response.json([]),
+      'GET /api/recipes/g/edit': () => Response.json(linked('g')),
+      'GET /api/recipes/h/edit': () => Response.json(linked('h')),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithProviders(
+      <Routes>
+        <Route
+          path="/recipes/:id/edit"
+          element={
+            <>
+              <Link to="/recipes/h/edit">other</Link>
+              <EditFamilyRecipeRoute />
+            </>
+          }
+        />
+      </Routes>,
+      { route: '/recipes/g/edit' },
+    );
+    await openTab(user, 'Details');
+    await user.click(
+      await screen.findByRole('button', { name: 'Remove link' }),
+    );
+    // Leaving with the removal unsaved asks first; the Member agrees.
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    await user.click(screen.getByRole('link', { name: 'other' }));
+    confirm.mockRestore();
+    await openTab(user, 'Details');
+    expect(
+      await screen.findByRole('link', { name: /From example\.com/ }),
+    ).toHaveAttribute('href', 'https://www.example.com/h');
+  });
+});
+
+describe('Reordering Tips in the Family editor', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  const withTips: FamilyRecipeEdit = {
+    ...saved,
+    parentId: null,
+    parentTips: null,
+    tips: [
+      { id: 't1', stepId: null, text: 'Use butter' },
+      { id: 't2', stepId: 's1', text: 'Low heat' },
+      { id: 't3', stepId: null, text: 'Serve hot' },
+      { id: 't4', stepId: 's1', text: 'Salt late' },
+    ],
+  };
+  const edit = () =>
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(withTips),
+      'PUT /api/recipes/g/tips/order': () => Response.json(withTips),
+    });
+  const order = (calls: ReturnType<typeof setup>) =>
+    calls.find((c) => c.key === 'PUT /api/recipes/g/tips/order')?.body;
+
+  it('moves a Recipe Tip down, sending every Tip of the Recipe in its new order', async () => {
+    const user = userEvent.setup({ delay: null });
+    const calls = edit();
+    await openTab(user, 'Steps');
+    expect(
+      screen.getByRole('button', { name: 'Move Recipe Tip 1 up' }),
+    ).toHaveAttribute('aria-disabled', 'true');
+    await user.click(
+      screen.getByRole('button', { name: 'Move Recipe Tip 1 down' }),
+    );
+    await vi.waitFor(() =>
+      expect(order(calls)).toEqual({ ids: ['t3', 't2', 't1', 't4'] }),
+    );
+  });
+
+  it('moves a Step Tip inside its own Step', async () => {
+    const user = userEvent.setup({ delay: null });
+    const calls = edit();
+    await openTab(user, 'Steps');
+    await user.click(
+      screen.getByRole('button', { name: 'Move Tip 1 of Step 1 down' }),
+    );
+    await vi.waitFor(() =>
+      expect(order(calls)).toEqual({ ids: ['t1', 't4', 't3', 't2'] }),
+    );
+  });
+});
+
+describe('Reordering Tips while a reorder is in flight', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('sends one request for two quick taps, and blocks the buttons until it returns', async () => {
+    const user = userEvent.setup({ delay: null });
+    const tips: FamilyRecipeEdit = {
+      ...saved,
+      parentId: null,
+      parentTips: null,
+      tips: [
+        { id: 't1', stepId: null, text: 'Use butter' },
+        { id: 't3', stepId: null, text: 'Serve hot' },
+        { id: 't5', stepId: null, text: 'Rest it' },
+      ],
+    };
+    let answer: (response: Response) => void = () => {};
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(tips),
+      'PUT /api/recipes/g/tips/order': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Steps');
+    const down = screen.getByRole('button', { name: 'Move Recipe Tip 1 down' });
+    await user.click(down);
+    await vi.waitFor(() =>
+      expect(down).toHaveAttribute('aria-disabled', 'true'),
+    );
+    await user.click(down);
+    await user.click(
+      screen.getByRole('button', { name: 'Move Recipe Tip 2 down' }),
+    );
+    expect(
+      calls.filter((c) => c.key === 'PUT /api/recipes/g/tips/order'),
+    ).toHaveLength(1);
+    answer(Response.json(tips));
+  });
+});
+
+describe('A Tip pending delete on a Step removed and saved within the Undo window', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it('does not end in a not-found toast', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      delay: null,
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    const twoTips: FamilyRecipeEdit = {
+      ...saved,
+      steps: [{ id: 's1', text: 'Whisk the eggs', timerSeconds: null }],
+      tips: [
+        { id: 't2', stepId: 's1', text: 'Low heat' },
+        { id: 't4', stepId: 's1', text: 'Salt late' },
+      ],
+    };
+    // The server's view: removing the Step takes its Tips with it.
+    let server = twoTips;
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(server),
+      'PUT /api/recipes/g': () => {
+        server = { ...twoTips, steps: [], tips: [] };
+        return Response.json(server);
+      },
+      'DELETE /api/recipes/g/tips/t2': () =>
+        server.tips.some((tip) => tip.id === 't2')
+          ? new Response(null, { status: 204 })
+          : Response.json({ code: 'recipes.tip_not_found' }, { status: 404 }),
+    });
+    await openTab(user, 'Steps');
+    await user.click(
+      await screen.findByRole('button', { name: 'Delete Tip 1 of Step 1' }),
+    );
+    expect(screen.getByText('Tip deleted')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Remove Step 1' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Remove Step and Tips' }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await screen.findByText('Recipe saved.');
+    await act(() => vi.advanceTimersByTimeAsync(UNDO_WINDOW_MS + 1000));
+    await vi.waitFor(() =>
+      expect(calls.some((c) => c.key === 'DELETE /api/recipes/g/tips/t2')).toBe(
+        true,
+      ),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(500));
+    expect(screen.queryByText(/not found|no longer exists|gone/i)).toBeNull();
+    expect(screen.queryAllByRole('alert')).toHaveLength(0);
+  });
+
+  it('still reports a 404 that is not the Tip being gone', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      delay: null,
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    const twoTips: FamilyRecipeEdit = {
+      ...saved,
+      steps: [{ id: 's1', text: 'Whisk the eggs', timerSeconds: null }],
+      tips: [
+        { id: 't2', stepId: 's1', text: 'Low heat' },
+        { id: 't4', stepId: 's1', text: 'Salt late' },
+      ],
+    };
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(twoTips),
+      'DELETE /api/recipes/g/tips/t2': () =>
+        Response.json({ code: 'recipes.not_found' }, { status: 404 }),
+    });
+    await openTab(user, 'Steps');
+    await user.click(
+      await screen.findByRole('button', { name: 'Delete Tip 1 of Step 1' }),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(UNDO_WINDOW_MS + 1000));
+    await vi.waitFor(() =>
+      expect(calls.some((c) => c.key === 'DELETE /api/recipes/g/tips/t2')).toBe(
+        true,
+      ),
+    );
+    expect(
+      await screen.findByText('That Recipe no longer exists.'),
+    ).toBeVisible();
+  });
+});
+
+describe('Edits made while a Save is in flight', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('are not lost when the Save returns and the form reseeds', async () => {
+    const user = userEvent.setup({ delay: null });
+    let answer: (response: Response) => void = () => {};
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(saved),
+      'PUT /api/recipes/g': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Details');
+    const title = await screen.findByLabelText(/^Title/);
+    fireEvent.change(title, { target: { value: 'First' } });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+    );
+    fireEvent.change(title, { target: { value: 'Second' } });
+    await act(async () => answer(Response.json({ ...saved, title: 'First' })));
+    await screen.findByRole('button', { name: 'Save' });
+    expect(screen.getByLabelText(/^Title/)).toHaveValue('Second');
+  });
+
+  describe('and a removed row is brought back by Undo', () => {
+    const twoSteps: FamilyRecipeEdit = {
+      ...saved,
+      steps: [
+        { id: 's1', text: 'Whisk the eggs', timerSeconds: null },
+        { id: 's2', text: 'Fry', timerSeconds: null },
+      ],
+    };
+
+    /** Removes the row, Saves (held in flight), presses Undo, lets the Save land, then Saves again. */
+    const undoDuringSave = async (
+      tab: 'Steps' | 'Ingredients',
+      without: FamilyRecipeEdit,
+      remove: (user: ReturnType<typeof userEvent.setup>) => Promise<void>,
+    ) => {
+      const user = userEvent.setup({ delay: null });
+      let answer: (response: Response) => void = () => {};
+      let stored = twoSteps;
+      let puts = 0;
+      const calls = setup('/recipes/g/edit', {
+        'GET /api/recipes/g/edit': () => Response.json(stored),
+        'PUT /api/recipes/g': () => {
+          puts += 1;
+          if (puts > 1) return Response.json(stored);
+          return new Promise<Response>((resolve) => {
+            answer = resolve;
+          });
+        },
+      });
+      await openTab(user, tab);
+      await remove(user);
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+      );
+      await user.click(screen.getByRole('button', { name: 'Undo' }));
+      stored = without;
+      await act(async () => answer(Response.json(without)));
+      await screen.findByRole('button', { name: 'Save' });
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(
+          calls.filter((c) => c.key === 'PUT /api/recipes/g'),
+        ).toHaveLength(2),
+      );
+      await screen.findByRole('button', { name: 'Save' });
+      return calls.filter((c) => c.key === 'PUT /api/recipes/g')[1].body as {
+        steps: { id?: string; text: string }[];
+        lines: { id?: string }[];
+      };
+    };
+
+    it('sends a removed Step as new, not under the id the server deleted', async () => {
+      const second = await undoDuringSave(
+        'Steps',
+        { ...twoSteps, steps: [twoSteps.steps[0]] },
+        async (user) => {
+          await user.click(
+            screen.getByRole('button', { name: 'Remove Step 2' }),
+          );
+        },
+      );
+      expect(second.steps.map((step) => step.text)).toEqual([
+        'Whisk the eggs',
+        'Fry',
+      ]);
+      expect(second.steps.map((step) => step.id)).toEqual(['s1', undefined]);
+      expect(screen.queryByText(/not found|no longer exists/i)).toBeNull();
+    });
+
+    it('sends a removed line as new, not under the id the server deleted', async () => {
+      const second = await undoDuringSave(
+        'Ingredients',
+        { ...twoSteps, lines: twoSteps.lines.filter((l) => l.id !== 'l2') },
+        async (user) => {
+          await user.click(
+            await screen.findByLabelText('More for Gran’s herbs'),
+          );
+          await user.click(
+            screen.getByRole('button', { name: 'Remove Gran’s herbs' }),
+          );
+        },
+      );
+      expect(second.lines.map((line) => line.id)).toEqual(['l1', undefined]);
+    });
+  });
+
+  it('keep the Guidance edits too', async () => {
+    const user = userEvent.setup({ delay: null });
+    let answer: (response: Response) => void = () => {};
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(saved),
+      'PUT /api/recipes/g': () => Response.json(saved),
+      'PUT /api/recipes/g/guidance': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Details');
+    await openGuidance(user);
+    const note = await screen.findByLabelText('Nutrition Note');
+    fireEvent.change(note, { target: { value: 'First' } });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+    );
+    fireEvent.change(note, { target: { value: 'Second' } });
+    await act(async () =>
+      answer(Response.json({ ...saved, nutritionNote: 'First' })),
+    );
+    await screen.findByRole('button', { name: 'Save' });
+    expect(screen.getByLabelText('Nutrition Note')).toHaveValue('Second');
   });
 });

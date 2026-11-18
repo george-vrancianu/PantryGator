@@ -209,6 +209,8 @@
       "minutes": "min",
       "tipOf": "Sfatul {{n}} al pasului {{step}}",
       "deleteTip": "Șterge Sfatul {{n}} al pasului {{step}}",
+      "moveTipUp": "Mută Sfatul {{n}} al pasului {{step}} mai sus",
+      "moveTipDown": "Mută Sfatul {{n}} al pasului {{step}} mai jos",
       "newTip": "Sfat nou pentru pasul {{number}}",
       "cancelTip": "Renunță la Sfatul nou pentru pasul {{number}}",
       "tipPlaceholder": "Un sfat pentru acest pas",

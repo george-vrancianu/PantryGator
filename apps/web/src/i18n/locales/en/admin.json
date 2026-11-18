@@ -206,6 +206,8 @@
       "minutes": "min",
       "tipOf": "Tip {{n}} of Step {{step}}",
       "deleteTip": "Delete Tip {{n}} of Step {{step}}",
+      "moveTipUp": "Move Tip {{n}} of Step {{step}} up",
+      "moveTipDown": "Move Tip {{n}} of Step {{step}} down",
       "newTip": "New Tip for Step {{number}}",
       "cancelTip": "Cancel the new Tip for Step {{number}}",
       "tipPlaceholder": "A tip for this step",

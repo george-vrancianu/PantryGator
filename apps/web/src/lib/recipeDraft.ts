@@ -53,7 +53,8 @@ export type DraftProblems = {
   prepMinutes: boolean;
   cookMinutes: boolean;
   lines: Record<number, boolean>;
-  steps: Record<number, 'text' | 'timer'>;
+  /** A Step with a problem; both can be set at once. */
+  steps: Record<number, { text: boolean; timer: boolean }>;
 };
 
 let nextKey = 1;
@@ -157,10 +158,11 @@ export function problemsOf(draft: RecipeDraft): DraftProblems {
   for (const line of draft.lines) {
     if (!isQuantity(line.quantity)) lines[line.key] = true;
   }
-  const steps: Record<number, 'text' | 'timer'> = {};
+  const steps: DraftProblems['steps'] = {};
   for (const step of draft.steps) {
-    if (step.text.trim() === '') steps[step.key] = 'text';
-    else if (!isTimer(step.timer)) steps[step.key] = 'timer';
+    const text = step.text.trim() === '';
+    const timer = !isTimer(step.timer);
+    if (text || timer) steps[step.key] = { text, timer };
   }
   return {
     title: draft.title.trim() === '',
