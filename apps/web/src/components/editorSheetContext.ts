@@ -1,24 +1,10 @@
 import { createContext } from 'react';
 
-/** What an editor hands the sheet that hosts it: the sheet's title and its action roles. */
-export type EditorSheetRoles = {
-  title: string;
-  primary?: {
-    label: string;
-    pending?: boolean;
-    disabled?: boolean;
-    form: string;
-  };
-  destructive?: { label: string; onClick: () => void };
-};
-
 /**
- * Set by a sheet that hosts an editor. `report` hands the editor's heading and its Save / Delete to
- * the sheet, which draws them as its title and action roles, so {@link EditorForm} draws none of
- * its own. `report(null)` when the editor goes.
+ * Set by whatever opens an editor as a sheet. {@link EditorForm} reads it and draws its own
+ * `Sheet` (title, Save, Delete) with `onClose` as the X, scrim and Escape; without it the form is
+ * a page and draws its own heading and buttons.
  */
-export type EditorSheetSlot = {
-  report: (roles: EditorSheetRoles | null) => void;
-};
+export type EditorSheetHost = { onClose: () => void };
 
-export const EditorSheetContext = createContext<EditorSheetSlot | null>(null);
+export const EditorSheetContext = createContext<EditorSheetHost | null>(null);

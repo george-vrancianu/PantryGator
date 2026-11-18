@@ -1,4 +1,11 @@
-import { Alert, Button, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Button,
+  Sheet,
+  Stack,
+  Typography,
+} from '@pocket-pantry/ui';
 import {
   useContext,
   useEffect,
@@ -56,6 +63,10 @@ type Props = BaseProps &
 /**
  * Shared frame of the editors (Admin and Recipes): a heading that takes focus when the
  * editor opens, the error, the fields, and Save / Cancel / two-step Delete.
+ *
+ * Inside an `EditorSheet` it draws a `Sheet` instead: `heading` is the title (no heading in the
+ * body, no Cancel; the X closes), Save is the pinned primary and Delete the destructive link
+ * (a `ConfirmPrompt` in the body for `onDelete`, or `deletePrompt` for `onDeleteRequest`).
  */
 export function EditorForm({
   heading,
@@ -79,7 +90,7 @@ export function EditorForm({
   const { t } = useTranslation(['admin', 'errors']);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const formId = useId();
-  // In a sheet the title names the editor and Save / Delete are the sheet's roles.
+  // In a sheet the title names the editor and Save / Delete are the Sheet's roles.
   const sheet = useContext(EditorSheetContext);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
@@ -93,49 +104,10 @@ export function EditorForm({
   const deleteLabel = t('admin:common.delete');
   const canDelete = Boolean(onDelete ?? onDeleteRequest);
   const startDelete = () => {
+    if (deleting || confirmingDelete) return;
     if (onDelete) setConfirmingDelete(true);
     else onDeleteRequest?.();
   };
-  const startRef = useRef(startDelete);
-  useEffect(() => {
-    startRef.current = startDelete;
-  });
-  const report = sheet?.report;
-  useEffect(() => {
-    report?.({
-      title: heading,
-      ...(hideActions
-        ? {}
-        : {
-            primary: {
-              label: saveText,
-              pending: saving,
-              disabled: !canSave,
-              form: formId,
-            },
-          }),
-      ...(canDelete
-        ? {
-            destructive: {
-              label: deleteLabel,
-              onClick: () => startRef.current(),
-            },
-          }
-        : {}),
-    });
-  }, [
-    report,
-    heading,
-    hideActions,
-    saveText,
-    saving,
-    canSave,
-    formId,
-    canDelete,
-    deleteLabel,
-  ]);
-  useEffect(() => () => report?.(null), [report]);
-
   const submit = (event: FormEvent) => {
     event.preventDefault();
     onSubmit();
@@ -194,7 +166,7 @@ export function EditorForm({
     ) : null;
   };
 
-  return (
+  const form = (
     <Stack
       component="form"
       id={formId}
@@ -223,5 +195,29 @@ export function EditorForm({
       {sheet || hideActions ? null : actions}
       {renderDelete()}
     </Stack>
+  );
+
+  if (!sheet) return form;
+  return (
+    <Sheet
+      open
+      onClose={sheet.onClose}
+      title={heading}
+      primary={
+        hideActions
+          ? undefined
+          : {
+              label: saveText,
+              pending: saving,
+              disabled: !canSave,
+              form: formId,
+            }
+      }
+      destructive={
+        canDelete ? { label: deleteLabel, onClick: startDelete } : undefined
+      }
+    >
+      <Box sx={{ px: 3, pt: 1, pb: 3 }}>{form}</Box>
+    </Sheet>
   );
 }

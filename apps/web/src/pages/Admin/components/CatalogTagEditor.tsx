@@ -67,7 +67,7 @@ export function CatalogTagEditor({ tag, groups, onDone }: Props) {
   const onDeleteRequest = !tag
     ? undefined
     : () => {
-        if (asking !== null) return;
+        if (remove.isPending || asking !== null) return;
         if (tag.recipeCount > 0) deleteTag(false);
         else setAsking('unused');
       };
