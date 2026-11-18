@@ -15,7 +15,7 @@ import type {
 } from '../../lib/recipeDrafts';
 import { UNDO_WINDOW_MS } from '../../lib/useDeferredRemoval';
 import { renderWithProviders, stubApi } from '../../test/render';
-import { NewRecipePage } from './FamilyRecipePages';
+import { NewRecipePage } from './NewRecipePage';
 import { RecipeDraftsPage } from './RecipeDraftsPage';
 import { RecipesPage } from './RecipesPage';
 

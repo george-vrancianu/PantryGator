@@ -28,7 +28,9 @@
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/components/RecipePickerSheet.tsx",
         // #846 moves Servings and Pantry status into components/recipe/ and rewrites this import
-        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx"
+        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx",
+        // #845 moved familyDraft into Recipes/hooks/; this lib test reads documentOf from it. #846 decides where it lives
+        "apps/web/src/lib/recipeDraftContent.test.ts"
       ],
       "rules": {
         "no-restricted-imports": [
@@ -115,7 +117,9 @@
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/components/RecipePickerSheet.tsx",
         // #846 moves Servings and Pantry status into components/recipe/ and rewrites this import
-        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx"
+        "apps/web/src/pages/MealPlans/components/SlotSheet.tsx",
+        // #845 moved familyDraft into Recipes/hooks/; this lib test reads documentOf from it. #846 decides where it lives
+        "apps/web/src/lib/recipeDraftContent.test.ts"
       ],
       "rules": {
         "no-restricted-imports": [
@@ -199,6 +203,10 @@
       "files": [
         "apps/web/src/components/**/*.test.*",
         "apps/web/src/lib/**/*.test.*"
+      ],
+      "excludeFiles": [
+        // #845 moved familyDraft into Recipes/hooks/; this lib test reads documentOf from it. #846 decides where it lives
+        "apps/web/src/lib/recipeDraftContent.test.ts"
       ],
       "rules": {
         "no-restricted-imports": [

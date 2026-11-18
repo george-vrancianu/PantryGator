@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyPairing, toGuidanceInput } from './guidanceDraft';
 import { emptyDraft } from './recipeDraft';
-import { documentOf } from '../pages/Recipes/familyDraft';
+import { documentOf } from '@/pages/Recipes/hooks/familyDraft';
 import { contentOfForm, formOfContent } from './recipeDraftContent';
 
 describe('Suggest Guidance marks in a Recipe Draft', () => {
