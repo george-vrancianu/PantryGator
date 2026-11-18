@@ -162,6 +162,11 @@ describe('The Scan page in landscape on a tablet', () => {
       screen.getByRole('button', { name: 'How scanning works' }),
     );
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+    // It opens inside the camera, so it carries the camera's dark Theme.
+    expect(screen.getByRole('dialog').closest('[data-theme]')).toHaveAttribute(
+      'data-theme',
+      'dark',
+    );
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
   });

@@ -259,6 +259,7 @@ export {
 } from './molecules/SegmentedControl';
 export {
   Sheet,
+  SheetContainerProvider,
   type SheetDestructive,
   type SheetPrimary,
   type SheetProps,

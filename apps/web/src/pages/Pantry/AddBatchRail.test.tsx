@@ -53,7 +53,9 @@ describe('The add-Batch camera in landscape on a tablet', () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'How scanning works' }),
     );
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: 'Scanning your pantry' }),
+    ).toBeInTheDocument();
   });
 
   it('centres the "adds to pantry" pill on the feed, left of the rail', async () => {
