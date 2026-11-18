@@ -11,8 +11,8 @@ import {
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Cropper from 'react-easy-crop';
 import { useTranslation } from 'react-i18next';
-import type { Rect } from '../lib/image';
-import { RECEIPT_GUIDE_ASPECT } from '../lib/receiptGuide';
+import type { Rect } from '@/lib/image';
+import { RECEIPT_GUIDE_ASPECT } from '@/lib/receiptGuide';
 
 /** What the Member framed: the crop in the rotated photo's pixels, and the rotation it was made at. */
 export type ReceiptCrop = { area: Rect; rotation: number };

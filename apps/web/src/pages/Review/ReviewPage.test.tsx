@@ -8,13 +8,13 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine } from '../../lib/scan';
-import { calendarDay, sheetButton } from '../../test/expirySheet';
-import { pickLocation, pressedLocation } from '../../test/location';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubViewport } from '../../test/viewport';
-import { REVIEW_ROUTE, startReview } from '../../test/review';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine } from '@/lib/scan';
+import { calendarDay, sheetButton } from '@/test/expirySheet';
+import { pickLocation, pressedLocation } from '@/test/location';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
+import { REVIEW_ROUTE, startReview } from '@/test/review';
 import { ReviewPage } from './ReviewPage';
 
 const parmesan: CatalogSearchResult = {

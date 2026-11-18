@@ -1,7 +1,7 @@
 import { Box, tokens } from '@pocket-pantry/ui';
 import { useId, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { linkButtonSx } from './layout';
+import { linkButtonSx } from '../layout';
 
 type Props = {
   kind: 'review' | 'sure';

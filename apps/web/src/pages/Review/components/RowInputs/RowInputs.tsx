@@ -1,16 +1,16 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { ExpirySheet, expiryContext } from '../../../components/ExpiryPicker';
-import { LOCATIONS, UNITS, type CatalogParent } from '../../../lib/catalog';
-import type { IsoDate } from '../../../lib/pantry';
+import { ExpirySheet, expiryContext } from '@/components/ExpiryPicker/index';
+import { LOCATIONS, UNITS, type CatalogParent } from '@/lib/catalog';
+import type { IsoDate } from '@/lib/pantry';
 import {
   formatDate,
   isIsoDate,
   maskDateInput,
   parseDateInput,
-} from '../../../lib/dateFormat';
-import { displayName, type ReviewLine } from '../../../lib/review';
-import { controlSx } from './Field';
+} from '@/lib/dateFormat';
+import { displayName, type ReviewLine } from '@/lib/review';
+import { controlSx } from '../Field/Field';
 
 /**
  * The inputs of a Review line for the tablet table, plus the Name, Description and Category inputs the phone edit
