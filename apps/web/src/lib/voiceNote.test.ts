@@ -158,6 +158,53 @@ describe('Voice Note module', () => {
       expect([a.quantity, b.quantity]).toEqual([1, 7]);
     });
 
+    it('drops the Shopping Item row of the old Match when the Match changes', async () => {
+      const ctx = setup();
+      await record(ctx.note, options);
+      ctx.answer({
+        transcript: 'x',
+        actions: [
+          {
+            id: 'a',
+            target: 'shopping',
+            op: 'check',
+            rows: { shoppingItem: { id: 'row-1', name: 'Milk' } },
+          },
+        ],
+      } as never);
+      await settle();
+      ctx.note.openReady();
+      ctx.note.edit('a', { ingredient: { id: 'ing-eggs' } as never });
+      expect(ctx.note.getState().proposal!.actions[0].rows.shoppingItem).toBe(
+        undefined,
+      );
+    });
+
+    it('takes the Shopping Item row an edit brings along with a new Match', async () => {
+      const ctx = setup();
+      await record(ctx.note, options);
+      ctx.answer({
+        transcript: 'x',
+        actions: [{ id: 'a', target: 'shopping', op: 'check', rows: {} }],
+      } as never);
+      await settle();
+      ctx.note.openReady();
+      const item = {
+        id: 'row-2',
+        name: 'Eggs',
+        quantity: null,
+        unit: null,
+        checked: false,
+      };
+      ctx.note.edit('a', {
+        ingredient: { id: 'ing-eggs' } as never,
+        shoppingItem: item,
+      });
+      expect(
+        ctx.note.getState().proposal!.actions[0].rows.shoppingItem,
+      ).toEqual(item);
+    });
+
     it('ignores edits outside Review', () => {
       const { note } = setup();
       note.remove('a');

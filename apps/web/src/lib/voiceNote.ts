@@ -157,6 +157,8 @@ export type VoiceNoteEdit = Partial<{
   noExpiry: boolean;
   batchId: string | null;
   defaults: VoiceReviewAction['defaults'];
+  /** The Shopping Item the new Match is on the list as (Review's kind label reads it). Left out, a Match change clears it. */
+  shoppingItem: NonNullable<VoiceReviewAction['rows']['shoppingItem']> | null;
 }>;
 
 /** What stopped the recording came to: sent to be read, too short to read, or nothing was recording. */
@@ -1068,8 +1070,17 @@ export function createVoiceNote(
     },
     /** Review: changes a Voice Action. */
     edit(id: string, patch: VoiceNoteEdit) {
+      const { shoppingItem, ...fields } = patch;
       mapActions((actions) =>
-        actions.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+        actions.map((a) => {
+          if (a.id !== id) return a;
+          const next = { ...a, ...fields };
+          // The row on the list belongs to the Match it was read for, so a new Match drops it.
+          if ('ingredient' in fields || shoppingItem !== undefined) {
+            next.rows = { ...a.rows, shoppingItem: shoppingItem ?? undefined };
+          }
+          return next;
+        }),
       );
     },
     /** Apply was sent: Review stays open, its buttons disabled. Only from Review. */

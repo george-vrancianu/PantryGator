@@ -8,6 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { soonBorder } from '../soonBorder';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { AmountField } from '@/components/catalog/AmountField/AmountField';
 import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
@@ -19,6 +20,7 @@ import type { CatalogSearchResult, Unit } from '@/lib/catalog';
 import { defaultExpiryDate, fullDate, useExpiryTags } from '@/lib/pantry';
 import { useToday } from '@/lib/useToday';
 import type { VoiceBatchRow, VoiceReviewAction } from '@/lib/voice';
+import { shoppingListQueryKey, type ShoppingList } from '@/lib/shopping';
 import { voiceNote } from '@/lib/voiceNote';
 import {
   canChangeIngredient,
@@ -277,8 +279,25 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
   const { t } = useTranslation(['voice', 'common']);
   const [searching, setSearching] = useState(false);
   const today = useToday();
+  const queryClient = useQueryClient();
   const refocus = useRef(false);
   const name = displayName(action);
+  /** The new Match as the cached Shopping List has it, for Review's kind label (a ticked Shopping line, not an add). */
+  const onList = (ingredientId: string) => {
+    const list = queryClient.getQueryData<ShoppingList>(shoppingListQueryKey);
+    const item = list?.groups
+      .flatMap((group) => group.items)
+      .find((entry) => entry.ingredientId === ingredientId);
+    return item
+      ? {
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit,
+          checked: item.checked,
+        }
+      : null;
+  };
 
   // Leaving the search with Escape puts focus back on "Change".
   useEffect(() => {
@@ -316,6 +335,9 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
             voiceNote.edit(action.id, {
               ingredient,
               name: null,
+              ...(action.target === 'shopping'
+                ? { shoppingItem: onList(ingredient.id) }
+                : {}),
               // A Pantry add's Location and Default Expiry follow the new Match.
               ...(action.target === 'pantry'
                 ? { defaults: defaultsOf(ingredient, today) }
