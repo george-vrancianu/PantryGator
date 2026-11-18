@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { RemovableSourceLink } from '@/components/SourceLink';
+import { RemovableSourceLink } from './components/SourceLink/SourceLink';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   useFamilyRecipeEdit,
@@ -13,16 +13,16 @@ import {
 } from '@/lib/familyRecipes';
 import { useLeaveGuard } from '@/lib/useLeaveGuard';
 import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
-import { RecipeTipsCard } from './components/RecipeTipsCard';
+import { RecipeTipsCard } from './components/RecipeTipsCard/RecipeTipsCard';
 import {
   toGuidanceDraft,
   toGuidanceInput,
   type GuidanceDraft,
 } from '@/lib/guidanceDraft';
 import { recipesQueryKey } from '@/lib/recipes';
-import { useMomentOptions } from './components/FamilyGuidance';
+import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { documentOf, draftOfEdit, type FamilyDraft } from './hooks/familyDraft';
-import { FamilyRecipeForm } from './components/FamilyRecipeForm';
+import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
 
 type FormState = { draft: FamilyDraft; guidance: GuidanceDraft | null };
 

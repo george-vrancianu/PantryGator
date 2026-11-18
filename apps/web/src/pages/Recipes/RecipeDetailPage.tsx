@@ -19,35 +19,35 @@ import {
   useParams,
 } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { useAddToFamily } from '../../lib/addToFamily';
-import { useScroller } from '../../lib/scroller';
-import { exploreAdds } from '../../lib/exploreAdds';
-import { isPlainClick } from '../../lib/isPlainClick';
-import { familyRecipeHref, recipeHref } from '../../lib/recipeHref';
-import { SourceLink } from '../../components/SourceLink';
-import { translateApiError } from '../../i18n/translateApiError';
-import { ApiError } from '../../lib/api';
+import { useAddToFamily } from '@/lib/addToFamily';
+import { useScroller } from '@/lib/scroller';
+import { exploreAdds } from '@/lib/exploreAdds';
+import { isPlainClick } from '@/lib/isPlainClick';
+import { familyRecipeHref, recipeHref } from '@/lib/recipeHref';
+import { SourceLink } from './components/SourceLink/SourceLink';
+import { translateApiError } from '@/i18n/translateApiError';
+import { ApiError } from '@/lib/api';
 import {
   useAddLineToShoppingList,
   useAddMissingToShoppingList,
   useRecipe,
   useRecipePantryMatch,
-} from '../../lib/recipes';
-import type { RecipeDetailLine } from '../../lib/recipes';
-import { AllergyWarningBanner } from './components/AllergyWarningBanner';
+} from '@/lib/recipes';
+import type { RecipeDetailLine } from '@/lib/recipes';
+import { AllergyWarningBanner } from './components/AllergyWarningBanner/AllergyWarningBanner';
 import {
   RecipeCanopyHeader,
   RecipeCanopyHeaderPlaceholder,
-} from './components/RecipeCanopyHeader';
-import { RecipeHero } from './components/RecipeHero';
-import { RecipeHeader } from './components/RecipeHeader';
+} from './components/RecipeCanopyHeader/RecipeCanopyHeader';
+import { RecipeHero } from './components/RecipeHero/RecipeHero';
+import { RecipeHeader } from './components/RecipeHeader/RecipeHeader';
 import {
   PREVIEW_BAR_CLEARANCE,
   PREVIEW_BAR_HEIGHT,
   PreviewBar,
-} from '../../components/PreviewBar';
-import { PreviewNote } from './components/PreviewNote';
-import { linesToAdd } from './components/PantryStatus';
+} from './components/PreviewBar/PreviewBar';
+import { PreviewNote } from './components/PreviewNote/PreviewNote';
+import { linesToAdd } from '@/components/recipe/PantryStatus/PantryStatus';
 import { DETAIL_SECTIONS, type DetailTab } from './components/sections';
 
 /** One Recipe. Keyed by id so Servings and add results never leak across a Variant <-> base link. */

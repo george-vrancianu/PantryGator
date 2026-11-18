@@ -20,7 +20,10 @@ import {
   type PlanInput,
 } from '../../lib/mealPlanPage';
 import { useToday } from '../../lib/useToday';
-import { ServingsStepper, StepperPill } from '../Recipes/components/Servings';
+import {
+  ServingsStepper,
+  StepperPill,
+} from '@/components/recipe/Servings/Servings';
 import { fullDate } from '@/components/mealPlan/MealPlanPopover/mealPlanText';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;

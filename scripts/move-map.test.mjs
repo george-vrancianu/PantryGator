@@ -383,3 +383,17 @@ test('the camera joins scan/camera: the overlay and its Scan parts come up from 
   // Already in place: nothing to move.
   assert.equal(rows.has('components/scan/camera/ModeList/ModeList.tsx'), false);
 });
+
+test('a non-visual .ts already in an area hooks/ folder stays there, even when a shared test imports it', () => {
+  const { rows } = run(
+    {
+      'pages/Recipes/RecipesPage.tsx': `import { documentOf } from './hooks/familyDraft';\n`,
+      'pages/Recipes/hooks/familyDraft.ts': `export const documentOf = 1;\n`,
+      'pages/Recipes/hooks/familyDraft.test.ts': `import { documentOf } from './familyDraft';\n`,
+      'lib/recipeDraft.test.ts': `import { documentOf } from '@/pages/Recipes/hooks/familyDraft';\n`,
+    },
+    ['Recipes'],
+  );
+  assert.equal(rows.get('pages/Recipes/hooks/familyDraft.ts'), undefined);
+  assert.equal(rows.get('pages/Recipes/hooks/familyDraft.test.ts'), undefined);
+});

@@ -2,10 +2,10 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Locale } from '../../i18n';
-import type { RecipeDetail } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { expectSticksAtScrollerTop } from '../../test/stickyHeader';
+import type { Locale } from '@/i18n/index';
+import type { RecipeDetail } from '@/lib/recipes';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { expectSticksAtScrollerTop } from '@/test/stickyHeader';
 import { RecipeDetailPage } from './RecipeDetailPage';
 
 const entry = (

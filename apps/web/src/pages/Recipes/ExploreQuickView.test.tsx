@@ -5,14 +5,14 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { findToast, queryToast } from '../../test/toast';
+import { findToast, queryToast } from '@/test/toast';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RecipeDetail, RecipeListItem } from '../../lib/recipes';
-import { exploreAdds } from '../../lib/exploreAdds';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubMatchMedia } from '../../test/viewport';
+import type { RecipeDetail, RecipeListItem } from '@/lib/recipes';
+import { exploreAdds } from '@/lib/exploreAdds';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubMatchMedia } from '@/test/viewport';
 import { ExplorePage } from './ExplorePage';
 import { RecipeDetailPage, RecipePreviewPage } from './RecipeDetailPage';
 

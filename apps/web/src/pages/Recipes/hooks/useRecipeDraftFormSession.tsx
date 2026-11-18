@@ -2,7 +2,7 @@ import { Button } from '@pocket-pantry/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { RecipeDraftConflictBanner } from '@/components/RecipeDraftConflictBanner';
+import { RecipeDraftConflictBanner } from '../components/RecipeDraftConflictBanner/RecipeDraftConflictBanner';
 import {
   useCreateFamilyRecipe,
   type FamilyRecipeDocument,
@@ -11,7 +11,7 @@ import type { GuidanceInput } from '@/lib/adminRecipes';
 import type { Autosave } from '@/lib/recipeDraftAutosave';
 import type { RecipeDraftView } from '@/lib/recipeDrafts';
 import { useLeaveGuard } from '@/lib/useLeaveGuard';
-import { RecipeDraftWriteNotice } from '../components/RecipeDraftWriteNotice';
+import { RecipeDraftWriteNotice } from '../components/RecipeDraftWriteNotice/RecipeDraftWriteNotice';
 import type { DiscardedDraftState } from './useRecipeDraftDiscard';
 
 /** What a form page gets from `useRecipeDraftRoute`, passed down together to the form. */

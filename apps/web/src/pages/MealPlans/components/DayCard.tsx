@@ -16,7 +16,7 @@ import {
   type PlanDay,
   type PlanSlot,
 } from '../../../lib/mealPlanPage';
-import { RecipeRowLayout } from '../../../components/RecipeRowLayout';
+import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 
 /** A filled slot's forecast as the Widget's Tag: covered, on list, short, or "No longer available". */
 function StatusTag({ slot }: { slot: PlanSlot }) {
