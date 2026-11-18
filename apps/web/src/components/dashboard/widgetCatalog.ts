@@ -17,7 +17,7 @@ export type WidgetCatalogEntry = {
   icon: ComponentType<{ size?: number }>;
 };
 
-/** Every Widget type's name and icon. Adding a Widget type is one entry here. */
+/** Every Widget type's name and icon. Adding a Widget type is one entry here, plus one in `WIDGET_SIZES` (lib/dashboard) and `WIDGET_COMPONENTS` (pages/Dashboard); the type checker flags a missing one. */
 export const WIDGET_CATALOG: Record<WidgetType, WidgetCatalogEntry> = {
   'use-soon': { nameKey: 'widgets.useSoon.title', icon: ClockIcon },
   shopping: { nameKey: 'widgets.shopping.title', icon: ShoppingIcon },

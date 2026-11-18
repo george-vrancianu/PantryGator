@@ -11,7 +11,7 @@ import { UseSoonWidget } from './UseSoonWidget';
 
 /**
  * Every Widget type and its component. Widgets are independent: each fetches
- * its own data, so adding one is a new component and one entry here.
+ * its own data, so adding one is a new component and one entry here, plus an entry in `WIDGET_SIZES` (lib/dashboard) and `WIDGET_CATALOG` (components/dashboard); the type checker flags a missing one.
  */
 export const WIDGET_COMPONENTS: Record<
   WidgetType,

@@ -99,7 +99,7 @@ export function addWidget(
   ];
 }
 
-/** Widget types not yet on the dashboard, in registry order (the gallery never offers a type twice). */
+/** Widget types not yet on the dashboard, in `WIDGET_SIZES` order (the gallery never offers a type twice). */
 export function availableWidgetTypes(widgets: WidgetInstance[]): WidgetType[] {
   const present = new Set(widgets.map((w) => w.type));
   return (Object.keys(WIDGET_SIZES) as WidgetType[]).filter(

@@ -19,7 +19,7 @@ export type WidgetSize = 'small' | 'wide' | 'tall';
 export type WidgetInstance = { id: string; type: WidgetType; size: WidgetSize };
 export type DashboardLayout = { widgets: WidgetInstance[] };
 
-/** The sizes a Widget type offers and the one it starts with. Adding a Widget type is one entry here. */
+/** The sizes a Widget type offers and the one it starts with. Adding a Widget type is one entry here, plus one in `WIDGET_CATALOG` (components/dashboard) and `WIDGET_COMPONENTS` (pages/Dashboard); the type checker flags a missing one. */
 export const WIDGET_SIZES: Record<
   WidgetType,
   { sizes: WidgetSize[]; defaultSize: WidgetSize }
