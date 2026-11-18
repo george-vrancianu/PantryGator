@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { AuthShell } from '../../components/AuthShell';
+import { AuthShell } from '@/components/auth/AuthShell/AuthShell';
 import { useSignInForm } from './hooks/useSignInForm';
 
 export function SignInPage() {

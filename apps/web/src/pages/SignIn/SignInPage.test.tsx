@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Route, Routes } from 'react-router-dom';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { SignInPage } from './SignInPage';
 
 const signedOut = () => new Response('null');

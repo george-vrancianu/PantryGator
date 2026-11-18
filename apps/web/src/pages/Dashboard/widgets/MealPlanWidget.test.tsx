@@ -10,9 +10,9 @@ import type {
   SlotStatus,
   WindowDay,
   WindowSlot,
-} from '../../../lib/mealPlan';
-import { renderWithProviders, stubApi } from '../../../test/render';
-import { stubViewport } from '../../../test/viewport';
+} from '@/lib/mealPlan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
 import { MealPlanWidget } from './MealPlanWidget';
 
 /** Thursday 15 October 2026. */

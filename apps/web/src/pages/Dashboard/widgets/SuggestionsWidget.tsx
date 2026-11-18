@@ -1,12 +1,12 @@
 import { Box, ShoppingIcon, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { localIso } from '../../../lib/pantry';
+import { translateApiError } from '@/i18n/translateApiError';
+import { localIso } from '@/lib/pantry';
 import {
   goneInOrder,
   useSuggestions,
   WIDGET_SUGGESTION_COUNT,
-} from '../../../lib/suggestions';
+} from '@/lib/suggestions';
 import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 

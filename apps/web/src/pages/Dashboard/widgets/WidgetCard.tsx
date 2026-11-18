@@ -10,8 +10,8 @@ import {
 import type { ElementType, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import type { WidgetSize } from '../../../lib/dashboard';
-import { widgetSpan, type GridColumns } from '../../../lib/layoutColumns';
+import type { WidgetSize } from '@/lib/dashboard';
+import { widgetSpan, type GridColumns } from '@/lib/layoutColumns';
 
 type Props = {
   /** Accessible name of the card, also its visible title in most Widgets. */

@@ -1,7 +1,7 @@
 import { Box, PantryIcon, radius, stockBar, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { groupByLocation, useBatches } from '../../../lib/pantry';
+import { translateApiError } from '@/i18n/translateApiError';
+import { groupByLocation, useBatches } from '@/lib/pantry';
 import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 

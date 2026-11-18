@@ -59,7 +59,14 @@ const GROUP_HINTS = {
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
-const FEATURE_GROUPS = ['catalogSearch'];
+const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor'];
+// Modules that stay where they are: the importer scan sees one page area (or one shared module) but the
+// real users are wider (Customise reads the widget catalog beside the Dashboard registry; the other
+// ExpiryPicker users go through its barrel, which the scan skips).
+const STAYS = [
+  'components/dashboard/widgetCatalog.ts',
+  'components/ExpiryPicker/expiryContext.ts',
+];
 const GUARDS = [
   'RequireAuth',
   'RequireAdmin',
@@ -180,6 +187,7 @@ function groupOf(m) {
 
 function computeTarget(m, visiting) {
   if (isBarrel(m)) return '(delete barrel)';
+  if (STAYS.includes(m)) return m;
   if (isTest(m)) return testTarget(m, visiting);
   const inShared = m.startsWith('components/');
   const inAreaParts = /^pages\/[^/]+\/(components|hooks)\//.test(m);
@@ -198,7 +206,7 @@ function computeTarget(m, visiting) {
 
   // Already inside a component folder (Foo/Foo.tsx plus its parts): follow the main file.
   const pascalDir =
-    /^(components|pages\/[^/]+\/(?:components|hooks))\/([A-Z][A-Za-z0-9]*)\/(.+)$/.exec(
+    /^(components(?:\/[a-z][A-Za-z0-9]*)?|pages\/[^/]+\/(?:components|hooks))\/([A-Z][A-Za-z0-9]*)\/(.+)$/.exec(
       m,
     );
   if (pascalDir && stem !== pascalDir[2]) {

@@ -28,15 +28,15 @@ import { Link } from 'react-router-dom';
 import {
   BAR_FILL,
   BAR_RADIUS,
-} from '../../../components/MealPlanPopover/barStyle';
-import { MealPlanPopover } from '../../../components/MealPlanPopover/MealPlanPopover';
+} from '@/components/mealPlan/MealPlanPopover/barStyle';
+import { MealPlanPopover } from '@/components/mealPlan/MealPlanPopover/MealPlanPopover';
 import {
   columnName,
   fullDate,
   shortWeekday,
-} from '../../../components/MealPlanPopover/mealPlanText';
-import { plainAction } from '../../../components/MealPlanPopover/plainAction';
-import { translateApiError } from '../../../i18n/translateApiError';
+} from '@/components/mealPlan/MealPlanPopover/mealPlanText';
+import { plainAction } from '@/components/mealPlan/MealPlanPopover/plainAction';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   barStatuses,
   dayHeadline,
@@ -44,12 +44,12 @@ import {
   useMealWindow,
   type PlanTag,
   type WindowDay,
-} from '../../../lib/mealPlan';
-import { planEnd } from '../../../lib/mealPlanPage';
-import { fromIso, localIso, type IsoDate } from '../../../lib/pantry';
-import { useAddMissing } from '../../../lib/useAddMissing';
-import { useMealPlanLegend } from '../../../lib/useMealPlanLegend';
-import { useToday } from '../../../lib/useToday';
+} from '@/lib/mealPlan';
+import { planEnd } from '@/lib/mealPlanPage';
+import { fromIso, localIso, type IsoDate } from '@/lib/pantry';
+import { useAddMissing } from '@/lib/useAddMissing';
+import { useMealPlanLegend } from '@/lib/useMealPlanLegend';
+import { useToday } from '@/lib/useToday';
 import { WidgetCard } from './WidgetCard';
 import type { WidgetProps } from './types';
 

@@ -1,10 +1,10 @@
 import { Alert, Button, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { ConfirmAction } from '../../components/ConfirmAction';
-import { InviteCodePanel } from './components/InviteCodePanel';
-import { JoinFamilyPanel } from './components/JoinFamilyPanel';
-import { MemberList } from './components/MemberList';
+import { Screen } from '@/components/layout/Screen';
+import { ConfirmAction } from '@/components/ConfirmAction';
+import { InviteCodePanel } from './components/InviteCodePanel/InviteCodePanel';
+import { JoinFamilyPanel } from './components/JoinFamilyPanel/JoinFamilyPanel';
+import { MemberList } from './components/MemberList/MemberList';
 import { useFamilyScreen } from './hooks/useFamilyScreen';
 import { useJoinFlow } from './hooks/useJoinFlow';
 

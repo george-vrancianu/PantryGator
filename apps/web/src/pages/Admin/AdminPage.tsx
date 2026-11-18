@@ -1,11 +1,11 @@
 import { Alert, SegmentedControl, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { ScopeCaption, SectionHeading } from '../../components/SectionHeading';
-import { CatalogIndex } from './components/CatalogIndex';
-import { PromoCodes } from './components/PromoCodes';
-import { UnmatchedQueue } from './components/UnmatchedQueue';
-import { useReviewCounts } from '../../lib/reviewCounts';
+import { Screen } from '@/components/layout/Screen';
+import { ScopeCaption, SectionHeading } from '@/components/SectionHeading';
+import { CatalogIndex } from './components/CatalogIndex/CatalogIndex';
+import { PromoCodes } from './components/PromoCodes/PromoCodes';
+import { UnmatchedQueue } from './components/UnmatchedQueue/UnmatchedQueue';
+import { useReviewCounts } from '@/lib/reviewCounts';
 import { useAdminScreen } from './hooks/useAdminScreen';
 
 /** The Admin shell: To review, Catalog (an index of sections) and Codes, with the tab kept in `?tab=`. */
