@@ -179,15 +179,15 @@ describe('Add to Pantry sheet after a save', () => {
     expect(css).toMatch(/bottom:\s*96px/);
   });
 
-  it('turns the x into Done after the first add, and Done, x, Escape and the scrim all close', async () => {
+  it('keeps the x as the way out after an add, and the x, Escape and the scrim all close', async () => {
     stubPantry();
     const user = setup();
     await open(user);
     const sheet = within(await dialog());
-    expect(sheet.queryByRole('button', { name: 'Done' })).toBeNull();
     await addItem(user, 'Milk', '500');
-    expect(await sheet.findByRole('button', { name: 'Done' })).toBeVisible();
-    expect(sheet.queryByRole('button', { name: 'Close' })).toBeNull();
+    await sheet.findByRole('list', { name: /batch(es)? added/ });
+    expect(sheet.getByRole('button', { name: 'Close' })).toBeVisible();
+    expect(sheet.queryByRole('button', { name: 'Done' })).toBeNull();
 
     const closed = () =>
       waitFor(() =>
@@ -195,7 +195,7 @@ describe('Add to Pantry sheet after a save', () => {
           screen.queryByRole('dialog', { name: 'Add to Pantry' }),
         ).toBeNull(),
       );
-    await user.click(sheet.getByRole('button', { name: 'Done' }));
+    await user.click(sheet.getByRole('button', { name: 'Close' }));
     await closed();
 
     await user.click(screen.getByRole('button', { name: 'Add batch' }));
@@ -204,13 +204,17 @@ describe('Add to Pantry sheet after a save', () => {
       await within(await dialog()).findByRole('button', { name: 'Close' }),
     ).toBeVisible();
     await addItem(user, 'Milk', '1');
-    await within(await dialog()).findByRole('button', { name: 'Done' });
+    await within(await dialog()).findByRole('list', {
+      name: /batch(es)? added/,
+    });
     await user.keyboard('{Escape}');
     await closed();
 
     await user.click(screen.getByRole('button', { name: 'Add batch' }));
     await addItem(user, 'Milk', '1');
-    await within(await dialog()).findByRole('button', { name: 'Done' });
+    await within(await dialog()).findByRole('list', {
+      name: /batch(es)? added/,
+    });
     await user.click(document.querySelector('.MuiBackdrop-root') as Element);
     await closed();
   });
@@ -273,7 +277,7 @@ describe('Add to Pantry sheet after a save', () => {
     expect(document.querySelectorAll('[data-row-flash]')).toHaveLength(0);
 
     await user.click(
-      screen.getByRole('button', { name: 'Done', hidden: true }),
+      screen.getByRole('button', { name: 'Close', hidden: true }),
     );
     await waitFor(() =>
       expect(document.querySelectorAll('[data-row-flash]')).toHaveLength(1),
@@ -306,7 +310,7 @@ describe('Add to Pantry sheet after a save', () => {
     await open(user);
     await addItem(user, 'Milk', '500');
     await user.click(
-      await within(await dialog()).findByRole('button', { name: 'Done' }),
+      await within(await dialog()).findByRole('button', { name: 'Close' }),
     );
     await waitFor(() =>
       expect(

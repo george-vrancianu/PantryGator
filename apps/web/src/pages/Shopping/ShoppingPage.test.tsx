@@ -617,7 +617,7 @@ describe('ShoppingPage', () => {
     ) => {
       act(() => rowOf(name).focus());
       await user.keyboard('{Enter}');
-      return screen.findByRole('dialog', { name: `Edit ${name}` });
+      return screen.findByRole('dialog', { name });
     };
 
     it('opens on Enter with the name, context and current amount, without ticking', async () => {
@@ -724,7 +724,7 @@ describe('ShoppingPage', () => {
       expect(screen.queryByText('Updated Tomato')).toBeNull();
     });
 
-    it('changes nothing on Cancel', async () => {
+    it('changes nothing on the X', async () => {
       const user = userEvent.setup();
       const { calls } = stubShopping();
       renderWithProviders(<ShoppingPage />);
@@ -732,7 +732,7 @@ describe('ShoppingPage', () => {
 
       const dialog = await openSheet(user);
       await user.type(within(dialog).getByLabelText(/^Amount of Tomato/), '9');
-      await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
 
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       expect(screen.getByText('250 g')).toBeVisible();
@@ -812,7 +812,7 @@ describe('ShoppingPage', () => {
       await act(() => vi.advanceTimersByTimeAsync(600));
       expect(screen.queryByRole('dialog')).toBeNull();
       await act(() => vi.advanceTimersByTimeAsync(200));
-      expect(screen.getByRole('dialog', { name: 'Edit Milk' })).toBeVisible();
+      expect(screen.getByRole('dialog', { name: 'Milk' })).toBeVisible();
       await act(() => vi.advanceTimersByTimeAsync(0));
     });
 
@@ -1324,7 +1324,7 @@ describe('ShoppingPage', () => {
       });
       await user.click(tile);
       const dialog = await screen.findByRole('dialog', { name: 'Add items' });
-      await user.click(within(dialog).getByRole('button', { name: /Done/ }));
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
 
       await waitFor(() => expect(tile).toHaveFocus());
     });
@@ -1369,7 +1369,7 @@ describe('ShoppingPage', () => {
         }),
       );
       await screen.findByText('Added Parmesan');
-      await user.click(within(dialog).getByRole('button', { name: /Done/ }));
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
 
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       await waitFor(() => expect(tile).not.toBeInTheDocument());
@@ -1478,14 +1478,14 @@ describe('ShoppingPage', () => {
       ).toBeNull();
     });
 
-    it('closes with Done, Escape and a scrim tap, returning focus to Add items', async () => {
+    it('closes with the X, Escape and a scrim tap, returning focus to Add items', async () => {
       stubShopping();
       renderWithProviders(<ShoppingPage />);
       const user = userEvent.setup();
       const opener = () => screen.getByRole('button', { name: 'Add items' });
 
       let dialog = await openSheet(user);
-      await user.click(within(dialog).getByRole('button', { name: 'Done' }));
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       expect(opener()).toHaveFocus();
 
@@ -2028,9 +2028,6 @@ describe('ShoppingPage', () => {
         quantity: 100,
         unit: 'g',
       });
-      expect(
-        within(dialog).getByRole('button', { name: 'Done, 1 added' }),
-      ).toBeVisible();
       expect(search(dialog)).toHaveValue('');
       expect(search(dialog)).toHaveFocus();
       expect(within(dialog).queryByRole('option')).toBeNull();
@@ -2451,7 +2448,7 @@ describe('ShoppingPage', () => {
         }),
       ).toHaveValue('Parmesan');
       expect(
-        within(dialog).getByRole('button', { name: 'Done' }),
+        within(dialog).getByRole('button', { name: 'Close' }),
       ).toBeVisible();
       expect(screen.queryByText('Added Parmesan')).toBeNull();
     });
@@ -2472,7 +2469,7 @@ describe('ShoppingPage', () => {
       );
       expect(await within(dialog).findByRole('alert')).toBeVisible();
 
-      await user.click(within(dialog).getByRole('button', { name: 'Done' }));
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       const reopened = await openSheet(user);
 
@@ -2773,7 +2770,7 @@ describe('ShoppingPage', () => {
           ).toBe(true);
         });
 
-        it('closes without saving on Cancel', async () => {
+        it('closes without saving on the X', async () => {
           const { calls } = stubTemplates();
           renderWithProviders(<ShoppingPage />);
           const user = userEvent.setup();
@@ -2784,7 +2781,7 @@ describe('ShoppingPage', () => {
           );
 
           await user.click(
-            within(dialog).getByRole('button', { name: 'Cancel' }),
+            within(dialog).getByRole('button', { name: 'Close' }),
           );
 
           await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
