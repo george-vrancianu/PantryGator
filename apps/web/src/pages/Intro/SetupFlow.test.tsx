@@ -182,7 +182,8 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(screen.getByRole('button', { name: 'Skip' })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull();
     expect(screen.queryByTestId('review-photos-input')).toBeNull();
-    expect(document.querySelector('[data-ground="cream"]')).not.toBeNull();
+    expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
+    expect(document.querySelector('[data-ground="cream"]')).toBeNull();
     expect(document.querySelector('[data-ground="olive"]')).toBeNull();
 
     // Opening the card edits it in the real line editor, with Gator's count and the one to check.

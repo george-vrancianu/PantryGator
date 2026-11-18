@@ -1,4 +1,4 @@
-import { Box, color, tokens } from '@pocket-pantry/ui';
+import { Box, canopy } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
@@ -63,8 +63,6 @@ export function useSetupLeave({
   };
 }
 
-type Tone = 'olive' | 'cream';
-
 /** The Setup top rows' text-link button: Next, Skip and Back share it (colour set by the caller). */
 export const linkButtonStyle = {
   p: 0,
@@ -78,13 +76,7 @@ export const linkButtonStyle = {
 } as const;
 
 /** The Setup top row's Next, beside Skip: shown only while the step holds something unsaved. */
-export function SetupNextButton({
-  leave,
-  tone,
-}: {
-  leave: SetupLeave;
-  tone: Tone;
-}) {
+export function SetupNextButton({ leave }: { leave: SetupLeave }) {
   const { t } = useTranslation('onboarding');
   if (!leave.unsaved) return null;
   return (
@@ -94,7 +86,7 @@ export function SetupNextButton({
       onClick={leave.onNext}
       sx={{
         ...linkButtonStyle,
-        color: tone === 'olive' ? color.cardBg : tokens.color.accent,
+        color: canopy.ink,
       }}
     >
       {t('setupStep.next')}

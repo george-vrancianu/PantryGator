@@ -1,15 +1,17 @@
 import {
+  Box,
   Button,
+  canopy,
   ChoiceRadioGroup,
   type Choice,
   Link,
   Stack,
   Typography,
   BrandLockup,
-  IntroLook,
 } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { IntroCanopy } from '@/components/intro/IntroCanopy/IntroCanopy';
 import { changeLocale, LOCALES, type Locale } from '@/i18n/index';
 import {
   initialLanguagePicks,
@@ -72,14 +74,20 @@ export function LanguagesPage() {
   ];
 
   return (
-    <IntroLook>
-      <Stack
-        component="main"
-        spacing={3}
-        sx={{ p: '24px', maxWidth: 420, mx: 'auto' }}
-      >
-        <Link href="/">{t('onboarding:languages.back')}</Link>
-        <BrandLockup name={t('common:appName')} entrance={false} />
+    <IntroCanopy
+      maxWidth={420}
+      top={
+        <Stack spacing={3}>
+          <Box>
+            <Link href="/" sx={{ color: canopy.ink }}>
+              {t('onboarding:languages.back')}
+            </Link>
+          </Box>
+          <BrandLockup name={t('common:appName')} entrance={false} />
+        </Stack>
+      }
+    >
+      <Stack spacing={3}>
         <Typography variant="h1">{t('onboarding:languages.title')}</Typography>
 
         <Stack spacing={0.5}>
@@ -125,6 +133,6 @@ export function LanguagesPage() {
           {t('onboarding:languages.continue')}
         </Button>
       </Stack>
-    </IntroLook>
+    </IntroCanopy>
   );
 }
