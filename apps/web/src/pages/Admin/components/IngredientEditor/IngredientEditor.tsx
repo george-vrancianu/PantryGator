@@ -8,7 +8,7 @@ import {
   type AdminIngredient,
   type IngredientInput,
 } from '@/lib/admin';
-import { EditorForm } from '@/components/EditorForm';
+import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { IngredientAllergens } from '../IngredientAllergens/IngredientAllergens';
 import { IngredientFields } from '../IngredientFields/IngredientFields';
 import { TranslationsEditor } from '../TranslationsEditor/TranslationsEditor';

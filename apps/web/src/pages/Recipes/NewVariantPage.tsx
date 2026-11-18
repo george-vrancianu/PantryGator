@@ -24,7 +24,7 @@ import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { draftOfVariantDraft } from './hooks/familyDraft';
 import { VariantOfRow } from './components/VariantOfRow/VariantOfRow';
 import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
-import { namedGuidance, routePropsOf } from './hooks/familyRecipeShared';
+import { namedGuidance, routePropsOf } from './hooks/familyRecipeFormInputs';
 
 /** "Make a variant": the editor opens on a copy of the Recipe being viewed, or on a resumed Recipe Draft of this base. */
 export function NewVariantPage() {

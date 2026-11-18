@@ -6,6 +6,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +23,6 @@ import {
   DefaultExpirySheet,
   type SheetStart,
 } from '../DefaultExpirySheet/DefaultExpirySheet';
-import { SectionHeading } from '@/components/SectionHeading';
 
 type SheetState = { open: boolean; start: SheetStart; session: number };
 

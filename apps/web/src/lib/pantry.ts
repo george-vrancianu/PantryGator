@@ -10,6 +10,9 @@ import type { AmountScale } from './usualAmounts';
 import { LOCATIONS, UNITS, type StorageLocation, type Unit } from './catalog';
 import { useStaleThresholdDays } from './settings';
 import { fold } from './fold';
+import { localIso } from './localIso';
+
+export { localIso };
 
 /** A calendar date as `YYYY-MM-DD`. */
 export type IsoDate = string;
@@ -66,12 +69,6 @@ export type ExpiryTagState =
   | { tone: 'soon'; kind: 'tomorrow' }
   | { tone: 'soon'; kind: 'daysLeft'; days: number }
   | { tone: 'ok'; kind: 'days'; days: number };
-
-const pad = (n: number) => String(n).padStart(2, '0');
-
-export function localIso(date: Date): string {
-  return `${String(date.getFullYear()).padStart(4, '0')}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
 
 function dayNumber(iso: IsoDate): number {
   const [y, m, d] = iso.split('-').map(Number);

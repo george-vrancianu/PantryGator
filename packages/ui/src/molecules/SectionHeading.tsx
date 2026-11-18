@@ -1,11 +1,7 @@
-import {
-  Box,
-  InfoIcon,
-  PhoneIcon,
-  Typography,
-  UserIcon,
-} from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
+import { Box } from '../atoms/Layout';
+import { InfoIcon, PhoneIcon, UserIcon } from '../atoms/icons';
+import { Typography } from '../atoms/Typography';
 
 export type Scope = 'device' | 'you' | 'admins';
 

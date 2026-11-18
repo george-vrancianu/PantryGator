@@ -22,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { ConfirmAction } from '@/components/ConfirmAction';
+import { ConfirmAction } from '@/components/editor/ConfirmAction/ConfirmAction';
 import {
   AmountSheet,
   type Amount,

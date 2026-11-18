@@ -3,8 +3,7 @@ import { Box } from '../atoms/Layout';
 import { CheckIcon } from '../atoms/icons';
 import { Typography } from '../atoms/Typography';
 import { focusRingStyle } from '../theme/focusRing';
-import { tokens } from '../theme/tokens';
-import { color, radius } from '../theme/themeVars';
+import { color, palette, radius } from '../theme/themeVars';
 import { visuallyHidden } from '../theme/visuallyHidden';
 
 export type Choice<T extends string> = {
@@ -35,6 +34,8 @@ type Props<T extends string> = {
    * card with a thick butter border, the others are the darker olive.
    */
   tone?: 'plain' | 'olive';
+  /** Every choice is dimmed and cannot be picked; the group is marked disabled for assistive technology. */
+  disabled?: boolean;
 };
 
 function choiceRadius(layout: Props<string>['layout']) {
@@ -54,6 +55,7 @@ export function ChoiceRadioGroup<T extends string>({
   layout = 'rows',
   hideLabel = false,
   tone = 'plain',
+  disabled = false,
 }: Props<T>) {
   const olive = tone === 'olive';
   const id = useId();
@@ -64,6 +66,7 @@ export function ChoiceRadioGroup<T extends string>({
       role="radiogroup"
       aria-labelledby={labelId}
       aria-describedby={hint ? hintId : undefined}
+      aria-disabled={disabled || undefined}
       sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
     >
       <Typography
@@ -120,7 +123,7 @@ export function ChoiceRadioGroup<T extends string>({
                   ? {
                       border: '3px solid',
                       borderColor: selected
-                        ? tokens.color.butter
+                        ? palette('secondary-main')
                         : 'transparent',
                       backgroundColor: selected
                         ? 'pp.cardBg'
@@ -135,7 +138,8 @@ export function ChoiceRadioGroup<T extends string>({
                       color: selected ? color.accentOnTint : 'text.primary',
                     }),
                 fontWeight: selected ? 700 : 600,
-                cursor: 'pointer',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                opacity: disabled ? 0.45 : 1,
                 '&:has(input:focus-visible)': focusRingStyle,
               }}
             >
@@ -145,7 +149,10 @@ export function ChoiceRadioGroup<T extends string>({
                 name={id}
                 value={choice.value}
                 checked={selected}
-                onChange={() => onChange(choice.value)}
+                disabled={disabled}
+                onChange={() => {
+                  if (!disabled) onChange(choice.value);
+                }}
                 aria-labelledby={
                   choice.description ? `${textId}-name` : undefined
                 }

@@ -14,7 +14,7 @@ import type {
 } from './recipeVocabulary';
 import type { Unit } from './catalog';
 import { useDebounced } from './catalog';
-import { localIso } from './pantry';
+import { localIso } from './localIso';
 import { shoppingListChangeQueryKeys } from './queryKeys';
 import { shoppingListQueryKey, type ShoppingList } from './shopping';
 

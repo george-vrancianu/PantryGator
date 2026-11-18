@@ -1,6 +1,6 @@
+import { IntroLook } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { IntroLook } from '@/components/IntroLook';
 import { useSnapLeave } from './hooks/useSnapLeave';
 import { SetupReviewView } from './components/SetupReviewView/SetupReviewView';
 import { INTRO_CAMERA_PATH, INTRO_REVIEW_PATH } from '@/lib/intro';
