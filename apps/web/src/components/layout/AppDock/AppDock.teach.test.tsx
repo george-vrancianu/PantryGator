@@ -43,11 +43,11 @@ describe('AppDock mic teach announcement', () => {
       );
     }
     renderWithProviders(<Harness />);
-    const region = screen.getByRole('status');
+    const region = screen.getByTestId('mic-teach-live');
     expect(region).toBeEmptyDOMElement();
 
     await userEvent.click(screen.getByRole('button', { name: 'teach' }));
-    expect(screen.getByRole('status')).toBe(region);
+    expect(screen.getByTestId('mic-teach-live')).toBe(region);
     expect(region).toHaveTextContent(
       'Hold the mic, talk, let go Try “two litres of milk and a dozen eggs, in the fridge”.',
     );
@@ -55,14 +55,14 @@ describe('AppDock mic teach announcement', () => {
 
   it('is mounted in the Dock even when nothing is taught', () => {
     renderWithProviders(<AppDock activeKey="home" />);
-    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('mic-teach-live')).toBeEmptyDOMElement();
   });
 
   it('hides the callout itself from assistive tech, so it is not read twice', () => {
     teach.teaching = true;
     renderWithProviders(<AppDock activeKey="home" />);
-    expect(screen.getAllByRole('status')).toHaveLength(1);
-    const callout = screen.getAllByText('Hold the mic, talk, let go')[1];
+    expect(screen.queryByRole('status')).toBeNull();
+    const callout = screen.getByText('Hold the mic, talk, let go');
     expect(callout.closest('[aria-hidden="true"]')).not.toBeNull();
   });
 });
