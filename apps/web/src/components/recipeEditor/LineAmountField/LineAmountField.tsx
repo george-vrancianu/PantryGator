@@ -5,7 +5,7 @@ import {
   focusRing,
   nestedRadius,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +75,7 @@ export function LineAmountField({
                   pr: '22px',
                   border: 0,
                   borderRadius: nestedRadius(radius.control, 6),
-                  backgroundColor: tokens.color.chipNeutral,
+                  backgroundColor: palette('pp-chip'),
                   color: 'text.primary',
                   font: 'inherit',
                   fontSize: 13.5,

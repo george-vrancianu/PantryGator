@@ -1,7 +1,7 @@
 import {
   Box,
   IngredientIcon,
-  tokens,
+  palette,
   focusRing,
   radius,
   shadow,
@@ -35,7 +35,6 @@ export function IngredientTile({
   action,
   onSelect,
 }: IngredientTileProps) {
-  const { color } = tokens;
   // A 58 high card (Canopy 8.2): the select button fills it, the action sits at its right edge.
   return (
     <Box
@@ -67,11 +66,11 @@ export function IngredientTile({
           p: action ? '0 0 0 12px' : '0 12px',
           textAlign: 'left',
           font: 'inherit',
-          color: color.ink,
+          color: palette('text-primary'),
           background: 'none',
           border: 0,
           cursor: 'pointer',
-          '&:hover': { backgroundColor: color.subtle },
+          '&:hover': { backgroundColor: palette('pp-subtle') },
           ...focusRing,
         }}
       >

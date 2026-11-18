@@ -3,7 +3,7 @@ import {
   color,
   Gator,
   radius,
-  tokens,
+  palette,
   Typography,
 } from '@pocket-pantry/ui';
 import { useGatorAlt } from '@/lib/useGatorAlt';
@@ -32,7 +32,7 @@ export function GatorBanner({ title, detail, testId }: Props) {
         pr: 2,
         pl: 0.25,
         borderRadius: radius.card,
-        backgroundColor: tokens.color.accent,
+        backgroundColor: palette('pp-accent'),
         color: color.accentInk,
       }}
     >

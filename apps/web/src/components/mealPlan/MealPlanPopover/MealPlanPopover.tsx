@@ -19,7 +19,7 @@ import {
   shadow,
   border,
   Tag,
-  tokens,
+  palette,
   usePrefersReducedMotion,
   useBreakpointUp,
 } from '@pocket-pantry/ui';
@@ -103,7 +103,7 @@ const ghostButton = {
   borderRadius: '50%',
   display: 'grid',
   placeItems: 'center',
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
   cursor: 'pointer',
   flex: 'none',
   '&:disabled': { opacity: 0.3, cursor: 'default' },
@@ -155,10 +155,10 @@ function IssueLine({
                   fontWeight: uncertain ? 400 : 700,
                   fontVariantNumeric: 'tabular-nums',
                   color: uncertain
-                    ? tokens.color.muted
+                    ? palette('text-secondary')
                     : issue.onList
-                      ? tokens.color.soonFg
-                      : tokens.color.urgentFg,
+                      ? palette('warning-main')
+                      : palette('error-main'),
                 }}
               >
                 {detail}
@@ -169,7 +169,11 @@ function IssueLine({
         {reason ? (
           <Box
             component="span"
-            sx={{ fontSize: 12, color: tokens.color.muted, lineHeight: 1.3 }}
+            sx={{
+              fontSize: 12,
+              color: palette('text-secondary'),
+              lineHeight: 1.3,
+            }}
           >
             {reason}
           </Box>
@@ -223,7 +227,7 @@ function MealBlock({
         display: 'flex',
         flexDirection: 'column',
         gap: '6px',
-        '& + &': { borderTop: `1px solid ${tokens.color.divider}` },
+        '& + &': { borderTop: `1px solid ${palette('divider')}` },
       }}
     >
       <Box
@@ -233,7 +237,7 @@ function MealBlock({
           fontWeight: 700,
           letterSpacing: '.07em',
           textTransform: 'uppercase',
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {t(`forecast.slot.${slot.mealtime}`)}
@@ -276,7 +280,9 @@ function MealBlock({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              color: slot.unavailable ? tokens.color.muted : tokens.color.ink,
+              color: slot.unavailable
+                ? palette('text-secondary')
+                : palette('text-primary'),
             }}
           >
             {slot.recipeTitle}
@@ -285,7 +291,7 @@ function MealBlock({
             component="span"
             sx={{
               fontSize: 12.5,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -501,11 +507,11 @@ export function MealPlanPopover({
         maxHeight: 470,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: tokens.color.surface,
-        border: `${border.width} solid ${tokens.color.line}`,
+        backgroundColor: palette('background-paper'),
+        border: `${border.width} solid ${palette('pp-line')}`,
         borderRadius: radius.card,
         boxShadow: shadow.float,
-        color: tokens.color.ink,
+        color: palette('text-primary'),
         transformOrigin: above ? 'var(--arrow-x) 100%' : 'var(--arrow-x) 0',
         ...(reduceMotion
           ? {}
@@ -525,9 +531,9 @@ export function MealPlanPopover({
           width: 14,
           height: 14,
           left: 'calc(var(--arrow-x) - 7px)',
-          backgroundColor: tokens.color.surface,
-          borderLeft: `${border.width} solid ${tokens.color.line}`,
-          borderTop: `${border.width} solid ${tokens.color.line}`,
+          backgroundColor: palette('background-paper'),
+          borderLeft: `${border.width} solid ${palette('pp-line')}`,
+          borderTop: `${border.width} solid ${palette('pp-line')}`,
           ...(above
             ? { bottom: -8, transform: 'rotate(225deg)' }
             : { top: -8, transform: 'rotate(45deg)' }),
@@ -539,7 +545,7 @@ export function MealPlanPopover({
           alignItems: 'center',
           gap: '6px',
           p: '12px 10px 10px 16px',
-          borderBottom: `1px solid ${tokens.color.divider}`,
+          borderBottom: `1px solid ${palette('divider')}`,
         }}
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -565,7 +571,7 @@ export function MealPlanPopover({
               mt: '2px',
               fontSize: 12,
               fontWeight: 600,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             {subtitle}
@@ -624,7 +630,7 @@ export function MealPlanPopover({
               gap: '10px',
               alignItems: 'flex-start',
               fontSize: 13.5,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             <span>
@@ -650,7 +656,7 @@ export function MealPlanPopover({
         <Box
           sx={{
             p: '10px 16px 14px',
-            borderTop: `1px solid ${tokens.color.divider}`,
+            borderTop: `1px solid ${palette('divider')}`,
             display: 'flex',
             alignItems: 'center',
             gap: '12px',

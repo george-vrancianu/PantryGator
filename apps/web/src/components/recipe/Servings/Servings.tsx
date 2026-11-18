@@ -3,7 +3,7 @@ import {
   MinusIcon,
   PlusIcon,
   Stack,
-  tokens,
+  palette,
   radius,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
@@ -50,8 +50,8 @@ export function StepperPill({
         gap: 1,
         height: 40,
         px: '3px',
-        bgcolor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
+        bgcolor: palette('background-paper'),
+        border: `1px solid ${palette('pp-line')}`,
         borderRadius: radius.control,
         fontSize: 13.5,
         fontWeight: 700,

@@ -4,7 +4,7 @@ import {
   CloseIcon,
   IconButton,
   SearchIcon,
-  tokens,
+  palette,
   visuallyHidden,
   radius,
   shadow,
@@ -78,7 +78,6 @@ export function SearchField({
   refetching,
   reducedMotion,
 }: SearchFieldProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
 
   const rightSlot = selected ? null : refetching ? (
@@ -92,8 +91,8 @@ export function SearchField({
         m: '9px',
         boxSizing: 'border-box',
         borderRadius: '50%',
-        border: `2px solid ${color.accentTint}`,
-        borderTopColor: color.accent,
+        border: `2px solid ${palette('pp-accentTint')}`,
+        borderTopColor: palette('pp-accent'),
         ...(reducedMotion
           ? { opacity: 0.7 }
           : {
@@ -129,7 +128,7 @@ export function SearchField({
         backgroundColor: themeColor.fieldBg,
         boxShadow: shadow.recess,
         '&:focus-within': {
-          boxShadow: `${shadow.recess}, 0 0 0 3px ${color.accentTint}`,
+          boxShadow: `${shadow.recess}, 0 0 0 3px ${palette('pp-accentTint')}`,
         },
       }}
     >
@@ -138,7 +137,7 @@ export function SearchField({
           position: 'absolute',
           left: 14,
           display: 'flex',
-          color: color.muted,
+          color: palette('text-secondary'),
         }}
       >
         <SearchIcon size={20} />
@@ -177,8 +176,8 @@ export function SearchField({
           font: 'inherit',
           fontSize: 16,
           fontWeight: 500,
-          color: color.ink,
-          '&::placeholder': { color: color.muted },
+          color: palette('text-primary'),
+          '&::placeholder': { color: palette('text-secondary') },
           // As a token the real input stays for focus and semantics, but unseen.
           ...(selected ? visuallyHidden : {}),
         }}

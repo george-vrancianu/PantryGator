@@ -4,7 +4,7 @@ import {
   PlusIcon,
   Popper,
   Typography,
-  tokens,
+  palette,
   border,
   color,
   insetFocusRing,
@@ -286,7 +286,7 @@ export function AmountField({
 
   const unitLabel = (option: Unit) => t(`common:units.${option}`);
   const menuOptions: (Unit | '')[] = allowNoUnit ? [...UNITS, ''] : [...UNITS];
-  const line = `${border.field} solid ${error ? tokens.color.urgentFg : tokens.color.line}`;
+  const line = `${border.field} solid ${error ? palette('error-main') : palette('pp-line')}`;
 
   return (
     <Box ref={root} onKeyDown={keyDown} onBlur={blur}>
@@ -300,8 +300,8 @@ export function AmountField({
             border: line,
             backgroundColor: color.fieldBg,
             '&:focus-within': {
-              borderColor: error ? tokens.color.urgentFg : tokens.color.accent,
-              boxShadow: `0 0 0 3px ${tokens.color.accentTint}`,
+              borderColor: error ? palette('error-main') : palette('pp-accent'),
+              boxShadow: `0 0 0 3px ${palette('pp-accentTint')}`,
             },
           }}
         >
@@ -318,7 +318,7 @@ export function AmountField({
                 fontSize: 12,
                 fontWeight: 600,
                 lineHeight: 1,
-                color: tokens.color.muted,
+                color: palette('text-secondary'),
                 backgroundColor: color.fieldBg,
                 pointerEvents: 'none',
               }}
@@ -372,7 +372,7 @@ export function AmountField({
                 fontSize: 16,
                 fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
-                color: tokens.color.ink,
+                color: palette('text-primary'),
               }}
             />
             {unit ? (
@@ -410,14 +410,14 @@ export function AmountField({
                   gap: '4px',
                   px: 1.5,
                   border: 0,
-                  borderLeft: `${STRIP_DIVIDER}px solid ${tokens.color.line}`,
+                  borderLeft: `${STRIP_DIVIDER}px solid ${palette('pp-line')}`,
                   borderTopRightRadius: INNER_RADIUS,
                   background: 'transparent',
                   cursor: 'pointer',
                   font: 'inherit',
                   fontSize: 15,
                   fontWeight: 700,
-                  color: tokens.color.ink,
+                  color: palette('text-primary'),
                   ...insetFocusRing,
                 }}
               >
@@ -443,8 +443,8 @@ export function AmountField({
                 flexDirection: 'column',
                 overflow: 'hidden',
                 borderRadius: radius.control,
-                border: `${border.width} solid ${tokens.color.line}`,
-                backgroundColor: tokens.color.surface,
+                border: `${border.width} solid ${palette('pp-line')}`,
+                backgroundColor: palette('background-paper'),
                 boxShadow: shadow.float,
               }}
             >
@@ -469,7 +469,7 @@ export function AmountField({
                       ...(option
                         ? {}
                         : {
-                            borderTop: `${STRIP_DIVIDER}px solid ${tokens.color.line}`,
+                            borderTop: `${STRIP_DIVIDER}px solid ${palette('pp-line')}`,
                           }),
                     }}
                   >
@@ -486,7 +486,7 @@ export function AmountField({
             }
             sx={{
               height: STRIP_HEIGHT,
-              borderTop: `${STRIP_DIVIDER}px solid ${tokens.color.line}`,
+              borderTop: `${STRIP_DIVIDER}px solid ${palette('pp-line')}`,
               borderBottomLeftRadius: INNER_RADIUS,
               borderBottomRightRadius: INNER_RADIUS,
               overflow: 'hidden',
@@ -545,7 +545,7 @@ export function AmountField({
               border: 0,
               borderRadius: radius.control,
               cursor: 'pointer',
-              backgroundColor: tokens.color.accent,
+              backgroundColor: palette('pp-accent'),
               color: color.accentInk,
               '&:disabled': { opacity: 0.5, cursor: 'default' },
             }}
@@ -558,7 +558,7 @@ export function AmountField({
         <Typography
           id={errorId}
           variant="meta"
-          sx={{ display: 'block', mt: 0.75, color: tokens.color.urgentFg }}
+          sx={{ display: 'block', mt: 0.75, color: palette('error-main') }}
         >
           {error}
         </Typography>
