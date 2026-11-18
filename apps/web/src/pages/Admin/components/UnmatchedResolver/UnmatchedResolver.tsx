@@ -143,9 +143,8 @@ export function UnmatchedResolver({
         secondary: onRestore
           ? {
               label: t('admin:unmatched.restore'),
-              onClick: () => {
-                if (!restoring) onRestore();
-              },
+              disabled: restoring,
+              onClick: onRestore,
             }
           : undefined,
       }}

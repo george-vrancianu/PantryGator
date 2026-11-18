@@ -1237,6 +1237,20 @@ describe('Reviewing a Voice Note on the Shopping List', () => {
     ).toBeVisible();
   });
 
+  it('draws Keep reviewing disabled, not silently blocked, while an apply is in flight', async () => {
+    setupReview(threeAdds);
+    const dialog = within(await openReview());
+
+    await userEvent.click(dialog.getByRole('button', { name: 'Discard' }));
+    expect(
+      dialog.getByRole('button', { name: 'Keep reviewing' }),
+    ).toBeEnabled();
+    act(() => voiceNote.applying());
+    expect(
+      dialog.getByRole('button', { name: 'Keep reviewing' }),
+    ).toBeDisabled();
+  });
+
   it('shows What I heard collapsed to its first line, and opens it to the transcript and its language', async () => {
     setupReview(threeAdds);
     const dialog = within(await openReview());

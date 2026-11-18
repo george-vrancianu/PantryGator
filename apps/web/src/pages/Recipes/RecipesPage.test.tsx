@@ -769,10 +769,10 @@ describe('RecipesPage', () => {
       expect(
         within(dialog).getByPlaceholderText('Type to find a Tag'),
       ).toBeInTheDocument();
-      // Nothing to clear yet: the footer holds only "Show n Recipes".
+      // Nothing to clear yet: Clear is drawn, disabled.
       expect(
-        within(dialog).queryByRole('button', { name: 'Clear' }),
-      ).toBeNull();
+        within(dialog).getByRole('button', { name: 'Clear' }),
+      ).toBeDisabled();
       expect(
         within(dialog).getByRole('button', { name: 'Show 6 Recipes' }),
       ).toBeInTheDocument();
@@ -898,12 +898,15 @@ describe('RecipesPage', () => {
       await user.click(
         await within(dialog).findByRole('option', { name: /^Italian/ }),
       );
+      expect(
+        within(dialog).getByRole('button', { name: 'Clear' }),
+      ).toBeEnabled();
       await user.click(within(dialog).getByRole('button', { name: 'Clear' }));
       await waitFor(() => expect(lastQuery(calls).has('tagIds')).toBe(false));
       expect(screen.getByRole('dialog')).toBeInTheDocument();
       expect(
-        within(dialog).queryByRole('button', { name: 'Clear' }),
-      ).toBeNull();
+        within(dialog).getByRole('button', { name: 'Clear' }),
+      ).toBeDisabled();
     });
 
     it('matches while typing ignoring case and accents', async () => {

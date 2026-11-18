@@ -9,11 +9,11 @@ type Props = {
   /** The undated Batch to date; null while closed. */
   batch: Batch | null;
   onClose: () => void;
-  /** With the chosen date when the sheet closes on one. */
+  /** With the chosen date when Done is tapped. */
   onSave: (batch: Batch, expiryDate: IsoDate) => void;
 };
 
-/** The usual expiry sheet for one undated Batch, opening on its Default Expiry; closing on a date saves it. */
+/** The usual expiry sheet for one undated Batch, opening on its Default Expiry; Done on a date saves it; the X discards. */
 export function SetDateSheet({ batch, onClose, onSave }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const today = useToday();
@@ -33,13 +33,12 @@ export function SetDateSheet({ batch, onClose, onSave }: Props) {
   return (
     <ExpirySheet
       open={batch !== null}
-      onClose={() => {
-        if (batch !== null && chosen !== null) onSave(batch, chosen);
-        onClose();
-      }}
+      onClose={onClose}
       onExited={() => setShown(null)}
       value={chosen}
-      onChange={setChosen}
+      onChange={(iso) => {
+        if (batch !== null && iso !== null) onSave(batch, iso);
+      }}
       usualDays={shown?.defaultExpiryDays ?? null}
       context={
         shown === null

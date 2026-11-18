@@ -349,8 +349,8 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
           },
           secondary: {
             label: t('voice:review.footer.keep'),
+            disabled: applying,
             onClick: () => {
-              if (applying) return;
               setConfirming(false);
               setKeptReviewing(true);
             },

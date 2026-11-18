@@ -88,12 +88,12 @@ export function TagsSheet({
             : t('tags.show', { count: resultCount }),
         onClick: onClose,
       }}
-      secondary={
-        // Nothing to clear: the footer keeps its one button.
-        picked.length === 0
-          ? undefined
-          : { label: t('tags.clear'), onClick: () => onChange([]) }
-      }
+      secondary={{
+        label: t('tags.clear'),
+        // Nothing to clear until a Tag is picked.
+        disabled: picked.length === 0,
+        onClick: () => onChange([]),
+      }}
     >
       <TagStatus picked={picked} resultCount={resultCount} />
       <Box sx={{ px: 2.5, py: 1 }}>

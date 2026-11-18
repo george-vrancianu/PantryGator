@@ -88,10 +88,17 @@ export type SheetPrimary = {
 } & ({ onClick: () => void; form?: never } | { form: string; onClick?: never });
 
 /** The footer's alternative action, on the left. A real alternative, never a way to close. */
-export type SheetSecondary = { label: string; onClick: () => void };
+export type SheetSecondary = SheetAlternative;
 
 /** A danger link at the bottom of the content, away from the primary. */
-export type SheetDestructive = { label: string; onClick: () => void };
+export type SheetDestructive = SheetAlternative;
+
+type SheetAlternative = {
+  label: string;
+  onClick: () => void;
+  /** Drawn and announced as disabled, never hidden. A pending primary disables it too. */
+  disabled?: boolean;
+};
 
 /** The roles of a Sheet's chrome (ADR 0043). Sheet draws them; callers cannot. */
 type SheetRoleProps = {
@@ -100,6 +107,11 @@ type SheetRoleProps = {
   subtitle?: string;
   /** Draws Back at the left of the title row. */
   onBack?: () => void;
+  /**
+   * Search and filter controls only, never actions (ADR 0043). Pinned under the title row,
+   * outside the scroll; Sheet draws its fill, horizontal padding and the divider under it.
+   */
+  toolbar?: ReactNode;
   destructive?: SheetDestructive;
 } & (
   | { primary?: undefined; secondary?: never }
@@ -154,6 +166,7 @@ export function Sheet({
   title,
   subtitle,
   onBack,
+  toolbar,
   primary,
   secondary,
   destructive,
@@ -294,6 +307,21 @@ export function Sheet({
           </IconButton>
         ) : null}
       </Box>
+      {toolbar != null && toolbar !== false ? (
+        <Box
+          data-sheet-toolbar=""
+          sx={{
+            flexShrink: 0,
+            background: canopy.sheetBg,
+            px: '16px',
+            pt: '4px',
+            pb: '12px',
+            borderBottom: `${border.width} solid ${palette('pp-line')}`,
+          }}
+        >
+          {toolbar}
+        </Box>
+      ) : null}
       <Box
         sx={{
           flex: 1,
@@ -310,7 +338,7 @@ export function Sheet({
               variant="ghost"
               size="sm"
               onClick={destructive.onClick}
-              disabled={primary?.pending}
+              disabled={destructive.disabled || primary?.pending}
               sx={{
                 color: palette('error-main'),
                 '&:hover': {
@@ -348,7 +376,7 @@ export function Sheet({
                 variant="secondary"
                 fullWidth
                 sx={{ ...footerButtonSx, minHeight: 44 }}
-                disabled={primary.pending}
+                disabled={secondary.disabled || primary.pending}
                 onClick={secondary.onClick}
               >
                 {secondary.label}
