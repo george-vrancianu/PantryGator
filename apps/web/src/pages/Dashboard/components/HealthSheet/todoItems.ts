@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import { formatRowAmount } from '@/lib/amount';
-import { ageDays, isForgotten, type HealthTodo } from '@/lib/health';
+import { ageDays, partitionForgotten, type HealthTodo } from '@/lib/health';
 import {
   fullDate,
   daysUntil,
@@ -115,11 +115,8 @@ export function todoItems(
         expiryDate: batch.expiryDate,
       }));
     case 'undated': {
-      const all = toBatches();
-      const forgotten = all.filter((batch) => isForgotten(batch, todayIso));
-      const rest = all
-        .filter((batch) => !isForgotten(batch, todayIso))
-        .sort(byAisle);
+      const { forgotten, rest } = partitionForgotten(toBatches(), todayIso);
+      rest.sort(byAisle);
       return [
         ...forgotten.map((batch) => ({
           ...fromBatch(batch, [
