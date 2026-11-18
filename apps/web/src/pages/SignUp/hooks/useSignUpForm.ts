@@ -2,17 +2,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ApiError } from '../../../lib/api';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { useSignUp, useSignupConfig } from '../../../lib/auth';
+import { ApiError } from '@/lib/api';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useSignUp, useSignupConfig } from '@/lib/auth';
 import {
   clearLanguagePicks,
   INTRO_PATHS,
   readLanguagePicks,
   type LanguagePicks,
-} from '../../../lib/intro';
-import { preferencesQueryKey, saveIntroLanguages } from '../../../lib/settings';
-import { useIntro } from '../../../lib/useIntro';
+} from '@/lib/intro';
+import { preferencesQueryKey, saveIntroLanguages } from '@/lib/settings';
+import { useIntro } from '@/lib/useIntro';
 
 export type SignUpMode = 'create' | 'join';
 

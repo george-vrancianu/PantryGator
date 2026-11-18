@@ -1,8 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { PromoCodeEntry } from '../../lib/promoCodes';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { PromoCodeEntry } from '@/lib/promoCodes';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { AdminPage } from './AdminPage';
 
 const emptyCatalog = {

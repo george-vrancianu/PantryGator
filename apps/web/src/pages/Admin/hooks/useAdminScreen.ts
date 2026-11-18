@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   localName,
   useAdminCatalog,
   type AdminLeafCategory,
   type AdminParentCategory,
   type CategoryKind,
-} from '../../../lib/admin';
+} from '@/lib/admin';
 
 export type AdminTab = 'review' | 'catalog' | 'codes';
 const TABS: readonly AdminTab[] = ['review', 'catalog', 'codes'];

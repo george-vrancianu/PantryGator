@@ -270,3 +270,17 @@ test('parts inside a component folder of a shared group follow the main file and
   assert.equal(rows.get('components/mealPlan/Popover/helper.ts'), undefined);
   assert.equal(rows.get('components/mealPlan/Popover/Popover.tsx'), undefined);
 });
+
+test('the recipeEditor feature group keeps its parts at the group level', () => {
+  const { rows } = run(
+    {
+      'components/recipeEditor/RecipeMetaFields.tsx': comp,
+      'pages/Admin/components/RecipeForm/RecipeForm.tsx': `import { X } from '@/components/recipeEditor/RecipeMetaFields';\n`,
+    },
+    ['recipeEditor'],
+  );
+  assert.equal(
+    rows.get('components/recipeEditor/RecipeMetaFields.tsx').target,
+    'components/recipeEditor/RecipeMetaFields/RecipeMetaFields.tsx',
+  );
+});

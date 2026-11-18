@@ -2,21 +2,21 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine, ScanMode } from '../../lib/scan';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine, ScanMode } from '@/lib/scan';
 import {
   dispatchScanSession,
   getScanSession,
   resetScanSession,
-} from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { ScanPage } from '../Scan/ScanPage';
+} from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { ScanPage } from '@/pages/Scan/ScanPage';
 import { ReviewOverviewPage } from './ReviewOverviewPage';
-import { findReviewRow } from '../../test/review';
+import { findReviewRow } from '@/test/review';
 import { ReviewPage } from './ReviewPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const milk: CatalogSearchResult = {

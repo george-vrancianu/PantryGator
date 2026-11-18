@@ -1,8 +1,8 @@
 import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { useSignIn } from '../../../lib/auth';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useSignIn } from '@/lib/auth';
 
 export function useSignInForm() {
   const { t } = useTranslation();
