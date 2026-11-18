@@ -33,6 +33,8 @@ const allowedHosts = [
 ];
 
 export default defineConfig({
+  // Vite 8 reads the `@/*` alias from tsconfig `paths` itself; vitest reuses this config.
+  resolve: { tsconfigPaths: true },
   plugins: [react(), prePaintTheme()],
   server: {
     // Bind to every interface so phones on the local network can reach Vite.
