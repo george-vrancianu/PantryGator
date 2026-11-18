@@ -10,8 +10,7 @@ describe('GatorBubblePanel', () => {
         <span data-testid="line">A very long line that wraps many times</span>
       </GatorBubblePanel>,
     );
-    const panel = screen.getByTestId('line').closest('[class*="MuiBox-root"]')
-      ?.parentElement?.parentElement as HTMLElement;
+    const panel = screen.getByTestId('gator-bubble-panel');
     const style = getComputedStyle(panel);
     expect(['', 'auto']).toContain(style.height);
     expect(style.minHeight).toBe('206px');

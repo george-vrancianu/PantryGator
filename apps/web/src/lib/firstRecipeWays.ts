@@ -1,9 +1,16 @@
+export type FirstRecipeWay = {
+  id: 'explore' | 'fromLink' | 'fromText' | 'newRecipe';
+  href: string;
+  labelKey: string;
+  linkLabelKey?: string;
+};
+
 /**
  * The ways a Family with no Recipes can get its first one, in the order every empty state shows
- * them. `labelKey` is a `recipes` namespace key; `href` is the page each one opens. New Recipe
- * opens the header's "+" menu on the Recipes page, which is why the page may swap its `href`.
+ * them. `labelKey` is a `recipes` namespace key; `href` is the page each one opens.
+ * `linkLabelKey` is the label for a bare text link, where the button's leading "+" would read oddly.
  */
-export const FIRST_RECIPE_WAYS = [
+export const FIRST_RECIPE_WAYS: readonly FirstRecipeWay[] = [
   {
     id: 'explore',
     href: '/recipes/explore',
@@ -23,7 +30,6 @@ export const FIRST_RECIPE_WAYS = [
     id: 'newRecipe',
     href: '/recipes/new',
     labelKey: 'emptyFamily.newRecipe',
+    linkLabelKey: 'family.newRecipe',
   },
-] as const;
-
-export type FirstRecipeWay = (typeof FIRST_RECIPE_WAYS)[number];
+];

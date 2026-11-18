@@ -1,10 +1,10 @@
-import { familyRecipeHref } from '@/lib/recipeHref';
 import { Box, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 import { StatusPills } from '@/components/recipe/StatusPills/StatusPills';
 import type { CookTonightCard } from '@/lib/cookTonight';
 import { totalMinutes, type RecipeListItem } from '@/lib/recipes';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { OwnerBadge } from '@/components/recipe/OwnerBadge/OwnerBadge';
 
 type Props = {

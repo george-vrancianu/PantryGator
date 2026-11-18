@@ -228,7 +228,7 @@ export function MealPlanPage() {
                       ?.servingsOverride ?? undefined,
                     () => setPicking(null),
                   )
-                : undefined
+                : Promise.resolve(false)
             }
             onClose={() => setPicking(null)}
           />

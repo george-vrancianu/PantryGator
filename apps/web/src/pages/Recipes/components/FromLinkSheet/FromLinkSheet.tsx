@@ -1,4 +1,3 @@
-import { familyRecipeHref } from '@/lib/recipeHref';
 import {
   Alert,
   Box,
@@ -20,6 +19,7 @@ import {
   checkRecipeLink,
   type ReadingLanguage,
 } from '@/lib/linkRecipe';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { AlreadyInRecipes } from '../AlreadyInRecipes/AlreadyInRecipes';
 
 /** The editor's 44 pt field. */

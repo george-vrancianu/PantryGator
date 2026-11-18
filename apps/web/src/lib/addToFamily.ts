@@ -24,6 +24,10 @@ export const copyToFamily = (id: string) =>
     method: 'POST',
   });
 
+/** `POST /recipes/:id/archive`: archives a copy (the Undo of a copy this action made). */
+export const archiveCopy = (id: string) =>
+  apiRequest(`/recipes/${id}/archive`, { method: 'POST' });
+
 /** Refetches every list and detail a copy or its Undo changes (all under `recipes`). */
 export const refreshAfterCopy = (queryClient: QueryClient) =>
   Promise.all(
@@ -109,7 +113,7 @@ export function useAddToFamily({
     async (recipe: AddableRecipe, copyId: string) => {
       set(recipe.id, { status: 'none' });
       try {
-        await apiRequest(`/recipes/${copyId}/archive`, { method: 'POST' });
+        await archiveCopy(copyId);
         onNetRef.current?.(-1);
       } catch {
         set(recipe.id, { status: 'added', copyId });

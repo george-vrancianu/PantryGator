@@ -66,6 +66,7 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
   const failure = cookTonight.error ?? (wide ? recipes.error : null);
 
   const hiddenCount = cookTonight.data?.hiddenByAllergiesCount ?? 0;
+  const showEmptyLine = cards.length === 0 && hiddenCount === 0;
   const note = (
     <HiddenByAllergiesNote
       count={hiddenCount}
@@ -110,7 +111,7 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
           </Box>
           {note}
           {/* When Allergies hid every card, the note already says why: no "nothing to make" line beside it. */}
-          {cards.length === 0 && hiddenCount > 0 ? null : cards.length === 0 ? (
+          {showEmptyLine && (
             <Box sx={{ fontSize: 14, color: tokens.color.muted, py: '10px' }}>
               {t('widgets.cookTonight.empty')}{' '}
               <Box
@@ -125,9 +126,8 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
                 {t('widgets.cookTonight.explore')}
               </Box>
             </Box>
-          ) : (
-            <CardList cards={cards} />
           )}
+          {cards.length > 0 && <CardList cards={cards} />}
         </>
       ) : (
         // Wide and tall: no header row; the panel names the Widget and leads to Cook Tonight.

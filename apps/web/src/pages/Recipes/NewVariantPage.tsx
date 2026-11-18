@@ -1,4 +1,3 @@
-import { familyRecipeHref } from '@/lib/recipeHref';
 import { Alert, Spinner } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +20,7 @@ import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useVariantDraft, type FamilyRecipeDraft } from '@/lib/familyRecipes';
 import { useRecipe, type RecipeDetail } from '@/lib/recipes';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { draftOfVariantDraft } from './hooks/familyDraft';
 import { VariantOfRow } from './components/VariantOfRow/VariantOfRow';

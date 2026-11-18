@@ -27,6 +27,7 @@ export function GatorBubblePanel({
 } & LinkProps) {
   return (
     <Box
+      data-testid="gator-bubble-panel"
       {...(to
         ? {
             component: Link,

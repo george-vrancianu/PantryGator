@@ -959,7 +959,7 @@ describe('CookTonightWidget for a Family with no Recipes', () => {
       within(region).getByRole('link', { name: 'From text' }),
     ).toHaveAttribute('href', '/recipes/from-text');
     expect(
-      within(region).getByRole('link', { name: '+ New Recipe' }),
+      within(region).getByRole('link', { name: 'New Recipe' }),
     ).toHaveAttribute('href', '/recipes/new');
     expect(screen.queryByText(/Nothing to cook from your Pantry/)).toBeNull();
   });
@@ -991,7 +991,10 @@ describe('CookTonightWidget for a Family with no Recipes', () => {
     vi.stubGlobal('fetch', fetchMock);
     renderAt();
 
-    await waitFor(() => expect(calls.length).toBeGreaterThan(1));
+    // The panel shows once both the Family list and Cook Tonight have loaded.
+    expect(
+      await screen.findByText(/Nothing to cook from your Pantry/),
+    ).toBeInTheDocument();
     expect(
       calls.some(
         (c) => new URLSearchParams(c.search).get('scope') === 'catalog',

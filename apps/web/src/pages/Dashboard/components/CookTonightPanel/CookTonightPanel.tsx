@@ -86,9 +86,9 @@ function EmptyPot() {
       <Box
         sx={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', px: '4px' }}
       >
-        {FIRST_RECIPE_WAYS.map(({ id, href, labelKey }) => (
+        {FIRST_RECIPE_WAYS.map(({ id, href, labelKey, linkLabelKey }) => (
           <Link key={id} href={href} underline="none" sx={{ fontSize: 14 }}>
-            {t(labelKey)}
+            {t(linkLabelKey ?? labelKey)}
           </Link>
         ))}
       </Box>

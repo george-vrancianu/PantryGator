@@ -18,11 +18,8 @@ import {
   type CookTonightCard,
 } from '@/lib/cookTonight';
 import { localIso } from '@/lib/pantry';
-import {
-  useRecipes,
-  type RecipeBrowse,
-  type RecipeListItem,
-} from '@/lib/recipes';
+import { STARTER_BROWSE, STARTER_SCOPE } from '@/lib/prefetchStarters';
+import { useRecipes, type RecipeListItem } from '@/lib/recipes';
 import { SectionLabel } from '../SectionLabel/SectionLabel';
 
 type AddApi = ReturnType<typeof useAddToFamily>;
@@ -34,10 +31,6 @@ export type QuickViewOpen = (
 ) => void;
 
 const STARTERS = 3;
-const NO_BROWSE: RecipeBrowse = {
-  search: '',
-  tagIds: [],
-};
 
 /** Up to three Catalog Bases the Family can make now, each one tap from being added. Hidden when there are none. */
 function Starters({
@@ -46,12 +39,12 @@ function Starters({
   onQuickView,
 }: AddApi & { onQuickView: QuickViewOpen }) {
   const { t } = useTranslation('recipes');
-  const recipes = useRecipes(NO_BROWSE, { scope: 'catalog' });
+  const recipes = useRecipes(STARTER_BROWSE, { scope: STARTER_SCOPE });
   const cookTonight = useCookTonight(
     // oxlint-disable-next-line react/purity -- "today" must follow the clock across midnight
     localIso(new Date()),
     false,
-    'catalog',
+    STARTER_SCOPE,
   );
   const headingId = useId();
   const cards = cookTonight.data?.cards ?? [];
@@ -148,7 +141,7 @@ export function EmptyFamilyRecipes({
               key={way.id}
               variant="secondary"
               fullWidth
-              // New Recipe opens the header's "+" menu (it has the editor and the draft choices).
+              // New Recipe opens the Recipes page's header "+" menu (it has the editor and the draft choices).
               {...(way.id === 'newRecipe'
                 ? { onClick: onNewRecipe }
                 : { href: way.href })}

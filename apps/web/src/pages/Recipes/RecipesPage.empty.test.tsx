@@ -1,5 +1,5 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { getToast } from '@/test/toast';
+import { findToast, getToast } from '@/test/toast';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -318,6 +318,38 @@ describe('RecipesPage when the Family has no Recipes', () => {
       // The page behind the sheet is aria-hidden, so look for its list with `hidden`.
       await screen.findByRole('list', { name: /^All Recipes/, hidden: true });
       expect(screen.getByRole('dialog')).toBeVisible();
+    });
+
+    /** The toast's emotion CSS (jsdom's computed style drops `calc()`). */
+    const toastCss = () => {
+      const el = getToast().closest<HTMLElement>('.MuiSnackbar-root')!;
+      const own = [...el.classList].filter((c) => c.startsWith('css-'));
+      return [...document.styleSheets]
+        .flatMap((sheet) => [...sheet.cssRules])
+        .map((rule) => rule.cssText)
+        .filter((css) => own.some((c) => css.includes(`.${c}`)))
+        .join('\n');
+    };
+
+    it('lifts the toast clear of the quick view buttons while it is open', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      setup({ catalog: [catalogBases[0]!], cards: [card('omelette')] });
+      await addButton('omelette');
+      await user.click(screen.getByRole('button', { name: /^omelette/ }));
+      const dialog = await screen.findByRole('dialog');
+      await user.click(
+        within(dialog).getByRole('button', { name: 'Add to your Recipes' }),
+      );
+      await findToast();
+      expect(toastCss()).toContain('bottom: calc(186px');
+    });
+
+    it('keeps the default toast position when it is added from the row', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      setup({ catalog: [catalogBases[0]!], cards: [card('omelette')] });
+      await user.click(await addButton('omelette'));
+      await findToast();
+      expect(toastCss()).not.toContain('186px');
     });
 
     it('leaves out Recipes the API hid (they are in neither list)', async () => {

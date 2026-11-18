@@ -1,4 +1,3 @@
-import { familyRecipeHref } from '@/lib/recipeHref';
 import { Alert, Link, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -23,6 +22,7 @@ import {
   type GuidanceDraft,
 } from '@/lib/guidanceDraft';
 import { recipesQueryKey } from '@/lib/recipes';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import {
   documentOf,
