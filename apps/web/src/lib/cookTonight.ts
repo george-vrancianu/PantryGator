@@ -37,6 +37,27 @@ export type CookTonightView = {
   hiddenByAllergiesCount: number;
 };
 
+/** The Cook Tonight query, shared by `useCookTonight` and a prefetch so both fill the same cache entry. */
+export const cookTonightQueryOptions = (
+  today: string,
+  showHidden = false,
+  scope?: 'family' | 'catalog',
+) => ({
+  queryKey: [
+    ...recipesQueryKey,
+    'cook-tonight',
+    today,
+    ...(showHidden ? ['showHidden'] : []),
+    ...(scope ? [scope] : []),
+  ],
+  queryFn: () => {
+    const params = new URLSearchParams({ today });
+    if (showHidden) params.set('showHidden', 'true');
+    if (scope) params.set('scope', scope);
+    return apiRequest<CookTonightView>(`/recipes/cook-tonight?${params}`);
+  },
+});
+
 /** Cards arrive ranked best first. */
 export function useCookTonight(
   today: string,
@@ -45,21 +66,7 @@ export function useCookTonight(
   /** `catalog` ranks the Catalog Recipes (Explore); `family` the Family's own. Omitted: both. */
   scope?: 'family' | 'catalog',
 ) {
-  return useQuery({
-    queryKey: [
-      ...recipesQueryKey,
-      'cook-tonight',
-      today,
-      ...(showHidden ? ['showHidden'] : []),
-      ...(scope ? [scope] : []),
-    ],
-    queryFn: () => {
-      const params = new URLSearchParams({ today });
-      if (showHidden) params.set('showHidden', 'true');
-      if (scope) params.set('scope', scope);
-      return apiRequest<CookTonightView>(`/recipes/cook-tonight?${params}`);
-    },
-  });
+  return useQuery(cookTonightQueryOptions(today, showHidden, scope));
 }
 
 /** Cook-tonight cards looked up by Recipe id, for the status pills on the Recipes list. */

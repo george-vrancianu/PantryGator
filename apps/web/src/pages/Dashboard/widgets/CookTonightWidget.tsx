@@ -15,6 +15,7 @@ import { useCookTonight, type CookTonightCard } from '@/lib/cookTonight';
 import type { WidgetSize } from '@/lib/dashboard';
 import { widgetSpan, type GridColumns } from '@/lib/layoutColumns';
 import { localIso } from '@/lib/pantry';
+import { usePrefetchStarters } from '@/lib/prefetchStarters';
 import { rowTagNames } from '@/lib/tags';
 import {
   hasNoFamilyRecipes,
@@ -56,15 +57,19 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
   // The wide/tall panel needs to know if the Family has any Recipes; the small Widget doesn't.
   const wide = size !== 'small';
   const recipes = useRecipes(NO_BROWSE, { scope: 'family', enabled: wide });
+  // An empty Family will land on the starters next: have them ready.
+  usePrefetchStarters(wide && hasNoFamilyRecipes(recipes.data));
   const allCards = cookTonight.data?.cards ?? [];
   const cards = allCards.slice(0, cardsFor(size, columns));
 
   const pending = cookTonight.isPending || (wide && recipes.isPending);
   const failure = cookTonight.error ?? (wide ? recipes.error : null);
 
+  const hiddenCount = cookTonight.data?.hiddenByAllergiesCount ?? 0;
+  const showEmptyLine = cards.length === 0 && hiddenCount === 0;
   const note = (
     <HiddenByAllergiesNote
-      count={cookTonight.data?.hiddenByAllergiesCount ?? 0}
+      count={hiddenCount}
       onShow={() => setShowHidden(true)}
     />
   );
@@ -105,7 +110,8 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
             </Box>
           </Box>
           {note}
-          {cards.length === 0 ? (
+          {/* When Allergies hid every card, the note already says why: no "nothing to make" line beside it. */}
+          {showEmptyLine && (
             <Box sx={{ fontSize: 14, color: tokens.color.muted, py: '10px' }}>
               {t('widgets.cookTonight.empty')}{' '}
               <Box
@@ -120,9 +126,8 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
                 {t('widgets.cookTonight.explore')}
               </Box>
             </Box>
-          ) : (
-            <CardList cards={cards} />
           )}
+          {cards.length > 0 && <CardList cards={cards} />}
         </>
       ) : (
         // Wide and tall: no header row; the panel names the Widget and leads to Cook Tonight.

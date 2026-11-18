@@ -104,15 +104,21 @@ export function MealPlanPage() {
     onSuccess?: () => void,
   ) => {
     clearErrors();
-    mutations.setSlot.mutate(
-      {
+    return mutations.setSlot
+      .mutateAsync({
         id,
         ...ref,
         recipeId,
         ...(servings === undefined ? {} : { servings }),
-      },
-      { onSuccess },
-    );
+      })
+      .then(
+        () => {
+          onSuccess?.();
+          return true;
+        },
+        // The error shows from the mutation's state; the caller only needs to know it failed.
+        () => false,
+      );
   };
 
   return (
@@ -214,14 +220,15 @@ export function MealPlanPage() {
             error={picking ? errorText : null}
             busy={mutations.setSlot.isPending}
             onPick={(recipeId) =>
-              picking &&
-              putSlot(
-                picking,
-                recipeId,
-                days[picking.dayIndex]?.slots[picking.mealtime]
-                  ?.servingsOverride ?? undefined,
-                () => setPicking(null),
-              )
+              picking
+                ? putSlot(
+                    picking,
+                    recipeId,
+                    days[picking.dayIndex]?.slots[picking.mealtime]
+                      ?.servingsOverride ?? undefined,
+                    () => setPicking(null),
+                  )
+                : Promise.resolve(false)
             }
             onClose={() => setPicking(null)}
           />

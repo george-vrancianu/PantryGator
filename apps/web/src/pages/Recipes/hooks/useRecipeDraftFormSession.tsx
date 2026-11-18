@@ -11,6 +11,7 @@ import type { GuidanceInput } from '@/lib/adminRecipes';
 import type { Autosave } from '@/lib/recipeDraftAutosave';
 import type { RecipeDraftView } from '@/lib/recipeDrafts';
 import { useLeaveGuard } from '@/lib/useLeaveGuard';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { RecipeDraftWriteNotice } from '../components/RecipeDraftWriteNotice/RecipeDraftWriteNotice';
 import type { DiscardedDraftState } from './useRecipeDraftDiscard';
 
@@ -92,7 +93,7 @@ export function useRecipeDraftFormSession({
         {
           onSuccess: (saved) => {
             autosave.stop();
-            navigate(`/recipes/${saved.id}`);
+            navigate(familyRecipeHref(saved.id));
           },
           onError: () => {
             setFinishing(false);

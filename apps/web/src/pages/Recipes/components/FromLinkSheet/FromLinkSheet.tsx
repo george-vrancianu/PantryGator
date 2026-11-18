@@ -19,6 +19,7 @@ import {
   checkRecipeLink,
   type ReadingLanguage,
 } from '@/lib/linkRecipe';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { AlreadyInRecipes } from '../AlreadyInRecipes/AlreadyInRecipes';
 
 /** The editor's 44 pt field. */
@@ -154,7 +155,7 @@ function FromLinkBody({
               onClick: () => {
                 // Close first: closing edits the address, and the Recipe's must come last.
                 onSubmitted();
-                navigate(`/recipes/${duplicate.recipeId}`);
+                navigate(familyRecipeHref(duplicate.recipeId));
               },
             }
           : {
