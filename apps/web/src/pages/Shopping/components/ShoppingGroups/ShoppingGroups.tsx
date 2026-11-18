@@ -14,14 +14,14 @@ import {
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountSheet } from '../../../components/AmountSheet';
-import { RowFlash, flashHost } from '../../../components/RowFlash';
-import { IngredientIconSlot } from '../../../components/IngredientIconSlot';
-import { formatRowAmount, type Amount } from '../../../lib/amount';
-import type { RowHint } from '../../../lib/useRowHint';
-import { useSwipeRowLabels } from '../../../lib/useSwipeRowLabels';
-import { StapleToggle } from '../../../components/StapleToggle';
-import type { ShoppingGroup, ShoppingItem } from '../../../lib/shopping';
+import { AmountSheet } from '../AmountSheet/AmountSheet';
+import { RowFlash, flashHost } from '@/components/RowFlash';
+import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { formatRowAmount, type Amount } from '@/lib/amount';
+import type { RowHint } from '@/lib/useRowHint';
+import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
+import { StapleToggle } from '../StapleToggle/StapleToggle';
+import type { ShoppingGroup, ShoppingItem } from '@/lib/shopping';
 
 /** Greyed text colour of a checked row, shared by its name and icon. */
 const CHECKED_TEXT = tokens.color.checkedText;

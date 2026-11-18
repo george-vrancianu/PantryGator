@@ -23,25 +23,21 @@ import {
   talkButton,
   voiceAction,
   voiceIngredient,
-} from '../../test/voice';
+} from '@/test/voice';
 import {
   holdFor,
   holdLongEnough,
   pressDown,
   useVoiceTimers,
-} from '../../test/voiceHold';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { AppLayout } from '../../components/AppLayout';
+} from '@/test/voiceHold';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { AppLayout } from '@/components/AppLayout';
 import { Route, Routes } from 'react-router-dom';
-import { scanLanguagePreference } from '../../test/scan';
-import { stubMotion } from '../../test/viewport';
-import { resetRowFlash } from '../../lib/rowFlash';
-import { voiceNote } from '../../lib/voiceNote';
-import { PantryPage } from '../Pantry/PantryPage';
+import { scanLanguagePreference } from '@/test/scan';
+import { stubMotion } from '@/test/viewport';
+import { resetRowFlash } from '@/lib/rowFlash';
+import { voiceNote } from '@/lib/voiceNote';
+import { PantryPage } from '@/pages/Pantry/PantryPage';
 import { ShoppingPage } from './ShoppingPage';
 
 /** The Voice Note's status; the refresh loader's live region is a status too, empty at rest. */

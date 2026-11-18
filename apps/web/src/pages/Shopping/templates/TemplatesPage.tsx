@@ -11,13 +11,13 @@ import {
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Screen } from '../../../components/layout/Screen';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { Screen } from '@/components/layout/Screen';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   MAX_TEMPLATES,
   useTemplateMutations,
   useTemplates,
-} from '../../../lib/shoppingTemplates';
+} from '@/lib/shoppingTemplates';
 
 /** The Family's Shopping Templates: open one to edit it, or create a new one. */
 export function TemplatesPage() {

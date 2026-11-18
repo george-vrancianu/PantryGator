@@ -7,15 +7,15 @@ import {
   TileSection,
 } from '@/components/catalogSearch/emptyState/TileSection/TileSection';
 import { useShortAgo } from '@/components/catalogSearch/emptyState/useShortAgo';
-import { translateApiError } from '../../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   goneInOrder,
   useDismissSuggestion,
   type GoneEntry,
   type Suggestion,
   type Suggestions,
-} from '../../../../lib/suggestions';
-import { useSheetToast } from './useSheetToast';
+} from '@/lib/suggestions';
+import { useSheetToast } from '../useSheetToast';
 
 export type GoneTilesProps = {
   suggestions: Suggestions;

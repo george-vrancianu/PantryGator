@@ -21,16 +21,19 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Screen } from '../../../components/layout/Screen';
-import { ConfirmAction } from '../../../components/ConfirmAction';
-import { AmountSheet, type Amount } from '../../../components/AmountSheet';
-import { formatRowAmount } from '../../../lib/amount';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { UNDO_WINDOW_MS } from '../../../lib/useDeferredRemoval';
-import { RowHintNote } from '../../../components/RowHintNote';
-import { useRowHint, type RowHint } from '../../../lib/useRowHint';
-import { useSwipeRowLabels } from '../../../lib/useSwipeRowLabels';
-import type { NewShoppingItem } from '../../../lib/shopping';
+import { Screen } from '@/components/layout/Screen';
+import { ConfirmAction } from '@/components/ConfirmAction';
+import {
+  AmountSheet,
+  type Amount,
+} from '../components/AmountSheet/AmountSheet';
+import { formatRowAmount } from '@/lib/amount';
+import { translateApiError } from '@/i18n/translateApiError';
+import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { RowHintNote } from '@/components/RowHintNote';
+import { useRowHint, type RowHint } from '@/lib/useRowHint';
+import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
+import type { NewShoppingItem } from '@/lib/shopping';
 import {
   MAX_TEMPLATE_LINES,
   toLineBody,
@@ -38,9 +41,9 @@ import {
   useTemplate,
   useTemplateMutations,
   type Template,
-} from '../../../lib/shoppingTemplates';
-import { AddItemForm } from '../components/AddItemForm';
-import { ApplyTemplatePicker } from './ApplyTemplatePicker';
+} from '@/lib/shoppingTemplates';
+import { AddItemForm } from '../components/AddItemForm/AddItemForm';
+import { ApplyTemplatePicker } from './ApplyTemplatePicker/ApplyTemplatePicker';
 
 /** Rename a Template, add lines with Catalog search, remove lines, delete it, or apply it. */
 export function TemplateEditorPage() {

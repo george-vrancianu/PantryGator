@@ -13,9 +13,9 @@ import {
   mic,
   resetVoiceEnvironment,
   talkButton,
-} from '../../test/voice';
-import { holdFor, pressDown, useVoiceTimers } from '../../test/voiceHold';
-import { renderInAppLayout, stubApi } from '../../test/render';
+} from '@/test/voice';
+import { holdFor, pressDown, useVoiceTimers } from '@/test/voiceHold';
+import { renderInAppLayout, stubApi } from '@/test/render';
 import { ShoppingPage } from './ShoppingPage';
 
 function setup() {

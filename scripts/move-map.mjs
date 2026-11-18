@@ -196,6 +196,16 @@ function computeTarget(m, visiting) {
     return placed(m, dir.join('/'));
   }
 
+  // A camelCase sub-group inside an area's components/ (addSheet/) stays together: one folder per component, hooks flat.
+  const subGroup =
+    /^(pages\/[^/]+\/components\/[a-z][A-Za-z0-9]*)\/(?:[A-Z][A-Za-z0-9]*\/)?[^/]+$/.exec(
+      m,
+    );
+  if (subGroup)
+    return /^[^/]+\/[^/]+\/components\/[^/]+\/[A-Z][A-Za-z0-9]*\//.test(m)
+      ? m
+      : placed(m, subGroup[1]);
+
   // Already inside a component folder (Foo/Foo.tsx plus its parts): follow the main file.
   const pascalDir =
     /^(components|pages\/[^/]+\/(?:components|hooks))\/([A-Z][A-Za-z0-9]*)\/(.+)$/.exec(

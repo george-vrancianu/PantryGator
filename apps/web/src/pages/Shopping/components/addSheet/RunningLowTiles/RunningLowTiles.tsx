@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '@/components/catalogSearch/emptyState/context';
 import { IngredientTile } from '@/components/catalogSearch/emptyState/IngredientTile/IngredientTile';
 import { TileSection } from '@/components/catalogSearch/emptyState/TileSection/TileSection';
-import type { Suggestion } from '../../../../lib/suggestions';
+import type { Suggestion } from '@/lib/suggestions';
 
 /**
  * "Running low": the Ingredients the Family flagged. Kept apart from the Gone

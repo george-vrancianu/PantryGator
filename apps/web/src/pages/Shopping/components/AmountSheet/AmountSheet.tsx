@@ -1,11 +1,11 @@
 import { Alert, Sheet, Stack } from '@pocket-pantry/ui';
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../i18n/translateApiError';
-import type { Unit } from '../lib/catalog';
-import type { Amount } from '../lib/amount';
-import { parseAmountText } from '../lib/pantry';
-import { AmountField } from './AmountField';
+import { translateApiError } from '@/i18n/translateApiError';
+import type { Unit } from '@/lib/catalog';
+import type { Amount } from '@/lib/amount';
+import { parseAmountText } from '@/lib/pantry';
+import { AmountField } from '@/components/AmountField';
 
 export type { Amount };
 

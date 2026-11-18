@@ -1,17 +1,17 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   useShoppingList,
   shoppingListQueryKey,
   useShoppingMutations,
   withoutItems,
   type NewShoppingItem,
-} from '../../../lib/shopping';
-import type { Amount } from '../../../lib/amount';
-import { localIso } from '../../../lib/pantry';
-import { noSuggestions, useSuggestions } from '../../../lib/suggestions';
-import { useDeferredRemoval } from '../../../lib/useDeferredRemoval';
+} from '@/lib/shopping';
+import type { Amount } from '@/lib/amount';
+import { localIso } from '@/lib/pantry';
+import { noSuggestions, useSuggestions } from '@/lib/suggestions';
+import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
 
 export function useShoppingScreen() {
   const { t } = useTranslation();

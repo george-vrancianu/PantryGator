@@ -1,16 +1,16 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApiError } from '../../../lib/api';
-import { translateApiError } from '../../../i18n/translateApiError';
-import type { StorageLocation, Unit } from '../../../lib/catalog';
+import { ApiError } from '@/lib/api';
+import { translateApiError } from '@/i18n/translateApiError';
+import type { StorageLocation, Unit } from '@/lib/catalog';
 import {
   useFinishProposal,
   useFinishShopping,
   type FinishProposalLine,
-} from '../../../lib/finishShopping';
-import { daysUntil, parseAmountText, type IsoDate } from '../../../lib/pantry';
-import { shoppingListQueryKey } from '../../../lib/shopping';
+} from '@/lib/finishShopping';
+import { daysUntil, parseAmountText, type IsoDate } from '@/lib/pantry';
+import { shoppingListQueryKey } from '@/lib/shopping';
 
 export type ReviewEdit = {
   quantity: string;
