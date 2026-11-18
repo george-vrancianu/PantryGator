@@ -1,22 +1,18 @@
-import {
-  Box,
-  Button,
-  gutterLeft,
-  gutterRight,
-  plusBottomInset,
-  tokens,
-} from '@pocket-pantry/ui';
-import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useBubbleBottomBound } from './layout/useBubbleBottomBound';
+import type { Ref } from 'react';
+import { Button } from '../atoms/Button';
+import { Box } from '../atoms/Layout';
+import { gutterLeft, gutterRight, plusBottomInset } from '../theme/safeArea';
+import { tokens } from '../theme/tokens';
 
-type Props = {
+export type ReviewActionBarProps = {
   saveLabel: string;
+  /** The left button's label ("Discard", or a screen's own word for leaving, such as "Retake"). */
+  discardLabel: string;
+  /** The bar's element, for the app to measure (it keeps the Gator bubble above the bar). */
+  ref?: Ref<HTMLDivElement>;
   canSave: boolean;
   onSave: () => void;
   onDiscard: () => void;
-  /** The left button's label; "Discard" unless a screen has its own word for leaving (Setup says "Retake"). */
-  discardLabel?: string;
 };
 
 /** Fixed to the bottom in place of the Dock; clear of the home indicator on phones. */
@@ -26,13 +22,11 @@ export function ReviewActionBar({
   onSave,
   onDiscard,
   discardLabel,
-}: Props) {
-  const { t } = useTranslation('review');
-  const bar = useRef<HTMLDivElement>(null);
-  useBubbleBottomBound(bar);
+  ref,
+}: ReviewActionBarProps) {
   return (
     <Box
-      ref={bar}
+      ref={ref}
       sx={{
         position: 'fixed',
         left: 0,
@@ -60,7 +54,7 @@ export function ReviewActionBar({
             fontWeight: 700,
           }}
         >
-          {discardLabel ?? t('discard')}
+          {discardLabel}
         </Button>
         <Button
           onClick={onSave}

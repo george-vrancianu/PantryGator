@@ -5,11 +5,11 @@ import {
   Link,
   Stack,
   Typography,
+  BrandLockup,
+  IntroLook,
 } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { BrandLockup } from '@/components/BrandLockup';
-import { IntroLook } from '@/components/IntroLook';
 import { changeLocale, LOCALES, type Locale } from '@/i18n/index';
 import {
   initialLanguagePicks,
@@ -37,7 +37,7 @@ const ROW_COPY: Record<RowKey, string> = {
  * at once.
  */
 export function LanguagesPage() {
-  const { t, i18n } = useTranslation(['onboarding', 'settings']);
+  const { t, i18n } = useTranslation(['onboarding', 'settings', 'common']);
   const phone = phoneLocale(window.navigator.languages ?? []);
   const [picks, setPicks] = useState<LanguagePicks>(() =>
     initialLanguagePicks(readLanguagePicks(), phone),
@@ -79,7 +79,7 @@ export function LanguagesPage() {
         sx={{ p: '24px', maxWidth: 420, mx: 'auto' }}
       >
         <Link href="/">{t('onboarding:languages.back')}</Link>
-        <BrandLockup entrance={false} />
+        <BrandLockup name={t('common:appName')} entrance={false} />
         <Typography variant="h1">{t('onboarding:languages.title')}</Typography>
 
         <Stack spacing={0.5}>

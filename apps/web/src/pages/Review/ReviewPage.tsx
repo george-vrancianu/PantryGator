@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { MatchDialog } from './components/MatchDialog/MatchDialog';
-import { ReviewActionBar } from '@/components/ReviewActionBar';
+import { ReviewActionBar } from '@/components/review/ReviewActionBar/ReviewActionBar';
 import { ReviewCounters } from './components/ReviewCounters/ReviewCounters';
 import { ReviewTable } from './components/ReviewTable/ReviewTable';
 import {

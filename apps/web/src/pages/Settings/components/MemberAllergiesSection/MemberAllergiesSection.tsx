@@ -1,8 +1,13 @@
-import { Alert, Card, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Card,
+  Stack,
+  Typography,
+  SectionHeading,
+} from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFamilyAllergies } from '@/lib/settings';
-import { SectionHeading } from '@/components/SectionHeading';
 
 /**
  * The other Members' Allergies, read-only: each Member sets only their own, in the You tab, and

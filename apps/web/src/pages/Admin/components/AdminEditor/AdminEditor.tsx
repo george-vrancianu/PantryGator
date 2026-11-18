@@ -1,6 +1,6 @@
+import { EditorSheetContext } from '@pocket-pantry/ui';
 import { useMemo } from 'react';
 import type { AdminCatalog } from '@/lib/admin';
-import { EditorSheetContext } from '@/components/editorSheetContext';
 import type { useAdminScreen } from '../../hooks/useAdminScreen';
 import { AisleEditor } from '../AisleEditor/AisleEditor';
 import { AllergenEditor } from '../AllergenEditor/AllergenEditor';

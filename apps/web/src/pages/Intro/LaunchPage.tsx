@@ -11,12 +11,12 @@ import {
   radius,
   SAFE_TOP,
   Typography,
+  IntroLook,
 } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CanopyTexture } from '@/components/layout/CanopyTexture/CanopyTexture';
-import { IntroLook } from '@/components/IntroLook';
 import { INTRO_PATHS } from '@/lib/intro';
 import { useGatorAlt } from '@/lib/useGatorAlt';
 

@@ -8,6 +8,7 @@ import {
   TextField,
   Toggle,
   Typography,
+  RowControls,
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +23,6 @@ import {
   type LineDraft,
 } from '@/lib/recipeDraft';
 import { FamilyTag } from '@/components/catalogSearch/FamilyTag/FamilyTag';
-import { RowControls } from '@/components/RowControls';
 import { GripGlyph, SortableItem, SortableList } from '../sortable';
 import { LineAmountField } from '../LineAmountField/LineAmountField';
 import { useUndoRemoval } from '../useUndoRemoval';

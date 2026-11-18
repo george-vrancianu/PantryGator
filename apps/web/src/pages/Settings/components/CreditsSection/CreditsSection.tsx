@@ -9,6 +9,7 @@ import {
   radius,
   tokens,
   useToast,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import type { TFunction } from 'i18next';
 import { useId, useState, type FormEvent } from 'react';
@@ -19,7 +20,6 @@ import {
   useRedeemPromoCode,
   type CreditHistoryEntry,
 } from '@/lib/credits';
-import { SectionHeading } from '@/components/SectionHeading';
 
 /** What a history entry was, worded by its kind (a hand grant's reason is shown as entered). */
 function entryTitle(

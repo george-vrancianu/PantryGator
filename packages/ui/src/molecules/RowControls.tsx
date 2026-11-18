@@ -1,12 +1,8 @@
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  DeleteIcon,
-  IconButton,
-  Stack,
-} from '@pocket-pantry/ui';
+import { IconButton } from '../atoms/IconButton';
+import { Stack } from '../atoms/Layout';
+import { ChevronDownIcon, ChevronUpIcon, DeleteIcon } from '../atoms/icons';
 
-type Props = {
+export type RowControlsProps = {
   moveUp: string;
   moveDown: string;
   /** Omit when the row cannot be removed here. */
@@ -30,7 +26,7 @@ export function RowControls({
   onMoveUp,
   onMoveDown,
   onRemove,
-}: Props) {
+}: RowControlsProps) {
   return (
     <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
       <IconButton
