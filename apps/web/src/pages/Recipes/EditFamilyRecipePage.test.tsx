@@ -2269,6 +2269,46 @@ describe('Reordering Tips in the Family editor', () => {
   });
 });
 
+describe('Reordering Tips while a reorder is in flight', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('sends one request for two quick taps, and blocks the buttons until it returns', async () => {
+    const user = userEvent.setup({ delay: null });
+    const tips: FamilyRecipeEdit = {
+      ...saved,
+      parentId: null,
+      parentTips: null,
+      tips: [
+        { id: 't1', stepId: null, text: 'Use butter' },
+        { id: 't3', stepId: null, text: 'Serve hot' },
+        { id: 't5', stepId: null, text: 'Rest it' },
+      ],
+    };
+    let answer: (response: Response) => void = () => {};
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(tips),
+      'PUT /api/recipes/g/tips/order': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Steps');
+    const down = screen.getByRole('button', { name: 'Move Recipe Tip 1 down' });
+    await user.click(down);
+    await vi.waitFor(() =>
+      expect(down).toHaveAttribute('aria-disabled', 'true'),
+    );
+    await user.click(down);
+    await user.click(
+      screen.getByRole('button', { name: 'Move Recipe Tip 2 down' }),
+    );
+    expect(
+      calls.filter((c) => c.key === 'PUT /api/recipes/g/tips/order'),
+    ).toHaveLength(1);
+    answer(Response.json(tips));
+  });
+});
+
 describe('A Tip pending delete on a Step removed and saved within the Undo window', () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -2300,7 +2340,7 @@ describe('A Tip pending delete on a Step removed and saved within the Undo windo
       'DELETE /api/recipes/g/tips/t2': () =>
         server.tips.some((tip) => tip.id === 't2')
           ? new Response(null, { status: 204 })
-          : Response.json({ code: 'recipes.not_found' }, { status: 404 }),
+          : Response.json({ code: 'recipes.tip_not_found' }, { status: 404 }),
     });
     await openTab(user, 'Steps');
     await user.click(
@@ -2322,6 +2362,40 @@ describe('A Tip pending delete on a Step removed and saved within the Undo windo
     await act(() => vi.advanceTimersByTimeAsync(500));
     expect(screen.queryByText(/not found|no longer exists|gone/i)).toBeNull();
     expect(screen.queryAllByRole('alert')).toHaveLength(0);
+  });
+
+  it('still reports a 404 that is not the Tip being gone', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      delay: null,
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    const twoTips: FamilyRecipeEdit = {
+      ...saved,
+      steps: [{ id: 's1', text: 'Whisk the eggs', timerSeconds: null }],
+      tips: [
+        { id: 't2', stepId: 's1', text: 'Low heat' },
+        { id: 't4', stepId: 's1', text: 'Salt late' },
+      ],
+    };
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(twoTips),
+      'DELETE /api/recipes/g/tips/t2': () =>
+        Response.json({ code: 'recipes.not_found' }, { status: 404 }),
+    });
+    await openTab(user, 'Steps');
+    await user.click(
+      await screen.findByRole('button', { name: 'Delete Tip 1 of Step 1' }),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(UNDO_WINDOW_MS + 1000));
+    await vi.waitFor(() =>
+      expect(calls.some((c) => c.key === 'DELETE /api/recipes/g/tips/t2')).toBe(
+        true,
+      ),
+    );
+    expect(
+      await screen.findByText('That Recipe no longer exists.'),
+    ).toBeVisible();
   });
 });
 

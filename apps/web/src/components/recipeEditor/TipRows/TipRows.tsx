@@ -17,6 +17,8 @@ export type TipActions = {
   remove: (tipId: string) => void;
   /** Move a Tip one place up or down among those of its group; leave out where Tips cannot be reordered. */
   move?: (tipId: string, offset: -1 | 1) => void;
+  /** A move is being stored: the move buttons are blocked until it returns. */
+  moving?: boolean;
 };
 
 /** The dashed, subtle look of a Tip row under its Step. */
@@ -79,7 +81,7 @@ export function TipRow({
             tone="plain"
             size={40}
             label={order.up}
-            ariaDisabled={order.first}
+            ariaDisabled={order.first || actions.moving}
             onClick={() => actions.move?.(tip.id, -1)}
           >
             <ChevronUpIcon />
@@ -88,7 +90,7 @@ export function TipRow({
             tone="plain"
             size={40}
             label={order.down}
-            ariaDisabled={order.last}
+            ariaDisabled={order.last || actions.moving}
             onClick={() => actions.move?.(tip.id, 1)}
           >
             <ChevronDownIcon />

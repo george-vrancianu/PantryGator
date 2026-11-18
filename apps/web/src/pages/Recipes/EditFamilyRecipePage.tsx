@@ -51,7 +51,10 @@ export function EditFamilyRecipePage() {
       await tipWrites.remove.mutateAsync(tipId);
     } catch (error) {
       // A Tip that is already gone is deleted: saving the Recipe without its Step took it, inside the Undo window.
-      if (!(error instanceof ApiError && error.status === 404)) throw error;
+      if (!(
+        error instanceof ApiError && error.code === 'recipes.tip_not_found'
+      ))
+        throw error;
       await queryClient.invalidateQueries({ queryKey: editKey });
     }
   });
@@ -139,7 +142,10 @@ export function EditFamilyRecipePage() {
         polite: true,
       }),
     // The API takes every Tip of the Recipe: swap the Tip with its neighbour among the ones shown in its group.
+    // Blocked while a reorder is in flight: the list is stale until it returns, so a second move would undo the first.
+    moving: tipWrites.reorder.isPending,
     move: (tipId: string, offset: -1 | 1) => {
+      if (tipWrites.reorder.isPending) return;
       const all = (recipe?.tips ?? []).map((tip) => tip.id);
       const own = tips.find((tip) => tip.id === tipId);
       const group = tips.filter((tip) => tip.stepId === own?.stepId);
