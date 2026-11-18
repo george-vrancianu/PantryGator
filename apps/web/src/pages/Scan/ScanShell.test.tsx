@@ -1,17 +1,17 @@
 import { THEMES } from '@pocket-pantry/ui';
-import { shutter, fakeCamera, setStatus } from '../../test/scan';
+import { shutter, fakeCamera, setStatus } from '@/test/scan';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import { renderWithProviders } from '../../test/render';
+import { renderWithProviders } from '@/test/render';
 import { ScanPage } from './ScanPage';
 
 // jsdom has no camera: the camera hook is the seam. `starts`/`stops` of the fake camera show whether the
 // stream was stopped or restarted (mount/unmount of the hook) while the Info sheet was open.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const DARK = THEMES.dark;

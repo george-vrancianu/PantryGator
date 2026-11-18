@@ -55,10 +55,21 @@ const GROUP_HINTS = {
   ],
   auth: ['AuthShell', 'LanguageSwitcher'],
   mealPlan: ['MealPlanPopover'],
+  // The camera overlay, the Scan components it needs and its guide-rectangle hook leave the Scan page.
+  'scan/camera': [
+    'CameraOverlay',
+    'Fading',
+    'ScanLanguageChip',
+    'ShutterButton',
+    'ZoomPill',
+    'Viewfinder',
+    'useGuideRect',
+  ],
+  scan: ['BarcodeLookupNotes'],
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
-const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor'];
+const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor', 'scan', 'camera'];
 // Modules that stay where they are: the importer scan sees one page area (or one shared module) but the
 // real users are wider (Customise reads the widget catalog beside the Dashboard registry).
 const STAYS = ['components/dashboard/widgetCatalog.ts'];
@@ -186,6 +197,9 @@ function computeTarget(m, visiting) {
   if (isTest(m)) return testTarget(m, visiting);
   const inShared = m.startsWith('components/');
   const inAreaParts = /^pages\/[^/]+\/(components|hooks)\//.test(m);
+  // The camera overlay and its parts come up from the Scan page into the camera group.
+  const fromPage = !inShared && hinted(m) && groupOf(m).startsWith('scan');
+  if (fromPage) return placed(m, posix.join('components', groupOf(m)));
   if (!inShared && !inAreaParts) return m;
   const stem = stemOf(m);
   if (inShared && GUARDS.includes(stem))
@@ -196,6 +210,8 @@ function computeTarget(m, visiting) {
     // Strip a component folder (Foo/) from the directory: the module goes to the group level.
     const dir = dirname(m).split('/');
     if (dir.length > 2 && dir[dir.length - 1] === stem) dir.pop();
+    const renamed = GROUP_RENAMES[featureGroup];
+    if (renamed) dir.splice(1, 1, ...renamed.split('/'));
     return placed(m, dir.join('/'));
   }
 

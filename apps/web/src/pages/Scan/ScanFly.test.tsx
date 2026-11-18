@@ -1,17 +1,17 @@
 import { act, screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { stubMatchMedia } from '../../test/viewport';
-import { resetScanSession } from '../../lib/scanSession';
+import { renderWithProviders } from '@/test/render';
+import { stubMatchMedia } from '@/test/viewport';
+import { resetScanSession } from '@/lib/scanSession';
 import { ScanPage } from './ScanPage';
-import { emitBarcode, fakeCamera, stackCount, takeScan } from '../../test/scan';
+import { emitBarcode, fakeCamera, stackCount, takeScan } from '@/test/scan';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   // A capped resize is a small thumbnail; the default is the full-size image.
   resizeImage: (_source: Blob, _turn?: number, maxEdge?: number) =>
     Promise.resolve(

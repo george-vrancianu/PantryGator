@@ -2,27 +2,24 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  recipeReads,
-  useUnloadPromptWhileReading,
-} from '../../lib/recipeReads';
-import { resetReads } from '../../lib/scanReads';
-import { getScanSession, resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { takeScan } from '../../test/scan';
-import { openBubbleSheet } from '../../test/voiceDom';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { BackgroundHost } from '../../components/background/BackgroundHost';
-import { NewRecipePage } from '../Recipes/FamilyRecipePages';
+import { recipeReads, useUnloadPromptWhileReading } from '@/lib/recipeReads';
+import { resetReads } from '@/lib/scanReads';
+import { getScanSession, resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { takeScan } from '@/test/scan';
+import { openBubbleSheet } from '@/test/voiceDom';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { BackgroundHost } from '@/components/background/BackgroundHost';
+import { NewRecipePage } from '@/pages/Recipes/FamilyRecipePages';
 import { ScanPage } from './ScanPage';
 
 const IMAGE = 'data:image/jpeg;base64,YQ==';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 

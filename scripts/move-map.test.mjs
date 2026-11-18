@@ -312,3 +312,54 @@ test('the recipeEditor feature group keeps its parts at the group level', () => 
     'components/recipeEditor/RecipeMetaFields/RecipeMetaFields.tsx',
   );
 });
+
+test('the camera joins scan/camera: the overlay and its Scan parts come up from the Scan page, the group stays together', () => {
+  const { rows } = run(
+    {
+      'components/camera/CameraFrame.tsx': comp,
+      'components/camera/glass.ts': comp,
+      'pages/Scan/CameraOverlay.tsx': `import { X } from '@/components/camera/CameraFrame';\nimport { Y } from './components/Fading';\nimport { useGuideRect } from './hooks/useGuideRect';\n`,
+      'pages/Scan/components/Fading.tsx': comp,
+      'pages/Scan/components/PhotoStack.tsx': comp,
+      'pages/Scan/hooks/useGuideRect.ts': comp,
+      'pages/Scan/hooks/useGuideRect.test.ts': `import { useGuideRect } from './useGuideRect';\n`,
+      'pages/Scan/ScanPage.tsx': `import { P } from './components/PhotoStack';\nimport { O } from './CameraOverlay';\nimport { F } from './components/Fading';\n`,
+      'pages/Pantry/PantryPage.tsx': `import { O } from '../Scan/CameraOverlay';\n`,
+      'components/scan/camera/ModeList/ModeList.tsx': comp,
+      'components/scan/camera/glass.ts': comp,
+    },
+    ['all'],
+  );
+  const target = (f) => rows.get(f)?.target;
+  assert.equal(
+    target('components/camera/CameraFrame.tsx'),
+    'components/scan/camera/CameraFrame/CameraFrame.tsx',
+  );
+  assert.equal(
+    target('components/camera/glass.ts'),
+    'components/scan/camera/glass.ts',
+  );
+  assert.equal(
+    target('pages/Scan/CameraOverlay.tsx'),
+    'components/scan/camera/CameraOverlay/CameraOverlay.tsx',
+  );
+  assert.equal(
+    target('pages/Scan/components/Fading.tsx'),
+    'components/scan/camera/Fading/Fading.tsx',
+  );
+  assert.equal(
+    target('pages/Scan/hooks/useGuideRect.ts'),
+    'components/scan/camera/useGuideRect.ts',
+  );
+  assert.equal(
+    target('pages/Scan/hooks/useGuideRect.test.ts'),
+    'components/scan/camera/useGuideRect.test.ts',
+  );
+  assert.equal(
+    target('pages/Scan/components/PhotoStack.tsx'),
+    'pages/Scan/components/PhotoStack/PhotoStack.tsx',
+  );
+  // Already in place: nothing to move.
+  assert.equal(rows.has('components/scan/camera/ModeList/ModeList.tsx'), false);
+  assert.equal(rows.has('components/scan/camera/glass.ts'), false);
+});
