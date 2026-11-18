@@ -20,30 +20,30 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from 'react';
-import { useGatorAlt } from '../../lib/useGatorAlt';
-import { readScans } from '../../lib/scanReads';
+import { useGatorAlt } from '@/lib/useGatorAlt';
+import { readScans } from '@/lib/scanReads';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { translateApiError } from '../../i18n/translateApiError';
-import { GatorBanner } from '../../components/GatorBanner';
-import { Screen } from '../../components/layout/Screen';
-import { PlateChoice, cardId } from './components/PlateChoice';
+import { translateApiError } from '@/i18n/translateApiError';
+import { GatorBanner } from '@/components/GatorBanner';
+import { Screen } from '@/components/layout/Screen';
+import { PlateChoice, cardId } from './components/PlateChoice/PlateChoice';
 import {
   ReceiptCropper,
   type ReceiptCrop,
-} from '../../components/ReceiptCropper';
-import { cropToReceiptArea } from '../../lib/image';
-import { MAX_BULK_BATCHES } from '../../lib/scan';
-import { loadLastScanMode } from '../../lib/cameraMode';
-import { importPhotos } from '../../lib/importPhotos';
-import { useSessionScanLanguage } from '../../lib/sessionScanLanguage';
+} from './components/ReceiptCropper/ReceiptCropper';
+import { cropToReceiptArea } from '@/lib/image';
+import { MAX_BULK_BATCHES } from '@/lib/scan';
+import { loadLastScanMode } from '@/lib/cameraMode';
+import { importPhotos } from '@/lib/importPhotos';
+import { useSessionScanLanguage } from '@/lib/sessionScanLanguage';
 import {
   displayName,
   invalidFields,
   unsureCount,
   type ReviewLine,
-} from '../../lib/review';
-import { savableLines, useSaveScan } from '../../lib/saveScan';
+} from '@/lib/review';
+import { savableLines, useSaveScan } from '@/lib/saveScan';
 import {
   showsErrorCopy,
   canMerge,
@@ -60,7 +60,7 @@ import {
   uncroppedCount,
   useScanSession,
   type SessionScan,
-} from '../../lib/scanSession';
+} from '@/lib/scanSession';
 
 const MAX_CHIPS = 8;
 

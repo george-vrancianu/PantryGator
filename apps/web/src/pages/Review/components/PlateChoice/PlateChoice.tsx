@@ -2,20 +2,17 @@ import { Alert, Box, Typography, tokens, radius } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CreditPrice,
-  useCreditPriceText,
-} from '../../../components/CreditPrice';
-import { apiRequest } from '../../../lib/api';
-import { translateErrorCode } from '../../../i18n/translateApiError';
-import { creditsQueryKey, type Credits } from '../../../lib/credits';
-import { recipeReads } from '../../../lib/recipeReads';
-import { readScans } from '../../../lib/scanReads';
+import { CreditPrice, useCreditPriceText } from '@/components/CreditPrice';
+import { apiRequest } from '@/lib/api';
+import { translateErrorCode } from '@/i18n/translateApiError';
+import { creditsQueryKey, type Credits } from '@/lib/credits';
+import { recipeReads } from '@/lib/recipeReads';
+import { readScans } from '@/lib/scanReads';
 import {
   dispatchScanSession,
   getScanSession,
   type SessionScan,
-} from '../../../lib/scanSession';
+} from '@/lib/scanSession';
 
 const buttonSx = {
   display: 'flex',

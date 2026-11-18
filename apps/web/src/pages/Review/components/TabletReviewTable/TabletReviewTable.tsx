@@ -1,18 +1,18 @@
 import { Box, tokens, visuallyHidden, radius } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogParent } from '../../../lib/catalog';
+import type { CatalogParent } from '@/lib/catalog';
 import {
   accessibleNamesOf,
   displayName,
   statusOf,
   type ReviewLine,
-} from '../../../lib/review';
-import { rowGroup, type ReviewState } from '../../../lib/reviewState';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { ExcludedRow } from './ExcludedRow';
-import { TabletReviewRow } from './TabletReviewRow';
-import { linkButtonSx, TABLET_COLUMNS, tabletRowSx } from './layout';
+} from '@/lib/review';
+import { rowGroup, type ReviewState } from '@/lib/reviewState';
+import type { CameraMode } from '@/lib/cameraMode';
+import { ExcludedRow } from '../ExcludedRow/ExcludedRow';
+import { TabletReviewRow } from '../TabletReviewRow/TabletReviewRow';
+import { linkButtonSx, TABLET_COLUMNS, tabletRowSx } from '../layout';
 
 type Props = {
   state: ReviewState;

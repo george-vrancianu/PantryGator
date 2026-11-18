@@ -1,20 +1,20 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
+import type { CatalogParent, CatalogSearchResult } from '@/lib/catalog';
 import {
   accessibleNamesOf,
   displayName,
   statusOf,
   type ReviewLine,
-} from '../../../lib/review';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { rowGroup, type ReviewState } from '../../../lib/reviewState';
-import { ExcludedRow } from './ExcludedRow';
-import { ReviewGroup } from './ReviewGroup';
-import { ReviewLineSheet } from './ReviewLineSheet';
-import { ReviewRow } from './ReviewRow';
-import { rowGridSx } from './layout';
+} from '@/lib/review';
+import type { CameraMode } from '@/lib/cameraMode';
+import { rowGroup, type ReviewState } from '@/lib/reviewState';
+import { ExcludedRow } from '../ExcludedRow/ExcludedRow';
+import { ReviewGroup } from '../ReviewGroup/ReviewGroup';
+import { ReviewLineSheet } from '../ReviewLineSheet/ReviewLineSheet';
+import { ReviewRow } from '../ReviewRow/ReviewRow';
+import { rowGridSx } from '../layout';
 
 type Props = {
   state: ReviewState;

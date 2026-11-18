@@ -9,16 +9,16 @@ import {
 import { useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
-import { Screen } from '../../components/layout/Screen';
-import { MatchDialog } from '../../components/MatchDialog';
-import { ReviewActionBar } from '../../components/ReviewActionBar';
-import { ReviewCounters } from './components/ReviewCounters';
-import { ReviewTable } from './components/ReviewTable';
+import { Screen } from '@/components/layout/Screen';
+import { MatchDialog } from './components/MatchDialog/MatchDialog';
+import { ReviewActionBar } from '@/components/ReviewActionBar';
+import { ReviewCounters } from './components/ReviewCounters/ReviewCounters';
+import { ReviewTable } from './components/ReviewTable/ReviewTable';
 import {
   ReviewCounterChips,
   ReviewTabletFooter,
-} from './components/ReviewTabletChrome';
-import { TabletReviewTable } from './components/TabletReviewTable';
+} from './components/ReviewTabletChrome/ReviewTabletChrome';
+import { TabletReviewTable } from './components/TabletReviewTable/TabletReviewTable';
 import { useReviewScreen } from './hooks/useReviewScreen';
 
 /** What a host's frame wraps around the line editor. */

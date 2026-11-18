@@ -1,8 +1,8 @@
 import { Box, tokens, insetFocusRing } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { displayName, type ReviewLine } from '../../../lib/review';
-import { EXCLUDED_TOGGLE_ID } from './layout';
+import { displayName, type ReviewLine } from '@/lib/review';
+import { EXCLUDED_TOGGLE_ID } from '../layout';
 
 type Props = {
   lines: ReviewLine[];
