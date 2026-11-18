@@ -326,7 +326,9 @@ test('the camera joins scan/camera: the overlay and its Scan parts come up from 
       'pages/Scan/ScanPage.tsx': `import { P } from './components/PhotoStack';\nimport { O } from './CameraOverlay';\nimport { F } from './components/Fading';\n`,
       'pages/Pantry/PantryPage.tsx': `import { O } from '../Scan/CameraOverlay';\n`,
       'components/scan/camera/ModeList/ModeList.tsx': comp,
-      'components/scan/camera/glass.ts': comp,
+      'components/BarcodeLookupNotes.tsx': comp,
+      'pages/Pantry/PantryNotes.tsx': `import { N } from '../../components/BarcodeLookupNotes';\n`,
+      'pages/Review/ReviewNotes.tsx': `import { N } from '../../components/BarcodeLookupNotes';\n`,
     },
     ['all'],
   );
@@ -359,7 +361,10 @@ test('the camera joins scan/camera: the overlay and its Scan parts come up from 
     target('pages/Scan/components/PhotoStack.tsx'),
     'pages/Scan/components/PhotoStack/PhotoStack.tsx',
   );
+  assert.equal(
+    target('components/BarcodeLookupNotes.tsx'),
+    'components/scan/BarcodeLookupNotes/BarcodeLookupNotes.tsx',
+  );
   // Already in place: nothing to move.
   assert.equal(rows.has('components/scan/camera/ModeList/ModeList.tsx'), false);
-  assert.equal(rows.has('components/scan/camera/glass.ts'), false);
 });

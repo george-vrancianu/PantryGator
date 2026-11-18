@@ -197,8 +197,9 @@ function computeTarget(m, visiting) {
   if (isTest(m)) return testTarget(m, visiting);
   const inShared = m.startsWith('components/');
   const inAreaParts = /^pages\/[^/]+\/(components|hooks)\//.test(m);
-  // The camera overlay and its parts come up from the Scan page into the camera group.
-  const fromPage = !inShared && hinted(m) && groupOf(m).startsWith('scan');
+  // Hinted modules of the scan groups come up from the Scan page.
+  const fromPage =
+    !inShared && hinted(m) && ['scan', 'scan/camera'].includes(groupOf(m));
   if (fromPage) return placed(m, posix.join('components', groupOf(m)));
   if (!inShared && !inAreaParts) return m;
   const stem = stemOf(m);
