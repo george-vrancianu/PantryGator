@@ -60,7 +60,7 @@ import {
   widgetSpan,
 } from '@/lib/layoutColumns';
 import { WIDGET_CATALOG } from '@/components/dashboard/widgetCatalog';
-import { WidgetPreview } from './WidgetPreview';
+import { WidgetPreview } from './components/WidgetPreview/WidgetPreview';
 
 const FOCUS_RING = {
   '&:focus-visible': {
