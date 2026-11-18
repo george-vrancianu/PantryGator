@@ -1,14 +1,8 @@
 import {
-  BranchIcon,
   Box,
-  Button,
-  CheckIcon,
   ChevronRightIcon,
-  CloseIcon,
-  IconButton,
   IngredientIcon,
-  PlusIcon,
-  RecipesIcon,
+  Link,
   Sheet,
   displayType,
   radius,
@@ -18,7 +12,7 @@ import {
 } from '@pocket-pantry/ui';
 import { RowTags } from './RowTags';
 import { TagChips } from './TagChips';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { familyRecipeHref, recipeHref } from '../lib/recipeHref';
@@ -71,7 +65,6 @@ export function QuickViewSheet({
   const { t } = useTranslation('recipes');
   const navigate = useNavigate();
   const toast = useToast();
-  const closeButton = useRef<HTMLButtonElement>(null);
   // Opening the sheet hides any toast that is showing.
   useEffect(() => {
     if (open) toast.dismiss();
@@ -114,63 +107,39 @@ export function QuickViewSheet({
     });
   };
 
+  const openCopy = state.status === 'added';
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      initialFocus={closeButton}
-      label={recipe.title}
-      size="content"
-      header={
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            px: '20px',
-            pt: '12px',
-          }}
-        >
-          <Cluster ids={lines.map((line) => line.ingredientId)} size={58} />
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Box
-              sx={{
-                fontSize: 11.5,
-                fontWeight: 700,
-                letterSpacing: '.05em',
-                textTransform: 'uppercase',
-                color: tokens.color.accent,
-              }}
-            >
-              {recipe.base ? (
-                <Box
-                  component="span"
-                  sx={{ display: 'inline-flex', gap: '4px' }}
-                >
-                  <BranchIcon size={13} />
-                  {t('variantOf', { base: recipe.base.title })}
-                </Box>
-              ) : (
-                t('quickView.eyebrow')
-              )}
-            </Box>
-            <Box sx={{ ...displayType, fontSize: 23, lineHeight: 1.15 }}>
-              {recipe.title}
-            </Box>
-          </Box>
-          <IconButton
-            ref={closeButton}
-            label={t('quickView.close')}
-            tone="plain"
-            size={40}
-            onClick={onClose}
-          >
-            <CloseIcon size={20} />
-          </IconButton>
-        </Box>
+      title={recipe.title}
+      subtitle={
+        recipe.base
+          ? t('variantOf', { base: recipe.base.title })
+          : t('quickView.eyebrow')
       }
+      size="content"
+      primary={
+        openCopy
+          ? {
+              label: t('quickView.openCopy'),
+              onClick: () => navigate(familyRecipeHref(state.copyId)),
+            }
+          : {
+              label: t('quickView.add'),
+              pending: state.status === 'adding',
+              onClick: () => onAdd(recipe),
+            }
+      }
+      secondary={{
+        label: t('family.makeVariant'),
+        onClick: () => navigate(`/recipes/${recipe.id}/variant/new`),
+      }}
     >
       <Box sx={{ px: '20px', pt: '14px', pb: '28px' }}>
+        <Box sx={{ mb: '12px' }}>
+          <Cluster ids={lines.map((line) => line.ingredientId)} size={58} />
+        </Box>
         <Box
           component="dl"
           sx={{
@@ -368,54 +337,31 @@ export function QuickViewSheet({
             </Box>
           </Box>
         ) : null}
-        <Button
-          variant="secondary"
-          fullWidth
-          onClick={() => openPreview(recipe.id)}
-          startIcon={
-            <Box sx={{ display: 'flex', color: tokens.color.accent }}>
-              <RecipesIcon size={18} />
-            </Box>
-          }
-          sx={{ mt: '16px', height: 46, justifyContent: 'center' }}
+        <Link
+          href={recipeHref({ id: recipe.id, owner: 'catalog' })}
+          onClick={(event) => {
+            // Modified and middle clicks keep the link's own behaviour.
+            if (
+              event.button !== 0 ||
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            )
+              return;
+            event.preventDefault();
+            openPreview(recipe.id);
+          }}
+          sx={{
+            mt: '16px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+          }}
         >
           {t('quickView.seeWhole')}
           <ChevronRightIcon size={16} />
-        </Button>
-        <Box sx={{ mt: '14px', display: 'grid', gap: '8px' }}>
-          {state.status === 'added' ? (
-            <Button
-              variant="tonal"
-              fullWidth
-              href={familyRecipeHref(state.copyId)}
-              startIcon={<CheckIcon size={18} />}
-              sx={{ height: 48 }}
-            >
-              {t('quickView.openCopy')}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              fullWidth
-              {...(state.status === 'adding'
-                ? { 'aria-disabled': true, 'aria-busy': true }
-                : { onClick: () => onAdd(recipe) })}
-              startIcon={<PlusIcon size={18} />}
-              sx={{ height: 48 }}
-            >
-              {t('quickView.add')}
-            </Button>
-          )}
-          <Button
-            variant="secondary"
-            fullWidth
-            href={`/recipes/${recipe.id}/variant/new`}
-            startIcon={<BranchIcon size={18} />}
-            sx={{ height: 48 }}
-          >
-            {t('family.makeVariant')}
-          </Button>
-        </Box>
+        </Link>
         <Box
           sx={{
             mt: '10px',

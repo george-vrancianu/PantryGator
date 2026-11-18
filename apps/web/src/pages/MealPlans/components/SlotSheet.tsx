@@ -85,42 +85,21 @@ export function SlotSheet({
     <Sheet
       open={slot !== undefined}
       onClose={onClose}
-      label={slot?.recipeTitle ?? t('detail.lines')}
-      header={
-        slot ? (
-          <Box sx={{ px: 3, pt: 2, pb: 1.5 }}>
-            <Typography component="h2" variant="h3">
-              {slot.recipeTitle}
-            </Typography>
-            <Typography variant="meta" color="text.secondary">
-              {context}
-            </Typography>
-          </Box>
-        ) : null
-      }
-      footer={
-        <Stack direction="row" spacing={1.25} sx={{ px: 3, py: 1.5 }}>
-          <Button
-            variant="secondary"
-            disabled={busy}
-            onClick={onChangeRecipe}
-            sx={{ height: 52 }}
-          >
-            {t('detail.changeRecipe')}
-          </Button>
-          <Button
-            variant="ghost"
-            disabled={busy}
-            onClick={onClear}
-            sx={{ height: 52 }}
-          >
-            {t('detail.clear')}
-          </Button>
-          <Button onClick={onClose} sx={{ flex: 1 }}>
-            {t('detail.done')}
-          </Button>
-        </Stack>
-      }
+      title={slot?.recipeTitle ?? t('detail.lines')}
+      subtitle={slot ? context : undefined}
+      primary={{ label: t('detail.done'), onClick: onClose }}
+      secondary={{
+        label: t('detail.changeRecipe'),
+        onClick: () => {
+          if (!busy) onChangeRecipe();
+        },
+      }}
+      destructive={{
+        label: t('detail.clear'),
+        onClick: () => {
+          if (!busy) onClear();
+        },
+      }}
     >
       {slot ? (
         <Stack spacing={2} sx={{ px: 3, pb: 2 }}>

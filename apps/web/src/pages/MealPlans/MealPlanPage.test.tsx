@@ -239,7 +239,9 @@ describe('Meal Plan page', () => {
     expect(
       within(dialog).getByText('This Recipe is no longer available.'),
     ).toBeVisible();
-    expect(within(dialog).getByRole('button', { name: 'Clear' })).toBeVisible();
+    expect(
+      within(dialog).getByRole('button', { name: 'Clear this meal' }),
+    ).toBeVisible();
   });
 
   it('sets a Recipe in an empty slot through the picker, with search', async () => {
@@ -295,7 +297,9 @@ describe('Meal Plan page', () => {
     renderPage();
 
     await u.click(await screen.findByRole('button', { name: /Tomato pasta/ }));
-    await u.click(await screen.findByRole('button', { name: 'Clear' }));
+    await u.click(
+      await screen.findByRole('button', { name: 'Clear this meal' }),
+    );
 
     await waitFor(() =>
       expect(

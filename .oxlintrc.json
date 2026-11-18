@@ -23,8 +23,6 @@
     {
       "files": ["apps/web/src/**/*.ts", "apps/web/src/**/*.tsx"],
       "excludeFiles": [
-        // #838 splits the Dashboard widget registry
-        "apps/web/src/lib/dashboardLayout.ts",
         // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
         // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
@@ -118,8 +116,6 @@
         "apps/web/src/lib/**/*.tsx"
       ],
       "excludeFiles": [
-        // #838 splits the Dashboard widget registry
-        "apps/web/src/lib/dashboardLayout.ts",
         // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
         // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
