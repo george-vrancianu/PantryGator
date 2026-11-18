@@ -338,6 +338,8 @@ export type FiltersQuery = z.infer<typeof filtersQuery>;
 export type RecipeLineView = {
   id: string;
   ingredientId: string | null;
+  /** Whose Ingredient the line uses: a Family's own or the Catalog's; null on an Unmatched line. */
+  ingredientOwner: RecipeOwner | null;
   quantity: number | null;
   unit: (typeof ingredientUnit.enumValues)[number] | null;
   optional: boolean;
@@ -631,6 +633,8 @@ export type FamilyRecipeEdit = Omit<
   AdminRecipeDetail,
   'translations' | 'lines' | 'pairings'
 > & {
+  /** A Variant's Catalog base title in the requested locale; null on a Base Recipe. */
+  parentTitle: string | null;
   /** Pairings with display names for their links: null without a link, or when the Recipe is archived or not visible. */
   pairings: (AdminGuidance['pairings'][number] & {
     linkedIngredientName: string | null;
@@ -653,11 +657,13 @@ export type FamilyRecipeDraft = {
   difficulty: AdminRecipeDetail['difficulty'];
   /** Every Tag of the source: a new Variant starts with its Base's Tags. */
   tagIds: string[];
-  /** `ingredientName` is for display only; drop it when posting. */
+  /** `ingredientName` and `ingredientOwner` are for display only; drop them when posting. */
   lines: {
     ingredientId: string | null;
     rawName: string | null;
     ingredientName: string;
+    /** Whose Ingredient the line uses (for the Family pill); null on an Unmatched line. */
+    ingredientOwner: RecipeOwner | null;
     quantity: number | null;
     unit: RecipeLineView['unit'];
     optional: boolean;

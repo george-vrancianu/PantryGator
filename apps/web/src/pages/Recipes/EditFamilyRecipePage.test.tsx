@@ -811,6 +811,32 @@ describe('EditFamilyRecipePage', () => {
   });
 });
 
+describe('EditFamilyRecipePage Variant of row', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("names the Variant's Catalog base under the title", async () => {
+    const user = userEvent.setup({ delay: null });
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () =>
+        Response.json({ ...saved, parentTitle: 'Omelette' }),
+    });
+    await openTab(user, 'Details');
+    expect(await screen.findByText('Variant of')).toBeVisible();
+    expect(screen.getByText('Omelette', { selector: 'b' })).toBeVisible();
+  });
+
+  it('shows no row on a Base Recipe', async () => {
+    const user = userEvent.setup({ delay: null });
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () =>
+        Response.json({ ...saved, parentId: null, parentTitle: null }),
+    });
+    await openTab(user, 'Details');
+    expect(await screen.findByLabelText(/^Title/)).toBeVisible();
+    expect(screen.queryByText(/^Variant of/)).toBeNull();
+  });
+});
+
 describe('EditFamilyRecipePage Source Link', () => {
   afterEach(() => vi.unstubAllGlobals());
 
@@ -1369,14 +1395,15 @@ describe('Recipe editor Ingredient Lines (#589)', () => {
     await waitFor(() => expect(screen.queryByText('Removed Egg')).toBeNull());
   });
 
-  it("shows the Family pill on a saved line whose Ingredient is the Family's own", async () => {
+  it("shows the Family pill on a saved line whose Ingredient is the Family's own, from the line's owner", async () => {
     const user = userEvent.setup({ delay: null });
     setup('/recipes/g/edit', {
-      'GET /api/recipes/g/edit': () => Response.json(saved),
-      'GET /api/catalog/family': () =>
+      'GET /api/recipes/g/edit': () =>
         Response.json({
-          ingredients: [{ id: 'egg', name: 'Egg' }],
-          synonyms: [],
+          ...saved,
+          lines: saved.lines.map((line, index) =>
+            index === 0 ? { ...line, ingredientOwner: 'family' } : line,
+          ),
         }),
     });
     await openTab(user, 'Ingredients');
@@ -1384,6 +1411,21 @@ describe('Recipe editor Ingredient Lines (#589)', () => {
       'li',
     )!;
     expect(await within(row).findByText('Family')).toBeVisible();
+  });
+
+  it('shows no Family pill on a Catalog line, and does not fetch the Family catalog for it', async () => {
+    const user = userEvent.setup({ delay: null });
+    const calls = setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(saved),
+    });
+    await openTab(user, 'Ingredients');
+    const row = (await screen.findByLabelText('Quantity of Egg')).closest(
+      'li',
+    )!;
+    expect(within(row).queryByText('Family')).toBeNull();
+    expect(calls.map((call) => call.key)).not.toContain(
+      'GET /api/catalog/family',
+    );
   });
 
   it('links the bad-quantity message to the input', async () => {

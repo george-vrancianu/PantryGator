@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   Route,
@@ -10,6 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FamilyRecipeDraft } from '@/lib/familyRecipes';
 import type { RecipeDraftContent } from '@/lib/recipeDrafts';
 import { renderWithProviders, stubApi } from '@/test/render';
+import { openTab } from '@/test/familyRecipePages';
 import { NewRecipePage } from './NewRecipePage';
 import { NewVariantPage } from './NewVariantPage';
 
@@ -185,6 +186,26 @@ describe('Recipe Drafts on New Variant', () => {
   });
   const typer = () =>
     userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+  it("shows the Family pill on a prefilled line whose Ingredient is the Family's own", async () => {
+    const user = typer();
+    setup(VARIANT, {
+      [`GET /api/recipes/${BASE}/variant-draft`]: () =>
+        Response.json({
+          ...base,
+          lines: base.lines.map((line) => ({
+            ...line,
+            ingredientOwner: 'family',
+          })),
+        }),
+    });
+    await screen.findByLabelText(/^Title/);
+    await openTab(user, 'Ingredients');
+    const row = (await screen.findByLabelText('Quantity of Egg')).closest(
+      'li',
+    )!;
+    expect(await within(row).findByText('Family')).toBeVisible();
+  });
 
   it('keeps nothing for the form as first prefilled from the base', async () => {
     const calls = setup(VARIANT, {});

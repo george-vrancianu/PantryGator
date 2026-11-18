@@ -185,6 +185,15 @@ export type RecipeDraftSummary = {
   version: number;
 };
 
+/** A line as read back: the stored line plus its Ingredient's owner, resolved on read and never stored. */
+export type RecipeDraftReadLine = RecipeDraftContent['lines'][number] & {
+  ingredientOwner?: 'catalog' | 'family';
+};
+
+export type RecipeDraftReadContent = Omit<RecipeDraftContent, 'lines'> & {
+  lines: RecipeDraftReadLine[];
+};
+
 export type RecipeDraftView = {
   id: string;
   kind: RecipeDraftKind;
@@ -192,7 +201,7 @@ export type RecipeDraftView = {
   baseRecipeName: string | null;
   /** The base still exists, is not archived and is one the Family can see. */
   baseAvailable: boolean;
-  content: RecipeDraftContent;
+  content: RecipeDraftReadContent;
   version: number;
   createdAt: string;
   updatedAt: string;

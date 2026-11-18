@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from './api';
+import type { CatalogSearchResult } from './catalog';
 import { draftWritesSettled, trackDraftWrite } from './recipeDraftWrites';
 import type { Difficulty } from './recipeVocabulary';
 import type { PairingKind, PairingPrinciple } from './recipeVocabulary';
@@ -24,6 +25,8 @@ export type RecipeDraftContent = {
     id?: string;
     /** Empty for an Unmatched name. */
     ingredientId: string;
+    /** Read-only: the server adds it when it reads the draft. Never sent back (autosave drops it). */
+    ingredientOwner?: CatalogSearchResult['owner'];
     name: string;
     quantity: string;
     unit: string;

@@ -36,6 +36,7 @@ const metaOf = (source: Source & { servings: number | null }) => ({
 type LineSource = {
   id?: string;
   ingredientId: string | null;
+  ingredientOwner?: 'catalog' | 'family' | null;
   rawName: string | null;
   ingredientName: string;
   quantity: number | null;
@@ -48,6 +49,7 @@ const lineOf = (line: LineSource): LineDraft => ({
   key: newKey(),
   ...(line.id ? { id: line.id } : {}),
   ingredientId: line.ingredientId ?? '',
+  ...(line.ingredientOwner ? { ingredientOwner: line.ingredientOwner } : {}),
   name: line.ingredientName || line.rawName || '',
   quantity: line.quantity === null ? '' : String(line.quantity),
   unit: line.unit ?? 'g',
