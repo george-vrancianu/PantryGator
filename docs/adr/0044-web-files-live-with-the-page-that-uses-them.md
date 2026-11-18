@@ -27,6 +27,7 @@ We decided on one layout and a lint rule that keeps it true. The moves are plann
   - a test across several pages beside the shared module whose behaviour it checks.
 
   An existing test is never split just to fill folders. A page test that covers five components stays one page test.
+
 - **Casing:**
   - group folders are lower camelCase (`catalogSearch/`);
   - component folders and page areas are PascalCase (`RecipeRow/`, `pages/Recipes/`).
@@ -51,3 +52,7 @@ We decided on one layout and a lint rule that keeps it true. The moves are plann
 - Until an area has moved, its files keep the old layout. New files follow this ADR from now on.
 - Moving a test to a different folder depth breaks its relative `vi.mock` paths into `lib/`. Each move PR rewrites them to `@/lib/...`.
 - The Dashboard widget registry is split: widget sizes go to `lib/`, name and icon go to `components/dashboard/` for Customise, and the type-to-component map stays in the Dashboard. This way `lib/` no longer imports a page.
+
+## Amendment (2026-11-18): shared tests may import pages
+
+A test under `components/` or `lib/` (`*.test.*`) may import pages, to check behaviour that spans several pages (pull-to-refresh, row hints, header actions, Canopy snapshots). The rule against `components/` and `lib/` importing `pages/` still holds for every non-test file. The carve-out lifts only that rule: such a test may still not import another area's `components/` or `hooks/`. It is an `excludeFiles` glob on the shared-code override in `.oxlintrc.json`, and `npm run check:web-layout` proves both halves (a shared non-test file importing a page still fails; a shared test importing a page does not).

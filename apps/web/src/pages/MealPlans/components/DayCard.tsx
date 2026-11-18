@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   AllergenIndicator,
   allergenIndicatorLabel,
-} from '../../../components/AllergenIndicator';
+} from '@/components/allergy/AllergenIndicator/AllergenIndicator';
 import { statusMark } from '@/components/mealPlan/MealPlanPopover/statusMark';
 import {
   dayLabel,

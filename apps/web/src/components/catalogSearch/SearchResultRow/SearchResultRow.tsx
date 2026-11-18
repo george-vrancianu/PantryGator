@@ -1,7 +1,7 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CatalogSearchResult } from '@/lib/catalog';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { FamilyTag } from '../FamilyTag/FamilyTag';
 import { RowTag } from '../RowTag/RowTag';
 import { OptionRow } from '../OptionRow/OptionRow';

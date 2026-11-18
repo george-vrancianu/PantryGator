@@ -5,7 +5,7 @@ import { translateApiError } from '@/i18n/translateApiError';
 import type { Unit } from '@/lib/catalog';
 import type { Amount } from '@/lib/amount';
 import { parseAmountText } from '@/lib/pantry';
-import { AmountField } from '@/components/AmountField';
+import { AmountField } from '@/components/catalog/AmountField/AmountField';
 
 export type { Amount };
 

@@ -1,7 +1,7 @@
 import { Stack, TextField } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { DIFFICULTIES, type Difficulty } from '../../lib/recipeVocabulary';
-import { RecipeTagsField } from './RecipeTagsField';
+import { RecipeTagsField } from './RecipeTagsField/RecipeTagsField';
 import type { DraftProblems, RecipeDraft } from '../../lib/recipeDraft';
 
 type Props = {

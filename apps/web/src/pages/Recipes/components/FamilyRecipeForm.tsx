@@ -29,13 +29,13 @@ import {
   toGuidanceInput,
   type GuidanceDraft,
 } from '../../../lib/guidanceDraft';
-import type { MomentOption } from '../../../components/recipeEditor/GuidanceFields';
+import type { MomentOption } from '@/components/recipeEditor/GuidanceFields/GuidanceFields';
 import { GuidanceCard } from './GuidanceCard';
-import { Screen } from '../../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '../../../i18n/translateApiError';
-import { RecipeLinesSection } from '../../../components/recipeEditor/RecipeLinesSection';
+import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection/RecipeLinesSection';
 import { FamilyDetailsBasics } from './FamilyDetailsBasics';
-import { RecipeStepsSection } from '../../../components/recipeEditor/RecipeStepsSection';
+import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection/RecipeStepsSection';
 import { documentOf, type FamilyDraft } from '../familyDraft';
 import {
   hasProblems,

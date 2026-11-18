@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { CreditPrice } from '../../../components/CreditPrice';
+import { CreditPrice } from '@/components/credits/CreditPrice/CreditPrice';
 import { useCreditPrice } from '../../../lib/credits';
 import { ReadingLanguageChoice } from '../../../components/ReadingLanguageChoice';
 import { MAX_HELD_RECIPE_READS, recipeReads } from '../../../lib/recipeReads';

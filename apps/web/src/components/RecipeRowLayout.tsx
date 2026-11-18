@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { RecipeTag } from '../lib/tags';
-import { RowTags } from './RowTags';
+import { RowTags } from '@/components/recipe/RowTags/RowTags';
 
 type LayoutProps = {
   title: ReactNode;

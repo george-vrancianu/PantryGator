@@ -2,7 +2,7 @@ import { Box, CloseIcon, IconButton, tokens, radius } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogSearchResult } from '@/lib/catalog';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { FamilyTag } from '../FamilyTag/FamilyTag';
 import { resultMeta } from '../SearchResultRow/SearchResultRow';
 

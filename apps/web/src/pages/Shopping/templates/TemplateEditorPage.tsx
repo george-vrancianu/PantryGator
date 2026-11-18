@@ -21,7 +21,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { ConfirmAction } from '@/components/ConfirmAction';
 import {
   AmountSheet,
@@ -30,7 +30,7 @@ import {
 import { formatRowAmount } from '@/lib/amount';
 import { translateApiError } from '@/i18n/translateApiError';
 import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
-import { RowHintNote } from '@/components/RowHintNote';
+import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 import { useRowHint, type RowHint } from '@/lib/useRowHint';
 import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
 import type { NewShoppingItem } from '@/lib/shopping';

@@ -1,6 +1,6 @@
 import { Alert, SegmentedControl, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { ScopeCaption, SectionHeading } from '@/components/SectionHeading';
 import { CatalogIndex } from './components/CatalogIndex/CatalogIndex';
 import { PromoCodes } from './components/PromoCodes/PromoCodes';

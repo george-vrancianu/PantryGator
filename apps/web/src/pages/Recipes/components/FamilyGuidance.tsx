@@ -5,7 +5,7 @@ import { useRecipeFilters, useRecipes } from '../../../lib/recipes';
 import type {
   MomentOption,
   RecipePickerProps,
-} from '../../../components/recipeEditor/GuidanceFields';
+} from '@/components/recipeEditor/GuidanceFields/GuidanceFields';
 
 /** The live Eating Moments the Member can pick, named in their locale. */
 export function useMomentOptions(): MomentOption[] {

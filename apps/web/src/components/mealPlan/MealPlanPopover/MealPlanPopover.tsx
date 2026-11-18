@@ -23,7 +23,7 @@ import {
   usePrefersReducedMotion,
   useBreakpointUp,
 } from '@pocket-pantry/ui';
-import { AllergenIndicator } from '@/components/AllergenIndicator';
+import { AllergenIndicator } from '@/components/allergy/AllergenIndicator/AllergenIndicator';
 import { placeVertically } from './verticalPlacement';
 import {
   useCallback,

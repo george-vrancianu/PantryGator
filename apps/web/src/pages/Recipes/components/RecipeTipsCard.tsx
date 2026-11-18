@@ -6,7 +6,7 @@ import {
   NewTipRow,
   TipRow,
   type TipActions,
-} from '../../../components/recipeEditor/TipRows';
+} from '@/components/recipeEditor/TipRows/TipRows';
 
 type Props = {
   /** The Recipe's own Recipe-level Tips (not tied to a Step). */

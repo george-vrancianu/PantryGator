@@ -19,9 +19,9 @@ import {
   type RecipeDraft,
 } from '@/lib/recipeDraft';
 import { EditorForm } from '@/components/EditorForm';
-import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection';
+import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection/RecipeLinesSection';
 import { RecipeMetaFields } from '@/components/recipeEditor/RecipeMetaFields';
-import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection';
+import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection/RecipeStepsSection';
 
 type Props = {
   /** Omit to create a new Base Recipe. */

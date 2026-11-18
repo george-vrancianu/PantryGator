@@ -1,0 +1,155 @@
+import {
+  Box,
+  type ScreenHeaderAction,
+  type ScreenHeaderProps,
+} from '@pocket-pantry/ui';
+import { useLayoutEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
+import { AppScreenHeader } from '@/components/AppScreenHeader';
+import {
+  usePageInstance,
+  useLayoutSlots,
+  type LayoutRegion,
+} from '../layoutContext';
+
+export type ScreenProps = {
+  /** The page title, an H1 in the top bar. */
+  title?: string;
+  /** The muted status line under the title. */
+  status?: string;
+  /** Back on the left of sub-screens. */
+  back?: ScreenHeaderProps['back'];
+  /** A second line under the title (a sub-screen's context, e.g. the Recipe being edited). Ignored on tab roots, as in `AppScreenHeader`. The Gator logo, the way back to Home, needs no prop: it leads every header without Back. */
+  subline?: ReactNode;
+  /** The secondary action, before the primary key. */
+  secondary?: ReactNode;
+  /** The primary key (the gold `+`). */
+  primary?: ScreenHeaderAction;
+  /** The page's own block under the top bar (Pantry's search, Shopping's progress). Editors and Scan Review have none. */
+  header?: ReactNode;
+  /** Keep the title to one line with an ellipsis. */
+  truncateTitle?: boolean;
+  titleRef?: ScreenHeaderProps['titleRef'];
+  /** The content, which scrolls in the sheet. */
+  children?: ReactNode;
+};
+
+/**
+ * What every page inside `AppLayout` renders: its top bar and header go into the layout's slots
+ * through portals, and `children` stay where the page is, in the working sheet. The page keeps its own
+ * state (the search query, say). Outside the layout (a page rendered alone) it draws the same parts
+ * in one column.
+ */
+export function Screen({
+  title,
+  status,
+  subline,
+  back,
+  secondary,
+  primary,
+  header,
+  truncateTitle,
+  titleRef,
+  children,
+}: ScreenProps) {
+  const { t } = useTranslation('screenHeader');
+  const slots = useLayoutSlots();
+  const instance = usePageInstance();
+  // Back is icon-only and always named "Back" (ADR 0042); a count on it (Explore's "+n added") keeps its own, longer name.
+  const namedBack = back && !back.badge ? { ...back, label: t('back') } : back;
+
+  const topBar = (
+    <AppScreenHeader
+      title={title}
+      subtitle={status}
+      subline={subline}
+      back={namedBack}
+      trailing={secondary}
+      action={primary}
+      truncateTitle={truncateTitle}
+      titleRef={titleRef}
+      onCanopy={!!slots && !!instance}
+    />
+  );
+
+  if (!slots || !instance) {
+    return (
+      <>
+        {topBar}
+        {header}
+        {children}
+      </>
+    );
+  }
+  return (
+    <>
+      <Slot region="topBar">{topBar}</Slot>
+      {slots.kind === 'editor' ? (
+        <Slot region="header">{null}</Slot>
+      ) : (
+        <Slot region="header">{header}</Slot>
+      )}
+      {children}
+    </>
+  );
+}
+
+/**
+ * A region's part of a page: portalled into the layout's region, swapped without a fade, and
+ * measured so the region can animate to its height. Nothing to show reports a height of 0.
+ */
+function Slot({
+  region,
+  children,
+}: {
+  region: LayoutRegion;
+  children: ReactNode;
+}) {
+  const slots = useLayoutSlots()!;
+  const instance = usePageInstance()!;
+  const target = region === 'topBar' ? slots.topBarEl : slots.headerEl;
+  const empty = children === null || children === undefined;
+  const { phase } = instance;
+  const { setHeight } = slots;
+
+  useLayoutEffect(() => {
+    if (phase === 'leaving') return;
+    if (empty || !target) {
+      // The new page has nothing here: the region closes (a leaving page never reports).
+      if (empty) setHeight(region, 0);
+      return;
+    }
+    const el = target.querySelector<HTMLElement>(
+      `[data-slot="${region}"][data-instance="${instance.id}"]`,
+    );
+    if (!el) return;
+    const report = () => setHeight(region, el.offsetHeight);
+    report();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(report);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [empty, target, phase, region, setHeight, instance]);
+
+  // No cross-fade: the leaving page's part goes at once and the new one shows at full opacity; only the content fades.
+  if (empty || !target || phase === 'leaving') return null;
+  return createPortal(
+    <Box
+      data-slot={region}
+      data-instance={instance.id}
+      data-phase={phase === 'idle' ? undefined : phase}
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        maxWidth: slots.wide ? 1180 : 960,
+        mx: 'auto',
+      }}
+    >
+      {children}
+    </Box>,
+    target,
+  );
+}

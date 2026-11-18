@@ -2,7 +2,7 @@ import { Box, Button, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { formatDate } from '../../lib/dateFormat';
 import { localIso } from '../../lib/pantry';
 import {

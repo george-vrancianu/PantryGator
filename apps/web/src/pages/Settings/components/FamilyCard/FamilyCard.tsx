@@ -14,7 +14,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExpiryTag } from '@/components/ExpiryTag';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useFamily, type Family } from '@/lib/family';
 import { daysUntil, localIso } from '@/lib/pantry';

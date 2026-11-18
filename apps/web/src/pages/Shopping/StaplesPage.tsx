@@ -12,7 +12,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountSheet } from './components/AmountSheet/AmountSheet';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import { translateApiError } from '@/i18n/translateApiError';
@@ -27,7 +27,7 @@ import {
 import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
 import { useRowHint, type RowHint } from '@/lib/useRowHint';
 import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
-import { RowHintNote } from '@/components/RowHintNote';
+import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 
 /** The Family's Staples: add by Catalog search, set a preferred quantity and unit, or remove. */
 export function StaplesPage() {

@@ -19,7 +19,7 @@ import { plateMatchInput, useResumedPlateBases } from './useResumedPlateBases';
 import { useRecipeDraftAutosave } from '../../lib/recipeDraftAutosave';
 import { STANDALONE, noBasePick } from '../../components/BaseRecipePicker';
 import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { RemovableSourceLink, isSourceLink } from '../../components/SourceLink';
 import { translateApiError } from '../../i18n/translateApiError';
 import {

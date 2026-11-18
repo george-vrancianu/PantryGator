@@ -1,6 +1,6 @@
 import { IconButton, StapleStar } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useStapleToggle } from '@/components/useStapleToggle';
+import { useStapleToggle } from '@/components/lists/useStapleToggle';
 
 type Props = {
   ingredientId: string;

@@ -13,10 +13,10 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { ExploreRow } from '../../components/ExploreRow';
 import { QuickViewSheet } from '../../components/QuickViewSheet';
-import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
+import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 import { translateApiError } from '../../i18n/translateApiError';
 import { isPlainClick } from '../../lib/isPlainClick';
 import { localIso } from '../../lib/pantry';

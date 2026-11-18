@@ -18,7 +18,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { useAddToFamily } from '../../lib/addToFamily';
 import { useScroller } from '../../lib/scroller';
 import { exploreAdds } from '../../lib/exploreAdds';

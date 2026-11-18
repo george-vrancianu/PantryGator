@@ -9,7 +9,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import type { FamilyCatalogSynonym } from '@/lib/familyCatalog';
 
 export type FamilySynonymSheetProps = {

@@ -11,7 +11,7 @@ import {
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   MAX_TEMPLATES,

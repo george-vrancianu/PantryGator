@@ -25,10 +25,6 @@
       "excludeFiles": [
         // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
-        // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
-        "apps/web/src/components/RefreshScreen.test.tsx",
-        // Already beside VoiceAnswerSheet and renders PantryPage and ShoppingPage: #853 does not change that; needs a spec decision before #854
-        "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import
@@ -118,10 +114,9 @@
       "excludeFiles": [
         // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
-        // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
-        "apps/web/src/components/RefreshScreen.test.tsx",
-        // Already beside VoiceAnswerSheet and renders PantryPage and ShoppingPage: #853 does not change that; needs a spec decision before #854
-        "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
+        // Carve-out (ADR 0044 amendment): a shared test may import pages to check behaviour across pages. Only here (the Rule A override), so Rule B still applies to these files through the first override.
+        "apps/web/src/components/**/*.test.*",
+        "apps/web/src/lib/**/*.test.*",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import

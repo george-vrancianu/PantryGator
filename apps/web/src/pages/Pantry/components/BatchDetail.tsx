@@ -9,7 +9,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExpiryTag } from '../../../components/ExpiryTag';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { fullDate, useExpiryTags, type Batch } from '../../../lib/pantry';
 import { formatAmount } from '../../../lib/amount';
 import { batchRowSx } from './ingredientBlock';

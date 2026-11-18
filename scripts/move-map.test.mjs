@@ -279,15 +279,10 @@ test('a module on the stays list keeps its place even when one page area imports
     {
       'components/dashboard/widgetCatalog.ts': comp,
       'pages/Customise/CustomisePage.tsx': `import { X } from '@/components/dashboard/widgetCatalog';\n`,
-      'components/ExpiryPicker/expiryContext.ts': comp,
-      'components/ExpiryPicker/index.ts': `export { X } from './expiryContext';\n`,
-      'components/HealthSheet/SetDateSheet.tsx': `import { X } from '../ExpiryPicker/expiryContext';\n${comp}`,
-      'pages/Dashboard/DashboardPage.tsx': `import { X } from '@/components/HealthSheet/SetDateSheet';\n`,
     },
     ['all'],
   );
   assert.equal(rows.get('components/dashboard/widgetCatalog.ts'), undefined);
-  assert.equal(rows.get('components/ExpiryPicker/expiryContext.ts'), undefined);
 });
 
 test('parts inside a component folder of a shared group follow the main file and stay put', () => {

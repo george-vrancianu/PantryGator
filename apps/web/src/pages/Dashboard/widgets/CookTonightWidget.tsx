@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import {
   AllergenIndicator,
   allergenIndicatorLabel,
-} from '@/components/AllergenIndicator';
-import { RowTags } from '@/components/RowTags';
+} from '@/components/allergy/AllergenIndicator/AllergenIndicator';
+import { RowTags } from '@/components/recipe/RowTags/RowTags';
 import { CookTonightPanel } from '../components/CookTonightPanel/CookTonightPanel';
-import { HiddenByAllergiesNote } from '@/components/HiddenByAllergiesNote';
+import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 import { translateApiError } from '@/i18n/translateApiError';
 import { recipeHref } from '@/lib/recipeHref';
 import { useCookTonight, type CookTonightCard } from '@/lib/cookTonight';
