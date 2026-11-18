@@ -94,6 +94,50 @@ export function draftOfEdit(recipe: FamilyRecipeEdit): FamilyDraft {
   };
 }
 
+/** The keys of the lines and Steps of a draft, in order: what a Save sent, so its answer can be matched back. */
+export const keysOf = (draft: FamilyDraft) => ({
+  lines: draft.lines.map((line) => line.key),
+  steps: draft.steps.map((step) => step.key),
+});
+
+/**
+ * The live `draft` moved onto the Recipe the server now stores, keeping every edit.
+ * `sent` holds the keys the Save sent, in order; the stored Recipe lists the same rows
+ * in the same order, so a row sent without an id takes the id the server gave it, and
+ * one sent with an id keeps it. A row whose key was not sent (added during the Save)
+ * keeps its id only if the server still has it: otherwise (Undo of a removed row) it
+ * goes in as new.
+ */
+export function rebasedOnStored(
+  draft: FamilyDraft,
+  sent: ReturnType<typeof keysOf>,
+  stored: FamilyDraft,
+): FamilyDraft {
+  const rebase = <T extends { key: number; id?: string }>(
+    rows: T[],
+    sentKeys: number[],
+    storedRows: T[],
+  ): T[] => {
+    const idOfKey = new Map(
+      sentKeys.map((key, index) => [key, storedRows[index]?.id]),
+    );
+    const known = new Set(storedRows.map((row) => row.id));
+    return rows.map(({ id, ...row }) => {
+      const next = idOfKey.has(row.key)
+        ? idOfKey.get(row.key)
+        : id && known.has(id)
+          ? id
+          : undefined;
+      return (next ? { ...row, id: next } : row) as T;
+    });
+  };
+  return {
+    ...draft,
+    lines: rebase(draft.lines, sent.lines, stored.lines),
+    steps: rebase(draft.steps, sent.steps, stored.steps),
+  };
+}
+
 /** The document to send; call only when `problemsOf` found nothing. */
 export function documentOf(draft: FamilyDraft): FamilyRecipeDocument {
   const minutes = (text: string) =>

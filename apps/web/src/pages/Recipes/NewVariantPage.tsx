@@ -35,10 +35,11 @@ export function NewVariantPage() {
   const draftRoute = routePropsOf(route);
   const resuming = new URLSearchParams(location.search).has(DRAFT_PARAM);
   const title = t('recipes:family.newHeading');
+  const back = { label: t('recipes:back'), href: `/recipes/${id}` };
   if (route.error || route.loading) {
     return (
       <>
-        <Screen title={title} />
+        <Screen title={title} back={back} />
         {route.error ? (
           <Alert>{translateApiError(t, route.error)}</Alert>
         ) : (
@@ -75,6 +76,7 @@ export function NewVariantPage() {
       kind="variant"
       baseRecipeId={id}
       title={title}
+      back={back}
     >
       <NewVariantContent baseId={id} draftRoute={draftRoute} />
     </RecipeDraftContinue>
@@ -89,6 +91,7 @@ function NewVariantContent({
   draftRoute: RecipeDraftRouteProps;
 }) {
   const { t } = useTranslation(['recipes', 'common', 'errors']);
+  const back = { label: t('recipes:back'), href: `/recipes/${id}` };
   const draft = useVariantDraft(id);
   // The draft carries link ids only; the source's own view names them.
   const source = useRecipe(id);
@@ -108,13 +111,13 @@ function NewVariantContent({
     <>
       {draft.error ? (
         <>
-          <Screen title={t('recipes:family.newHeading')} />
+          <Screen title={t('recipes:family.newHeading')} back={back} />
           <Alert>{translateApiError(t, draft.error)}</Alert>
         </>
       ) : null}
       {!ready && !draft.error ? (
         <>
-          <Screen title={t('recipes:family.newHeading')} />
+          <Screen title={t('recipes:family.newHeading')} back={back} />
           <Spinner label={t('common:loading')} />
         </>
       ) : null}

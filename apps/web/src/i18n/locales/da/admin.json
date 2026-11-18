@@ -205,6 +205,8 @@
       "minutes": "min",
       "tipOf": "Tip {{n}} til trin {{step}}",
       "deleteTip": "Slet tip {{n}} til trin {{step}}",
+      "moveTipUp": "Flyt tip {{n}} til trin {{step}} op",
+      "moveTipDown": "Flyt tip {{n}} til trin {{step}} ned",
       "newTip": "Nyt tip til trin {{number}}",
       "cancelTip": "Annuller nyt tip til trin {{number}}",
       "tipPlaceholder": "Et tip til dette trin",

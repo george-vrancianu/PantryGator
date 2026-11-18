@@ -28,6 +28,7 @@ export function RecipeDraftContinue({
   kind,
   baseRecipeId,
   title,
+  back,
   children,
 }: {
   /** False when the form opens on a supplied fill or on a Recipe Draft: no prompt. */
@@ -37,6 +38,8 @@ export function RecipeDraftContinue({
   baseRecipeId: string | null;
   /** The page heading, shown over the prompt. */
   title: string;
+  /** Where Back goes from the prompt and its loading state. */
+  back: { label: string; href: string };
   children: ReactNode;
 }) {
   const { t } = useTranslation(['recipes', 'common']);
@@ -61,7 +64,7 @@ export function RecipeDraftContinue({
   if (offered === null) {
     return (
       <>
-        <Screen title={title} />
+        <Screen title={title} back={back} />
         <Spinner label={t('common:loading')} />
       </>
     );
@@ -70,7 +73,7 @@ export function RecipeDraftContinue({
 
   return (
     <>
-      <Screen title={title} />
+      <Screen title={title} back={back} />
       <Stack spacing={2}>
         <Typography variant="h2" component="h2">
           {t('recipes:drafts.continueTitle')}
