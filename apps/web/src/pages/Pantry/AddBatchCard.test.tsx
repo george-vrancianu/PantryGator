@@ -1,10 +1,10 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { stubPantry } from '../../test/addBatch';
-import { pickLocation, pressedLocation } from '../../test/location';
-import { renderWithProviders } from '../../test/render';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { stubPantry } from '@/test/addBatch';
+import { pickLocation, pressedLocation } from '@/test/location';
+import { renderWithProviders } from '@/test/render';
 import { PantryPage } from './PantryPage';
 
 const parmesan: CatalogSearchResult = {

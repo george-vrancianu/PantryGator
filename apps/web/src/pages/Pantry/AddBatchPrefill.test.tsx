@@ -2,28 +2,28 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { Batch } from '../../lib/pantry';
-import type { ProposedLine } from '../../lib/scan';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { Batch } from '@/lib/pantry';
+import type { ProposedLine } from '@/lib/scan';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
-import { clearPick, typeNote } from '../../test/addBatch';
+import { clearPick, typeNote } from '@/test/addBatch';
 import {
   fakeCamera,
   languageChip,
   pickScanLanguage,
   scanLanguagePreference,
-} from '../../test/scan';
+} from '@/test/scan';
 
 // jsdom has no camera or canvas: the camera hook and image preparation are the seams.
 const image = vi.hoisted(() => ({
   /** Holds image preparation until released. */
   prepare: null as Promise<void> | null,
 }));
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () =>
     (image.prepare ?? Promise.resolve()).then(
       () => 'data:image/jpeg;base64,AAAA',

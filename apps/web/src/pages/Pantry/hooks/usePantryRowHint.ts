@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useRowHint, type RowHint } from '../../../lib/useRowHint';
+import { useRowHint, type RowHint } from '@/lib/useRowHint';
 
 /** The Pantry's first-use hint, and which expanded roll-up its first Batch row belongs to. */
 export type PantryRowHint = {

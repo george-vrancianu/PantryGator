@@ -1,6 +1,6 @@
 import { fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { openOverlay, stubPantry } from '../../test/addBatch';
+import { openOverlay, stubPantry } from '@/test/addBatch';
 import {
   advance,
   fakeCamera,
@@ -9,13 +9,13 @@ import {
   press,
   queryLanguageChip,
   shutter,
-} from '../../test/scan';
+} from '@/test/scan';
 
 // jsdom has no camera or canvas: the camera hook and image preparation are the seams.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,AAAA'),
 }));
 

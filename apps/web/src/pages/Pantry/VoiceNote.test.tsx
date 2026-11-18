@@ -10,19 +10,11 @@ import {
   stubVoiceFetch,
   voiceAction,
   voiceIngredient as ingredient,
-} from '../../test/voice';
-import { resetRowFlash } from '../../lib/rowFlash';
-import {
-  holdLongEnough,
-  pressDown,
-  useVoiceTimers,
-} from '../../test/voiceHold';
-import {
-  locationToggle,
-  pickLocation,
-  pressedLocation,
-} from '../../test/location';
-import { renderInAppLayout, stubApi } from '../../test/render';
+} from '@/test/voice';
+import { resetRowFlash } from '@/lib/rowFlash';
+import { holdLongEnough, pressDown, useVoiceTimers } from '@/test/voiceHold';
+import { locationToggle, pickLocation, pressedLocation } from '@/test/location';
+import { renderInAppLayout, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 
 const yogurt = ingredient('ing-yogurt', 'Yogurt');

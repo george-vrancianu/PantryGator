@@ -22,17 +22,17 @@ import { useTranslation } from 'react-i18next';
 import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { RunningLowChip } from '@/components/pantry/RunningLowChip/RunningLowChip';
 import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
-import { useExpiryTags, type Batch } from '../../../lib/pantry';
-import type { PantryRowHint } from '../hooks/usePantryRowHint';
-import type { PantryRow } from '../hooks/usePantryScreen';
-import { formatAmount } from '../../../lib/amount';
-import { useOpenIntoView } from '../hooks/useOpenIntoView';
-import { BatchDetail } from './BatchDetail';
-import { IngredientActions } from './IngredientActions';
-import { useRunningLowToggle } from '../hooks/useRunningLowToggle';
-import { usePantryStaple } from '../hooks/usePantryStaple';
+import { useExpiryTags, type Batch } from '@/lib/pantry';
+import type { PantryRowHint } from '../../hooks/usePantryRowHint';
+import type { PantryRow } from '../../hooks/usePantryScreen';
+import { formatAmount } from '@/lib/amount';
+import { useOpenIntoView } from '../../hooks/useOpenIntoView';
+import { BatchDetail } from '../BatchDetail/BatchDetail';
+import { IngredientActions } from '../IngredientActions/IngredientActions';
+import { useRunningLowToggle } from '../../hooks/useRunningLowToggle';
+import { usePantryStaple } from '../../hooks/usePantryStaple';
 import { RowFlash, flashHost } from '@/components/lists/RowFlash/RowFlash';
-import { rowKeyHintIds } from './RowKeyHints';
+import { rowKeyHintIds } from '../RowKeyHints/RowKeyHints';
 
 /** The row springs back before the flag flips (Pantry batches handoff, section 6). */
 const FLAG_FLIP_MS = 220;

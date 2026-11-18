@@ -2,9 +2,9 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { defaultExpiryDate, type Batch } from '../../lib/pantry';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { ShoppingPage } from '../Shopping/ShoppingPage';
+import { defaultExpiryDate, type Batch } from '@/lib/pantry';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { ShoppingPage } from '@/pages/Shopping/ShoppingPage';
 import { PantryPage } from './PantryPage';
 
 const inDays = (days: number) => defaultExpiryDate(days, new Date());

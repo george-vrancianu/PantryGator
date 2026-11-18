@@ -5,7 +5,7 @@ import {
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
-import { useScroller } from '../../../lib/scroller';
+import { useScroller } from '@/lib/scroller';
 
 /** The bottom of the viewport the Dock covers (its larger height, so it holds on every width),
  * with the capsule's overhang, from the Dock's real bottom (the home-indicator inset on a Face ID iPhone). */

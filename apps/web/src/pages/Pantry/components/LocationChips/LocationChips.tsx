@@ -1,6 +1,6 @@
 import { Box, LocationChip, mask } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { FILTERS, type PantryFilter } from '../../../lib/pantry';
+import { FILTERS, type PantryFilter } from '@/lib/pantry';
 
 type Props = {
   filter: PantryFilter;

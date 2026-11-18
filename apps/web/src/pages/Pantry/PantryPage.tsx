@@ -15,13 +15,16 @@ import {
 } from '@/components/lists/RowToggleErrors/RowToggleErrors';
 import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 import { UnverifiedToast } from '@/components/lists/UnverifiedToast/UnverifiedToast';
-import { EmptyPantry, newPantryVisit } from './components/EmptyPantry';
-import { ShelfCard } from './components/ShelfCard';
-import { AddToPantrySheet } from './components/AddToPantrySheet';
-import { LocationSection } from './components/LocationSection';
-import { RowKeyHints } from './components/RowKeyHints';
-import { LocationChips } from './components/LocationChips';
-import { PantrySearch } from './components/PantrySearch';
+import {
+  EmptyPantry,
+  newPantryVisit,
+} from './components/EmptyPantry/EmptyPantry';
+import { ShelfCard } from './components/ShelfCard/ShelfCard';
+import { AddToPantrySheet } from './components/AddToPantrySheet/AddToPantrySheet';
+import { LocationSection } from './components/LocationSection/LocationSection';
+import { RowKeyHints } from './components/RowKeyHints/RowKeyHints';
+import { LocationChips } from './components/LocationChips/LocationChips';
+import { PantrySearch } from './components/PantrySearch/PantrySearch';
 import { usePantryRowHint } from './hooks/usePantryRowHint';
 import { usePantryScreen } from './hooks/usePantryScreen';
 

@@ -14,13 +14,13 @@ import {
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useShowsDockMic } from '../../../components/VoiceNote';
-import { useMicTeach } from '../../../components/voice/VoiceHost';
-import { LOCATIONS, type StorageLocation } from '../../../lib/catalog';
-import { FILTERS } from '../../../lib/pantry';
-import { useShoppingList } from '../../../lib/shopping';
-import { ShelfCard } from './ShelfCard';
-import { TickedBar } from './TickedBar';
+import { useShowsDockMic } from '@/components/VoiceNote';
+import { useMicTeach } from '@/components/voice/VoiceHost';
+import { LOCATIONS, type StorageLocation } from '@/lib/catalog';
+import { FILTERS } from '@/lib/pantry';
+import { useShoppingList } from '@/lib/shopping';
+import { ShelfCard } from '../ShelfCard/ShelfCard';
+import { TickedBar } from '../TickedBar/TickedBar';
 
 type Props = {
   /** Type: the Add to Pantry sheet with nothing preset. */

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { StorageLocation } from '../../../lib/catalog';
+import type { StorageLocation } from '@/lib/catalog';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { useToday } from '../../../lib/useToday';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useToday } from '@/lib/useToday';
 import {
   groupByLocation,
   matchesSearch,
@@ -12,8 +12,8 @@ import {
   useDeleteBatch,
   type PantryFilter,
   type RollUp,
-} from '../../../lib/pantry';
-import { useDeferredRemoval } from '../../../lib/useDeferredRemoval';
+} from '@/lib/pantry';
+import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
 import type { AddBatchStart } from './useAddBatchForm';
 
 /**

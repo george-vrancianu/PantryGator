@@ -7,8 +7,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Batch } from '../../lib/pantry';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { Batch } from '@/lib/pantry';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 
 function batch(overrides: Partial<Batch>): Batch {

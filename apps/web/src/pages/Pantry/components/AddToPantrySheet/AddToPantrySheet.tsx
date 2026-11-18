@@ -8,17 +8,17 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { formatRowAmount } from '../../../lib/amount';
-import { flashRows } from '../../../lib/rowFlash';
-import { UNDO_WINDOW_MS } from '../../../lib/useDeferredRemoval';
-import { useDeleteBatch, type Batch } from '../../../lib/pantry';
+import { translateApiError } from '@/i18n/translateApiError';
+import { formatRowAmount } from '@/lib/amount';
+import { flashRows } from '@/lib/rowFlash';
+import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useDeleteBatch, type Batch } from '@/lib/pantry';
 import { useNavigate } from 'react-router-dom';
-import type { StorageLocation } from '../../../lib/catalog';
-import type { AddBatchStart } from '../hooks/useAddBatchForm';
-import { useShowsDockMic } from '../../../components/VoiceNote';
-import { useMicTeach } from '../../../components/voice/VoiceHost';
-import { AddBatchForm, type SubmitState } from './AddBatchForm';
+import type { StorageLocation } from '@/lib/catalog';
+import type { AddBatchStart } from '../../hooks/useAddBatchForm';
+import { useShowsDockMic } from '@/components/VoiceNote';
+import { useMicTeach } from '@/components/voice/VoiceHost';
+import { AddBatchForm, type SubmitState } from '../AddBatchForm/AddBatchForm';
 
 type Props = {
   open: boolean;

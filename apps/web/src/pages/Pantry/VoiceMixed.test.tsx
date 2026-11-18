@@ -6,13 +6,9 @@ import {
   resetVoiceEnvironment,
   voiceAction as action,
   voiceIngredient as ingredient,
-} from '../../test/voice';
-import {
-  holdLongEnough,
-  pressDown,
-  useVoiceTimers,
-} from '../../test/voiceHold';
-import { renderInAppLayout, stubApi } from '../../test/render';
+} from '@/test/voice';
+import { holdLongEnough, pressDown, useVoiceTimers } from '@/test/voiceHold';
+import { renderInAppLayout, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 
 // "put the yogurts in the pantry, got the bread, and add milk" said on the Pantry page.

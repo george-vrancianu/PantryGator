@@ -1,9 +1,9 @@
-import { resetVoiceEnvironment, stubVoiceFetch } from '../../test/voice';
+import { resetVoiceEnvironment, stubVoiceFetch } from '@/test/voice';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderInAppLayout, stubApi } from '../../test/render';
-import { useVoiceTimers } from '../../test/voiceHold';
+import { renderInAppLayout, stubApi } from '@/test/render';
+import { useVoiceTimers } from '@/test/voiceHold';
 import { PantryPage } from './PantryPage';
 
 describe('Say it on the Empty Pantry', () => {
