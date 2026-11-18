@@ -385,18 +385,40 @@ describe('hold to edit', () => {
 });
 
 describe('onLearned', () => {
-  it('fires when a swipe is released in zone 1 or 2, not in zone 0', () => {
+  it('fires once when a swipe reaches zone 1, before release, and not again', () => {
+    const onLearned = vi.fn();
+    const { drag, bind, release } = setup({ onLearned });
+    drag(-60);
+    expect(onLearned).not.toHaveBeenCalled();
+    act(() => bind().onPointerMove(pointer(300 - 120)));
+    expect(onLearned).toHaveBeenCalledTimes(1);
+    act(() => bind().onPointerMove(pointer(300 - 260)));
+    release(-260);
+    expect(onLearned).toHaveBeenCalledTimes(1);
+  });
+
+  it('fires when one move jumps from zone 0 to zone 2', () => {
+    const onLearned = vi.fn();
+    const { drag } = setup({ onLearned });
+    drag(-260);
+    expect(onLearned).toHaveBeenCalledTimes(1);
+  });
+
+  it('still counts a drag that reached zone 1 and went back to zone 0', () => {
+    const onLearned = vi.fn();
+    const { drag, bind, release } = setup({ onLearned });
+    drag(-120);
+    act(() => bind().onPointerMove(pointer(300 - 20)));
+    release(-20);
+    expect(onLearned).toHaveBeenCalledTimes(1);
+  });
+
+  it('never fires for a drag that stays in zone 0', () => {
     const onLearned = vi.fn();
     const { drag, release } = setup({ onLearned });
     drag(-60);
     release(-60);
     expect(onLearned).not.toHaveBeenCalled();
-    drag(-120);
-    release(-120);
-    expect(onLearned).toHaveBeenCalledTimes(1);
-    drag(-260);
-    release(-260);
-    expect(onLearned).toHaveBeenCalledTimes(2);
   });
 
   it('fires when a hold arms, and not when it is cancelled first', () => {

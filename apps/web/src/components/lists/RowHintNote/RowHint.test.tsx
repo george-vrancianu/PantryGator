@@ -142,8 +142,10 @@ const SETUPS: Setup[] = [
       await userEvent.click(
         await screen.findByRole('button', { name: /Milk/ }),
       );
-      // A Batch row is named for its amount too.
-      return (await screen.findAllByRole('group', { name: '1 L Milk' }))[0];
+      // A Batch row is named for its amount too, and for its expiry when two Batches share the amount.
+      return (
+        await screen.findAllByRole('group', { name: '1 L Milk, no date' })
+      )[0];
     },
     empty: () => {
       vi.stubGlobal(
