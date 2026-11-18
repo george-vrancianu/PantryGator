@@ -1,10 +1,10 @@
 import { tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useRecentlyStocked } from '../../../lib/recentlyStocked';
-import { useShortAgo } from './useShortAgo';
-import { useEmptyStateSearch } from './context';
-import { IngredientTile } from './IngredientTile';
-import { MAX_TILES, TileSection } from './TileSection';
+import { useRecentlyStocked } from '@/lib/recentlyStocked';
+import { useShortAgo } from '../useShortAgo';
+import { useEmptyStateSearch } from '../context';
+import { IngredientTile } from '../IngredientTile/IngredientTile';
+import { MAX_TILES, TileSection } from '../TileSection/TileSection';
 
 /** The Pantry search's empty state: what the Family most recently added, in the Pantry or not. Hidden until something was stocked. */
 export function RecentlyStocked() {

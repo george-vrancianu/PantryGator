@@ -1,8 +1,8 @@
 import { Box } from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/BrowseByAisle';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import { type AdminCatalog } from '../../../lib/admin';
 import {
   useCreateRecipe,

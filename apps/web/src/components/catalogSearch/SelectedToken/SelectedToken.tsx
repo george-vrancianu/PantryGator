@@ -1,10 +1,10 @@
 import { Box, CloseIcon, IconButton, tokens, radius } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { IngredientIconSlot } from '../IngredientIconSlot';
-import { FamilyTag } from './FamilyTag';
-import { resultMeta } from './SearchResultRow';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { FamilyTag } from '../FamilyTag/FamilyTag';
+import { resultMeta } from '../SearchResultRow/SearchResultRow';
 
 /** The picked ingredient as a tinted pill with icon, name, meta and ×; tapping it clears the pick. */
 export function SelectedToken({

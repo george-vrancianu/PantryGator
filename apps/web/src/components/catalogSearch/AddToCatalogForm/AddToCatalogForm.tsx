@@ -10,7 +10,6 @@ import {
   radius,
 } from '@pocket-pantry/ui';
 import {
-  useEffect,
   useId,
   useRef,
   useState,
@@ -18,7 +17,7 @@ import {
   type RefObject,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApiError } from '../../lib/api';
+import { ApiError } from '@/lib/api';
 import {
   UNITS,
   useCatalogCategories,
@@ -26,49 +25,22 @@ import {
   type CatalogCategory,
   type CatalogSearchResult,
   type Unit,
-} from '../../lib/catalog';
+} from '@/lib/catalog';
 import {
   AllergenContainsRow,
   containsToAllergenIds,
   selectionFromAllergenIds,
   type ContainsSelection,
-} from '../AllergenContainsRow';
-import { AddToCatalogAlias } from './AddToCatalogAlias';
-import { AisleSwatch } from './AisleSwatch';
-
-/** What a pick was: a new Family Ingredient, a Link & pick of `name`, or an Ingredient that was already there. */
-export type PickOutcome =
-  { kind: 'added' } | { kind: 'linked'; name: string } | { kind: 'existing' };
+} from '@/components/AllergenContainsRow';
+import { AddToCatalogAlias } from '../AddToCatalogAlias/AddToCatalogAlias';
+import { AisleSwatch } from '../AisleSwatch/AisleSwatch';
+import {
+  useReportedAction,
+  type FormAction,
+  type PickOutcome,
+} from '../addToCatalogAction';
 
 type Mode = 'new' | 'alias';
-
-/** The primary action of the form, for a host that pins it (the phone Sheet). */
-export type FormAction = {
-  label: string;
-  disabled: boolean;
-  pending: boolean;
-  onClick: () => void;
-};
-
-/**
- * Tell the host the primary action while this part of the form is on screen. Only the latest
- * `onClick` runs, and the host hears again only when the label or a flag changes.
- */
-export function useReportedAction(
-  onAction: ((action: FormAction | null) => void) | undefined,
-  action: FormAction,
-  enabled: boolean,
-) {
-  const click = useRef(action.onClick);
-  const { label, disabled, pending, onClick } = action;
-  useEffect(() => {
-    click.current = onClick;
-  });
-  useEffect(() => {
-    if (!onAction || !enabled) return;
-    onAction({ label, disabled, pending, onClick: () => click.current() });
-  }, [onAction, enabled, label, disabled, pending]);
-}
 
 export type AddToCatalogFormProps = {
   /** The text typed in the search field. */

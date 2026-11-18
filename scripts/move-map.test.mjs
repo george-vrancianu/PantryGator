@@ -215,3 +215,28 @@ test('modules in a lintSelfTest folder are not part of the graph', () => {
   assert.equal(rows.get('pages/Recipes/components/Widget.tsx').importers, '-');
   assert.equal(rows.has('pages/Pantry/lintSelfTest/Fixture.ts'), false);
 });
+
+test('a feature group keeps its parts together: sub-groups stay inside, not moved into a page', () => {
+  const { rows } = run(
+    {
+      'components/catalogSearch/CatalogSearch.tsx': `import { Tile } from './emptyState/Tile';\n${comp}`,
+      'components/catalogSearch/emptyState/Tile.tsx': comp,
+      'components/catalogSearch/emptyState/Tile.test.tsx': `import { X } from './Tile';\n`,
+      'components/catalogSearch/emptyState/context.tsx': comp,
+      'pages/Pantry/PantryPage.tsx': `import { X } from '@/components/catalogSearch/emptyState/Tile';\nimport { X as Y } from '@/components/catalogSearch/emptyState/context';\n`,
+    },
+    ['catalogSearch'],
+  );
+  assert.equal(
+    rows.get('components/catalogSearch/emptyState/Tile.tsx').target,
+    'components/catalogSearch/emptyState/Tile/Tile.tsx',
+  );
+  assert.equal(
+    rows.get('components/catalogSearch/emptyState/Tile.test.tsx').target,
+    'components/catalogSearch/emptyState/Tile/Tile.test.tsx',
+  );
+  assert.equal(
+    rows.get('components/catalogSearch/emptyState/context.tsx'),
+    undefined,
+  );
+});

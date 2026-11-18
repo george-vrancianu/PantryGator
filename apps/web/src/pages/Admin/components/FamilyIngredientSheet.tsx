@@ -1,8 +1,8 @@
 import { Box, Stack, Typography, radius, tokens } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/BrowseByAisle';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import {
   useMergeFamilyIngredient,
   usePromoteFamilyIngredient,

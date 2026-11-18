@@ -2,10 +2,13 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubViewport } from '../../test/viewport';
-import { CatalogSearch, type CatalogSearchProps } from './CatalogSearch';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
+import {
+  CatalogSearch,
+  type CatalogSearchProps,
+} from '../CatalogSearch/CatalogSearch';
 
 // Spec: #270, ADR 0011.
 

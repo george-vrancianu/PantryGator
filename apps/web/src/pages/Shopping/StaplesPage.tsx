@@ -13,8 +13,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountSheet } from '../../components/AmountSheet';
 import { Screen } from '../../components/layout/Screen';
-import { CatalogSearch } from '../../components/catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../../components/catalogSearch/emptyState/BrowseByAisle';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import { translateApiError } from '../../i18n/translateApiError';
 import { formatAmount, type Amount } from '../../lib/amount';
 import {
