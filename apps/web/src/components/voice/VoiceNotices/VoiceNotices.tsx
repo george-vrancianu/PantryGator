@@ -28,7 +28,7 @@ export function VoiceNotices() {
           case 'recordingCancelled':
             return toast.show(t('listening.cancelled'), voiceToast());
           case 'stoppedAtLimit':
-            // The note is about to be read, so the Reading pill and its Cancel come up here.
+            // The note is about to be read, so the reading row and its Cancel come up here.
             return toast.show(
               `${t('listening.stopped')} · ${t('listening.stoppedHint')}`,
               voiceToast(),

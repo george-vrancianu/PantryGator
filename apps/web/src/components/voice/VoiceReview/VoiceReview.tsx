@@ -80,7 +80,8 @@ export type ReviewSettings = {
   afterApply?: AfterApply;
 };
 
-const APP_REVIEW: ReviewSettings = { look: 'app', toastOnApply: true };
+/** The app's own Review: its look, with Apply toasting its result. */
+export const APP_REVIEW: ReviewSettings = { look: 'app', toastOnApply: true };
 
 /** What a host does once an Apply succeeds, given what was really applied (a host's `afterApply` setting). */
 export type AfterApply = (

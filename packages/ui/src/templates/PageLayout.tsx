@@ -10,8 +10,6 @@ export type PageLayoutProps = {
   children: ReactNode;
   /** Reserve room at the bottom so content never hides under the Dock (or its capsule, which reaches above it). */
   withDock?: boolean;
-  /** Bottom padding (a CSS length, or one per breakpoint) that replaces the default Dock room, e.g. to also clear a row of controls that hangs above the Dock. */
-  dockClearance?: string | { xs: string; md: string };
   /** Lift the ~960 px cap to 1180 px for table screens that need the room. */
   wide?: boolean;
 };
@@ -20,7 +18,6 @@ export type PageLayoutProps = {
 export function PageLayout({
   children,
   withDock = true,
-  dockClearance,
   wide = false,
 }: PageLayoutProps) {
   return (
@@ -35,7 +32,7 @@ export function PageLayout({
         pr: { xs: gutterRight(20), md: gutterRight(48) },
         // A page sliding in from the edge must not widen the document; clip makes no scroll container, so sticky still works.
         overflowX: 'clip',
-        pb: withDock ? (dockClearance ?? DOCK_CLEARANCE) : '24px',
+        pb: withDock ? DOCK_CLEARANCE : '24px',
       }}
     >
       <SafeAreaBand />

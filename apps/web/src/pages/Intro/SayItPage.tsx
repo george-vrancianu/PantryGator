@@ -33,7 +33,7 @@ import {
   type VoiceReviewAction,
 } from '@/lib/voice';
 import { useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
-import { aboveMic, PILL_OFFSET, VOICE_LAYER } from '@/lib/voicePlacement';
+import { aboveMic, CARD_OFFSET, VOICE_LAYER } from '@/lib/voicePlacement';
 
 /** Where Skip goes without a confirm: the Intro module's rule, never a path written here. */
 const SKIP_TO = introPath(skipStep('say-it'));
@@ -43,8 +43,7 @@ const CONTINUE_TO = introPath(nextStep('say-it'));
 /** Say it's Voice Note settings: the app's Voice Inbox, with the Pantry as Default List (ADR 0021), the Setup look and no toast. */
 const SAY_IT_VOICE_SETTINGS: VoiceNoteSettings = {
   defaultTarget: 'pantry',
-  reviewLook: 'setup',
-  toastOnApply: false,
+  review: { look: 'setup', toastOnApply: false },
 };
 
 function ExampleCard({ phrase, result }: { phrase: string; result: string }) {
@@ -79,7 +78,7 @@ function CoachLine({ held }: { held: boolean }) {
         position: 'fixed',
         left: 0,
         right: 0,
-        bottom: aboveMic(PILL_OFFSET + 112),
+        bottom: aboveMic(CARD_OFFSET + 112),
         zIndex: VOICE_LAYER.card,
         px: '24px',
         textAlign: 'center',
@@ -125,13 +124,16 @@ function SayItScreen() {
   // useAutoAdvance's: once the Voice Inbox is empty and something was saved here.
   const settings: VoiceNoteSettings = {
     ...SAY_IT_VOICE_SETTINGS,
-    afterApply: (result: VoiceApplyResult, actions: VoiceReviewAction[]) => {
-      // An apply of only already-done entries saved nothing new: it must not unlock moving on.
-      const savedSomething = result.applied.some((e) => !e.alreadyDone);
-      recordSaved(
-        savedByVoice(result.applied, actions),
-        savedSomething ? 'say-it' : undefined,
-      );
+    review: {
+      ...SAY_IT_VOICE_SETTINGS.review,
+      afterApply: (result: VoiceApplyResult, actions: VoiceReviewAction[]) => {
+        // An apply of only already-done entries saved nothing new: it must not unlock moving on.
+        const savedSomething = result.applied.some((e) => !e.alreadyDone);
+        recordSaved(
+          savedByVoice(result.applied, actions),
+          savedSomething ? 'say-it' : undefined,
+        );
+      },
     },
   };
 

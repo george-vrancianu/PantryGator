@@ -2,7 +2,7 @@ import { useLocation, useOutlet } from 'react-router-dom';
 import { dockStateFor } from '@/lib/dockState';
 import { layoutKindFor } from '@/lib/layoutKind';
 import { useUnloadPromptWhileReading } from '@/lib/recipeReads';
-import { micClearance } from '@/lib/voicePlacement';
+import { micBottom } from '@/lib/voicePlacement';
 import { ApplyMemberLocale } from './ApplyMemberLocale/ApplyMemberLocale';
 import { ApplyMemberTheme } from './ApplyMemberTheme/ApplyMemberTheme';
 import { AppDock } from '../AppDock/AppDock';
@@ -49,7 +49,7 @@ export function AppLayout() {
           <LayoutFrame
             outlet={outlet}
             withDock={dock.visible}
-            dockClearance={showsMic ? micClearance : undefined}
+            dockClearance={showsMic ? micBottom : undefined}
             wide={isWide(pathname)}
           />
           <VoiceHostSlot />

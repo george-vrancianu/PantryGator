@@ -29,7 +29,7 @@ import {
 } from '../VoiceHost/VoiceHost';
 import { ListeningCard } from '../ListeningCard/ListeningCard';
 import { useElapsedMs } from '../useElapsed';
-import { abovePill, aboveMic, VOICE_LAYER } from '@/lib/voicePlacement';
+import { aboveStrip, aboveMic, VOICE_LAYER } from '@/lib/voicePlacement';
 import { useScanSessionInStrip } from '@/components/backgroundRead/useScanSessionBackgroundItems';
 import { isStripUp, useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
 import { VOICE_BUTTON_ATTRIBUTE } from '@/lib/voiceFocus';
@@ -51,11 +51,11 @@ export function VoiceButton({
 }) {
   const { t } = useTranslation('voice');
   const active = voice.recording || voice.pressing;
-  // While the Voice Inbox strip is up the tip must not cover its buttons.
+  // While the Background Read strip is up the tip must not cover its buttons.
   const state = useVoiceNoteState();
   const { startedAt } = state;
   const scanInStrip = useScanSessionInStrip();
-  const pillUp =
+  const stripUp =
     state.phase === 'idle' &&
     (isStripUp(state) || (scanStripHosted && scanInStrip));
 
@@ -100,7 +100,7 @@ export function VoiceButton({
             right: 0,
             mx: 'auto',
             width: 'fit-content',
-            bottom: pillUp ? abovePill : aboveMic(10),
+            bottom: stripUp ? aboveStrip : aboveMic(10),
             zIndex: VOICE_LAYER.card,
             // A hint, never a target: taps reach whatever is under it.
             pointerEvents: 'none',
