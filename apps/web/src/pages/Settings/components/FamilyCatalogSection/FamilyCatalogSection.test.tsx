@@ -269,17 +269,50 @@ describe('FamilyCatalogSection', () => {
     expect(tint(field)).toBe('produce');
   });
 
-  it('goes back from the picker with Escape, keeping the sheet open', async () => {
+  it('closes the whole sheet from the picker with Escape, discarding the edit', async () => {
+    const calls = stub();
+    renderWithProviders(<FamilyCatalogSection />);
+    const user = userEvent.setup();
+
+    const dialog = await openSheet(user);
+    await user.type(within(dialog).getByLabelText('Name'), ' x');
+    await user.click(within(dialog).getByRole('button', { name: /Category/ }));
+    await screen.findByText('Pick a category');
+    await user.keyboard('{Escape}');
+
+    await vi.waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(writes(calls)).toEqual([]);
+  });
+
+  it('closes the whole sheet from the picker with the X, and the edit is gone on reopen', async () => {
+    const calls = stub();
+    renderWithProviders(<FamilyCatalogSection />);
+    const user = userEvent.setup();
+
+    const dialog = await openSheet(user);
+    await user.type(within(dialog).getByLabelText('Name'), ' x');
+    await user.click(within(dialog).getByRole('button', { name: /Category/ }));
+    await screen.findByText('Pick a category');
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
+
+    await vi.waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(writes(calls)).toEqual([]);
+    const reopened = await openSheet(user);
+    expect(within(reopened).getByLabelText('Name')).toHaveValue('Kombucha');
+  });
+
+  it('goes back from the picker to the form with Back, keeping the edit', async () => {
     stub();
     renderWithProviders(<FamilyCatalogSection />);
     const user = userEvent.setup();
 
     const dialog = await openSheet(user);
+    await user.type(within(dialog).getByLabelText('Name'), ' x');
     await user.click(within(dialog).getByRole('button', { name: /Category/ }));
     await screen.findByText('Pick a category');
-    await user.keyboard('{Escape}');
+    await user.click(within(dialog).getByRole('button', { name: 'Back' }));
 
-    expect(await screen.findByLabelText('Name')).toBeVisible();
+    expect(await screen.findByLabelText('Name')).toHaveValue('Kombucha x');
   });
 
   it('keeps Save disabled with no change and with a blank name', async () => {
