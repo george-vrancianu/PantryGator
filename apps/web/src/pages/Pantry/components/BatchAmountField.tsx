@@ -1,7 +1,7 @@
 import { Box } from '@pocket-pantry/ui';
 import { useState, type FocusEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountField } from '../../../components/AmountField';
+import { AmountField } from '@/components/catalog/AmountField/AmountField';
 import type { Unit } from '../../../lib/catalog';
 import type { AmountScale } from '../../../lib/usualAmounts';
 

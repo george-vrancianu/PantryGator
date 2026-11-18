@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PreviewBar } from '../PreviewBar';
 import { ReviewActionBar } from '../ReviewActionBar';
 import { BUBBLE_BOTTOM_VAR } from './bubbleVars';
-import { renderWithProviders } from '../../test/render';
+import { renderWithProviders } from '@/test/render';
 
 const read = () =>
   document.documentElement.style.getPropertyValue(BUBBLE_BOTTOM_VAR);

@@ -9,11 +9,12 @@ import {
 import { soonBorder } from './soonBorder';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountField } from '../AmountField';
-import { ExpiryTag } from '../ExpiryTag';
-import { LocationToggle } from '../LocationToggle';
+import { AmountField } from '@/components/catalog/AmountField/AmountField';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
+import { LocationToggle } from '@/components/pantry/LocationToggle/LocationToggle';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
-import { ExpiryField, expiryContext } from '../ExpiryPicker';
+import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
+import { expiryContext } from '@/components/expiryPicker/expiryContext';
 import type { CatalogSearchResult, Unit } from '../../lib/catalog';
 import { defaultExpiryDate, fullDate, useExpiryTags } from '../../lib/pantry';
 import { useToday } from '../../lib/useToday';

@@ -8,7 +8,7 @@ import {
   type TagTone,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { localIso } from '../../lib/pantry';
 import {
   dateRange,

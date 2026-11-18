@@ -15,8 +15,8 @@ import {
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountSheet } from '../AmountSheet/AmountSheet';
-import { RowFlash, flashHost } from '@/components/RowFlash';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { RowFlash, flashHost } from '@/components/lists/RowFlash/RowFlash';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { formatRowAmount, type Amount } from '@/lib/amount';
 import type { RowHint } from '@/lib/useRowHint';
 import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';

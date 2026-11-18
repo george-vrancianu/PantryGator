@@ -1,6 +1,6 @@
 import { Alert, Button, Spinner, Stack, Typography } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { ConfirmAction } from '@/components/ConfirmAction';
 import { InviteCodePanel } from './components/InviteCodePanel/InviteCodePanel';
 import { JoinFamilyPanel } from './components/JoinFamilyPanel/JoinFamilyPanel';

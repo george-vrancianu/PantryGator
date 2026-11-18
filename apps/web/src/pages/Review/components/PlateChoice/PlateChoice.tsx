@@ -2,7 +2,10 @@ import { Alert, Box, Typography, tokens, radius } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreditPrice, useCreditPriceText } from '@/components/CreditPrice';
+import {
+  CreditPrice,
+  useCreditPriceText,
+} from '@/components/credits/CreditPrice/CreditPrice';
 import { apiRequest } from '@/lib/api';
 import { translateErrorCode } from '@/i18n/translateApiError';
 import { creditsQueryKey, type Credits } from '@/lib/credits';

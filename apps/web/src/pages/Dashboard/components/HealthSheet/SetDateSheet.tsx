@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { defaultExpiryDate, type Batch, type IsoDate } from '@/lib/pantry';
 import { useToday } from '@/lib/useToday';
-import { ExpirySheet } from '@/components/ExpiryPicker';
-import { expiryContext } from '@/components/ExpiryPicker/expiryContext';
+import { ExpirySheet } from '@/components/expiryPicker/ExpirySheet/ExpirySheet';
+import { expiryContext } from '@/components/expiryPicker/expiryContext';
 
 type Props = {
   /** The undated Batch to date; null while closed. */

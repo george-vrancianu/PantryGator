@@ -10,7 +10,7 @@ import {
   palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useDashboardLayout } from '@/lib/dashboard';
 import { greetingKeyForHour } from '@/lib/greeting';

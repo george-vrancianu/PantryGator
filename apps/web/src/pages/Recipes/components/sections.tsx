@@ -21,7 +21,7 @@ import { recipeHref } from '../../../lib/recipeHref';
 import { GuidanceSection } from './GuidanceSection';
 import { IngredientList, lineAmount, type LineAllergy } from './IngredientList';
 import { OwnerBadge } from './OwnerBadge';
-import { RowTags } from '../../../components/RowTags';
+import { RowTags } from '@/components/recipe/RowTags/RowTags';
 import { AddMissingNotes, PantryHeading } from './PantryStatus';
 import { Section } from './Section';
 import { ServingsStepper } from './Servings';

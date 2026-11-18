@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '../../lib/cameraMode';
 import { haptic, HAPTIC_TICK_MS } from '../../lib/haptic';
-import { CreditPrice } from '../CreditPrice';
+import { CreditPrice } from '@/components/credits/CreditPrice/CreditPrice';
 import { useCreditPrice } from '../../lib/credits';
 import { isBarcodeMode } from '../../lib/cameraMode';
 import { MODE_SLIDER_HEIGHT } from '../../lib/scanGuides';

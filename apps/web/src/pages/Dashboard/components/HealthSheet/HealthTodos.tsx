@@ -29,8 +29,8 @@ import {
 } from '@/lib/health';
 import { localIso, useExpiryTags } from '@/lib/pantry';
 import type { PantryHealthState } from '@/lib/usePantryHealth';
-import { ExpiryTag } from '@/components/ExpiryTag';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { expiringSoonDay, todoTitle } from './todoText';
 import { todoItems, type TodoItem } from './todoItems';
 import { SetDateSheet } from './SetDateSheet';

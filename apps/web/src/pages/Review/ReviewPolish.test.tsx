@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { UnverifiedToast } from '@/components/UnverifiedToast';
+import { UnverifiedToast } from '@/components/lists/UnverifiedToast/UnverifiedToast';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import type { ProposedLine } from '@/lib/scan';
 import { renderWithProviders, stubApi } from '@/test/render';

@@ -21,7 +21,7 @@ import {
   useCreateFamilySynonym,
   type CatalogSearchResult,
 } from '@/lib/catalog';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { OptionRow } from '../OptionRow/OptionRow';
 import { resultMeta } from '../SearchResultRow/SearchResultRow';
 import {

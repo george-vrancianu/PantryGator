@@ -2,10 +2,10 @@ import { Alert, Box, Spinner, TextField, Typography } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { ConfirmPrompt } from '../../components/ConfirmAction';
 import { EditorForm } from '../../components/EditorForm';
-import { ExpiryField } from '../../components/ExpiryPicker';
+import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
 import { useFamily } from '../../lib/family';
 import { localIso, type IsoDate } from '../../lib/pantry';
 import {

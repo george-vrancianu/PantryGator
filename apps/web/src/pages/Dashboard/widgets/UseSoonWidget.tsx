@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { translateApiError } from '@/i18n/translateApiError';
 import { soonestExpiring } from '@/lib/dashboard';
-import { ExpiryTag } from '@/components/ExpiryTag';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { useBatches, useExpiryTags } from '@/lib/pantry';
 import { useToday } from '@/lib/useToday';
 import { WidgetCard, WidgetTitle } from './WidgetCard';

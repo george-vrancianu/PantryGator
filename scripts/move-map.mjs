@@ -55,18 +55,13 @@ const GROUP_HINTS = {
   ],
   auth: ['AuthShell', 'LanguageSwitcher'],
   mealPlan: ['MealPlanPopover'],
-  expiryPicker: ['ExpiryPicker'],
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
 const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor'];
 // Modules that stay where they are: the importer scan sees one page area (or one shared module) but the
-// real users are wider (Customise reads the widget catalog beside the Dashboard registry; the other
-// ExpiryPicker users go through its barrel, which the scan skips).
-const STAYS = [
-  'components/dashboard/widgetCatalog.ts',
-  'components/ExpiryPicker/expiryContext.ts',
-];
+// real users are wider (Customise reads the widget catalog beside the Dashboard registry).
+const STAYS = ['components/dashboard/widgetCatalog.ts'];
 const GUARDS = [
   'RequireAuth',
   'RequireAdmin',

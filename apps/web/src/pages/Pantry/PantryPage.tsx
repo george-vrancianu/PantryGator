@@ -8,13 +8,13 @@ import {
 } from '@pocket-pantry/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import {
   RowToggleErrorProvider,
   useRowToggleErrors,
-} from '../../components/RowToggleErrors';
-import { RowHintNote } from '../../components/RowHintNote';
-import { UnverifiedToast } from '../../components/UnverifiedToast';
+} from '@/components/lists/RowToggleErrors/RowToggleErrors';
+import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
+import { UnverifiedToast } from '@/components/lists/UnverifiedToast/UnverifiedToast';
 import { EmptyPantry, newPantryVisit } from './components/EmptyPantry';
 import { ShelfCard } from './components/ShelfCard';
 import { AddToPantrySheet } from './components/AddToPantrySheet';

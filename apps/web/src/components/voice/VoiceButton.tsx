@@ -18,7 +18,10 @@ import {
 } from '../../lib/voice';
 import type { useVoiceNote } from '../../lib/useVoiceNote';
 import { usePressGesture } from '../../lib/usePressGesture';
-import { CreditPrice, useCreditPriceText } from '../CreditPrice';
+import {
+  CreditPrice,
+  useCreditPriceText,
+} from '@/components/credits/CreditPrice/CreditPrice';
 import { useDockMicSlot, useReportRecording, useVoiceHost } from './VoiceHost';
 import { ListeningCard } from './ListeningCard';
 import { useElapsedMs } from './useElapsed';

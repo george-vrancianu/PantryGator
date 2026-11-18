@@ -12,9 +12,9 @@ import {
   type RowStatus,
 } from '@/lib/review';
 import { BarcodeLookupNotes } from '@/components/BarcodeLookupNotes';
-import { AmountField } from '@/components/AmountField';
-import { ExpiryField } from '@/components/ExpiryPicker/index';
-import { LocationToggle } from '@/components/LocationToggle';
+import { AmountField } from '@/components/catalog/AmountField/AmountField';
+import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
+import { LocationToggle } from '@/components/pantry/LocationToggle/LocationToggle';
 import { Field, FieldError, fieldLabelSx } from '../Field/Field';
 import {
   CategorySelect,

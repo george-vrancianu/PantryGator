@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { translateApiError } from '@/i18n/translateApiError';
 import type { CategoryOptions } from '@/lib/settings';
 import { groupCategories, type CategoryRef } from '../../defaultExpiry';

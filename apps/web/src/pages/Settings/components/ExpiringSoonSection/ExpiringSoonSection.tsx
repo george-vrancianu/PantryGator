@@ -13,7 +13,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExpiryTag } from '@/components/ExpiryTag';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useFamilySettings, useSetStaleThreshold } from '@/lib/settings';
 import { expiryTagFor, localDate, localIso } from '@/lib/pantry';

@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
-import { AmountField } from '@/components/AmountField';
+import { AmountField } from '@/components/catalog/AmountField/AmountField';
 import { type CatalogSearchResult, type Unit } from '@/lib/catalog';
 import { parseAmountText } from '@/lib/pantry';
 import {

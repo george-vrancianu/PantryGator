@@ -7,7 +7,7 @@ import { ApplyMemberLocale } from './ApplyMemberLocale';
 import { ApplyMemberTheme } from './ApplyMemberTheme';
 import { AppDock } from './AppDock';
 import { RefreshProvider } from '../lib/refresh';
-import { LayoutFrame } from './layout/LayoutFrame';
+import { LayoutFrame } from '@/components/layout/LayoutFrame/LayoutFrame';
 import {
   APP_VOICE_SETTINGS,
   useShowsDockMic,
