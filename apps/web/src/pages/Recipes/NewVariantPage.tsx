@@ -2,7 +2,7 @@ import { Alert, Spinner } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
-import { RecipeDraftStatus } from '@/components/RecipeDraftStatus';
+import { RecipeDraftStatus } from './components/RecipeDraftStatus/RecipeDraftStatus';
 import {
   useRecipeDraftFormSession,
   type RecipeDraftRouteProps,
@@ -14,16 +14,16 @@ import {
 } from '@/lib/recipeDraftContent';
 import { DRAFT_PARAM } from '@/lib/recipeRoutes';
 import { useRecipeDraftRoute } from './hooks/useRecipeDraftRoute';
-import { RecipeDraftContinue } from './RecipeDraftContinue';
+import { RecipeDraftContinue } from './components/RecipeDraftContinue/RecipeDraftContinue';
 import { useRecipeDraftAutosave } from '@/lib/recipeDraftAutosave';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useVariantDraft, type FamilyRecipeDraft } from '@/lib/familyRecipes';
 import { useRecipe, type RecipeDetail } from '@/lib/recipes';
-import { useMomentOptions } from './components/FamilyGuidance';
+import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { draftOfVariantDraft } from './hooks/familyDraft';
-import { VariantOfRow } from './components/VariantOfRow';
-import { FamilyRecipeForm } from './components/FamilyRecipeForm';
+import { VariantOfRow } from './components/VariantOfRow/VariantOfRow';
+import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
 import { namedGuidance, routePropsOf } from './hooks/familyRecipeShared';
 
 /** "Make a variant": the editor opens on a copy of the Recipe being viewed, or on a resumed Recipe Draft of this base. */

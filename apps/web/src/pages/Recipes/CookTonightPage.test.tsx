@@ -2,8 +2,8 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CookTonightCard } from '../../lib/cookTonight';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { CookTonightCard } from '@/lib/cookTonight';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { CookTonightPage } from './CookTonightPage';
 
 /*

@@ -3,17 +3,13 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Route, Routes } from 'react-router-dom';
-import { apiRequest } from '../../lib/api';
-import { suggestionsQueryKey } from '../../lib/queryKeys';
-import { shoppingListQueryKey } from '../../lib/shopping';
+import { apiRequest } from '@/lib/api';
+import { suggestionsQueryKey } from '@/lib/queryKeys';
+import { shoppingListQueryKey } from '@/lib/shopping';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { PantryLine, PantryMatch } from '../../lib/recipes';
-import type { RecipeDetail } from '../../lib/recipes';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
+import type { PantryLine, PantryMatch } from '@/lib/recipes';
+import type { RecipeDetail } from '@/lib/recipes';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
 import { RecipeDetailPage } from './RecipeDetailPage';
 
 const detail: RecipeDetail = {

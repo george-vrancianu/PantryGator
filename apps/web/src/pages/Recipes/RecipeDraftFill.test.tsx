@@ -4,8 +4,8 @@ import userEvent from '@testing-library/user-event';
 import type { InitialEntry } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RecipeDraftContent } from '../../lib/recipeDrafts';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { RecipeDraftContent } from '@/lib/recipeDrafts';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { NewRecipePage, type NewRecipeState } from './NewRecipePage';
 
 const DRAFT_ID = '5b0f6c2e-7d3a-4c58-9a51-1f2e3d4c5b6a';

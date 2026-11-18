@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderInAppLayout, stubApi } from '../../test/render';
+import { renderInAppLayout, stubApi } from '@/test/render';
 import { RecipeDraftsPage } from './RecipeDraftsPage';
 import { RecipesPage } from './RecipesPage';
 

@@ -3,15 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
-import type { Locale } from '../../i18n';
+import type { Locale } from '@/i18n/index';
 import {
   RECIPE_READ_AUTO_RETRY_MS,
   linkReadsOf,
   recipeReads,
-} from '../../lib/recipeReads';
-import type { RecipeFromLink } from '../../lib/linkRecipe';
-import { announcements, openBubbleSheet } from '../../test/voiceDom';
-import { renderWithProviders, stubApi } from '../../test/render';
+} from '@/lib/recipeReads';
+import type { RecipeFromLink } from '@/lib/linkRecipe';
+import { announcements, openBubbleSheet } from '@/test/voiceDom';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { RecipesPage } from './RecipesPage';
 
 type Routes = Parameters<typeof stubApi>[0];

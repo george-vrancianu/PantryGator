@@ -5,19 +5,15 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { findToast, getToast } from '../../test/toast';
+import { findToast, getToast } from '@/test/toast';
 import userEvent from '@testing-library/user-event';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RecipeListItem } from '../../lib/recipes';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
+import type { RecipeListItem } from '@/lib/recipes';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
 import { ExplorePage } from './ExplorePage';
-import { exploreAdds } from '../../lib/exploreAdds';
+import { exploreAdds } from '@/lib/exploreAdds';
 
 beforeEach(() => exploreAdds.reset());
 

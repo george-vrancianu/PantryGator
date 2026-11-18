@@ -18,8 +18,8 @@ import { ingredientKey, type PlanIssue } from '../../../lib/mealPlan';
 import type { AddMissingScope } from '../../../lib/mealPlan';
 import type { PlanSlot } from '../../../lib/mealPlanPage';
 import type { PantryLine } from '../../../lib/recipes';
-import { LineStatusPill } from '../../Recipes/components/PantryStatus';
-import { ServingsStepper } from '../../Recipes/components/Servings';
+import { LineStatusPill } from '@/components/recipe/PantryStatus/PantryStatus';
+import { ServingsStepper } from '@/components/recipe/Servings/Servings';
 
 /** A forecast issue as a Pantry-status line, so the Recipe page's pill words it (short amounts as kg / l). */
 function asPantryLine(issue: PlanIssue): PantryLine {

@@ -3,17 +3,17 @@ import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
-import { translateApiError } from '../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   canMakeCards,
   useCookTonight,
   type CookTonightCard,
-} from '../../lib/cookTonight';
-import { recipeHref } from '../../lib/recipeHref';
-import { localIso } from '../../lib/pantry';
-import type { RecipeListItem } from '../../lib/recipes';
-import { RecipeRow } from './components/RecipeRow';
-import { SectionLabel } from './components/SectionLabel';
+} from '@/lib/cookTonight';
+import { recipeHref } from '@/lib/recipeHref';
+import { localIso } from '@/lib/pantry';
+import type { RecipeListItem } from '@/lib/recipes';
+import { RecipeRow } from '@/components/recipe/RecipeRow/RecipeRow';
+import { SectionLabel } from './components/SectionLabel/SectionLabel';
 
 /** Cook Tonight: the Recipes the Family Can Make, then those one ingredient short. */
 export function CookTonightPage() {

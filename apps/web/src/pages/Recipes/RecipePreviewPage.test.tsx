@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
-import { dockStateFor } from '../../lib/dockState';
-import type { RecipeDetail } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { dockStateFor } from '@/lib/dockState';
+import type { RecipeDetail } from '@/lib/recipes';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { RecipePreviewPage } from './RecipeDetailPage';
 
 /*

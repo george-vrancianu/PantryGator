@@ -14,18 +14,25 @@ import type {
   RecipeDetail,
   RecipeDetailLine,
   RecipeVariantItem,
-} from '../../../lib/recipes';
-import type { AddState } from '../../../lib/addToFamily';
-import { AddToFamilyButton } from '../../../components/AddToFamilyButton';
-import { recipeHref } from '../../../lib/recipeHref';
-import { GuidanceSection } from './GuidanceSection';
-import { IngredientList, lineAmount, type LineAllergy } from './IngredientList';
-import { OwnerBadge } from './OwnerBadge';
+} from '@/lib/recipes';
+import type { AddState } from '@/lib/addToFamily';
+import { AddToFamilyButton } from '@/components/recipe/AddToFamilyButton/AddToFamilyButton';
+import { recipeHref } from '@/lib/recipeHref';
+import { GuidanceSection } from './GuidanceSection/GuidanceSection';
+import {
+  IngredientList,
+  lineAmount,
+  type LineAllergy,
+} from './IngredientList/IngredientList';
+import { OwnerBadge } from '@/components/recipe/OwnerBadge/OwnerBadge';
 import { RowTags } from '@/components/recipe/RowTags/RowTags';
-import { AddMissingNotes, PantryHeading } from './PantryStatus';
-import { Section } from './Section';
-import { ServingsStepper } from './Servings';
-import { StepList, TipCallout } from './StepList';
+import {
+  AddMissingNotes,
+  PantryHeading,
+} from '@/components/recipe/PantryStatus/PantryStatus';
+import { Section } from './Section/Section';
+import { ServingsStepper } from '@/components/recipe/Servings/Servings';
+import { StepList, TipCallout } from './StepList/StepList';
 
 /** What a Catalog Recipe's preview adds to its sections: its Variants carry add buttons and open previews. */
 export type PreviewSectionProps = {

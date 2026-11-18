@@ -9,7 +9,7 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { NewRecipePage } from './NewRecipePage';
 import { NewVariantPage } from './NewVariantPage';
 
