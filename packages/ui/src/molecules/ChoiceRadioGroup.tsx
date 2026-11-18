@@ -49,7 +49,9 @@ type LayoutProps =
 
 type Props<T extends string> = BaseProps<T> & LayoutProps;
 
+/** A row in the `list` layout is square: the card around the rows carries the corners. */
 function choiceRadius(layout: Props<string>['layout']) {
+  if (layout === 'list') return 0;
   return layout === 'chips' ? radius.chip : radius.control;
 }
 
@@ -142,7 +144,7 @@ export function ChoiceRadioGroup<T extends string>({
                 boxSizing: 'border-box',
                 minHeight: layout === 'chips' ? 44 : 50,
                 px: '16px',
-                borderRadius: list ? 0 : choiceRadius(layout),
+                borderRadius: choiceRadius(layout),
                 ...(list
                   ? {
                       border: 0,
