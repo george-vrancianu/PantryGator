@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyDraft } from '@/lib/recipeDraft';
 import { contentOfForm, formOfContent } from '@/lib/recipeDraftContent';
-import { documentOf } from './familyDraft';
+import { documentOf, keysOf, rebasedOnStored } from './familyDraft';
 
 describe('Recipe-level Tips in a Recipe Draft', () => {
   it('survive a save and resume, and are sent as Recipe Tips on create', () => {
@@ -33,5 +33,36 @@ describe('Recipe-level Tips in a Recipe Draft', () => {
     const content = contentOfForm({ draft: emptyDraft(), guidance: null });
     expect(content.tips).toBeUndefined();
     expect(documentOf(emptyDraft()).tips).toBeUndefined();
+  });
+});
+
+describe('rebasedOnStored', () => {
+  const row = (key: number, text: string, id?: string) => ({
+    key,
+    text,
+    timer: '',
+    ...(id ? { id } : {}),
+  });
+  const draftOf = (steps: ReturnType<typeof row>[]) => ({
+    ...emptyDraft(),
+    steps,
+  });
+
+  it('gives sent rows the ids the server returned, keeps typed text, and drops ids the server deleted', () => {
+    const sent = keysOf(draftOf([row(1, 'A', 's1'), row(2, 'New')]));
+    const stored = draftOf([row(10, 'A', 's1'), row(11, 'New', 's9')]);
+    // Live: B (id s2, deleted by the Save) came back by Undo; "New" was typed over.
+    const live = draftOf([
+      row(1, 'A', 's1'),
+      row(2, 'New, edited'),
+      row(3, 'B', 's2'),
+    ]);
+    expect(
+      rebasedOnStored(live, sent, stored).steps.map((s) => [s.text, s.id]),
+    ).toEqual([
+      ['A', 's1'],
+      ['New, edited', 's9'],
+      ['B', undefined],
+    ]);
   });
 });

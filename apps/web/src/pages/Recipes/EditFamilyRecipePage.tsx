@@ -23,7 +23,13 @@ import {
 } from '@/lib/guidanceDraft';
 import { recipesQueryKey } from '@/lib/recipes';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
-import { documentOf, draftOfEdit, type FamilyDraft } from './hooks/familyDraft';
+import {
+  documentOf,
+  draftOfEdit,
+  keysOf,
+  rebasedOnStored,
+  type FamilyDraft,
+} from './hooks/familyDraft';
 import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
 
 type FormState = { draft: FamilyDraft; guidance: GuidanceDraft | null };
@@ -61,6 +67,11 @@ export function EditFamilyRecipePage() {
   const recipe = query.data;
   /** Bumped when the Recipe is stored so the form reseeds with the new line and Step ids. */
   const [recipeSaves, setRecipeSaves] = useState(0);
+  /** Set when a Save lands over edits made in flight: the live draft takes the stored ids instead of being reseeded. */
+  const [rebase, setRebase] = useState<{
+    id: number;
+    apply: (draft: FamilyDraft) => FamilyDraft;
+  }>();
   /** Bumped when the Guidance is stored so its card reseeds; a Recipe-only save keeps Guidance edits. */
   const [guidanceSaves, setGuidanceSaves] = useState(0);
   /** The Member dropped the Source Link; it is only sent (and gone) once they save. */
@@ -99,21 +110,21 @@ export function EditFamilyRecipePage() {
         JSON.stringify(toGuidanceInput(guidanceBase))
     );
   };
-  /** Whether the form no longer holds what a Save sent: the Member kept editing while it was in flight. */
-  const formChangedSince = (
-    document: ReturnType<typeof documentOf> | undefined,
-    guidance: ReturnType<typeof toGuidanceInput> | undefined,
+  /** Whether the form no longer holds the Recipe a Save sent: the Member kept editing while it was in flight. */
+  const recipeChangedSince = (document: ReturnType<typeof documentOf>) => {
+    const now = formNow.current;
+    return (
+      !!now &&
+      JSON.stringify(documentOf(now.draft)) !== JSON.stringify(document)
+    );
+  };
+  /** Likewise for the Guidance a Save sent. */
+  const guidanceChangedSince = (
+    guidance: ReturnType<typeof toGuidanceInput>,
   ) => {
     const now = formNow.current;
-    if (!now) return false;
-    if (
-      document &&
-      JSON.stringify(documentOf(now.draft)) !== JSON.stringify(document)
-    )
-      return true;
     return (
-      guidance !== undefined &&
-      now.guidance !== null &&
+      !!now?.guidance &&
       JSON.stringify(toGuidanceInput(now.guidance)) !== JSON.stringify(guidance)
     );
   };
@@ -179,6 +190,7 @@ export function EditFamilyRecipePage() {
       // Tip writes refresh `recipe` but must not reset unsaved edits; a save reseeds.
       seedKey={`${recipe.id}-${recipeSaves}`}
       guidanceSeedKey={`${recipe.id}-${guidanceSaves}`}
+      rebase={rebase}
       header={{
         title: t('recipes:family.editHeading'),
         titleRef: headingRef,
@@ -250,6 +262,7 @@ export function EditFamilyRecipePage() {
         // `null` clears the link (and its language); leaving it out keeps both.
         const body = linkRemoved ? { ...document, sourceLink: null } : document;
         const key = JSON.stringify(body);
+        const sentKeys = formNow.current ? keysOf(formNow.current.draft) : null;
         setSaving(true);
         setSaved(false);
         setFailure(null);
@@ -259,9 +272,18 @@ export function EditFamilyRecipePage() {
               const stored = await update.mutateAsync(body);
               setStoredRecipe(JSON.stringify(documentOf(draftOfEdit(stored))));
               setLinkRemoved(false);
-              // Edits made while the Save was in flight stay: a reseed would drop them.
-              if (!formChangedSince(document, undefined))
+              if (!recipeChangedSince(document)) {
                 setRecipeSaves((count) => count + 1);
+              } else if (sentKeys) {
+                // Edits made while the Save was in flight stay: a reseed would drop them. The draft
+                // takes the ids the server now holds instead, and the row Undo toasts close.
+                const storedDraft = draftOfEdit(stored);
+                setRebase((last) => ({
+                  id: (last?.id ?? 0) + 1,
+                  apply: (draft) =>
+                    rebasedOnStored(draft, sentKeys, storedDraft),
+                }));
+              }
             } catch (error) {
               setFailure({ part: 'recipe', error });
               return;
@@ -274,7 +296,7 @@ export function EditFamilyRecipePage() {
             setFailure({ part: 'guidance', error });
             return;
           }
-          if (!formChangedSince(undefined, guidance))
+          if (!guidanceChangedSince(guidance))
             setGuidanceSaves((count) => count + 1);
           setSaved(true);
         } finally {

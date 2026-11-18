@@ -2425,6 +2425,93 @@ describe('Edits made while a Save is in flight', () => {
     expect(screen.getByLabelText(/^Title/)).toHaveValue('Second');
   });
 
+  describe('and a removed row is brought back by Undo', () => {
+    const twoSteps: FamilyRecipeEdit = {
+      ...saved,
+      steps: [
+        { id: 's1', text: 'Whisk the eggs', timerSeconds: null },
+        { id: 's2', text: 'Fry', timerSeconds: null },
+      ],
+    };
+
+    /** Removes the row, Saves (held in flight), presses Undo, lets the Save land, then Saves again. */
+    const undoDuringSave = async (
+      tab: 'Steps' | 'Ingredients',
+      without: FamilyRecipeEdit,
+      remove: (user: ReturnType<typeof userEvent.setup>) => Promise<void>,
+    ) => {
+      const user = userEvent.setup({ delay: null });
+      let answer: (response: Response) => void = () => {};
+      let stored = twoSteps;
+      let puts = 0;
+      const calls = setup('/recipes/g/edit', {
+        'GET /api/recipes/g/edit': () => Response.json(stored),
+        'PUT /api/recipes/g': () => {
+          puts += 1;
+          if (puts > 1) return Response.json(stored);
+          return new Promise<Response>((resolve) => {
+            answer = resolve;
+          });
+        },
+      });
+      await openTab(user, tab);
+      await remove(user);
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+      );
+      await user.click(screen.getByRole('button', { name: 'Undo' }));
+      stored = without;
+      await act(async () => answer(Response.json(without)));
+      await screen.findByRole('button', { name: 'Save' });
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(
+          calls.filter((c) => c.key === 'PUT /api/recipes/g'),
+        ).toHaveLength(2),
+      );
+      await screen.findByRole('button', { name: 'Save' });
+      return calls.filter((c) => c.key === 'PUT /api/recipes/g')[1].body as {
+        steps: { id?: string; text: string }[];
+        lines: { id?: string }[];
+      };
+    };
+
+    it('sends a removed Step as new, not under the id the server deleted', async () => {
+      const second = await undoDuringSave(
+        'Steps',
+        { ...twoSteps, steps: [twoSteps.steps[0]] },
+        async (user) => {
+          await user.click(
+            screen.getByRole('button', { name: 'Remove Step 2' }),
+          );
+        },
+      );
+      expect(second.steps.map((step) => step.text)).toEqual([
+        'Whisk the eggs',
+        'Fry',
+      ]);
+      expect(second.steps.map((step) => step.id)).toEqual(['s1', undefined]);
+      expect(screen.queryByText(/not found|no longer exists/i)).toBeNull();
+    });
+
+    it('sends a removed line as new, not under the id the server deleted', async () => {
+      const second = await undoDuringSave(
+        'Ingredients',
+        { ...twoSteps, lines: twoSteps.lines.filter((l) => l.id !== 'l2') },
+        async (user) => {
+          await user.click(
+            await screen.findByLabelText('More for Gran’s herbs'),
+          );
+          await user.click(
+            screen.getByRole('button', { name: 'Remove Gran’s herbs' }),
+          );
+        },
+      );
+      expect(second.lines.map((line) => line.id)).toEqual(['l1', undefined]);
+    });
+  });
+
   it('keep the Guidance edits too', async () => {
     const user = userEvent.setup({ delay: null });
     let answer: (response: Response) => void = () => {};
