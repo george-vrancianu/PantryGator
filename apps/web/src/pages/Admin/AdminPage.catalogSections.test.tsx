@@ -76,7 +76,7 @@ const catalog = {
 
 function renderSection(
   section: string,
-  routes: Record<string, () => Response> = {},
+  routes: Record<string, () => Response | Promise<Response>> = {},
 ) {
   const api = stubApi({
     'GET /api/admin/catalog': () => Response.json(catalog),
@@ -243,5 +243,28 @@ describe('Catalog section pages', () => {
 
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     expect(api.calls.some((c) => c.key.startsWith('DELETE'))).toBe(true);
+  });
+
+  it('draws Delete disabled while the delete is running', async () => {
+    renderSection('aisles', {
+      'DELETE /api/admin/catalog/aisles/a1': () =>
+        new Promise<Response>(() => {}),
+    });
+    const user = userEvent.setup();
+    await user.click(
+      await screen.findByRole('button', { name: 'Edit Aisle Dairy' }),
+    );
+    const sheet = await screen.findByRole('dialog', {
+      name: 'Edit Aisle Dairy',
+    });
+    expect(within(sheet).getByRole('button', { name: 'Delete' })).toBeEnabled();
+    await user.click(within(sheet).getByRole('button', { name: 'Delete' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() =>
+      expect(
+        within(sheet).getByRole('button', { name: 'Delete' }),
+      ).toBeDisabled(),
+    );
   });
 });

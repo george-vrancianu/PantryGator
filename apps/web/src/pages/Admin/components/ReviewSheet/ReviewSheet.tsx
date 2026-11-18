@@ -10,7 +10,7 @@ export type ReviewSheetForm = {
   submitLabel: string;
   savingLabel: string;
   /** The sheet's other action, e.g. Restore, left of the submit button. */
-  secondary?: { label: string; onClick: () => void };
+  secondary?: { label: string; disabled?: boolean; onClick: () => void };
 };
 
 type Props = {
@@ -31,7 +31,7 @@ type Props = {
   /** The primary (and secondary) when the sheet is not a form. */
   actions?: {
     primary: { label: string; onClick: () => void };
-    secondary?: { label: string; onClick: () => void };
+    secondary?: { label: string; disabled?: boolean; onClick: () => void };
   };
   children: ReactNode;
 };
