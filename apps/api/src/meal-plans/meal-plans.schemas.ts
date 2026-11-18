@@ -25,6 +25,12 @@ export const mealPlanQuery = z.object({
 });
 export type MealPlanQuery = z.infer<typeof mealPlanQuery>;
 
+/**
+ * How far a client's `today` may be from the server's UTC date on a write. Time
+ * zones span UTC-12 to UTC+14, so a real local date is always within a day of it.
+ */
+export const MAX_TODAY_SKEW_DAYS = 1;
+
 const name = z.string().trim().max(MAX_NAME_LENGTH);
 const startDate = z.iso.date();
 const days = z.number().int().min(1).max(MAX_PLAN_DAYS);

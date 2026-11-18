@@ -16,6 +16,7 @@ import {
   recipeSteps,
   recipeTips,
   recipeTranslations,
+  unmatchedEntries,
   user,
 } from '../src/database/schema';
 import type { RecipeListItem } from '../src/recipes/recipes.schemas';
@@ -367,6 +368,34 @@ describe('Add to Family (integration)', () => {
     expect(lines.find((l) => l.rawName === 'Secret spice')).toMatchObject({
       ingredientId: null,
       normalizedName: 'secret spice',
+    });
+  });
+
+  it('queues the Unmatched lines of a copy for Admin matching, once', async () => {
+    const src = await makeBase();
+    await database.insert(recipeIngredientLines).values({
+      id: newId(),
+      recipeId: src.id,
+      position: 6,
+      rawName: 'Secret Spice',
+      normalizedName: 'secret spice',
+    });
+    const copy = await copyId(ana, src.id);
+    await copyId(ana, src.id);
+    const queued = await database
+      .select({ entry: unmatchedEntries })
+      .from(unmatchedEntries)
+      .innerJoin(
+        recipeIngredientLines,
+        eq(recipeIngredientLines.id, unmatchedEntries.ingredientLineId),
+      )
+      .where(eq(recipeIngredientLines.recipeId, copy));
+    expect(queued).toHaveLength(1);
+    expect(queued[0].entry).toMatchObject({
+      rawName: 'Secret Spice',
+      normalizedName: 'secret spice',
+      source: 'recipe',
+      locale: 'en',
     });
   });
 

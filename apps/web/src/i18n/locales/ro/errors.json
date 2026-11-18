@@ -165,6 +165,7 @@
     "overlapUnnamed": "Aceste date se suprapun cu {{dates}}. Alege alte date.",
     "start_date_in_past": "Un plan nu poate începe înainte de azi.",
     "start_date_too_far": "Un plan poate începe cel mult peste 14 zile.",
+    "today_out_of_range": "Data ta este prea departe de data serverului. Verifică ceasul dispozitivului și încearcă din nou.",
     "day_in_past": "Ziua aceea a trecut și nu poate fi schimbată.",
     "already_started": "Un plan început nu poate fi mutat.",
     "day_out_of_range": "Ziua aceea nu face parte din plan.",

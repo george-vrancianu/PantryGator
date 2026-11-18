@@ -19,7 +19,7 @@ import type { ScanMode } from './scan';
 
 export type UnmatchedStatus = 'open' | 'dismissed';
 export type UnmatchedSource =
-  ScanMode | 'manual' | 'finish_shopping' | 'recipe';
+  ScanMode | 'manual' | 'finish_shopping' | 'recipe' | 'voice';
 
 export type UnmatchedReference = {
   type: 'batch' | 'shopping_item' | 'recipe_line';

@@ -3,14 +3,26 @@ import { recipeDifficulty } from '../database/schema';
 import {
   MAX_EATING_MOMENTS,
   MAX_NUTRITION_NOTE,
+  MAX_PAIRING_LABEL,
+  MAX_PAIRING_REASON,
   MAX_PAIRINGS,
 } from '../recipes/recipe-guidance.schemas';
 import {
+  MAX_LINE_NOTE,
   MAX_LINES,
+  MAX_LONG_TEXT,
+  MAX_RAW_NAME,
   MAX_RECIPE_TAGS,
   MAX_STEPS,
   MAX_TIPS,
+  MAX_TITLE,
 } from '../recipes/recipes.schemas';
+
+/**
+ * A Recipe Draft holds the form as typed, so its text caps are looser than the
+ * saved Recipe's: this many times the Recipe's own cap.
+ */
+export const RECIPE_DRAFT_CAP_FACTOR = 10;
 
 /** Most Recipe Drafts one Member can hold (ADR 0028). */
 export const MAX_RECIPE_DRAFTS = 20;
@@ -19,7 +31,7 @@ export const RECIPE_DRAFT_TTL_DAYS = 30;
 
 // Text is stored as typed, so there is no minimum, no trimming and no format.
 // Only the counts (lines, Steps, Tips, Pairings, Eating Moments) match the
-// Recipe's maximums. Per-string limits are loose safety ceilings, about 10x
+// Recipe's maximums. Per-string limits are loose safety ceilings, RECIPE_DRAFT_CAP_FACTOR times
 // the Recipe's: the form has no maxLength, and a Recipe Draft must never
 // refuse what the Member is still typing (the Recipe's own limits apply on save).
 const text = (max: number) => z.string().max(max);
@@ -30,20 +42,22 @@ const draftLine = z
   .object({
     id: z.uuid().optional(),
     ingredientId: short,
-    name: text(1000),
+    name: text(MAX_RAW_NAME * RECIPE_DRAFT_CAP_FACTOR),
     quantity: typed,
     unit: short,
     optional: z.boolean(),
-    note: text(2000),
+    note: text(MAX_LINE_NOTE * RECIPE_DRAFT_CAP_FACTOR),
   })
   .strict();
 
-const draftTip = z.object({ text: text(20000) }).strict();
+const draftTip = z
+  .object({ text: text(MAX_LONG_TEXT * RECIPE_DRAFT_CAP_FACTOR) })
+  .strict();
 
 const draftStep = z
   .object({
     id: z.uuid().optional(),
-    text: text(20000),
+    text: text(MAX_LONG_TEXT * RECIPE_DRAFT_CAP_FACTOR),
     timer: typed,
     tips: z.array(draftTip).max(MAX_TIPS).optional(),
   })
@@ -53,13 +67,13 @@ const draftPairing = z
   .object({
     id: z.uuid().optional(),
     kind: short,
-    label: text(2000),
-    reason: text(10000),
+    label: text(MAX_PAIRING_LABEL * RECIPE_DRAFT_CAP_FACTOR),
+    reason: text(MAX_PAIRING_REASON * RECIPE_DRAFT_CAP_FACTOR),
     principle: short,
     linkType: short,
     linkTarget: short,
-    linkName: text(2000).optional(),
-    linkTitle: text(2000).optional(),
+    linkName: text(MAX_PAIRING_LABEL * RECIPE_DRAFT_CAP_FACTOR).optional(),
+    linkTitle: text(MAX_PAIRING_LABEL * RECIPE_DRAFT_CAP_FACTOR).optional(),
     /** Proposed by Suggest Guidance and not yet kept by the Member. */
     suggested: z.boolean().optional(),
   })
@@ -69,14 +83,14 @@ const draftEatingMoment = z
   .object({
     eatingMomentId: short,
     polarity: short,
-    reason: text(10000),
+    reason: text(MAX_PAIRING_REASON * RECIPE_DRAFT_CAP_FACTOR),
     suggested: z.boolean().optional(),
   })
   .strict();
 
 const draftGuidance = z
   .object({
-    nutritionNote: text(MAX_NUTRITION_NOTE * 10),
+    nutritionNote: text(MAX_NUTRITION_NOTE * RECIPE_DRAFT_CAP_FACTOR),
     /** Proposed by Suggest Guidance and not yet kept by the Member. */
     nutritionNoteSuggested: z.boolean().optional(),
     pairings: z.array(draftPairing).max(MAX_PAIRINGS),
@@ -91,7 +105,7 @@ const draftGuidance = z
  */
 export const recipeDraftContent = z
   .object({
-    title: text(2000),
+    title: text(MAX_TITLE * RECIPE_DRAFT_CAP_FACTOR),
     servings: typed,
     prepMinutes: typed,
     cookMinutes: typed,
@@ -171,6 +185,15 @@ export type RecipeDraftSummary = {
   version: number;
 };
 
+/** A line as read back: the stored line plus its Ingredient's owner, resolved on read and never stored. */
+export type RecipeDraftReadLine = RecipeDraftContent['lines'][number] & {
+  ingredientOwner?: 'catalog' | 'family';
+};
+
+export type RecipeDraftReadContent = Omit<RecipeDraftContent, 'lines'> & {
+  lines: RecipeDraftReadLine[];
+};
+
 export type RecipeDraftView = {
   id: string;
   kind: RecipeDraftKind;
@@ -178,7 +201,7 @@ export type RecipeDraftView = {
   baseRecipeName: string | null;
   /** The base still exists, is not archived and is one the Family can see. */
   baseAvailable: boolean;
-  content: RecipeDraftContent;
+  content: RecipeDraftReadContent;
   version: number;
   createdAt: string;
   updatedAt: string;

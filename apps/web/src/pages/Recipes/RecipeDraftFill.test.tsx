@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { StrictMode } from 'react';
 import userEvent from '@testing-library/user-event';
 import type { InitialEntry } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RecipeDraftContent } from '@/lib/recipeDrafts';
 import { renderWithProviders, stubApi } from '@/test/render';
+import { openTab } from '@/test/familyRecipePages';
 import { NewRecipePage, type NewRecipeState } from './NewRecipePage';
 
 const DRAFT_ID = '5b0f6c2e-7d3a-4c58-9a51-1f2e3d4c5b6a';
@@ -161,6 +162,67 @@ describe('Recipe Drafts for supplied fills', () => {
     await elapse(5000);
     expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
     expect(sent(calls, `PUT /api/recipe-drafts/${DRAFT_ID}`)).toHaveLength(0);
+  });
+
+  it('shows the Family pill on a Recipe from Link fill line that uses a Family Ingredient', async () => {
+    const user = typer();
+    setup(
+      {
+        pathname: '/recipes/new',
+        state: {
+          ...fill,
+          draft: {
+            ...fill.draft,
+            lines: fill.draft.lines.map((line) => ({
+              ...line,
+              ingredientOwner: 'family' as const,
+            })),
+          },
+        },
+      },
+      draftRoutes,
+    );
+    await screen.findByLabelText(/^Title/);
+    await openTab(user, 'Ingredients');
+    const row = (await screen.findByLabelText('Quantity of Egg')).closest(
+      'li',
+    )!;
+    expect(await within(row).findByText('Family')).toBeVisible();
+  });
+
+  it("shows the Family pill on a resumed Recipe Draft line whose Ingredient the server says is the Family's, and never sends the owner back", async () => {
+    const user = typer();
+    const calls = setup(`/recipes/new?draft=${DRAFT_ID}`, {
+      ...draftRoutes,
+      [`GET /api/recipe-drafts/${DRAFT_ID}`]: () =>
+        Response.json(
+          stored(
+            content({
+              lines: [
+                {
+                  ingredientId: 'egg',
+                  ingredientOwner: 'family',
+                  name: 'Egg',
+                  quantity: '2',
+                  unit: 'pcs',
+                  optional: false,
+                  note: '',
+                },
+              ],
+            }),
+          ),
+        ),
+    });
+    await screen.findByLabelText(/^Title/);
+    await user.type(screen.getByLabelText(/^Title/), '!');
+    await openTab(user, 'Ingredients');
+    const row = (await screen.findByLabelText('Quantity of Egg')).closest(
+      'li',
+    )!;
+    expect(await within(row).findByText('Family')).toBeVisible();
+    await elapse(1600);
+    const put = sent(calls, `PUT /api/recipe-drafts/${DRAFT_ID}`)[0];
+    expect(JSON.stringify(put.body)).not.toContain('ingredientOwner');
   });
 
   it('keeps the Source Link and language through a resume and onto the saved Recipe', async () => {

@@ -60,7 +60,7 @@ import {
 } from './recipe-guidance.schemas';
 import { RecipeBrowseService } from './recipe-browse.service';
 
-/** The recipe content the prompt reads: Family lines may be Unmatched (`rawName`), Catalog lines are not. */
+/** The recipe content the prompt reads: lines may be Unmatched (`rawName`) in both modes. */
 type PromptRecipe = {
   title?: string;
   servings?: number;

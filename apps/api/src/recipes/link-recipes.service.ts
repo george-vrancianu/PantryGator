@@ -38,6 +38,7 @@ import { loadAllowedTags } from '../tags/allowed-tags';
 import { extractJsonLdRecipe } from './json-ld-recipe';
 import { visibleText } from './visible-text';
 import { draftContentOfLink } from './link-draft-content';
+import { ingredientOwners } from './recipe-view';
 import { draftOfReading } from './link-reading-mapping';
 import {
   LINK_READING_SCHEMA_NAME,
@@ -170,6 +171,12 @@ export class LinkRecipesService {
     };
 
     const draft = draftOfReading(reading, {
+      ingredientOwners: await ingredientOwners(
+        this.database,
+        reading.ingredients.flatMap((l) =>
+          l.ingredientId ? [l.ingredientId] : [],
+        ),
+      ),
       ingredientNames: new Map(catalog.ingredients.map((i) => [i.id, i.name])),
       matchThreshold: this.config.get('SCAN_MATCH_CONFIDENCE_THRESHOLD', {
         infer: true,

@@ -17,9 +17,13 @@ import {
 } from './recipe-guidance.schemas';
 
 const id = z.uuid();
-const title = z.string().trim().min(1).max(200);
-const longText = z.string().trim().min(1).max(2000);
-const note = z.string().trim().min(1).max(200);
+export const MAX_TITLE = 200;
+export const MAX_LONG_TEXT = 2000;
+export const MAX_LINE_NOTE = 200;
+export const MAX_RAW_NAME = 100;
+const title = z.string().trim().min(1).max(MAX_TITLE);
+const longText = z.string().trim().min(1).max(MAX_LONG_TEXT);
+const note = z.string().trim().min(1).max(MAX_LINE_NOTE);
 const minutes = z.number().int().min(0).max(100_000).nullable();
 
 export const MAX_LINES = 100;
@@ -94,7 +98,7 @@ export const variantCreate = z
 /** A Family line: an Ingredient or an Unmatched name, exactly one (the service checks, with a coded error). */
 export const familyLineInput = lineInput.extend({
   ingredientId: id.nullable().default(null),
-  rawName: z.string().trim().min(1).max(100).nullable().default(null),
+  rawName: z.string().trim().min(1).max(MAX_RAW_NAME).nullable().default(null),
 });
 
 /**
@@ -157,9 +161,9 @@ export const familyRecipeCreate = familyRecipeUpdate
     sourceLanguage: sourceLanguageInput.optional(),
     /**
      * Optional: the Member's Recipe Draft this save ends (ADR 0028). It is deleted in the
-     * same transaction as the create; an unknown, malformed or another Member's id is ignored.
+     * same transaction as the create; an unknown, malformed (up to 64 characters) or another Member's id is ignored.
      */
-    recipeDraftId: z.string().optional(),
+    recipeDraftId: z.string().max(64).optional(),
   })
   .refine(
     (body) => body.sourceLanguage === undefined || Boolean(body.sourceLink),
@@ -334,6 +338,8 @@ export type FiltersQuery = z.infer<typeof filtersQuery>;
 export type RecipeLineView = {
   id: string;
   ingredientId: string | null;
+  /** Whose Ingredient the line uses: a Family's own or the Catalog's; null on an Unmatched line. */
+  ingredientOwner: RecipeOwner | null;
   quantity: number | null;
   unit: (typeof ingredientUnit.enumValues)[number] | null;
   optional: boolean;
@@ -627,6 +633,8 @@ export type FamilyRecipeEdit = Omit<
   AdminRecipeDetail,
   'translations' | 'lines' | 'pairings'
 > & {
+  /** A Variant's Catalog base title in the requested locale; null on a Base Recipe. */
+  parentTitle: string | null;
   /** Pairings with display names for their links: null without a link, or when the Recipe is archived or not visible. */
   pairings: (AdminGuidance['pairings'][number] & {
     linkedIngredientName: string | null;
@@ -649,11 +657,13 @@ export type FamilyRecipeDraft = {
   difficulty: AdminRecipeDetail['difficulty'];
   /** Every Tag of the source: a new Variant starts with its Base's Tags. */
   tagIds: string[];
-  /** `ingredientName` is for display only; drop it when posting. */
+  /** `ingredientName` and `ingredientOwner` are for display only; drop them when posting. */
   lines: {
     ingredientId: string | null;
     rawName: string | null;
     ingredientName: string;
+    /** Whose Ingredient the line uses (for the Family pill); null on an Unmatched line. */
+    ingredientOwner: RecipeOwner | null;
     quantity: number | null;
     unit: RecipeLineView['unit'];
     optional: boolean;

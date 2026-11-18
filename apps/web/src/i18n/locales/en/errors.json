@@ -164,6 +164,7 @@
     "overlapUnnamed": "These dates overlap {{dates}}. Pick other dates.",
     "start_date_in_past": "A plan can't start before today.",
     "start_date_too_far": "A plan can start up to 14 days from today.",
+    "today_out_of_range": "Your date is too far from the server's date. Check your device's clock and try again.",
     "day_in_past": "That day has passed and can't be changed.",
     "already_started": "A plan that has started can't be moved.",
     "day_out_of_range": "That day isn't part of the plan.",

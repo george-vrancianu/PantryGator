@@ -2,7 +2,6 @@ import type {
   FamilyRecipeDocument,
   FamilyRecipeDraft,
   FamilyRecipeEdit,
-  SuggestFamilyGuidanceRequest,
 } from '@/lib/familyRecipes';
 import {
   decimal,
@@ -37,6 +36,7 @@ const metaOf = (source: Source & { servings: number | null }) => ({
 type LineSource = {
   id?: string;
   ingredientId: string | null;
+  ingredientOwner?: 'catalog' | 'family' | null;
   rawName: string | null;
   ingredientName: string;
   quantity: number | null;
@@ -49,6 +49,7 @@ const lineOf = (line: LineSource): LineDraft => ({
   key: newKey(),
   ...(line.id ? { id: line.id } : {}),
   ingredientId: line.ingredientId ?? '',
+  ...(line.ingredientOwner ? { ingredientOwner: line.ingredientOwner } : {}),
   name: line.ingredientName || line.rawName || '',
   quantity: line.quantity === null ? '' : String(line.quantity),
   unit: line.unit ?? 'g',
@@ -175,49 +176,5 @@ export function documentOf(draft: FamilyDraft): FamilyRecipeDocument {
         step.timer.trim() === '' ? null : Math.round(decimal(step.timer) * 60),
     })),
     ...(tips.length > 0 ? { tips } : {}),
-  };
-}
-
-/**
- * The page's Recipe as Suggest Guidance reads it. The form may be half done, so unlike
- * `documentOf` this never needs `problemsOf` to be clear: lines and Steps with nothing in them
- * are left out and a missing Title or Servings is left out too (the API takes both as optional).
- */
-export function suggestionRecipeOf(
-  draft: FamilyDraft,
-): SuggestFamilyGuidanceRequest['recipe'] {
-  const servings = Math.round(decimal(draft.servings));
-  const quantityOf = (text: string) => {
-    const value = decimal(text);
-    return text.trim() !== '' && value >= 0.001 && value <= 1_000_000
-      ? Math.round(value * 1000) / 1000
-      : null;
-  };
-  return {
-    ...(draft.title.trim() ? { title: draft.title.trim() } : {}),
-    ...(servings >= 1 && servings <= 1000 ? { servings } : {}),
-    prepMinutes: null,
-    cookMinutes: null,
-    tagIds: draft.tagIds,
-    lines: draft.lines.flatMap((line) => {
-      const rawName = line.name.trim().slice(0, 100);
-      if (!line.ingredientId && rawName === '') return [];
-      const quantity = quantityOf(line.quantity);
-      return [
-        {
-          ingredientId: line.ingredientId || null,
-          rawName: line.ingredientId ? null : rawName,
-          quantity,
-          unit: quantity === null ? null : line.unit,
-          optional: line.optional,
-          note: null,
-        },
-      ];
-    }),
-    steps: draft.steps.flatMap((step) =>
-      step.text.trim() === ''
-        ? []
-        : [{ text: step.text.trim().slice(0, 2000), timerSeconds: null }],
-    ),
   };
 }

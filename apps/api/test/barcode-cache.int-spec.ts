@@ -1,5 +1,8 @@
 import { jest } from '@jest/globals';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { eq, lt } from 'drizzle-orm';
+import { openFoodFactsCache } from '../src/database/schema';
+import { BarcodeLookupService } from '../src/barcode/barcode-lookup.service';
 import { ApiException } from '../src/common/api-exception';
 import { seedCatalog, seedId } from '../src/catalog/seed/seed-catalog';
 import { DATABASE } from '../src/database/database.constants';
@@ -163,5 +166,102 @@ describe('Barcode Lookup cache (integration)', () => {
     });
     expect(((await lookup(a)).body as Json).match).toBeNull();
     expect(asked).toEqual([code]);
+  });
+
+  describe('lazy sweep of expired rows (#899)', () => {
+    const cacheRow = async (barcode: string) => {
+      const rows = await app
+        .get<Database>(DATABASE)
+        .select()
+        .from(openFoodFactsCache)
+        .where(eq(openFoodFactsCache.barcode, barcode));
+      return rows[0];
+    };
+    const seed = (
+      barcode: string,
+      product: OpenFoodFactsProduct | null,
+      ageMs: number,
+    ) =>
+      app
+        .get<Database>(DATABASE)
+        .insert(openFoodFactsCache)
+        .values({ barcode, product, fetchedAt: new Date(now - ageMs) });
+    // The sweep is throttled per process by wall-clock time, so each test jumps the
+    // clock further ahead than the one before to be sure its first lookup sweeps.
+    let jumped = 0;
+    const jumpAhead = () => {
+      jumped += 2000 * DAY;
+      now += jumped;
+    };
+    // The worker DB is shared by the suites it runs, and after the jump every row is
+    // expired: start from an empty cache so the batch holds only this test's rows.
+    const emptyCache = async () => {
+      await app.get<Database>(DATABASE).delete(openFoodFactsCache);
+    };
+    const sweepSettled = () => app.get(BarcodeLookupService).sweepSettled();
+
+    it('deletes expired hits and not-founds on a lookup, keeping fresh ones', async () => {
+      jumpAhead();
+      await emptyCache();
+      const expiredHit = freshBarcode();
+      const expiredMiss = freshBarcode();
+      const freshHit = freshBarcode();
+      const freshMiss = freshBarcode();
+      await seed(expiredHit, parmesan, 31 * DAY);
+      await seed(expiredMiss, null, 2 * DAY);
+      await seed(freshHit, parmesan, 29 * DAY);
+      await seed(freshMiss, null, DAY / 2);
+      await lookup(a);
+      await sweepSettled();
+      expect(await cacheRow(expiredHit)).toBeUndefined();
+      expect(await cacheRow(expiredMiss)).toBeUndefined();
+      expect(await cacheRow(freshHit)).toBeDefined();
+      expect(await cacheRow(freshMiss)).toBeDefined();
+    });
+
+    it('deletes at most 100 rows per sweep, and at most one sweep a minute', async () => {
+      jumpAhead();
+      await emptyCache();
+      const db = app.get<Database>(DATABASE);
+      const staleCount = async () =>
+        (
+          await db
+            .select()
+            .from(openFoodFactsCache)
+            .where(lt(openFoodFactsCache.fetchedAt, new Date(now - 31 * DAY)))
+        ).length;
+      await db.insert(openFoodFactsCache).values(
+        Array.from({ length: 105 }, () => ({
+          barcode: freshBarcode(),
+          product: parmesan,
+          fetchedAt: new Date(now - 40 * DAY),
+        })),
+      );
+      await lookup(a);
+      await sweepSettled();
+      expect(await staleCount()).toBe(5);
+
+      now += 10 * 1000;
+      await lookup(a);
+      await sweepSettled();
+      expect(await staleCount()).toBe(5);
+
+      now += 60 * 1000;
+      await lookup(a);
+      await sweepSettled();
+      expect(await staleCount()).toBe(0);
+    });
+
+    it('does not fail the lookup when the sweep throws', async () => {
+      jumpAhead();
+      const deleteSpy = jest
+        .spyOn(app.get<Database>(DATABASE), 'delete')
+        .mockImplementation(() => {
+          throw new Error('boom');
+        });
+      await lookup(a);
+      await sweepSettled();
+      expect(deleteSpy).toHaveBeenCalled();
+    });
   });
 });

@@ -108,7 +108,15 @@ describe('Recipes browsing and detail (integration)', () => {
       title: created.title,
       servings: created.servings,
       tagIds: created.tagIds,
-      lines: created.lines.map((l) => ({ ...l })),
+      // Post the document fields only: the view's `ingredientOwner` is display-only.
+      lines: created.lines.map((l) => ({
+        id: l.id,
+        ingredientId: l.ingredientId,
+        quantity: l.quantity,
+        unit: l.unit,
+        optional: l.optional,
+        note: l.note,
+      })),
       steps: created.steps.map((s) => ({ ...s })),
       ...overrides,
     };
