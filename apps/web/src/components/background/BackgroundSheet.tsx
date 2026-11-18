@@ -197,16 +197,7 @@ export function BackgroundSheet({
         })}
         {notice ? (
           // Stays in view above the pinned Review all, whatever the list's length.
-          <Box
-            sx={{
-              position: 'sticky',
-              bottom: 0,
-              pt: 1,
-              backgroundColor: palette('background-paper'),
-            }}
-          >
-            {notice}
-          </Box>
+          <Box sx={{ position: 'sticky', bottom: 0, mt: 1 }}>{notice}</Box>
         ) : null}
         <Box
           sx={{

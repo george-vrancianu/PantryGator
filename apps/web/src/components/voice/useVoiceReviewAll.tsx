@@ -15,16 +15,20 @@ import {
 export function useVoiceReviewAll(onClose: () => void): {
   primary: { label: string; onClick: () => void } | undefined;
   notice: ReactNode;
+  /** Forget a refusal (call when the sheet has closed). */
+  reset: () => void;
 } {
   const { t } = useTranslation('voice');
   const { inbox } = useVoiceNoteState();
   // "Review all" was refused: too many Voice Actions for one Apply.
   const [refusedAt, setRefusedAt] = useState<number | null>(null);
   const reviewable = inbox.notes.filter((n) => n.hasActions).length;
-  if (reviewable <= 1) return { primary: undefined, notice: null };
+  const reset = () => setRefusedAt(null);
+  if (reviewable <= 1) return { primary: undefined, notice: null, reset };
   // The refusal holds only for the notes it was made for.
   const tooMany = refusedAt === reviewable;
   return {
+    reset,
     primary: {
       label: t('inbox.reviewAll', { count: reviewable }),
       onClick: () => {

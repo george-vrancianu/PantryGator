@@ -78,6 +78,7 @@ export function BackgroundHost({
           open={wantSheet && items.length > 0 && state.phase === 'idle'}
           onClose={() => setWantSheet(false)}
           onExited={() => {
+            reviewAll.reset();
             setMounted(false);
             setWantSheet(false);
             // The opener went with the last item; otherwise focus is wherever the Member went.
