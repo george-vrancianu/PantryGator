@@ -57,5 +57,5 @@ export const preferenceSaves = (calls: ReturnType<typeof stubSetupMember>) =>
  */
 export async function goToSayIt() {
   fireEvent.click(await screen.findByRole('button', { name: /Show me how/ }));
-  fireEvent.click(await screen.findByRole('link', { name: 'Skip' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Skip' }));
 }

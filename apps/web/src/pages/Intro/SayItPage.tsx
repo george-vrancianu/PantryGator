@@ -157,7 +157,7 @@ function SayItScreen() {
           creamFocus,
         ]}
       >
-        <SetupOliveTopRow step={2} skipTo={SKIP_TO} leave={leave} />
+        <SetupOliveTopRow step={2} leave={leave} />
 
         {counts.batches > 0 ? (
           <Box
