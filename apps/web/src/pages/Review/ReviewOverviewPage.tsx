@@ -35,7 +35,7 @@ import {
 } from './components/ReceiptCropper/ReceiptCropper';
 import { cropToReceiptArea } from '@/lib/image';
 import { MAX_BULK_BATCHES } from '@/lib/scan';
-import { loadLastScanMode } from '@/lib/cameraMode';
+import { loadLastScanMode, type CameraMode } from '@/lib/cameraMode';
 import { importPhotos } from '@/lib/importPhotos';
 import { useSessionScanLanguage } from '@/lib/sessionScanLanguage';
 import {
@@ -93,8 +93,11 @@ const dashedButton = {
  * with the camera at `/scan`, a card opening at `/scan/review/:scanId` and the camera as the landing.
  */
 export type ReviewOverviewSettings = {
-  /** The camera: "Camera", "Take more" and Retake lead here. */
-  cameraPath?: string;
+  /**
+   * The camera: "Camera", "Take more" and Retake lead here. It gets the Scan Mode to reopen in: a card's own
+   * for Retake, the last scan's for the others (none when the Scan Session is empty).
+   */
+  cameraPath?: (mode: CameraMode | undefined) => string;
   /** Where a card opens. */
   cardPath?: (scanId: string) => string;
   /** Whether Add from photos is offered. Defaults to true. */
@@ -118,7 +121,7 @@ export type ReviewOverviewSettings = {
 export function ReviewOverviewPage({
   settings = {},
 }: { settings?: ReviewOverviewSettings } = {}) {
-  const cameraPath = settings.cameraPath ?? '/scan';
+  const cameraPathFor = settings.cameraPath ?? (() => '/scan');
   const importOffered = settings.importOffered ?? true;
   const cardPath = settings.cardPath ?? ((id: string) => `/scan/review/${id}`);
   const { t } = useTranslation('review');
@@ -134,6 +137,7 @@ export function ReviewOverviewPage({
   const { scanLanguageToSend: scanLanguage } = useSessionScanLanguage();
   const photosInput = useRef<HTMLInputElement>(null);
   const session = useScanSession();
+  const cameraPath = cameraPathFor(session.scans.at(-1)?.mode);
   const uncropped = uncroppedCount(session);
   // Uncropped receipts wait for the Member, not for a read.
   const reading = pendingCount(session) - uncropped;
@@ -387,7 +391,7 @@ export function ReviewOverviewPage({
                     dispatchScanSession({ type: 'remove', id: scan.id });
                     // Scans held back by the Scan Cap can go on now.
                     readScans();
-                    if (!barcode) navigate(cameraPath);
+                    if (!barcode) navigate(cameraPathFor(scan.mode));
                   }}
                   sx={linkButton}
                 >

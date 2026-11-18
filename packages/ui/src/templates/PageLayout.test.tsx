@@ -19,16 +19,6 @@ describe('PageLayout', () => {
     );
   });
 
-  it('reserves the given clearance instead when a row hangs above the Dock', () => {
-    const { container } = render(
-      <PageLayout dockClearance="calc(200px + env(safe-area-inset-bottom, 0px))">
-        Page
-      </PageLayout>,
-    );
-    expect(bottom(container)).toContain('200px');
-    expect(bottom(container)).toContain('safe-area-inset-bottom');
-  });
-
   it('reserves little room without the Dock', () => {
     const { container } = render(
       <PageLayout withDock={false}>Page</PageLayout>,

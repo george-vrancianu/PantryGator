@@ -276,7 +276,9 @@
     "note_one": "{{count}} rețetă ascunsă din cauza alergiilor tale",
     "note_few": "{{count}} rețete ascunse din cauza alergiilor tale",
     "note_other": "{{count}} de rețete ascunse din cauza alergiilor tale",
-    "show": "Arată"
+    "show": "Arată",
+    "showing": "Se arată rețetele ascunse din cauza alergiilor tale",
+    "hide": "Ascunde"
   },
   "cookTonight": {
     "title": "Gătește diseară",

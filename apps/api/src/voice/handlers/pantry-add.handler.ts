@@ -52,7 +52,7 @@ export function pantryAddHandler(pantry: PantryService): VoiceActionHandler {
                 : draft.expiresOn
                   ? { expiryDate: draft.expiresOn }
                   : {}),
-              source: 'manual',
+              source: 'voice',
             },
           ],
           ctx.locale,

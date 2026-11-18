@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   HttpCode,
+  Injectable,
   Param,
+  type PipeTransform,
   Patch,
   Post,
   Put,
@@ -27,6 +29,7 @@ import {
   updateMealPlanBody,
   type AddedMissingView,
   type AddMissingBody,
+  MAX_TODAY_SKEW_DAYS,
   type CreateMealPlanBody,
   type FillBody,
   type MealPlanQuery,
@@ -37,10 +40,30 @@ import {
   type SlotParams,
   type UpdateMealPlanBody,
 } from './meal-plans.schemas';
+import { ApiException } from '../common/api-exception';
+import { utcToday } from '../shopping/batch-presence';
 import { MemberLanguageService } from '../member-language/member-language.service';
 import { MealPlansService } from './meal-plans.service';
 
 const query = new ZodValidationPipe(mealPlanQuery);
+
+/** The query of a write: the client's `today` must be near the server's UTC date, or it could get round the past-day and start-date rules. */
+@Injectable()
+class MealPlanWriteQueryPipe implements PipeTransform {
+  transform(value: unknown): MealPlanQuery {
+    const parsed = query.transform(value);
+    if (parsed.today !== undefined) {
+      const skewDays = Math.abs(
+        (Date.parse(parsed.today) - Date.parse(utcToday())) / 86_400_000,
+      );
+      if (skewDays > MAX_TODAY_SKEW_DAYS) {
+        throw new ApiException(400, 'meal_plan.today_out_of_range');
+      }
+    }
+    return parsed;
+  }
+}
+const writeQuery = new MealPlanWriteQueryPipe();
 const idParam = new ZodValidationPipe(mealPlanIdParam);
 const slotParam = new ZodValidationPipe(slotParams);
 
@@ -66,7 +89,7 @@ export class MealPlansController {
   @ApiOperation({ summary: 'Create a Meal Plan' })
   async create(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Body(new ZodValidationPipe(createMealPlanBody)) body: CreateMealPlanBody,
   ): Promise<MealPlanView> {
     return this.plans.create(
@@ -100,7 +123,7 @@ export class MealPlansController {
   })
   async addMissing(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Body(new ZodValidationPipe(addMissingBody)) body: AddMissingBody,
   ): Promise<AddedMissingView> {
     return this.plans.addMissing(
@@ -132,7 +155,7 @@ export class MealPlansController {
   })
   async update(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Param(idParam) { id }: { id: string },
     @Body(new ZodValidationPipe(updateMealPlanBody)) body: UpdateMealPlanBody,
   ): Promise<MealPlanView> {
@@ -161,7 +184,7 @@ export class MealPlansController {
   })
   async setSlot(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Param(slotParam) params: SlotParams,
     @Body(new ZodValidationPipe(setSlotBody)) body: SetSlotBody,
   ): Promise<MealPlanView> {
@@ -179,7 +202,7 @@ export class MealPlansController {
   @ApiOperation({ summary: 'Clear a Plan Slot' })
   async clearSlot(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Param(slotParam) params: SlotParams,
   ): Promise<void> {
     await this.plans.clearSlot(member.id, params, today);
@@ -192,7 +215,7 @@ export class MealPlansController {
   })
   async fill(
     @CurrentUser() member: CurrentUserValue,
-    @Query(query) { today }: MealPlanQuery,
+    @Query(writeQuery) { today }: MealPlanQuery,
     @Param(idParam) { id }: { id: string },
     @Body(new ZodValidationPipe(fillBody)) body: FillBody,
   ): Promise<MealPlanView> {

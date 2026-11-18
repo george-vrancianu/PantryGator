@@ -1,5 +1,9 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { eq } from 'drizzle-orm';
 import request from 'supertest';
+import { DATABASE } from '../src/database/database.constants';
+import type { Database } from '../src/database/database.types';
+import { unmatchedEntries } from '../src/database/schema';
 import { seedId } from '../src/catalog/seed/seed-catalog';
 import { createTestApp, TEST_ORIGIN } from './support/create-test-app';
 
@@ -310,7 +314,16 @@ describe('Voice Notes on the Pantry (integration)', () => {
         ingredient: null,
         name: 'Quinoa crackers',
       });
-      await apply(cookie, [asSent(action)]);
+      const result = await apply(cookie, [asSent(action)]);
+      const [queued] = await app
+        .get<Database>(DATABASE)
+        .select()
+        .from(unmatchedEntries)
+        .where(eq(unmatchedEntries.batchId, result.applied[0].rowId as string));
+      expect(queued).toMatchObject({
+        rawName: 'Quinoa crackers',
+        source: 'voice',
+      });
       expect((await pantry(cookie)).batches).toMatchObject([
         {
           name: 'Quinoa crackers',

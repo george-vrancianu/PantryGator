@@ -121,7 +121,8 @@
       "sayIt": "Spune"
     },
     "added": "Adăugate",
-    "addedToast": "Adăugat {{details}}",
+    "addedToast": "Adăugat {{name}} · {{location}}",
+    "addedToastAmount": "Adăugat {{name}} · {{amount}} · {{location}}",
     "addedList_one": "{{count}} lot adăugat",
     "addedList_few": "{{count}} loturi adăugate",
     "addedList_other": "{{count}} de loturi adăugate",

@@ -198,7 +198,9 @@ export function ExplorePage() {
         />
         <HiddenByAllergiesNote
           count={hiddenCount}
+          showing={showHidden}
           onShow={() => setShowHidden(true)}
+          onHide={() => setShowHidden(false)}
         />
         {recipes.error ? (
           <Alert>{translateApiError(t, recipes.error)}</Alert>

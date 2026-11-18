@@ -85,13 +85,11 @@ export function AddToPantrySheet({
     setAdded((was) => [...was, batch]);
     setFormKey((was) => was + 1);
     const amount = formatRowAmount(batch, i18n.language, t);
-    const parts = [
-      batch.name,
-      ...(amount ? [amount] : []),
-      t(`common:locations.${batch.location}`),
-    ];
+    const location = t(`common:locations.${batch.location}`);
     showUndo(
-      t('form.addedToast', { details: parts.join(' · ') }),
+      amount
+        ? t('form.addedToastAmount', { name: batch.name, amount, location })
+        : t('form.addedToast', { name: batch.name, location }),
       () => {
         setAdded((was) => was.filter((one) => one.id !== batch.id));
         deleteBatch.mutate(batch.id, {

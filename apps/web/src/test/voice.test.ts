@@ -29,7 +29,7 @@ describe('the fake voice environment: pending reads', () => {
     await recordAndSend({ spokenLanguage: 'en', defaultTarget: 'pantry' });
     await vi.waitFor(() => expect(fake.reads).toHaveLength(1));
     fake.reads[0].reject(new TypeError('Failed to fetch'));
-    // A network error is tried once more by itself.
+    // A network error is tried once more by itself, without a wait in tests.
     await vi.waitFor(() => expect(fake.reads).toHaveLength(2));
     fake.reads[1].reject(new TypeError('Failed to fetch'));
 
@@ -48,7 +48,7 @@ describe('the fake voice environment: pending reads', () => {
     fake.releaseReads();
     expect(voiceNote.getState().inbox.reading).toBe(1);
 
-    voiceNote.cancelReading();
+    voiceNote.cancelReading(voiceNote.getState().inbox.notes[0].id);
     await recordAndSend({ spokenLanguage: 'en', defaultTarget: 'shopping' });
     await vi.waitFor(() => expect(voiceNote.getState().inbox.ready).toBe(1));
     expect(fake.reads).toHaveLength(1);
@@ -61,7 +61,7 @@ describe('the fake voice environment: pending reads', () => {
 
     await recordAndSend({ spokenLanguage: 'en', defaultTarget: 'shopping' });
     await vi.waitFor(() => expect(fake.reads).toHaveLength(1));
-    voiceNote.cancelReading();
+    voiceNote.cancelReading(voiceNote.getState().inbox.notes[0].id);
 
     expect(fake.signals[0].aborted).toBe(true);
     expect(voiceNote.getState().phase).toBe('idle');

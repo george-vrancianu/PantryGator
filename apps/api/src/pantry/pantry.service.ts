@@ -17,7 +17,10 @@ import { DATABASE } from '../database/database.constants';
 import type { Database, Executor, Tx } from '../database/database.types';
 import { batches, leafCategories, parentCategories } from '../database/schema';
 import { SettingsService } from '../settings/settings.service';
-import { recordUnmatched } from '../unmatched/unmatched-entries';
+import {
+  recordUnmatched,
+  type UnmatchedSource,
+} from '../unmatched/unmatched-entries';
 import {
   clearRunningLowOnRestock,
   clearRunningLowWhenGone,
@@ -35,6 +38,11 @@ type BatchRow = typeof batches.$inferSelect;
 type Leaf = typeof leafCategories.$inferSelect;
 type Parent = typeof parentCategories.$inferSelect;
 type Target = { ingredientId: string | null; leaf: Leaf; parent: Parent };
+
+/** A Batch to add; the server may claim any Unmatched source, a client only `BATCH_SOURCES`. */
+export type ServerBatchBody = Omit<CreateBatchBody, 'source'> & {
+  source?: UnmatchedSource;
+};
 
 @Injectable()
 export class PantryService {
@@ -96,7 +104,7 @@ export class PantryService {
   async addInTransaction(
     tx: Tx,
     memberId: string,
-    bodies: CreateBatchBody[],
+    bodies: ServerBatchBody[],
     locale: CatalogLocale,
     scanLanguage: ScanLanguage = locale,
     today: string = new Date().toISOString().slice(0, 10),
@@ -115,7 +123,7 @@ export class PantryService {
   private async insertFromBodies(
     tx: Tx,
     familyId: string,
-    bodies: CreateBatchBody[],
+    bodies: ServerBatchBody[],
     locale: CatalogLocale,
     scanLanguage: ScanLanguage,
     today: string,
@@ -168,7 +176,7 @@ export class PantryService {
 
   private toRow(
     familyId: string,
-    body: CreateBatchBody,
+    body: ServerBatchBody,
     target: Target,
     overrides: ExpiryOverride[],
     today: string,
@@ -404,9 +412,9 @@ export class PantryService {
    */
   private async targetsFor(
     familyId: string,
-    bodies: CreateBatchBody[],
+    bodies: ServerBatchBody[],
   ): Promise<Target[]> {
-    const parentIdOf = (body: CreateBatchBody) =>
+    const parentIdOf = (body: ServerBatchBody) =>
       body.parentCategoryId ?? TOP_LEVEL_OTHER_PARENT_ID;
     const ingredientIds = [
       ...new Set(

@@ -8,6 +8,7 @@ import { loadDisplayNames } from '../catalog/display-names';
 import type { CatalogLocale } from '../catalog/catalog.schemas';
 import type { Executor } from '../database/database.types';
 import {
+  ingredients as ingredientTable,
   recipeHiddenTips,
   recipeIngredientLines,
   recipeIngredientLineTranslations,
@@ -41,9 +42,13 @@ type RecipeRow = typeof recipes.$inferSelect;
 
 const lineView = (
   row: typeof recipeIngredientLines.$inferSelect,
+  owners: ReadonlyMap<string, RecipeOwner>,
 ): RecipeLineView => ({
   id: row.id,
   ingredientId: row.ingredientId,
+  ingredientOwner: row.ingredientId
+    ? (owners.get(row.ingredientId) ?? null)
+    : null,
   quantity: row.quantity,
   unit: row.unit,
   optional: row.optional,
@@ -105,7 +110,32 @@ async function loadParts(executor: Executor, recipeId: string) {
       .where(eq(recipeTips.recipeId, recipeId))
       .orderBy(asc(recipeTips.position)),
   ]);
-  return { lines, steps, tips };
+  const owners = await ingredientOwners(
+    executor,
+    lines.flatMap((l) => (l.ingredientId ? [l.ingredientId] : [])),
+  );
+  return { lines, steps, tips, owners };
+}
+
+/** Who owns each Ingredient: a Family Ingredient has an owner Family, a Catalog one has none. */
+export async function ingredientOwners(
+  executor: Executor,
+  ids: string[],
+): Promise<Map<string, RecipeOwner>> {
+  if (ids.length === 0) return new Map();
+  const rows = await executor
+    .select({
+      id: ingredientTable.id,
+      ownerFamilyId: ingredientTable.ownerFamilyId,
+    })
+    .from(ingredientTable)
+    .where(inArray(ingredientTable.id, ids));
+  return new Map(
+    rows.map((r): [string, RecipeOwner] => [
+      r.id,
+      r.ownerFamilyId === null ? 'catalog' : 'family',
+    ]),
+  );
 }
 
 async function loadTranslations(
@@ -210,7 +240,7 @@ export async function loadAdminDetail(
     archivedAt: row.archivedAt?.toISOString() ?? null,
     sourceLink: row.sourceLink,
     sourceLanguage: row.sourceLanguage,
-    lines: parts.lines.map(lineView),
+    lines: parts.lines.map((line) => lineView(line, parts.owners)),
     steps: parts.steps.map(stepView),
     tips: parts.tips.map(tipView),
     ...(await loadAdminGuidance(executor, id, row.nutritionNote)),
@@ -394,7 +424,7 @@ export async function resolveRecipe(
     sourceLink: row.sourceLink,
     sourceLanguage: row.sourceLanguage,
     lines: parts.lines.map((line) => ({
-      ...lineView(line),
+      ...lineView(line, parts.owners),
       note: line.note === null ? null : (lineNote.get(line.id) ?? line.note),
       ingredientName: line.ingredientId
         ? names.pick(

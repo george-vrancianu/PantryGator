@@ -240,7 +240,9 @@ export function RecipesPage() {
                   cookTonight.data?.hiddenByAllergiesCount ?? 0,
                 )
           }
+          showing={showHidden}
           onShow={() => setShowHidden(true)}
+          onHide={() => setShowHidden(false)}
         />
         {recipes.error ? (
           <Alert>{translateApiError(t, recipes.error)}</Alert>

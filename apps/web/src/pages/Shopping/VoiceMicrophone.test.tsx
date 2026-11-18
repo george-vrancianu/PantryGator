@@ -322,6 +322,24 @@ describe('Voice Note microphone sheets', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
+  it('shows no hold tip behind the intro sheet after a quick tap during the permission check', async () => {
+    let answer: (state: string) => void = () => {};
+    mic.permission.mockImplementation(
+      () => new Promise((resolve) => (answer = resolve)),
+    );
+    renderInAppLayout(<ShoppingPage />, '/shopping');
+    const button = await talkButton();
+
+    pressDown(button);
+    fireEvent.pointerUp(button);
+    await act(async () => answer('prompt'));
+
+    expect(await screen.findByRole('dialog')).toHaveTextContent(
+      'Say what you did',
+    );
+    expect(screen.queryByText('Hold to talk, let go to send')).toBeNull();
+  });
+
   it('opens the blocked sheet when the browser refuses mid-hold (no Permissions API)', async () => {
     mic.permission.mockResolvedValue('granted');
     mic.start.mockRejectedValue(new MicrophoneError('denied'));

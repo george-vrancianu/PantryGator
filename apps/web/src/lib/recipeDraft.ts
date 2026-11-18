@@ -4,6 +4,7 @@ import type {
   RecipeDocument,
   SuggestCatalogGuidanceRequest,
 } from './adminRecipes';
+import type { SuggestFamilyGuidanceRequest } from './familyRecipes';
 import type { Difficulty } from './recipeVocabulary';
 import type { Unit } from './catalog';
 
@@ -13,6 +14,8 @@ export type LineDraft = {
   /** Present on a saved line, so saving keeps it (and its translated note). */
   id?: string;
   ingredientId: string;
+  /** Whose Ingredient the line uses (for the Family pill); unknown only on a line the server could not resolve. */
+  ingredientOwner?: 'catalog' | 'family' | null;
   name: string;
   quantity: string;
   unit: Unit;
@@ -227,12 +230,24 @@ export const moved = <T>(items: T[], index: number, offset: -1 | 1): T[] =>
   reordered(items, index, index + offset);
 
 /**
- * The editor's Recipe as Suggest Guidance reads it. The form may be half done, so unlike
- * `documentOf` this never needs `problemsOf` to be clear: lines without an Ingredient and
- * Steps with no text are left out, and a missing Title or Servings is left out too.
+ * The editor's Recipe as Suggest Guidance reads it, for both the Admin's Catalog editor and the
+ * Family page. The form may be half done, so unlike `documentOf` this never needs `problemsOf`
+ * to be clear: lines with neither an Ingredient nor a name and Steps with no text are left out,
+ * and a missing Title or Servings is left out too (the API takes both as optional). A line
+ * without an Ingredient goes as its typed `rawName`. The Admin request also carries a
+ * `difficulty` of null; the Family request has none.
  */
 export function suggestionRecipeOf(
   draft: RecipeDraft,
+  mode: 'admin',
+): SuggestCatalogGuidanceRequest['recipe'];
+export function suggestionRecipeOf(
+  draft: RecipeDraft,
+  mode: 'family',
+): SuggestFamilyGuidanceRequest['recipe'];
+export function suggestionRecipeOf(
+  draft: RecipeDraft,
+  mode: 'admin' | 'family',
 ): SuggestCatalogGuidanceRequest['recipe'] {
   const servings = validServings(draft.servings);
   const quantityOf = (text: string) => {
@@ -246,14 +261,16 @@ export function suggestionRecipeOf(
     ...(servings === null ? {} : { servings }),
     prepMinutes: null,
     cookMinutes: null,
-    difficulty: null,
+    ...(mode === 'admin' ? { difficulty: null } : {}),
     tagIds: draft.tagIds,
     lines: draft.lines.flatMap((line) => {
-      if (!line.ingredientId) return [];
+      const rawName = line.name.trim().slice(0, 100);
+      if (!line.ingredientId && rawName === '') return [];
       const quantity = quantityOf(line.quantity);
       return [
         {
-          ingredientId: line.ingredientId,
+          ingredientId: line.ingredientId || null,
+          rawName: line.ingredientId ? null : rawName,
           quantity,
           unit: quantity === null ? null : line.unit,
           optional: line.optional,
@@ -266,5 +283,5 @@ export function suggestionRecipeOf(
         ? []
         : [{ text: step.text.trim().slice(0, 2000), timerSeconds: null }],
     ),
-  };
+  } as SuggestCatalogGuidanceRequest['recipe'];
 }

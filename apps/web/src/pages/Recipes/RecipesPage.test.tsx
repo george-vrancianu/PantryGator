@@ -1283,7 +1283,7 @@ describe('RecipesPage', () => {
       );
       await user.click(await screen.findByRole('button', { name: 'Show' }));
       expect(await findRow('Soup')).toBeVisible();
-      expect(screen.queryByText(/hidden by your Allergies/)).toBeNull();
+      expect(screen.queryByText(/^\d+ Recipes? hidden/)).toBeNull();
       const cookTonight = calls.filter(
         (c) => c.key === 'GET /api/recipes/cook-tonight',
       );

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { haptic } from '@/lib/haptic';
 import { useScanSession } from '@/lib/scanSession';
-import { useVoiceNoteState } from '@/lib/voiceNote';
+import { useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
 import { focusVoiceButton } from '@/lib/voiceFocus';
 import { useVoiceBackgroundItems } from '@/components/voice/useVoiceBackgroundItems';
 import { useVoiceReviewAll } from '@/components/voice/useVoiceReviewAll';
@@ -47,6 +47,15 @@ export function BackgroundHost({
   const [wantSheet, setWantSheet] = useState(false);
   const [mounted, setMounted] = useState(false);
   const reviewAll = useVoiceReviewAll(() => setWantSheet(false));
+  // Back from a merged Review brings the sheet of notes it was opened from back.
+  useEffect(
+    () =>
+      voiceNote.onUnmerged(() => {
+        setMounted(true);
+        setWantSheet(true);
+      }),
+    [],
+  );
   const up = state.phase === 'idle' && items.length > 0;
 
   // One short buzz when the Scan Session turns all read while the host is mounted; a host that

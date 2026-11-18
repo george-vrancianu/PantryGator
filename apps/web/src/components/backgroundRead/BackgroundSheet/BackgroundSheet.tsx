@@ -61,6 +61,7 @@ export function BackgroundSheet({
         icon={action.icon}
         items={action.items.map((item) => ({
           label: item.label,
+          current: item.current,
           onClick: () => {
             // The menu returns focus to its trigger, which is gone once the row is read again.
             requestAnimationFrame(focusDialog);

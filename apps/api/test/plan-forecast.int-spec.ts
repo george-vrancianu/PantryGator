@@ -71,7 +71,8 @@ type Window = {
 
 jest.setTimeout(30_000);
 
-const TODAY = '2030-03-10';
+/** A write's today must be near the server's UTC date. */
+const TODAY = new Date().toISOString().slice(0, 10);
 const at = (offset: number, from = TODAY) =>
   new Date(Date.parse(`${from}T00:00:00Z`) + offset * 86_400_000)
     .toISOString()

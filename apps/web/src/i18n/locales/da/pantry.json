@@ -114,7 +114,8 @@
       "sayIt": "Sig det"
     },
     "added": "Tilføjet",
-    "addedToast": "Tilføjet {{details}}",
+    "addedToast": "Tilføjet {{name}} · {{location}}",
+    "addedToastAmount": "Tilføjet {{name}} · {{amount}} · {{location}}",
     "addedList_one": "{{count}} parti tilføjet",
     "addedList_other": "{{count}} partier tilføjet",
     "amount": "Mængde",

@@ -48,7 +48,18 @@ vi.mock('../lib/microphone', () => ({
 vi.mock('../lib/voiceNote', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../lib/voiceNote')>();
   const { useSyncExternalStore } = await import('react');
-  let current = actual.createVoiceNote();
+  const { startRecording: startMicrophone } = await import('../lib/microphone');
+  const { sendVoiceNote } = await import('../lib/voice');
+  const { keepScreenAwake } = await import('../lib/wakeLock');
+  // No wait before the network retry: a test never sits through a real delay.
+  const create = () =>
+    actual.createVoiceNote({
+      send: sendVoiceNote,
+      keepScreenAwake,
+      startMicrophone,
+      retryDelayMs: 0,
+    });
+  let current = create();
   const listeners = new Set<() => void>();
   const emit = () => listeners.forEach((listener) => listener());
   let unsubscribe = current.subscribe(emit);
@@ -64,7 +75,7 @@ vi.mock('../lib/voiceNote', async (importOriginal) => {
     // Settle what the last test left under way, then start over.
     current.clear();
     unsubscribe();
-    current = actual.createVoiceNote();
+    current = create();
     unsubscribe = current.subscribe(emit);
     emit();
   };

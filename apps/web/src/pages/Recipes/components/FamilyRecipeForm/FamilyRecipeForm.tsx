@@ -21,7 +21,6 @@ import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import type { FamilyRecipeDocument } from '@/lib/familyRecipes';
-import { useFamilyCatalog } from '@/lib/familyCatalog';
 import type { GuidanceInput } from '@/lib/adminRecipes';
 import { useScroller } from '@/lib/scroller';
 import {
@@ -178,14 +177,10 @@ export function FamilyRecipeForm({
 
   const change = (patch: Partial<FamilyDraft>) =>
     setDraft((current) => ({ ...current, ...patch }));
-  // Family Ingredients by id, for the Family pill; ones picked this session count before the refetch.
-  const familyCatalog = useFamilyCatalog();
-  const familyIds = new Set(
-    familyCatalog.data?.ingredients.map((item) => item.id) ?? [],
-  );
-  const [pickedFamily, setPickedFamily] = useState<Set<string>>(new Set());
   const [addedKey, setAddedKey] = useState<number | null>(null);
-  const addLine = (line: Pick<LineDraft, 'ingredientId' | 'name' | 'unit'>) => {
+  const addLine = (
+    line: Pick<LineDraft, 'ingredientId' | 'ingredientOwner' | 'name' | 'unit'>,
+  ) => {
     const key = newKey();
     change({
       lines: [
@@ -329,8 +324,6 @@ export function FamilyRecipeForm({
               problems={problems}
               focusKey={addedKey}
               onMatched={(line, ingredient) => {
-                if (ingredient.owner === 'family')
-                  setPickedFamily((ids) => new Set(ids).add(ingredient.id));
                 setDraft((current) => ({
                   ...current,
                   lines: current.lines.map((item) =>
@@ -339,16 +332,14 @@ export function FamilyRecipeForm({
                           ...item,
                           ingredientId: ingredient.id,
                           name: ingredient.name,
+                          ingredientOwner: ingredient.owner,
                         }
                       : item,
                   ),
                 }));
               }}
               onChange={(lines) => change({ lines })}
-              isFamily={(line) =>
-                familyIds.has(line.ingredientId) ||
-                pickedFamily.has(line.ingredientId)
-              }
+              isFamily={(line) => line.ingredientOwner === 'family'}
             >
               <CatalogSearch
                 emptyState={<BrowseByAisle />}
@@ -357,10 +348,9 @@ export function FamilyRecipeForm({
                 label={t('catalog:search.addIngredient')}
                 placeholder={t('catalog:search.addIngredient')}
                 onSelect={(ingredient) => {
-                  if (ingredient.owner === 'family')
-                    setPickedFamily((ids) => new Set(ids).add(ingredient.id));
                   addLine({
                     ingredientId: ingredient.id,
+                    ingredientOwner: ingredient.owner,
                     name: ingredient.name,
                     unit: ingredient.defaultUnit,
                   });

@@ -18,6 +18,8 @@ export type ActionMenuItem = {
   /** Renders the item as a link. */
   href?: string;
   onClick?: () => void;
+  /** The item stands for the current choice (a language, a sort): announced with `aria-current`. */
+  current?: boolean;
   /** `urgent` colours a destructive item. */
   tone?: 'urgent';
 };
@@ -102,6 +104,7 @@ export function ActionMenu({
           return (
             <MenuItem
               key={item.label}
+              aria-current={item.current ? 'true' : undefined}
               // `button` + `href` lets ButtonBase use the theme's LinkComponent (the router link).
               {...(item.href ? { component: 'button', href: item.href } : {})}
               onClick={() => {
