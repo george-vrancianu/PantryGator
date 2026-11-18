@@ -161,8 +161,6 @@
     "pickTitle": "Vælg en kategori",
     "pickHint": "Dens udløb udfylder nye batches",
     "set": "Sat · {{days}} d",
-    "back": "Tilbage",
-    "close": "Luk",
     "quickPicks": "Hurtigvalg",
     "quick": {
       "3": "3 dage",
@@ -243,8 +241,6 @@
       "allergens": "Kunne ikke gemme allergenerne.",
       "otherNames": "Kunne ikke gemme de andre navne."
     },
-    "close": "Luk",
-    "back": "Tilbage",
     "emptyTitle": "Intet tilføjet endnu",
     "empty": "Når en søgning ikke finder noget, lægger “Tilføj til dit katalog” navnet her til hele familien.",
     "synonymsHint": "Navne, din familie bruger for en ingrediens, i søgning, scanninger og kvitteringer.",
@@ -256,7 +252,6 @@
     "synonymInfo": "Din familie ser {{name}} i søgning, scanninger og kvitteringer, og det betyder {{ingredient}}. Vil du pege det et andet sted hen, så fjern det og tilføj det igen fra søgningen.",
     "synonymRemoveLink": "Fjern dette navn",
     "inCatalog": "I kataloget",
-    "done": "Færdig",
     "deleteAction": "Slet"
   },
   "familyAllergies": {

@@ -30,7 +30,6 @@ import {
   type ContainsSelection,
 } from '../../../components/AllergenContainsRow';
 import { IngredientIconSlot } from '../../../components/IngredientIconSlot';
-import { RemoveLink } from '../../../components/RemoveLink';
 import { translateApiError } from '../../../i18n/translateApiError';
 import { ApiError } from '../../../lib/api';
 import {
@@ -52,7 +51,6 @@ import { normalizeName } from '../../../lib/normalizeName';
 import { useCategoryOptions } from '../../../lib/settings';
 import { CategoryPicker } from './CategoryPicker';
 import { InfoNote } from './InfoNote';
-import { SheetHeader } from '../../../components/SheetHeader';
 
 export const USAGE_KINDS: Array<keyof FamilyIngredientUsage> = [
   'batches',
@@ -138,7 +136,7 @@ export function FamilyIngredientSheet({
   const addRef = useRef<HTMLInputElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const categoryButtonRef = useRef<HTMLButtonElement>(null);
   const deleteRequested = useRef(false);
 
   // Focus follows the step the Member moves to (not the first render: the sheet focuses itself).
@@ -147,7 +145,7 @@ export function FamilyIngredientSheet({
     if (shownView.current === view) return;
     shownView.current = view;
     if (view === 'pick') searchRef.current?.focus();
-    else titleRef.current?.focus();
+    else categoryButtonRef.current?.focus();
   }, [view]);
   // A refused name hands focus back to the Name field once it can take it again.
   const [nameFocus, setNameFocus] = useState(0);
@@ -400,54 +398,36 @@ export function FamilyIngredientSheet({
           onDelete();
         }
       }}
-      label={t('common:edit.title', { name: ingredient.name })}
+      title={headerTitle}
+      subtitle={headerContext}
+      onBack={
+        view === 'pick'
+          ? () => {
+              setQuery('');
+              setView('form');
+            }
+          : undefined
+      }
       size={view === 'pick' ? 'tall' : 'content'}
-      header={
-        <SheetHeader
-          size="roomy"
-          title={headerTitle}
-          subtitle={headerContext}
-          titleRef={titleRef}
-          backLabel={t('settings:familyCatalog.back')}
-          closeLabel={t('settings:familyCatalog.close')}
-          onBack={
-            view === 'pick'
-              ? () => {
-                  setQuery('');
-                  setView('form');
-                }
-              : undefined
-          }
-          onClose={onClose}
-        />
-      }
-      footer={
-        view === 'form' ? (
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              px: 3,
-              py: 2,
-              borderTop: `1px solid ${tokens.color.divider}`,
-            }}
-          >
-            <Button type="submit" form={`${id}-form`} disabled={!canSave}>
-              {saving
+      {...(view === 'form'
+        ? {
+            primary: {
+              label: saving
                 ? t('common:edit.saving')
-                : t('settings:familyCatalog.save')}
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              sx={{ height: 52 }}
-              onClick={onClose}
-            >
-              {t('common:cancel')}
-            </Button>
-          </Stack>
-        ) : undefined
-      }
+                : t('settings:familyCatalog.save'),
+              disabled: !canSave,
+              pending: saving,
+              form: `${id}-form`,
+            },
+            destructive: {
+              label: t('settings:familyCatalog.deleteLink'),
+              onClick: () => {
+                deleteRequested.current = true;
+                onClose();
+              },
+            },
+          }
+        : {})}
     >
       {view === 'pick' ? (
         <CategoryPicker
@@ -512,6 +492,7 @@ export function FamilyIngredientSheet({
               type="button"
               aria-labelledby={`${id}-category ${id}-category-button`}
               id={`${id}-category-button`}
+              ref={categoryButtonRef}
               disabled={saving}
               onClick={() => setView('pick')}
               sx={{
@@ -698,15 +679,6 @@ export function FamilyIngredientSheet({
               </>
             )}
           </InfoNote>
-
-          <RemoveLink
-            onClick={() => {
-              deleteRequested.current = true;
-              onClose();
-            }}
-          >
-            {t('settings:familyCatalog.deleteLink')}
-          </RemoveLink>
         </Stack>
       )}
     </Sheet>

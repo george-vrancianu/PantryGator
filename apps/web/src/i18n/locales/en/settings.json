@@ -161,8 +161,6 @@
     "pickTitle": "Pick a category",
     "pickHint": "Its expiry pre-fills new batches",
     "set": "Set · {{days}} d",
-    "back": "Back",
-    "close": "Close",
     "quickPicks": "Quick picks",
     "quick": {
       "3": "3 days",
@@ -243,8 +241,6 @@
       "allergens": "Couldn’t save the allergens.",
       "otherNames": "Couldn’t save the other names."
     },
-    "close": "Close",
-    "back": "Back",
     "emptyTitle": "Nothing added yet",
     "empty": "When a search finds nothing, “Add to your catalog” puts the name here for the whole family.",
     "synonymsHint": "Names your family uses for an ingredient, in search, scans and receipts.",
@@ -256,7 +252,6 @@
     "synonymInfo": "Your family sees {{name}} in search, scans and receipts, and it means {{ingredient}}. To make it mean something else, remove it and add it again from search.",
     "synonymRemoveLink": "Remove this name",
     "inCatalog": "In the Catalog",
-    "done": "Done",
     "deleteAction": "Delete"
   },
   "familyAllergies": {

@@ -10,6 +10,7 @@ import {
   radius,
 } from '@pocket-pantry/ui';
 import {
+  useEffect,
   useId,
   useRef,
   useState,
@@ -41,6 +42,34 @@ export type PickOutcome =
 
 type Mode = 'new' | 'alias';
 
+/** The primary action of the form, for a host that pins it (the phone Sheet). */
+export type FormAction = {
+  label: string;
+  disabled: boolean;
+  pending: boolean;
+  onClick: () => void;
+};
+
+/**
+ * Tell the host the primary action while this part of the form is on screen. Only the latest
+ * `onClick` runs, and the host hears again only when the label or a flag changes.
+ */
+export function useReportedAction(
+  onAction: ((action: FormAction | null) => void) | undefined,
+  action: FormAction,
+  enabled: boolean,
+) {
+  const click = useRef(action.onClick);
+  const { label, disabled, pending, onClick } = action;
+  useEffect(() => {
+    click.current = onClick;
+  });
+  useEffect(() => {
+    if (!onAction || !enabled) return;
+    onAction({ label, disabled, pending, onClick: () => click.current() });
+  }, [onAction, enabled, label, disabled, pending]);
+}
+
 export type AddToCatalogFormProps = {
   /** The text typed in the search field. */
   typed: string;
@@ -61,6 +90,11 @@ export type AddToCatalogFormProps = {
    * the mode tabs still takes focus. Default `false`; a caller that wants focus on mount passes it.
    */
   autoFocus?: boolean;
+  /**
+   * A host that pins the primary action (the phone Sheet) gives this: the form then draws no Cancel
+   * and no primary button, and reports the primary action here instead.
+   */
+  onAction?: (action: FormAction | null) => void;
 };
 
 const categoryMeta = (category: CatalogCategory) =>
@@ -88,6 +122,7 @@ export function AddToCatalogForm({
   onCancel,
   initialAllergenIds,
   autoFocus = false,
+  onAction,
 }: AddToCatalogFormProps) {
   const { color } = tokens;
   const { t } = useTranslation('catalog');
@@ -147,6 +182,27 @@ export function AddToCatalogForm({
     }
   };
 
+  const pending = create.isPending;
+  useReportedAction(
+    onAction,
+    existing
+      ? {
+          label: t('catalogAdd.pick', { name: existing.name }),
+          disabled: false,
+          pending: false,
+          onClick: () => onPicked(existing, { kind: 'existing' }),
+        }
+      : {
+          label: category
+            ? t('catalogAdd.add')
+            : `${t('catalogAdd.add')} · ${t('catalogAdd.pickOne')}`,
+          disabled: !category || trimmed === '',
+          pending,
+          onClick: submit,
+        },
+    mode === 'new',
+  );
+
   const listId = `${id}-categories`;
   const hint = (text: string) => (
     <Box sx={{ fontSize: 12.5, color: color.muted, p: '8px 4px' }}>{text}</Box>
@@ -189,6 +245,7 @@ export function AddToCatalogForm({
           searchRef={aliasRef}
           onPicked={onPicked}
           onCancel={onCancel}
+          onAction={onAction}
         />
       ) : (
         <>
@@ -364,41 +421,43 @@ export function AddToCatalogForm({
               {t('catalogAdd.exists', { name: existing.name })}
             </Box>
           ) : null}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onCancel}
-              sx={{ height: 52 }}
-            >
-              {t('catalogAdd.cancel')}
-            </Button>
-            {existing ? (
+          {onAction ? null : (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
               <Button
                 type="button"
-                onClick={() => onPicked(existing, { kind: 'existing' })}
+                variant="secondary"
+                onClick={onCancel}
+                sx={{ height: 52 }}
               >
-                {t('catalogAdd.pick', { name: existing.name })}
+                {t('catalogAdd.cancel')}
               </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={submit}
-                disabled={!category || trimmed === '' || create.isPending}
-              >
-                <PlusIcon size={16} />
-                {t('catalogAdd.add')}
-                {category ? null : (
-                  <Box
-                    component="span"
-                    sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
-                  >
-                    · {t('catalogAdd.pickOne')}
-                  </Box>
-                )}
-              </Button>
-            )}
-          </Box>
+              {existing ? (
+                <Button
+                  type="button"
+                  onClick={() => onPicked(existing, { kind: 'existing' })}
+                >
+                  {t('catalogAdd.pick', { name: existing.name })}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={submit}
+                  disabled={!category || trimmed === '' || create.isPending}
+                >
+                  <PlusIcon size={16} />
+                  {t('catalogAdd.add')}
+                  {category ? null : (
+                    <Box
+                      component="span"
+                      sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
+                    >
+                      · {t('catalogAdd.pickOne')}
+                    </Box>
+                  )}
+                </Button>
+              )}
+            </Box>
+          )}
         </>
       )}
     </Box>
