@@ -2,12 +2,12 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { NEEDLE_TURN_MS } from '../../../components/HealthSheet/HealthDial';
-import { LAMP_FADE_MS } from '../../../components/HealthSheet/HealthLamp';
-import type { Batch } from '../../../lib/pantry';
-import type { Staple } from '../../../lib/staples';
-import { renderWithProviders, stubApi } from '../../../test/render';
-import { stubMotion } from '../../../test/viewport';
+import { NEEDLE_TURN_MS } from '../HealthDial/HealthDial';
+import { LAMP_FADE_MS } from '../HealthLamp/HealthLamp';
+import type { Batch } from '@/lib/pantry';
+import type { Staple } from '@/lib/staples';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubMotion } from '@/test/viewport';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { PantryHealthCluster } from './PantryHealthCluster';
 

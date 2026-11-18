@@ -1,14 +1,14 @@
 import type { TFunction } from 'i18next';
-import { formatRowAmount } from '../../lib/amount';
-import { ageDays, isForgotten, type HealthTodo } from '../../lib/health';
+import { formatRowAmount } from '@/lib/amount';
+import { ageDays, isForgotten, type HealthTodo } from '@/lib/health';
 import {
   fullDate,
   daysUntil,
   localIso,
   type Batch,
   type IsoDate,
-} from '../../lib/pantry';
-import type { Staple } from '../../lib/staples';
+} from '@/lib/pantry';
+import type { Staple } from '@/lib/staples';
 
 /** One Batch or Ingredient of an open Health To-do, ready to draw. */
 export type TodoItem = {

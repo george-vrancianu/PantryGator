@@ -16,7 +16,7 @@ import {
   lightCountLabel,
   type HealthLight,
   type HealthLightId,
-} from '../../lib/healthLights';
+} from '@/lib/healthLights';
 
 /** How long a lamp turning on or off takes to cross-fade, ms. */
 export const LAMP_FADE_MS = 300;

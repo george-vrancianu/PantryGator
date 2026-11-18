@@ -8,8 +8,11 @@ import {
   radius,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { BAR_RADIUS, HATCH } from '../../components/MealPlanPopover/barStyle';
-import type { WidgetType } from '../../lib/dashboard';
+import {
+  BAR_RADIUS,
+  HATCH,
+} from '@/components/mealPlan/MealPlanPopover/barStyle';
+import type { WidgetType } from '@/lib/dashboard';
 
 const bar = (width: string, color: string) => (
   <Box

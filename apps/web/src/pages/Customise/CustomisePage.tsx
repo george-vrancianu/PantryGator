@@ -36,14 +36,14 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { translateApiError } from '../../i18n/translateApiError';
+import { Screen } from '@/components/layout/Screen';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   useDashboardLayout,
   WIDGET_SIZES,
   type WidgetInstance,
   type WidgetSize,
-} from '../../lib/dashboard';
+} from '@/lib/dashboard';
 import {
   addWidget,
   availableWidgetTypes,
@@ -53,14 +53,14 @@ import {
   removeWidget,
   resizeWidget,
   useEditDashboardLayout,
-} from '../../lib/dashboardLayout';
+} from '@/lib/dashboardLayout';
 import {
   sizesAvailableAt,
   useGridColumns,
   widgetSpan,
-} from '../../lib/layoutColumns';
+} from '@/lib/layoutColumns';
 import { WIDGET_CATALOG } from '@/components/dashboard/widgetCatalog';
-import { WidgetPreview } from './WidgetPreview';
+import { WidgetPreview } from './components/WidgetPreview/WidgetPreview';
 
 const FOCUS_RING = {
   '&:focus-visible': {

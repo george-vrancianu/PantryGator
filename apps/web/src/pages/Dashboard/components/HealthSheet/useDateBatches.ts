@@ -2,11 +2,11 @@ import { useToast } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../i18n/translateApiError';
-import { usualExpiryDate, withExpiryDates } from '../../lib/health';
-import { useUpdateBatch, type Batch, type IsoDate } from '../../lib/pantry';
-import type { PantryHealthState } from '../../lib/usePantryHealth';
-import { useHealthToast } from '../../lib/useHealthToast';
+import { translateApiError } from '@/i18n/translateApiError';
+import { usualExpiryDate, withExpiryDates } from '@/lib/health';
+import { useUpdateBatch, type Batch, type IsoDate } from '@/lib/pantry';
+import type { PantryHealthState } from '@/lib/usePantryHealth';
+import { useHealthToast } from '@/lib/useHealthToast';
 
 export type DateFix = {
   isPending: boolean;

@@ -10,14 +10,14 @@ import {
   palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { translateApiError } from '../../i18n/translateApiError';
-import { useDashboardLayout } from '../../lib/dashboard';
-import { greetingKeyForHour } from '../../lib/greeting';
-import { useGridColumns } from '../../lib/layoutColumns';
-import { useToday } from '../../lib/useToday';
-import { CalendarDay } from './components/CalendarDay';
-import { PantryHealthCluster } from './components/PantryHealthCluster';
+import { Screen } from '@/components/layout/Screen';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useDashboardLayout } from '@/lib/dashboard';
+import { greetingKeyForHour } from '@/lib/greeting';
+import { useGridColumns } from '@/lib/layoutColumns';
+import { useToday } from '@/lib/useToday';
+import { CalendarDay } from './components/CalendarDay/CalendarDay';
+import { PantryHealthCluster } from './components/PantryHealthCluster/PantryHealthCluster';
 import { WIDGET_COMPONENTS } from './widgets/registry';
 
 /** How far Pantry Health moves down in the header: added above it, taken from the room above the sheet. */
