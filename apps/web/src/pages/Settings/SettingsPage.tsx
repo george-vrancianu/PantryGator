@@ -6,9 +6,9 @@ import {
 } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { FamilyTab } from './components/FamilyTab';
-import { YouTab } from './components/YouTab';
+import { Screen } from '@/components/layout/Screen';
+import { FamilyTab } from './components/FamilyTab/FamilyTab';
+import { YouTab } from './components/YouTab/YouTab';
 import { useSettingsScreen, type SettingsTab } from './hooks/useSettingsScreen';
 
 export function SettingsPage() {

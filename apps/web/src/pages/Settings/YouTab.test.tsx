@@ -2,9 +2,9 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Capacitor } from '@capacitor/core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { unmatchedQueueQueryKey } from '../../lib/unmatched';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubSystemScheme } from '../../test/viewport';
+import { unmatchedQueueQueryKey } from '@/lib/unmatched';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubSystemScheme } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 type Member = { role: 'admin' | 'member'; name?: string; email?: string };

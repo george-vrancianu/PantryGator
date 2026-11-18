@@ -1,8 +1,8 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubSystemScheme } from '../../test/viewport';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubSystemScheme } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 const ALLERGENS = [
