@@ -2,17 +2,13 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
+import { renderWithProviders } from '@/test/render';
+import { dispatchScanSession, resetScanSession } from '@/lib/scanSession';
 import { ScanPage } from './ScanPage';
-import {
-  fakeCamera,
-  pickScanLanguage,
-  queryLanguageChip,
-} from '../../test/scan';
+import { fakeCamera, pickScanLanguage, queryLanguageChip } from '@/test/scan';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 function renderScan(route = '/scan?mode=product') {

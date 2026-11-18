@@ -15,13 +15,13 @@ import { RecentlyStockedOrPopular } from '@/components/catalogSearch/emptyState/
 import {
   ListedAllergensNote,
   OpenFoodFactsCredit,
-} from '../../../components/BarcodeLookupNotes';
+} from '@/components/scan/BarcodeLookupNotes/BarcodeLookupNotes';
 import { expiryContext } from '@/components/expiryPicker/expiryContext';
 import { StatusIcon } from '@/components/lists/StatusIcon/StatusIcon';
 import type { StorageLocation } from '../../../lib/catalog';
 import type { Batch } from '../../../lib/pantry';
 import type { CameraMode } from '../../../lib/cameraMode';
-import { CameraOverlay } from '../../Scan/CameraOverlay';
+import { CameraOverlay } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
   useAddBatchForm,
   type AddBatchStart,

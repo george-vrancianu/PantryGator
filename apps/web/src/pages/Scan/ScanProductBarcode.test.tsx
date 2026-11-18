@@ -2,19 +2,19 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { PHOTO_DECODE_TIMEOUT_MS, resetReads } from '../../lib/scanReads';
-import { resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { takeScan, fakeCamera, expectStack, stackCount } from '../../test/scan';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+import { PHOTO_DECODE_TIMEOUT_MS, resetReads } from '@/lib/scanReads';
+import { resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { takeScan, fakeCamera, expectStack, stackCount } from '@/test/scan';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: () => Promise.resolve('data:image/jpeg;base64,Y3JvcA=='),
 }));

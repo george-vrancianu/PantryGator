@@ -124,7 +124,13 @@ export {
 export { IconButton, type IconButtonProps } from './atoms/IconButton';
 export { canopyChipStyle, canopyKeyStyle } from './theme/canopyStyles';
 export { HeaderButton, type HeaderButtonProps } from './atoms/HeaderButton';
-export { Box, Stack, type BoxProps, type StackProps } from './atoms/Layout';
+export {
+  Box,
+  Stack,
+  type BoxProps,
+  type StackProps,
+  type Sx,
+} from './atoms/Layout';
 export { Link, type LinkProps } from './atoms/Link';
 export { ProgressBar, type ProgressBarProps } from './atoms/ProgressBar';
 export { Snackbar, type SnackbarProps } from './atoms/Snackbar';

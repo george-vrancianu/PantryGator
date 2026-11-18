@@ -8,34 +8,36 @@ import {
 } from '@pocket-pantry/ui';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { shade } from '../../components/camera/glass';
+import { shade } from '@/components/scan/camera/glass';
 import {
   CameraFrame,
   swipeTouchAction,
-} from '../../components/camera/CameraFrame';
-import { CameraControls } from '../../components/camera/CameraControls';
-import { CameraToast } from '../../components/camera/CameraToast';
-import { CameraTopBar } from '../../components/camera/CameraTopBar';
-import { Fading } from './components/Fading';
-import { ImportButton } from './components/ImportButton';
-import { InfoSheet } from '../../components/camera/InfoSheet';
-import { ModePicker } from '../../components/camera/ModePicker';
-import { PhotoStack } from './components/PhotoStack';
-import { ScanLanguageChip } from './components/ScanLanguageChip';
-import { ZoomPill } from './components/ZoomPill';
-import { ShutterButton } from './components/ShutterButton';
-import { Viewfinder, useShotFeedback } from './components/Viewfinder';
-import { useFlyToStack } from '../../components/camera/FlyToStack';
-import { guideFocusPoint, useGuideRect } from './hooks/useGuideRect';
-import { isBarcodeMode } from '../../lib/cameraMode';
+} from '@/components/scan/camera/CameraFrame/CameraFrame';
+import { CameraControls } from '@/components/scan/camera/CameraControls/CameraControls';
+import { CameraToast } from '@/components/scan/camera/CameraToast/CameraToast';
+import { CameraTopBar } from '@/components/scan/camera/CameraTopBar/CameraTopBar';
+import { Fading } from '@/components/scan/camera/Fading/Fading';
+import { ImportButton } from './components/ImportButton/ImportButton';
+import { InfoSheet } from '@/components/scan/camera/InfoSheet/InfoSheet';
+import { ModePicker } from '@/components/scan/camera/ModePicker/ModePicker';
+import { PhotoStack } from './components/PhotoStack/PhotoStack';
+import { ScanLanguageChip } from '@/components/scan/camera/ScanLanguageChip/ScanLanguageChip';
+import { ZoomPill } from '@/components/scan/camera/ZoomPill/ZoomPill';
+import { ShutterButton } from '@/components/scan/camera/ShutterButton/ShutterButton';
 import {
-  FOOTER_HEIGHT,
-  FOOTER_MIN_BOTTOM,
-  type Rect,
-} from '../../lib/scanGuides';
-import { failedCopyKey, isBarcodeCard } from '../../lib/scanSession';
-import { useCameraOrientation } from '../../lib/useCameraOrientation';
-import { usePortraitLock } from '../../lib/usePortraitLock';
+  Viewfinder,
+  useShotFeedback,
+} from '@/components/scan/camera/Viewfinder/Viewfinder';
+import { useFlyToStack } from '@/components/scan/camera/FlyToStack/FlyToStack';
+import {
+  guideFocusPoint,
+  useGuideRect,
+} from '@/components/scan/camera/useGuideRect';
+import { isBarcodeMode } from '@/lib/cameraMode';
+import { FOOTER_HEIGHT, FOOTER_MIN_BOTTOM, type Rect } from '@/lib/scanGuides';
+import { failedCopyKey, isBarcodeCard } from '@/lib/scanSession';
+import { useCameraOrientation } from '@/lib/useCameraOrientation';
+import { usePortraitLock } from '@/lib/usePortraitLock';
 import { useScanScreen, type ScanScreenModes } from './hooks/useScanScreen';
 
 export type ScanPageProps = ScanScreenModes;

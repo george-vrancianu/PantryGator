@@ -11,7 +11,7 @@ import {
   type ReviewLine,
   type RowStatus,
 } from '@/lib/review';
-import { BarcodeLookupNotes } from '@/components/BarcodeLookupNotes';
+import { BarcodeLookupNotes } from '@/components/scan/BarcodeLookupNotes/BarcodeLookupNotes';
 import { AmountField } from '@/components/catalog/AmountField/AmountField';
 import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
 import { LocationToggle } from '@/components/pantry/LocationToggle/LocationToggle';

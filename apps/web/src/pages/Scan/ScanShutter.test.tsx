@@ -2,10 +2,10 @@ import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FOCUS_PAUSE_MS } from '../../lib/camera';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubScreen } from '../../test/screen';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
+import { FOCUS_PAUSE_MS } from '@/lib/camera';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubScreen } from '@/test/screen';
+import { dispatchScanSession, resetScanSession } from '@/lib/scanSession';
 import { ScanPage } from './ScanPage';
 import {
   advance,
@@ -18,14 +18,14 @@ import {
   setStatus,
   shutter,
   takeScan,
-} from '../../test/scan';
+} from '@/test/scan';
 
 const image = vi.hoisted(() => ({ resize: null as null | Promise<string> }));
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () =>
     image.resize ?? Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));

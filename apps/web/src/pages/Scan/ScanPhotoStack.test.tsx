@@ -2,26 +2,21 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
+import { renderWithProviders } from '@/test/render';
 import {
   dispatchScanSession,
   resetScanSession,
   type SessionScan,
-} from '../../lib/scanSession';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
+} from '@/lib/scanSession';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
 import { ScanPage } from './ScanPage';
-import {
-  emitBarcode,
-  expectStack,
-  fakeCamera,
-  takeScan,
-} from '../../test/scan';
+import { emitBarcode, expectStack, fakeCamera, takeScan } from '@/test/scan';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 

@@ -2,13 +2,13 @@ import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { selected, slider } from '../../test/scan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { selected, slider } from '@/test/scan';
 import { ScanPage } from './ScanPage';
 
 // jsdom has no camera: the camera hook is the seam.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const CREDITS = {
