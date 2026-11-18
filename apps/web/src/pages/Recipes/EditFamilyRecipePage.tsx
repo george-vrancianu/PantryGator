@@ -96,6 +96,24 @@ export function EditFamilyRecipePage() {
         JSON.stringify(toGuidanceInput(guidanceBase))
     );
   };
+  /** Whether the form no longer holds what a Save sent: the Member kept editing while it was in flight. */
+  const formChangedSince = (
+    document: ReturnType<typeof documentOf> | undefined,
+    guidance: ReturnType<typeof toGuidanceInput> | undefined,
+  ) => {
+    const now = formNow.current;
+    if (!now) return false;
+    if (
+      document &&
+      JSON.stringify(documentOf(now.draft)) !== JSON.stringify(document)
+    )
+      return true;
+    return (
+      guidance !== undefined &&
+      now.guidance !== null &&
+      JSON.stringify(toGuidanceInput(now.guidance)) !== JSON.stringify(guidance)
+    );
+  };
   useLeaveGuard(
     () => hasUnsaved(formNow.current),
     t('recipes:family.leaveConfirm'),
@@ -235,7 +253,9 @@ export function EditFamilyRecipePage() {
               const stored = await update.mutateAsync(body);
               setStoredRecipe(JSON.stringify(documentOf(draftOfEdit(stored))));
               setLinkRemoved(false);
-              setRecipeSaves((count) => count + 1);
+              // Edits made while the Save was in flight stay: a reseed would drop them.
+              if (!formChangedSince(document, undefined))
+                setRecipeSaves((count) => count + 1);
             } catch (error) {
               setFailure({ part: 'recipe', error });
               return;
@@ -248,7 +268,8 @@ export function EditFamilyRecipePage() {
             setFailure({ part: 'guidance', error });
             return;
           }
-          setGuidanceSaves((count) => count + 1);
+          if (!formChangedSince(undefined, guidance))
+            setGuidanceSaves((count) => count + 1);
           setSaved(true);
         } finally {
           setSaving(false);

@@ -2324,3 +2324,57 @@ describe('A Tip pending delete on a Step removed and saved within the Undo windo
     expect(screen.queryAllByRole('alert')).toHaveLength(0);
   });
 });
+
+describe('Edits made while a Save is in flight', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('are not lost when the Save returns and the form reseeds', async () => {
+    const user = userEvent.setup({ delay: null });
+    let answer: (response: Response) => void = () => {};
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(saved),
+      'PUT /api/recipes/g': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Details');
+    const title = await screen.findByLabelText(/^Title/);
+    fireEvent.change(title, { target: { value: 'First' } });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+    );
+    fireEvent.change(title, { target: { value: 'Second' } });
+    await act(async () => answer(Response.json({ ...saved, title: 'First' })));
+    await screen.findByRole('button', { name: 'Save' });
+    expect(screen.getByLabelText(/^Title/)).toHaveValue('Second');
+  });
+
+  it('keep the Guidance edits too', async () => {
+    const user = userEvent.setup({ delay: null });
+    let answer: (response: Response) => void = () => {};
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(saved),
+      'PUT /api/recipes/g': () => Response.json(saved),
+      'PUT /api/recipes/g/guidance': () =>
+        new Promise<Response>((resolve) => {
+          answer = resolve;
+        }),
+    });
+    await openTab(user, 'Details');
+    await openGuidance(user);
+    const note = await screen.findByLabelText('Nutrition Note');
+    fireEvent.change(note, { target: { value: 'First' } });
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled(),
+    );
+    fireEvent.change(note, { target: { value: 'Second' } });
+    await act(async () =>
+      answer(Response.json({ ...saved, nutritionNote: 'First' })),
+    );
+    await screen.findByRole('button', { name: 'Save' });
+    expect(screen.getByLabelText('Nutrition Note')).toHaveValue('Second');
+  });
+});
