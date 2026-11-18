@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, type ComponentProps } from 'react';
 import { Button } from '../atoms/Button';
+import { CanopySearchField } from '../atoms/CanopySearchField';
 import { Box } from '../atoms/Layout';
 import { Sheet } from './Sheet';
 
@@ -156,4 +157,47 @@ export const LongText: Story = {
       },
       children: <Body lines={30} />,
     }),
+};
+
+const toolbarStory = (): Story['render'] => () =>
+  render({
+    title: 'Pick a Recipe',
+    toolbar: (
+      <CanopySearchField
+        value=""
+        onChange={noop}
+        label="Search Recipes"
+        placeholder="Search Recipes"
+      />
+    ),
+    primary: { label: 'Done', onClick: noop },
+    children: <Body lines={30} />,
+  });
+
+/** Search and filters only: pinned under the title row, outside the scroll, with Sheet's own fill, padding and divider. */
+export const WithToolbar: Story = { render: toolbarStory() };
+
+export const WithToolbarDark: Story = {
+  render: toolbarStory(),
+  globals: { theme: 'dark' },
+};
+
+const disabledStory = (): Story['render'] => () =>
+  render({
+    title: 'Filter by Tag',
+    size: 'content',
+    primary: { label: 'Show 12 Recipes', onClick: noop },
+    secondary: { label: 'Clear', onClick: noop, disabled: true },
+    destructive: { label: 'Delete', onClick: noop, disabled: true },
+    children: <Body />,
+  });
+
+/** A real alternative that cannot be used right now is drawn disabled, not hidden. */
+export const DisabledSecondaryAndDestructive: Story = {
+  render: disabledStory(),
+};
+
+export const DisabledSecondaryAndDestructiveDark: Story = {
+  render: disabledStory(),
+  globals: { theme: 'dark' },
 };
