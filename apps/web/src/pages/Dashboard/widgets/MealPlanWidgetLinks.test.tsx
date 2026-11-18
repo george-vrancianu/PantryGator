@@ -1,9 +1,9 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { MealWindow, WindowDay } from '../../../lib/mealPlan';
-import { renderWithProviders, stubApi } from '../../../test/render';
-import { iso, useFixedToday } from '../../../test/mealPlans';
+import type { MealWindow, WindowDay } from '@/lib/mealPlan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { iso, useFixedToday } from '@/test/mealPlans';
 import { MealPlanWidget } from './MealPlanWidget';
 
 const slotOn = (offset: number) => ({

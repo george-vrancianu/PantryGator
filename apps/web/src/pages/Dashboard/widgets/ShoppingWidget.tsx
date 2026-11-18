@@ -1,8 +1,8 @@
 import { Box, ShoppingIcon, hero } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { firstUncheckedNames } from '../../../lib/dashboard';
-import { useShoppingList } from '../../../lib/shopping';
+import { translateApiError } from '@/i18n/translateApiError';
+import { firstUncheckedNames } from '@/lib/dashboard';
+import { useShoppingList } from '@/lib/shopping';
 import { WidgetCard, WidgetFigure, WidgetTitle } from './WidgetCard';
 import type { WidgetProps } from './types';
 

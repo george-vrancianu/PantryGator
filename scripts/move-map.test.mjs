@@ -241,6 +241,36 @@ test('a feature group keeps its parts together: sub-groups stay inside, not move
   );
 });
 
+test('a module on the stays list keeps its place even when one page area imports it', () => {
+  const { rows } = run(
+    {
+      'components/dashboard/widgetCatalog.ts': comp,
+      'pages/Customise/CustomisePage.tsx': `import { X } from '@/components/dashboard/widgetCatalog';\n`,
+      'components/ExpiryPicker/expiryContext.ts': comp,
+      'components/ExpiryPicker/index.ts': `export { X } from './expiryContext';\n`,
+      'components/HealthSheet/SetDateSheet.tsx': `import { X } from '../ExpiryPicker/expiryContext';\n${comp}`,
+      'pages/Dashboard/DashboardPage.tsx': `import { X } from '@/components/HealthSheet/SetDateSheet';\n`,
+    },
+    ['all'],
+  );
+  assert.equal(rows.get('components/dashboard/widgetCatalog.ts'), undefined);
+  assert.equal(rows.get('components/ExpiryPicker/expiryContext.ts'), undefined);
+});
+
+test('parts inside a component folder of a shared group follow the main file and stay put', () => {
+  const { rows } = run(
+    {
+      'components/mealPlan/Popover/Popover.tsx': `import { x } from './helper';\n${comp}`,
+      'components/mealPlan/Popover/helper.ts': comp,
+      'pages/Dashboard/DashboardPage.tsx': `import { X } from '@/components/mealPlan/Popover/Popover';\nimport { x } from '@/components/mealPlan/Popover/helper';\n`,
+      'pages/MealPlans/MealPlanPage.tsx': `import { X } from '@/components/mealPlan/Popover/Popover';\n`,
+    },
+    ['mealPlan'],
+  );
+  assert.equal(rows.get('components/mealPlan/Popover/helper.ts'), undefined);
+  assert.equal(rows.get('components/mealPlan/Popover/Popover.tsx'), undefined);
+});
+
 test('the recipeEditor feature group keeps its parts at the group level', () => {
   const { rows } = run(
     {

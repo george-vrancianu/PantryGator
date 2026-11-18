@@ -5,11 +5,11 @@ import {
   AllergenIndicator,
   allergenIndicatorLabel,
 } from '../../../components/AllergenIndicator';
-import { statusMark } from '../../../components/MealPlanPopover/statusMark';
+import { statusMark } from '@/components/mealPlan/MealPlanPopover/statusMark';
 import {
   dayLabel,
   statusLabel,
-} from '../../../components/MealPlanPopover/mealPlanText';
+} from '@/components/mealPlan/MealPlanPopover/mealPlanText';
 import { MEALTIMES, type Mealtime } from '../../../lib/mealPlan';
 import {
   missingFor,

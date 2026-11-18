@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import type { HealthTodo } from '../../lib/health';
+import type { HealthTodo } from '@/lib/health';
 
 /** The weekday the Expiring Soon window ends on: today plus the Stale Threshold. */
 export function expiringSoonDay(

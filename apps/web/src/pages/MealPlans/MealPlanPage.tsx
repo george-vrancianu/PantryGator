@@ -17,7 +17,7 @@ import { Screen } from '../../components/layout/Screen';
 import {
   dayLabel,
   shortWeekday,
-} from '../../components/MealPlanPopover/mealPlanText';
+} from '@/components/mealPlan/MealPlanPopover/mealPlanText';
 import { localIso, type IsoDate } from '../../lib/pantry';
 import {
   dateRange,

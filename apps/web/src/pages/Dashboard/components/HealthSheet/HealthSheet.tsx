@@ -7,13 +7,9 @@ import {
   tokens,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import {
-  MIN_BATCHES_FOR_SCORE,
-  presentFactors,
-  verdictOf,
-} from '../../lib/health';
-import type { PantryHealthState } from '../../lib/usePantryHealth';
-import { HealthDial } from './HealthDial';
+import { MIN_BATCHES_FOR_SCORE, presentFactors, verdictOf } from '@/lib/health';
+import type { PantryHealthState } from '@/lib/usePantryHealth';
+import { HealthDial } from '../HealthDial/HealthDial';
 import { VERDICT_COLOR } from './healthStyle';
 import { HealthTodos } from './HealthTodos';
 

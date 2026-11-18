@@ -7,25 +7,19 @@ import {
 } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HealthDial } from '../../../components/HealthSheet/HealthDial';
-import { HealthLamp } from '../../../components/HealthSheet/HealthLamp';
-import { HealthSheet } from '../../../components/HealthSheet/HealthSheet';
-import {
-  expiringSoonDay,
-  todoTitle,
-} from '../../../components/HealthSheet/todoText';
-import { translateApiError } from '../../../i18n/translateApiError';
-import { MIN_BATCHES_FOR_SCORE, type HealthTodoKey } from '../../../lib/health';
+import { HealthDial } from '../HealthDial/HealthDial';
+import { HealthLamp } from '../HealthLamp/HealthLamp';
+import { HealthSheet } from '../HealthSheet/HealthSheet';
+import { expiringSoonDay, todoTitle } from '../HealthSheet/todoText';
+import { translateApiError } from '@/i18n/translateApiError';
+import { MIN_BATCHES_FOR_SCORE, type HealthTodoKey } from '@/lib/health';
 import {
   healthLights,
   wholeDaysBetween,
   type HealthLight,
-} from '../../../lib/healthLights';
-import {
-  usePantryHealth,
-  type PantryHealthState,
-} from '../../../lib/usePantryHealth';
-import { useToday } from '../../../lib/useToday';
+} from '@/lib/healthLights';
+import { usePantryHealth, type PantryHealthState } from '@/lib/usePantryHealth';
+import { useToday } from '@/lib/useToday';
 
 /** Height of the cluster, so the header keeps its size while the data loads. */
 const CLUSTER_HEIGHT = 92;

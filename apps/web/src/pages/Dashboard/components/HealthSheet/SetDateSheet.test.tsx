@@ -2,9 +2,9 @@ import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import type { Batch } from '../../lib/pantry';
-import { renderWithProviders } from '../../test/render';
-import { stubMotion } from '../../test/viewport';
+import type { Batch } from '@/lib/pantry';
+import { renderWithProviders } from '@/test/render';
+import { stubMotion } from '@/test/viewport';
 import { SetDateSheet } from './SetDateSheet';
 
 const undated = (id: string, name: string, days: number): Batch => ({
