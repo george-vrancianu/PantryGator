@@ -10,7 +10,7 @@
     // Off (10 findings): the autofocus calls are deliberate (sheets and dialogs move focus to their first field on open);
     // removing them would change Member-visible focus behaviour.
     "jsx-a11y/no-autofocus": "off",
-    // On (the `import` plugin adds about 0.25s to a lint run): a cycle makes module load order matter. The one that
+    // On (the `import` plugin adds about 0.1s to a lint run): a cycle makes module load order matter. The one that
     // existed (lib/pantry -> settings -> recipes -> pantry) is gone: `localIso` moved to lib/localIso.ts.
     "import/no-cycle": "error"
   },
