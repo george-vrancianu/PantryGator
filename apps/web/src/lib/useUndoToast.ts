@@ -1,4 +1,5 @@
 import { useToast, type ToastOptions } from '@pocket-pantry/ui';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /** How long a removal can be undone, ms. */
@@ -16,18 +17,21 @@ export function useUndoToast() {
   const toast = useToast();
   const { t } = useTranslation('common');
 
-  const undoOptions = (
-    onUndo: () => void,
-    extras?: UndoExtras,
-  ): ToastOptions => ({
-    ...extras,
-    duration: UNDO_WINDOW_MS,
-    polite: true,
-    action: { label: t('row.undo'), onClick: onUndo },
-  });
+  const undoOptions = useCallback(
+    (onUndo: () => void, extras?: UndoExtras): ToastOptions => ({
+      ...extras,
+      duration: UNDO_WINDOW_MS,
+      polite: true,
+      action: { label: t('row.undo'), onClick: onUndo },
+    }),
+    [t],
+  );
 
-  const showUndo = (message: string, onUndo: () => void, extras?: UndoExtras) =>
-    toast.show(message, undoOptions(onUndo, extras));
+  const showUndo = useCallback(
+    (message: string, onUndo: () => void, extras?: UndoExtras) =>
+      toast.show(message, undoOptions(onUndo, extras)),
+    [toast, undoOptions],
+  );
 
   return { undoOptions, showUndo };
 }

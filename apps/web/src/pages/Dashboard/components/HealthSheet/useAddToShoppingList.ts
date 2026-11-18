@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { withOnShoppingList, type HealthTodoKey } from '@/lib/health';
 import { useUndoToast } from '@/lib/useUndoToast';
-import { useHealthToast } from '@/lib/useHealthToast';
+import { useHealthScoreMessage } from '@/lib/useHealthScoreMessage';
 import {
   shoppingListQueryKey,
   useShoppingMutations,
@@ -24,7 +24,7 @@ export type ShoppingFix = {
  */
 export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
   const { t } = useTranslation('dashboard');
-  const { messageWithScore } = useHealthToast();
+  const { messageWithScore } = useHealthScoreMessage();
   const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();

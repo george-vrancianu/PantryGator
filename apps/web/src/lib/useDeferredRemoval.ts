@@ -9,9 +9,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../i18n/translateApiError';
-import { UNDO_WINDOW_MS, useUndoToast } from './useUndoToast';
-
-export { UNDO_WINDOW_MS };
+import { useUndoToast } from './useUndoToast';
 
 /** The delete calls: one for a single record, one for several, and at least one of the two. */
 type SendArgs<Id> =

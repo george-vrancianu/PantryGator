@@ -20,7 +20,7 @@ import { useShoppingList } from './shopping';
 import { useStaples, type Staple } from './staples';
 import { useSuggestions } from './suggestions';
 import { useDeferredRemoval } from './useDeferredRemoval';
-import { useHealthToast } from './useHealthToast';
+import { useHealthScoreMessage } from './useHealthScoreMessage';
 import { useToday } from './useToday';
 
 export type PantryHealthState = {
@@ -49,7 +49,7 @@ export type PantryHealthState = {
 
 /** The Family's Pantry Health and Health To-dos, from the Pantry, Staples, Shopping List, Suggestions (dismissed ids) and Stale Threshold reads. */
 export function usePantryHealth(): PantryHealthState {
-  const { messageWithScore } = useHealthToast();
+  const { messageWithScore } = useHealthScoreMessage();
   const today = localIso(useToday());
   const batches = useBatches();
   const runningLow = useRunningLow();

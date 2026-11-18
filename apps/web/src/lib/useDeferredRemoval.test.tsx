@@ -5,7 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createI18n } from '../i18n';
-import { UNDO_WINDOW_MS, useDeferredRemoval } from './useDeferredRemoval';
+import { useDeferredRemoval } from './useDeferredRemoval';
+import { UNDO_WINDOW_MS } from './useUndoToast';
 
 const sendOne = vi.fn((_id: string) => Promise.resolve());
 const sendMany = vi.fn((_ids: string[]) => Promise.resolve());

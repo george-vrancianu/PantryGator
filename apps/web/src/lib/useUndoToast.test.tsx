@@ -14,6 +14,7 @@ function Harness({ onUndo }: { onUndo: () => void }) {
 describe('useUndoToast', () => {
   it('shows a polite status toast whose Undo runs the callback', async () => {
     const onUndo = vi.fn();
+    const user = userEvent.setup();
     render(
       <I18nextProvider i18n={createI18n('en')}>
         <PocketPantryUiProvider>
@@ -21,10 +22,10 @@ describe('useUndoToast', () => {
         </PocketPantryUiProvider>
       </I18nextProvider>,
     );
-    await userEvent.click(screen.getByRole('button', { name: 'go' }));
+    await user.click(screen.getByRole('button', { name: 'go' }));
     expect(screen.getByRole('status')).toHaveTextContent('Removed Milk');
     expect(screen.queryByRole('alert')).toBeNull();
-    await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    await user.click(screen.getByRole('button', { name: 'Undo' }));
     expect(onUndo).toHaveBeenCalledTimes(1);
   });
 });

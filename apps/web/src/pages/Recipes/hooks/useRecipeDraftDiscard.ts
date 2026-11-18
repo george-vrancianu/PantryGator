@@ -31,7 +31,6 @@ export function useRecipeDraftDiscard({
     recipeDraftsListKey,
     remove.mutateAsync,
   );
-  // The Undo toast is a polite status (CODING_STANDARDS).
   const discard = (id: string) => removal.remove(id, '', t('drafts.discarded'));
   const location = useLocation();
   const navigate = useNavigate();
