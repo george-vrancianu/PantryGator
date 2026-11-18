@@ -146,7 +146,6 @@
       "age": "{{count}} d old",
       "inLocation": "{{duration}} in the {{location}}"
     },
-    "close": "Close",
     "toast": {
       "withScore": "{{message}} · score {{score}}",
       "expired_one": "Removed {{count}} expired",

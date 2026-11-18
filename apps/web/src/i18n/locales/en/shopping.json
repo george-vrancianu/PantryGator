@@ -51,11 +51,6 @@
   "addSheet": {
     "title": "Add items"
   },
-  "sheet": {
-    "done": "Done",
-    "doneCount_one": "Done, {{count}} added",
-    "doneCount_other": "Done, {{count}} added"
-  },
   "search": {
     "onList": "On list",
     "onListHint": "Already on your list. Adding again increases the amount.",
@@ -85,7 +80,6 @@
   "import": {
     "button": "Import",
     "title": "Import",
-    "close": "Close",
     "hint": "Tick whole templates, or open one to choose lines. You can mix several.",
     "section": "Your templates · {{count}}",
     "manage": "Manage",

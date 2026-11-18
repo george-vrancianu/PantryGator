@@ -608,7 +608,7 @@ describe('PantryHealthCluster', () => {
   });
 
   describe('sheet', () => {
-    it('opens on a tap with the header: the dial, verdict, n of 100 and each Health Factor bar', async () => {
+    it('opens on a tap with the title row and the score: the dial, verdict, n of 100 and each Health Factor bar', async () => {
       stub(tenBatchPantry());
       const user = userEvent.setup();
       renderWithProviders(<PantryHealthCluster />);
@@ -622,9 +622,7 @@ describe('PantryHealthCluster', () => {
       const sheet = await screen.findByRole('dialog', {
         name: 'Pantry health',
       });
-      expect(
-        within(sheet).getByTestId('health-sheet-verdict'),
-      ).toHaveTextContent('In good shape');
+      expect(within(sheet).getByText('In good shape')).toBeInTheDocument();
       expect(within(sheet).getByTestId('health-score')).toHaveTextContent(
         '91 of 100',
       );
@@ -779,6 +777,7 @@ describe('PantryHealthCluster', () => {
         .getAllByRole('heading')
         .map((heading) => heading.textContent);
       expect(headings).toEqual([
+        'Pantry health',
         expect.stringContaining('Now'),
         expect.stringContaining('This week'),
         expect.stringContaining('Tidy up'),

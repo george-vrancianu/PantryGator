@@ -61,8 +61,6 @@ export type IngredientsSearchProps = {
   /** Why the last add failed, shown above the search. */
   error: string | null;
   suggestions: Suggestions;
-  /** Called after each successful add. */
-  onAdded: () => void;
 };
 
 /** The Add sheet search: the shared search, then an amount for the pick, then add. */
@@ -74,7 +72,6 @@ export function IngredientsSearch({
   onAdd,
   error,
   suggestions,
-  onAdded,
 }: IngredientsSearchProps) {
   const { t, i18n } = useTranslation('shopping');
   const toast = useSheetToast();
@@ -185,7 +182,6 @@ export function IngredientsSearch({
     // On failure everything typed stays, and the sheet shows the error.
     if (!added) return;
     toast.show(t('added', { name: pickName }));
-    onAdded();
     onStateChange((s) => ({
       ...emptyIngredients,
       searchKey: s.searchKey + 1,

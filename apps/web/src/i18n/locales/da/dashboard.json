@@ -146,7 +146,6 @@
       "age": "{{count}} d gammel",
       "inLocation": "{{duration}} i {{location}}"
     },
-    "close": "Luk",
     "toast": {
       "withScore": "{{message}} · score {{score}}",
       "expired_one": "Fjernede {{count}} udløbet vare",
