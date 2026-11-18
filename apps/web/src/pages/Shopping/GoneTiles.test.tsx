@@ -198,8 +198,13 @@ describe('Gone from your Pantry (Shopping add sheet)', () => {
     });
     expect(flour).toHaveTextContent(/staple/);
     expect(flour).not.toHaveTextContent(/·/);
-    for (const tile of [spinach, eggs, flour]) {
-      const icon = tile.querySelector('[aria-hidden="true"]');
+    for (const [tile, text] of [
+      [spinach, /expired · 1d ago/],
+      [eggs, /used up · 2d ago/],
+      [flour, /staple/],
+    ] as const) {
+      const line = within(tile).getByText(text).parentElement!;
+      const icon = line.querySelector(':scope > [aria-hidden="true"]');
       expect(icon).not.toBeNull();
       expect(icon!.querySelector('svg')).not.toBeNull();
       expect(icon!.textContent).toBe('');
