@@ -7,8 +7,7 @@ import {
 } from 'react';
 import { Box } from '../atoms/Layout';
 import { BatteryLowIcon } from '../atoms/icons';
-import { color } from '../theme/themeVars';
-import { tokens } from '../theme/tokens';
+import { color, palette } from '../theme/themeVars';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { REVEAL_PT, useRowGestures, vibrate } from './useRowGestures';
 
@@ -154,7 +153,7 @@ export function SwipeToggle({
             display: 'flex',
             justifyContent: 'flex-end',
             alignItems: 'stretch',
-            bgcolor: tokens.color.butter,
+            bgcolor: palette('secondary-main'),
             pointerEvents: 'none',
             transition: motion('opacity 120ms'),
           }}
@@ -172,7 +171,7 @@ export function SwipeToggle({
               alignItems: 'center',
               justifyContent: 'center',
               gap: '3px',
-              color: tokens.color.butterInk,
+              color: palette('secondary-contrastText'),
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: '.01em',
@@ -233,7 +232,7 @@ export function SwipeToggle({
                       },
                     }
                   : {}),
-                background: `linear-gradient(to left, color-mix(in srgb, ${tokens.color.butter} ${GLOW_STRENGTH_PCT}%, transparent), transparent ${GLOW_REACH_PCT}%)`,
+                background: `linear-gradient(to left, color-mix(in srgb, ${palette('secondary-main')} ${GLOW_STRENGTH_PCT}%, transparent), transparent ${GLOW_REACH_PCT}%)`,
               }}
             />
             <Box
@@ -244,7 +243,7 @@ export function SwipeToggle({
                 bottom: 0,
                 right: 0,
                 width: RAIL_PX,
-                bgcolor: tokens.color.butter,
+                bgcolor: palette('secondary-main'),
                 ...(playing === 'in'
                   ? {
                       transformOrigin: 'center',

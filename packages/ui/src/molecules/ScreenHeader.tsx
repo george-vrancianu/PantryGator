@@ -11,8 +11,7 @@ import { IconButton } from '../atoms/IconButton';
 import { ActionMenu, type ActionMenuItem } from './ActionMenu';
 import { Typography } from '../atoms/Typography';
 import { topRoomBelowInset } from '../theme/safeArea';
-import { tokens } from '../theme/tokens';
-import { canopy, radius } from '../theme/themeVars';
+import { canopy, palette, radius } from '../theme/themeVars';
 
 export type ScreenHeaderAction = {
   /** Accessible name of the icon-only button. */
@@ -142,7 +141,7 @@ export function ScreenHeader({
           <Typography
             sx={{
               fontSize: 13,
-              color: onCanopy ? canopy.muted : tokens.color.muted,
+              color: onCanopy ? canopy.muted : palette('text-secondary'),
               mt: onCanopy ? '6px' : '2px',
               ...(onCanopy ? { lineHeight: 1, fontWeight: 500 } : {}),
             }}
@@ -154,7 +153,7 @@ export function ScreenHeader({
           <Box
             sx={{
               fontSize: 12.5,
-              color: onCanopy ? canopy.muted : tokens.color.muted,
+              color: onCanopy ? canopy.muted : palette('text-secondary'),
               mt: '2px',
               minHeight: '1.4em',
             }}
@@ -248,9 +247,9 @@ function BackBadge({ count }: { count: number }) {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: radius.box,
-        bgcolor: tokens.color.accent,
+        bgcolor: palette('pp-accent'),
         color: 'pp.accentInk',
-        boxShadow: `0 0 0 2px ${tokens.color.bg}`,
+        boxShadow: `0 0 0 2px ${palette('background-default')}`,
         fontSize: 11,
         fontWeight: 700,
         pointerEvents: 'none',

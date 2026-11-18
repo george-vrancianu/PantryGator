@@ -4,7 +4,6 @@ export {
 } from './theme/PocketPantryUiProvider';
 export { createPocketPantryTheme, themeSelector } from './theme/theme';
 export { aisleTint } from './theme/aisleTints';
-export { tokens } from './theme/tokens';
 export { useForcedThemeColor } from './theme/useForcedThemeColor';
 export {
   bodyFont,

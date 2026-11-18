@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Box } from '../atoms/Layout';
-import { tokens } from '../theme/tokens';
+import { palette, radius } from '../theme/themeVars';
 import { ListRow } from './ListRow';
 import { SwipeRow, type SwipeRowLabels } from './SwipeRow';
-import { radius } from '../theme/themeVars';
 
 const meta: Meta = { title: 'Molecules/SwipeRow' };
 export default meta;
@@ -41,7 +40,7 @@ function List({
         m: 2,
         p: 0,
         listStyle: 'none',
-        bgcolor: tokens.color.surface,
+        bgcolor: palette('background-paper'),
         borderRadius: radius.card,
         overflow: 'hidden',
       }}

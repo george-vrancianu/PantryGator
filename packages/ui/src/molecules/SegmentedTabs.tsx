@@ -3,15 +3,15 @@ import ButtonBase from '@mui/material/ButtonBase';
 import { useRef, type KeyboardEvent } from 'react';
 import { tagColours } from '../atoms/Tag';
 import { canopyFocusRing, focusRing } from '../theme/focusRing';
-import { tokens } from '../theme/tokens';
-import { visuallyHidden } from '../theme/visuallyHidden';
 import {
   bodyFont,
   canopy,
   nestedRadius,
+  palette,
   radius,
   shadow,
 } from '../theme/themeVars';
+import { visuallyHidden } from '../theme/visuallyHidden';
 
 export type SegmentedTab<T extends string> = {
   value: T;
@@ -58,7 +58,6 @@ export function SegmentedTabs<T extends string>({
   onChange,
   onCanopy = false,
 }: SegmentedTabsProps<T>) {
-  const { color } = tokens;
   const buttons = useRef(new Map<string, HTMLElement>());
 
   const select = (index: number) => {
@@ -102,7 +101,7 @@ export function SegmentedTabs<T extends string>({
               gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
               gap: '4px',
               p: '4px',
-              backgroundColor: color.chipNeutral,
+              backgroundColor: palette('pp-chip'),
               borderRadius: radius.control,
             }
       }
@@ -147,7 +146,9 @@ export function SegmentedTabs<T extends string>({
                       fontFamily: bodyFont,
                       // Selected like the SegmentedControl: `seg-on` / `seg-on-ink`.
                       backgroundColor: selected ? 'pp.segOn' : 'transparent',
-                      color: selected ? 'pp.segOnInk' : color.muted,
+                      color: selected
+                        ? 'pp.segOnInk'
+                        : palette('text-secondary'),
                       boxShadow: selected ? shadow.segment : 'none',
                     },
                     focusRing,

@@ -2,9 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconButton } from '../atoms/IconButton';
 import { CheckIcon, CloseIcon } from '../atoms/icons';
 import { Box } from '../atoms/Layout';
-import { tokens } from '../theme/tokens';
+import { palette, radius } from '../theme/themeVars';
 import { ListRow, ListRowItem } from './ListRow';
-import { radius } from '../theme/themeVars';
 
 const meta = {
   title: 'Molecules/ListRow',
@@ -39,7 +38,7 @@ const tick = (
       width: 24,
       height: 24,
       borderRadius: radius.box,
-      border: `2px solid ${tokens.color.tickBorder}`,
+      border: `2px solid ${palette('pp-box')}`,
     }}
   />
 );
@@ -93,7 +92,7 @@ export const CheckedStruckThrough: Story = {
           height: 24,
           borderRadius: radius.box,
           bgcolor: 'primary.main',
-          color: tokens.color.surface,
+          color: palette('background-paper'),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

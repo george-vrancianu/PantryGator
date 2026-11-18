@@ -1,5 +1,5 @@
 import MuiLink, { type LinkProps as MuiLinkProps } from '@mui/material/Link';
-import { tokens } from '../theme/tokens';
+import { palette, shade } from '../theme/themeVars';
 
 export type LinkProps = MuiLinkProps;
 
@@ -9,9 +9,9 @@ export function Link({ sx, ...props }: LinkProps) {
       underline="hover"
       sx={[
         {
-          color: tokens.color.accent,
+          color: palette('pp-accent'),
           fontWeight: 700,
-          '&:hover': { color: tokens.color.accentHover },
+          '&:hover': { color: shade.accentHover },
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
