@@ -1,5 +1,6 @@
 import {
   Box,
+  canopy,
   Button,
   CheckIcon,
   color,
@@ -11,11 +12,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AppDock } from '@/components/layout/AppDock/AppDock';
-import { creamFocus } from './hooks/creamFocus';
 import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSetupLeave } from './components/SetupLeave/SetupLeave';
-import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
+import { SetupTopRow } from './components/SetupTopRow/SetupTopRow';
+import { IntroCanopyFrame } from '@/components/intro/IntroCanopy/IntroCanopy';
 import {
   VoiceNote,
   type VoiceNoteSettings,
@@ -142,71 +143,58 @@ function SayItScreen() {
 
   return (
     <>
-      <Box
-        component="main"
-        sx={[
-          {
-            boxSizing: 'border-box',
-            maxWidth: 520,
-            mx: 'auto',
-            px: '24px',
-            pt: '48px',
-            pb: '260px',
-            color: color.cardBg,
-          },
-          creamFocus,
-        ]}
+      <IntroCanopyFrame
+        bottom="260px"
+        top={
+          <>
+            <SetupTopRow step={2} leave={leave} />
+
+            {counts.batches > 0 ? (
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  mt: '20px',
+                  px: '12px',
+                  height: 32,
+                  borderRadius: radius.chip,
+                  backgroundColor: canopy.chip,
+                  border: `1px solid ${canopy.chipLine}`,
+                  color: canopy.ink,
+                  fontWeight: 600,
+                  fontSize: 14,
+                }}
+              >
+                <Box
+                  aria-hidden
+                  sx={{
+                    display: 'grid',
+                    placeItems: 'center',
+                    width: 20,
+                    height: 20,
+                    borderRadius: '50%',
+                    backgroundColor: tokens.color.butter,
+                    color: tokens.color.butterInk,
+                  }}
+                >
+                  <CheckIcon size={13} />
+                </Box>
+                {t('sayIt.pill', { count: counts.batches })}
+              </Box>
+            ) : null}
+
+            <GatorSpeech>
+              {voice === 'off' ? t('sayIt.noVoice.bubble') : t('sayIt.bubble')}
+            </GatorSpeech>
+          </>
+        }
       >
-        <SetupOliveTopRow step={2} leave={leave} />
-
-        {counts.batches > 0 ? (
-          <Box
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              mt: '20px',
-              px: '12px',
-              height: 32,
-              borderRadius: radius.chip,
-              backgroundColor: color.accentOnTint,
-              fontWeight: 600,
-              fontSize: 14,
-            }}
-          >
-            <Box
-              aria-hidden
-              sx={{
-                display: 'grid',
-                placeItems: 'center',
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                backgroundColor: tokens.color.butter,
-                color: tokens.color.butterInk,
-              }}
-            >
-              <CheckIcon size={13} />
-            </Box>
-            {t('sayIt.pill', { count: counts.batches })}
-          </Box>
-        ) : null}
-
-        <GatorSpeech>
-          {voice === 'off' ? t('sayIt.noVoice.bubble') : t('sayIt.bubble')}
-        </GatorSpeech>
-
         {voice === 'off' ? null : (
           <Box
             component="ul"
             aria-label={t('sayIt.examplesLabel')}
-            sx={{
-              display: 'grid',
-              gap: '10px',
-              m: 0,
-              mt: '28px',
-              p: 0,
-            }}
+            sx={{ display: 'grid', gap: '10px', m: 0, p: 0 }}
           >
             <ExampleCard
               phrase={t('sayIt.examples.pantry.phrase')}
@@ -220,14 +208,14 @@ function SayItScreen() {
         )}
 
         {voice === 'off' ? (
-          <Box sx={{ mt: '28px' }}>
+          <Box>
             <Typography sx={{ mb: '16px' }}>
               {t('sayIt.noVoice.callout')}
             </Typography>
             <Button href={CONTINUE_TO}>{t('sayIt.noVoice.continue')}</Button>
           </Box>
         ) : null}
-      </Box>
+      </IntroCanopyFrame>
 
       {voice === 'on' ? (
         <>
@@ -257,7 +245,7 @@ function SayItScreen() {
  */
 export function SayItPage() {
   return (
-    <IntroLook ground="olive">
+    <IntroLook ground="canopy">
       <VoiceHostProvider>
         <SayItScreen />
       </VoiceHostProvider>

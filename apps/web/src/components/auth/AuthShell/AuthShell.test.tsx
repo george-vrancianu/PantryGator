@@ -5,18 +5,23 @@ import { renderWithProviders } from '@/test/render';
 import { AuthShell } from './AuthShell';
 
 describe('AuthShell', () => {
-  it('clears the top inset: the look pads it and the card fills only the rest of the screen', () => {
+  it('stands on the Canopy ground, clearing the top inset inside the Canopy and putting the form on the sheet', () => {
     renderWithProviders(
       <AuthShell title="Log in" subtitle="Welcome back">
         <p>Form</p>
       </AuthShell>,
     );
     const main = screen.getByRole('main');
-    const look = main.parentElement!.parentElement!;
-    expect(authoredCss(look)).toContain('padding-top:env(safe-area-inset-top');
-    expect(authoredCss(main.parentElement!)).toContain(
-      'min-height:calc(100vh - env(safe-area-inset-top',
+    expect(main.closest('[data-ground]')).toHaveAttribute(
+      'data-ground',
+      'canopy',
     );
+    const canopy = document.querySelector<HTMLElement>(
+      '[data-region="canopy"]',
+    )!;
+    expect(authoredCss(canopy)).toContain('env(safe-area-inset-top');
+    expect(main).toHaveTextContent('Form');
+    expect(canopy).toHaveTextContent('PantryGator');
   });
 
   it('shows the app name beside the logo, leaving the title the only heading', () => {

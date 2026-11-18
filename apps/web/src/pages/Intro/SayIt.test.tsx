@@ -110,10 +110,10 @@ describe('Setup 2, Say it', () => {
     expect(calls.map((c) => c.key)).not.toContain('POST /api/voice');
   });
 
-  it('is on the olive ground in the light look', async () => {
+  it('is on the Canopy ground in the light look', async () => {
     await openSayIt();
     await screen.findByText('Hold the mic, talk, let go');
-    expect(document.querySelector('[data-ground="olive"]')).not.toBeNull();
+    expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
     expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
   });
 

@@ -45,7 +45,7 @@ export function SetupOverviewPage() {
   };
 
   return (
-    <IntroLook>
+    <IntroLook ground="canopy">
       <ReviewOverviewPage
         settings={{
           cameraPath: (mode) =>
@@ -65,8 +65,7 @@ export function SetupOverviewPage() {
             if (remaining === 0) backToSnapIfNothingSaved();
           },
           renderFrame: (content) => (
-            <SetupReviewFrame>
-              <SetupTopRow leave={leave} />
+            <SetupReviewFrame top={<SetupTopRow leave={leave} />}>
               {content}
             </SetupReviewFrame>
           ),
