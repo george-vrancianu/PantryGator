@@ -23,6 +23,7 @@ import { recipesQueryKey } from '@/lib/recipes';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { documentOf, draftOfEdit, type FamilyDraft } from './hooks/familyDraft';
 import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
+import { VariantOfRow } from './components/VariantOfRow/VariantOfRow';
 
 type FormState = { draft: FamilyDraft; guidance: GuidanceDraft | null };
 
@@ -130,6 +131,9 @@ export function EditFamilyRecipePage() {
         back,
       }}
       openTab="steps"
+      belowTitle={
+        recipe.parentTitle ? <VariantOfRow title={recipe.parentTitle} /> : null
+      }
       detailsTop={
         recipe.sourceLink ? (
           <RemovableSourceLink

@@ -55,6 +55,8 @@ export type FamilyRecipeEdit = {
   cookMinutes: number | null;
   difficulty: Difficulty | null;
   tagIds: string[];
+  /** A Variant's Catalog base title, in the Member's language; null on a Base Recipe. */
+  parentTitle: string | null;
   archived: boolean;
   /** The page the Recipe was read from; null otherwise. It can be removed, never changed. */
   sourceLink: string | null;
@@ -63,6 +65,8 @@ export type FamilyRecipeEdit = {
   lines: {
     id: string;
     ingredientId: string | null;
+    /** Whose Ingredient: a Family's own or the Catalog's; null on an Unmatched line. */
+    ingredientOwner: 'catalog' | 'family' | null;
     rawName: string | null;
     ingredientName: string;
     quantity: number | null;

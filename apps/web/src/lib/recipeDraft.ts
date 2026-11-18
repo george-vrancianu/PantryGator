@@ -14,6 +14,8 @@ export type LineDraft = {
   /** Present on a saved line, so saving keeps it (and its translated note). */
   id?: string;
   ingredientId: string;
+  /** Whose Ingredient the line uses (for the Family pill); unknown on a line from a stored or read draft. */
+  ingredientOwner?: 'catalog' | 'family' | null;
   name: string;
   quantity: string;
   unit: Unit;

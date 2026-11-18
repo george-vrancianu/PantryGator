@@ -13,6 +13,7 @@ import {
   recipes,
   recipeSteps,
   recipeTips,
+  recipeTranslations,
   unmatchedEntries,
 } from '../database/schema';
 import { consumeRecipeDraft } from '../recipe-drafts/recipe-drafts.service';
@@ -425,6 +426,7 @@ export class FamilyRecipesService {
         const byId = new Map(rows.map((row) => [row.id, row]));
         return {
           ...rest,
+          parentTitle: await this.parentTitle(tx, detail.parentId, locale),
           pairings: detail.pairings.map((p) => {
             const link = links.get(p.id) ?? null;
             return {
@@ -448,6 +450,30 @@ export class FamilyRecipesService {
       },
       { isolationLevel: 'repeatable read', accessMode: 'read only' },
     );
+  }
+
+  /** The Catalog base's title in `locale` (source title as fallback); null on a Base Recipe. */
+  private async parentTitle(
+    executor: Executor,
+    parentId: string | null,
+    locale: CatalogLocale,
+  ): Promise<string | null> {
+    if (!parentId) return null;
+    const [parent] = await executor
+      .select({ title: recipes.title })
+      .from(recipes)
+      .where(eq(recipes.id, parentId));
+    if (!parent) return null;
+    const [translated] = await executor
+      .select({ title: recipeTranslations.title })
+      .from(recipeTranslations)
+      .where(
+        and(
+          eq(recipeTranslations.recipeId, parentId),
+          eq(recipeTranslations.locale, locale),
+        ),
+      );
+    return translated?.title ?? parent.title;
   }
 
   private async ingredientNames(

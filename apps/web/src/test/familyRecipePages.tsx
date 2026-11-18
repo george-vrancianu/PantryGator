@@ -88,6 +88,7 @@ export const saved: FamilyRecipeEdit = {
   cookMinutes: null,
   difficulty: 'easy',
   tagIds: [],
+  parentTitle: null,
   archived: false,
   sourceLink: null,
   sourceLanguage: null,
@@ -95,6 +96,7 @@ export const saved: FamilyRecipeEdit = {
     {
       id: 'l1',
       ingredientId: 'egg',
+      ingredientOwner: 'catalog',
       rawName: null,
       ingredientName: 'Egg',
       quantity: 3,
@@ -105,6 +107,7 @@ export const saved: FamilyRecipeEdit = {
     {
       id: 'l2',
       ingredientId: null,
+      ingredientOwner: null,
       rawName: 'Gran’s herbs',
       ingredientName: 'Gran’s herbs',
       quantity: null,
