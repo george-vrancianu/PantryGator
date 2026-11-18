@@ -4,7 +4,7 @@ import {
   usePrefersReducedMotion,
   palette,
 } from '@pocket-pantry/ui';
-import { shade, translucent } from '../glass';
+import { scrim, translucent } from '../glass';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { haptic, HAPTIC_READ_MS } from '@/lib/haptic';
 import type { Rect } from '@/lib/scanGuides';
@@ -201,7 +201,7 @@ export function Viewfinder({
               [`border${v}${h}Radius`]: '10px',
               [`border${v}Color`]: palette('text-primary'),
               [`border${h}Color`]: palette('text-primary'),
-              filter: `drop-shadow(0 1px 4px ${shade(50)})`,
+              filter: `drop-shadow(0 1px 4px ${scrim(50)})`,
               ...noMotion,
             }}
           />

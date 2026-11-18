@@ -7,7 +7,7 @@ import {
   color,
   focusRing,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +49,7 @@ export function IngredientActions({
         display: 'flex',
         gap: '8px',
         p: '10px 12px',
-        borderTop: `1px solid ${tokens.color.divider}`,
+        borderTop: `1px solid ${palette('divider')}`,
         ...keyframesSx('pp-actions-in', '200ms 120ms both', {
           from: { opacity: 0 },
         }),
@@ -91,8 +91,8 @@ export function IngredientActions({
             ml: 'auto',
             borderRadius: '50%',
             borderColor: 'transparent',
-            bgcolor: tokens.color.accentTint,
-            color: tokens.color.accentOnTint,
+            bgcolor: palette('pp-accentTint'),
+            color: palette('pp-accentOnTint'),
           },
         ]}
       >
@@ -121,11 +121,14 @@ const actionButtonSx = {
 /** Each chip's fill while pressed. */
 const PRESSED_FILL = {
   staple: {
-    bgcolor: tokens.color.accentTint,
-    color: tokens.color.accentOnTint,
+    bgcolor: palette('pp-accentTint'),
+    color: palette('pp-accentOnTint'),
     '& svg': { color: 'pp.star' },
   },
-  low: { bgcolor: tokens.color.butter, color: tokens.color.butterInk },
+  low: {
+    bgcolor: palette('secondary-main'),
+    color: palette('secondary-contrastText'),
+  },
 };
 
 type ChipProps = {
@@ -162,7 +165,7 @@ function ActionChip({
           gap: '6px',
           borderRadius: radius.chip,
           bgcolor: color.cardBg,
-          color: tokens.color.ink,
+          color: palette('text-primary'),
           fontSize: 13,
           fontWeight: 700,
           whiteSpace: 'nowrap',

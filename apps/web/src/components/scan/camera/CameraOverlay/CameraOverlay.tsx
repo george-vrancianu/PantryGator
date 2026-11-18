@@ -40,7 +40,7 @@ import { CameraControls } from '../CameraControls/CameraControls';
 import { CameraTopBar } from '../CameraTopBar/CameraTopBar';
 import { Fading } from '../Fading/Fading';
 import { InfoSheet } from '../InfoSheet/InfoSheet';
-import { glassFocusRing, shade, translucent } from '../glass';
+import { glassFocusRing, scrim, translucent } from '../glass';
 import { ModePicker } from '../ModePicker/ModePicker';
 import { ScanLanguageChip } from '../ScanLanguageChip/ScanLanguageChip';
 import { ShutterButton } from '../ShutterButton/ShutterButton';
@@ -364,7 +364,7 @@ export function CameraOverlay({
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
+            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${scrim(45)} 100%)`,
           }}
         />
       </Box>
@@ -518,7 +518,7 @@ export function CameraOverlay({
               px: 1.75,
               py: 1.125,
               borderRadius: radius.chip,
-              backgroundColor: shade(80),
+              backgroundColor: scrim(80),
               fontSize: 13,
               fontWeight: 600,
               whiteSpace: 'nowrap',

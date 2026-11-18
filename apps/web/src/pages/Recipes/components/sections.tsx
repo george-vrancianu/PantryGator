@@ -3,8 +3,8 @@ import {
   Link,
   Stack,
   Typography,
-  tokens,
   radius,
+  palette,
 } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -192,11 +192,15 @@ function useEntryText() {
 const DIFF_KEYS = {
   added: {
     key: '+',
-    bg: tokens.color.accentTint,
-    fg: tokens.color.accentOnTint,
+    bg: palette('pp-accentTint'),
+    fg: palette('pp-accentOnTint'),
   },
-  removed: { key: '−', bg: tokens.color.urgentBg, fg: tokens.color.urgentFg },
-  swapped: { key: '⇄', bg: tokens.color.soonBg, fg: tokens.color.soonFg },
+  removed: { key: '−', bg: palette('error-light'), fg: palette('error-main') },
+  swapped: {
+    key: '⇄',
+    bg: palette('warning-light'),
+    fg: palette('warning-main'),
+  },
 };
 
 /** One kind of change: a list named for it, each line led by a coloured key (+, −, ⇄). */

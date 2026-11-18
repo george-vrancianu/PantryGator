@@ -9,7 +9,7 @@ import {
   radius,
   Spinner,
   Stack,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -217,7 +217,9 @@ export function ExplorePage() {
             <Box sx={{ ...displayType, fontSize: 18 }}>
               {t('recipes:noMatches')}
             </Box>
-            <Box sx={{ fontSize: 14, color: tokens.color.muted, mt: '4px' }}>
+            <Box
+              sx={{ fontSize: 14, color: palette('text-secondary'), mt: '4px' }}
+            >
               {t('recipes:explore.noMatchesHint')}
             </Box>
           </Box>
@@ -292,7 +294,7 @@ function Group({
             border: `1px dashed ${color.lineStrong}`,
             borderRadius: radius.btn,
             bgcolor: 'transparent',
-            color: tokens.color.accent,
+            color: palette('pp-accent'),
             font: 'inherit',
             fontSize: 14,
             fontWeight: 700,

@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { shade } from '@/components/scan/camera/glass';
+import { scrim } from '@/components/scan/camera/glass';
 import {
   CameraFrame,
   swipeTouchAction,
@@ -122,7 +122,7 @@ export function ScanPage(props: ScanPageProps) {
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
+            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${scrim(45)} 100%)`,
           }}
         />
       </Box>

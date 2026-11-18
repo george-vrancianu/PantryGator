@@ -11,7 +11,7 @@ import type { SessionScan } from '@/lib/scanSession';
 import { BARCODE_GLYPH } from '@/components/scan/camera/barcodeGlyph';
 import {
   glassFocusRing,
-  shade,
+  scrim,
   translucent,
 } from '@/components/scan/camera/glass';
 
@@ -75,7 +75,7 @@ function Badge({ summary }: { summary: StackSummary }) {
         fontVariantNumeric: 'tabular-nums',
         backgroundColor: read ? palette('pp-accent') : palette('warning-main'),
         color: palette('background-default'),
-        boxShadow: `0 0 0 2px ${shade(90)}`,
+        boxShadow: `0 0 0 2px ${scrim(90)}`,
       }}
     >
       {summary.state === 'reading' ? (

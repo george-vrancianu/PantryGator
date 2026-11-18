@@ -1,4 +1,4 @@
-import { Box, PantryIcon, radius, stockBar, tokens } from '@pocket-pantry/ui';
+import { Box, PantryIcon, radius, stockBar, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { groupByLocation, useBatches } from '@/lib/pantry';
@@ -7,7 +7,7 @@ import type { WidgetProps } from './types';
 
 /** The bar's three segment colours, in the order of the Locations that hold something. */
 const SEGMENT_COLORS = [
-  tokens.color.accent,
+  palette('pp-accent'),
   stockBar.second,
   stockBar.third,
 ] as const;
@@ -72,7 +72,7 @@ export function PantryStockWidget({ size, columns }: WidgetProps) {
           fontSize: 12,
           fontWeight: 500,
           lineHeight: 1.35,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
           textWrap: 'balance',
         }}
       >

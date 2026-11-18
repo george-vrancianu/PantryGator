@@ -1,4 +1,4 @@
-import { Box, Button, Card, focusRing, Tag, tokens } from '@pocket-pantry/ui';
+import { Box, Button, Card, focusRing, Tag, palette } from '@pocket-pantry/ui';
 import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -69,7 +69,9 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
             fontWeight: 700,
             outline: 'none',
             ...focusRing,
-            color: day.past ? tokens.color.muted : tokens.color.ink,
+            color: day.past
+              ? palette('text-secondary')
+              : palette('text-primary'),
           }}
         >
           {label}
@@ -102,11 +104,17 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
                   alignItems: 'center',
                   gap: '12px',
                   minHeight: 48,
-                  borderTop: `1px solid ${tokens.color.line}`,
+                  borderTop: `1px solid ${palette('pp-line')}`,
                   opacity: day.past ? 0.55 : 1,
                 }}
               >
-                <Box sx={{ flex: 1, fontSize: 13, color: tokens.color.muted }}>
+                <Box
+                  sx={{
+                    flex: 1,
+                    fontSize: 13,
+                    color: palette('text-secondary'),
+                  }}
+                >
                   <Box component="span" sx={{ fontWeight: 700 }}>
                     {mealtimeName}
                   </Box>

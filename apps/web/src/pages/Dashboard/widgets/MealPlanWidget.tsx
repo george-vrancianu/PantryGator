@@ -11,8 +11,8 @@ import {
   shadow,
   PlusIcon,
   ShoppingIcon,
-  tokens,
   color,
+  palette,
 } from '@pocket-pantry/ui';
 import {
   useCallback,
@@ -65,7 +65,7 @@ const emptyAction = {
   minHeight: 44,
   fontSize: 13,
   fontWeight: 700,
-  color: tokens.color.accent,
+  color: palette('pp-accent'),
 } as const;
 
 /** Titles go under the bars when the columns are wide enough for them. */
@@ -112,15 +112,15 @@ function DayMark({ day }: { day: WindowDay }) {
   const look =
     kind === 'covered'
       ? {
-          backgroundColor: tokens.color.accentTint,
-          color: tokens.color.accentOnTint,
+          backgroundColor: palette('pp-accentTint'),
+          color: palette('pp-accentOnTint'),
         }
       : kind === 'short'
-        ? { backgroundColor: tokens.color.urgentFg, color: color.cardBg }
+        ? { backgroundColor: palette('error-main'), color: color.cardBg }
         : kind === 'onList'
           ? {
-              backgroundColor: tokens.color.soonBg,
-              color: tokens.color.soonFg,
+              backgroundColor: palette('warning-light'),
+              color: palette('warning-main'),
             }
           : { boxShadow: `inset 0 0 0 1.5px ${color.lineStrong}` };
   return (
@@ -271,7 +271,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   fontWeight: 700,
                   letterSpacing: '.1em',
                   textTransform: 'uppercase',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -320,16 +320,16 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                       cursor: 'pointer',
                       transition: 'transform .08s, background-color .15s',
                       backgroundColor: isOpen
-                        ? tokens.color.chipNeutral
+                        ? palette('pp-chip')
                         : isToday
-                          ? tokens.color.accentTint
+                          ? palette('pp-accentTint')
                           : 'transparent',
                       '&:hover': {
                         backgroundColor: isOpen
-                          ? tokens.color.chipNeutral
+                          ? palette('pp-chip')
                           : isToday
-                            ? tokens.color.accentTint
-                            : tokens.color.subtle,
+                            ? palette('pp-accentTint')
+                            : palette('pp-subtle'),
                       },
                       '&:active': { transform: 'scale(.96)' },
                       '@media (prefers-reduced-motion: reduce)': {
@@ -346,8 +346,8 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                         textTransform: 'uppercase',
                         letterSpacing: '.04em',
                         color: isToday
-                          ? tokens.color.accentOnTint
-                          : tokens.color.muted,
+                          ? palette('pp-accentOnTint')
+                          : palette('text-secondary'),
                       }}
                     >
                       {isToday
@@ -400,8 +400,8 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                           lineHeight: 1.25,
                           textAlign: 'center',
                           color: headline
-                            ? tokens.color.ink
-                            : tokens.color.muted,
+                            ? palette('text-primary')
+                            : palette('text-secondary'),
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
@@ -424,7 +424,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   alignItems: 'center',
                   gap: '10px',
                   pt: '10px',
-                  borderTop: `1px solid ${tokens.color.divider}`,
+                  borderTop: `1px solid ${palette('divider')}`,
                 }}
               >
                 <Box
@@ -433,13 +433,13 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     flex: 1,
                     minWidth: 0,
                     fontSize: 12.5,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }}
                 >
                   {t('mealPlan.missingForPlan')}{' '}
                   <Box
                     component="b"
-                    sx={{ fontWeight: 700, color: tokens.color.ink }}
+                    sx={{ fontWeight: 700, color: palette('text-primary') }}
                   >
                     {view.missing
                       .slice(0, FOOTER_NAMES)
@@ -478,7 +478,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   gap: '4px 12px',
                   fontSize: 11.5,
                   fontWeight: 600,
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   '& > span': {
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -513,7 +513,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: radius.control,
-                bgcolor: tokens.color.chipNeutral,
+                bgcolor: palette('pp-chip'),
                 boxShadow: shadow.recess,
                 color: color.ink2,
               }}
@@ -545,7 +545,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   fontWeight: 700,
                   letterSpacing: '.1em',
                   textTransform: 'uppercase',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                 }}
               >
                 {t('mealPlan.titleEmpty')}
@@ -565,7 +565,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     mb: '-26px',
                     fontSize: 15,
                     fontWeight: 600,
-                    color: tokens.color.ink,
+                    color: palette('text-primary'),
                   }}
                 >
                   {t('mealPlan.nextPlanStarts', {
@@ -580,7 +580,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     fontSize: 15,
                     lineHeight: '18px',
                     fontWeight: 600,
-                    color: tokens.color.ink,
+                    color: palette('text-primary'),
                   }}
                 >
                   {t('mealPlan.nothingThisWeek')}

@@ -8,7 +8,7 @@ export const translucent = (colour: string, percent: number) =>
   `color-mix(in srgb, ${colour} ${percent}%, transparent)`;
 
 /** Dark-first's background as a scrim or drop shadow over the camera feed. */
-export const shade = (percent: number) =>
+export const scrim = (percent: number) =>
   translucent(palette('background-default'), percent);
 
 export const glassFocusRing = {

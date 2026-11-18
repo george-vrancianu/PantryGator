@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { FocusPass } from '@/lib/camera';
 import { BARCODE_GLYPH } from '../barcodeGlyph';
-import { glassFocusRing, shade } from '../glass';
+import { glassFocusRing, scrim } from '../glass';
 import { haptic, HAPTIC_TICK_MS } from '@/lib/haptic';
 
 /** How long the pointer rests on the shutter before it counts as a hold. */
@@ -291,7 +291,7 @@ export function ShutterButton({
           backgroundColor: pressed
             ? `color-mix(in srgb, ${palette('text-primary')} 92%, ${palette('background-default')})`
             : palette('text-primary'),
-          boxShadow: `0 1px 4px ${shade(35)}`,
+          boxShadow: `0 1px 4px ${scrim(35)}`,
           opacity: disabled ? 0.55 : 1,
           transform: pressed ? 'scale(.88)' : 'none',
           transition: 'transform 120ms, background-color 120ms',

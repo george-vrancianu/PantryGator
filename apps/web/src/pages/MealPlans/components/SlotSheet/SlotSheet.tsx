@@ -6,7 +6,7 @@ import {
   Stack,
   Tag,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import {
@@ -147,7 +147,7 @@ export function SlotSheet({
                       alignItems: 'center',
                       gap: '10px',
                       py: '10px',
-                      borderTop: `1px solid ${tokens.color.divider}`,
+                      borderTop: `1px solid ${palette('divider')}`,
                       '&:first-of-type': { borderTop: 0 },
                     }}
                   >
@@ -156,12 +156,22 @@ export function SlotSheet({
                         {issue.name}
                       </Box>
                       {meta ? (
-                        <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+                        <Box
+                          sx={{
+                            fontSize: 13,
+                            color: palette('text-secondary'),
+                          }}
+                        >
                           {meta}
                         </Box>
                       ) : null}
                       {uncertain ? (
-                        <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+                        <Box
+                          sx={{
+                            fontSize: 13,
+                            color: palette('text-secondary'),
+                          }}
+                        >
                           {t('detail.uncertainNote')}
                         </Box>
                       ) : null}

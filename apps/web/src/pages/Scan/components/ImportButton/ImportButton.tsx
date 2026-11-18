@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Fading } from '@/components/scan/camera/Fading/Fading';
 import {
   glassFocusRing,
-  shade,
+  scrim,
   translucent,
 } from '@/components/scan/camera/glass';
 
@@ -70,7 +70,7 @@ export function ImportButton({ hidden, disabled, onFiles }: Props) {
             justifyContent: 'center',
             backgroundColor: palette('pp-accent'),
             color: palette('background-default'),
-            boxShadow: `0 0 0 2px ${shade(90)}`,
+            boxShadow: `0 0 0 2px ${scrim(90)}`,
           }}
         >
           <PlusIcon size={12} strokeWidth={2.4} />
