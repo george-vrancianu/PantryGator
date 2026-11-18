@@ -27,7 +27,6 @@ We decided on one layout and a lint rule that keeps it true. The moves are plann
   - a test across several pages beside the shared module whose behaviour it checks.
 
   An existing test is never split just to fill folders. A page test that covers five components stays one page test.
-
 - **Casing:**
   - group folders are lower camelCase (`catalogSearch/`);
   - component folders and page areas are PascalCase (`RecipeRow/`, `pages/Recipes/`).
@@ -55,4 +54,4 @@ We decided on one layout and a lint rule that keeps it true. The moves are plann
 
 ## Amendment (2026-11-18): shared tests may import pages
 
-A test under `components/` or `lib/` (`*.test.*`) may import pages, to check behaviour that spans several pages (pull-to-refresh, row hints, header actions, Canopy snapshots). The rule against `components/` and `lib/` importing `pages/` still holds for every non-test file. The carve-out lifts only that rule: such a test may still not import another area's `components/` or `hooks/`. It is an `excludeFiles` glob on the shared-code override in `.oxlintrc.json`, and `npm run check:web-layout` proves both halves (a shared non-test file importing a page still fails; a shared test importing a page does not).
+A test under `components/` or `lib/` (`*.test.*`) may import pages, to check behaviour that spans several pages (pull-to-refresh, row hints, header actions, Canopy snapshots). The rule against `components/` and `lib/` importing `pages/` still holds for every non-test file. The carve-out lifts only that rule: such a test may still not import another area's `components/` or `hooks/`. It is a third override in `.oxlintrc.json` that repeats only Rule B for shared test files, and `npm run check:web-layout` proves both halves (a shared non-test file importing a page still fails; a shared test importing a page does not).

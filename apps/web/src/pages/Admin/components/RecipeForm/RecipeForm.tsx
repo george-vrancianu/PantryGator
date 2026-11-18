@@ -20,7 +20,7 @@ import {
 } from '@/lib/recipeDraft';
 import { EditorForm } from '@/components/EditorForm';
 import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection/RecipeLinesSection';
-import { RecipeMetaFields } from '@/components/recipeEditor/RecipeMetaFields';
+import { RecipeMetaFields } from '@/components/recipeEditor/RecipeMetaFields/RecipeMetaFields';
 import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection/RecipeStepsSection';
 
 type Props = {

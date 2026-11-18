@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Proves the ADR 0044 import rules (Rule A and Rule B in .oxlintrc.json) still fire.
-// Six fixtures (one per rule glob) plus two test-file fixtures (the Rule A carve-out) break the rules on purpose; a misconfigured glob would let them pass
-// silently, so this exits non-zero when a rule stops matching (or starts matching a
-// whole-page import, which must stay allowed).
+// Six fixtures (one per rule glob) break the rules on purpose; two shared-test fixtures prove the
+// Rule A carve-out (no Rule A, Rule B still fires). A misconfigured glob would let them pass
+// silently, so this exits non-zero when a rule stops matching (or starts matching a whole-page
+// import, which must stay allowed).
 // Usage: node scripts/check-lint-rules.mjs
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';

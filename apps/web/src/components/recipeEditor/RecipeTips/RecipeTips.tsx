@@ -8,14 +8,14 @@ import {
 } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   useTipWrites,
   type AdminRecipe,
   type RecipeTip,
-} from '../../lib/adminRecipes';
-import { moved } from '../../lib/recipeDraft';
-import { RowControls } from '../RowControls';
+} from '@/lib/adminRecipes';
+import { moved } from '@/lib/recipeDraft';
+import { RowControls } from '@/components/RowControls';
 
 type TipsRecipe = Pick<AdminRecipe, 'id' | 'steps' | 'tips' | 'parentTips'>;
 export type TipWrites = ReturnType<typeof useTipWrites>;

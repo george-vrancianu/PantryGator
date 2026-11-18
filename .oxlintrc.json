@@ -17,14 +17,12 @@
   "overrides": [
     // Import rules, ADR 0044 (details: docs/agents/codebase-map.md). Override globs are relative to THIS
     // file, so they start at apps/web/. An override REPLACES the base rule's options, so the second
-    // override repeats Rule B. oxlint matches the raw import string, so relative and `@/` imports both
+    // and third overrides repeat Rule B. oxlint matches the raw import string, so relative and `@/` imports both
     // need a pattern (`**/` prefix). Excluded files are today's violators; each move ticket deletes its
     // own entries and #854 empties the list. `npm run check:web-layout` proves both rules still fire.
     {
       "files": ["apps/web/src/**/*.ts", "apps/web/src/**/*.tsx"],
       "excludeFiles": [
-        // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
-        "apps/web/src/lib/recipeDraftContent.test.ts",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import
@@ -112,11 +110,6 @@
         "apps/web/src/lib/**/*.tsx"
       ],
       "excludeFiles": [
-        // #845 moves familyDraft into Recipes hooks/ (this test imports pages/Recipes/familyDraft)
-        "apps/web/src/lib/recipeDraftContent.test.ts",
-        // Carve-out (ADR 0044 amendment): a shared test may import pages to check behaviour across pages. Only here (the Rule A override), so Rule B still applies to these files through the first override.
-        "apps/web/src/components/**/*.test.*",
-        "apps/web/src/lib/**/*.test.*",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
         // #846 moves the Recipe row and filters into components/recipe/ and rewrites this import
@@ -134,6 +127,84 @@
                 "group": ["**/pages", "**/pages/**"],
                 "message": "Rule A: shared components and lib/ never import pages/, relative or through @/. Move the shared piece into components/ or lib/, or put the guard in routing/ (ADR 0044)."
               },
+              // Rule B (repeated, see above)
+              {
+                "group": [
+                  "**/Admin/components",
+                  "**/Admin/components/**",
+                  "**/Admin/hooks",
+                  "**/Admin/hooks/**",
+                  "**/Customise/components",
+                  "**/Customise/components/**",
+                  "**/Customise/hooks",
+                  "**/Customise/hooks/**",
+                  "**/Dashboard/components",
+                  "**/Dashboard/components/**",
+                  "**/Dashboard/hooks",
+                  "**/Dashboard/hooks/**",
+                  "**/Family/components",
+                  "**/Family/components/**",
+                  "**/Family/hooks",
+                  "**/Family/hooks/**",
+                  "**/Intro/components",
+                  "**/Intro/components/**",
+                  "**/Intro/hooks",
+                  "**/Intro/hooks/**",
+                  "**/MealPlans/components",
+                  "**/MealPlans/components/**",
+                  "**/MealPlans/hooks",
+                  "**/MealPlans/hooks/**",
+                  "**/Pantry/components",
+                  "**/Pantry/components/**",
+                  "**/Pantry/hooks",
+                  "**/Pantry/hooks/**",
+                  "**/Recipes/components",
+                  "**/Recipes/components/**",
+                  "**/Recipes/hooks",
+                  "**/Recipes/hooks/**",
+                  "**/Review/components",
+                  "**/Review/components/**",
+                  "**/Review/hooks",
+                  "**/Review/hooks/**",
+                  "**/Scan/components",
+                  "**/Scan/components/**",
+                  "**/Scan/hooks",
+                  "**/Scan/hooks/**",
+                  "**/Settings/components",
+                  "**/Settings/components/**",
+                  "**/Settings/hooks",
+                  "**/Settings/hooks/**",
+                  "**/Shopping/components",
+                  "**/Shopping/components/**",
+                  "**/Shopping/hooks",
+                  "**/Shopping/hooks/**",
+                  "**/SignIn/components",
+                  "**/SignIn/components/**",
+                  "**/SignIn/hooks",
+                  "**/SignIn/hooks/**",
+                  "**/SignUp/components",
+                  "**/SignUp/components/**",
+                  "**/SignUp/hooks",
+                  "**/SignUp/hooks/**"
+                ],
+                "message": "Rule B: nothing outside a page area imports that area's components or hooks. Import the whole page, or move the module to the shared components/ (ADR 0044)."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    // Carve-out (ADR 0044 amendment): shared tests may import pages. Later overrides replace earlier options, so this override drops Rule A for shared test files and repeats Rule B.
+    {
+      "files": [
+        "apps/web/src/components/**/*.test.*",
+        "apps/web/src/lib/**/*.test.*"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
               // Rule B (repeated, see above)
               {
                 "group": [
