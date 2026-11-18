@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IntroLook } from '../../components/IntroLook';
-import { SetupReviewFrame } from '../../components/Setup/SetupReviewView';
-import { useSnapLeave } from '../../components/Setup/useSnapLeave';
-import { SetupTopRow } from '../../components/Setup/SetupTopRow';
-import {
-  INTRO_CAMERA_PATH,
-  INTRO_PATHS,
-  setupReviewPath,
-} from '../../lib/intro';
-import { useScanSession } from '../../lib/scanSession';
-import { useAutoAdvance, useIntro } from '../../lib/useIntro';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
+import { IntroLook } from '@/components/IntroLook';
+import { SetupReviewFrame } from './components/SetupReviewView/SetupReviewView';
+import { useSnapLeave } from './hooks/useSnapLeave';
+import { SetupTopRow } from './components/SetupTopRow/SetupTopRow';
+import { INTRO_CAMERA_PATH, INTRO_PATHS, setupReviewPath } from '@/lib/intro';
+import { useScanSession } from '@/lib/scanSession';
+import { useAutoAdvance, useIntro } from '@/lib/useIntro';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
 
 /**
  * The Setup overview (Snap, after the photos): the real Review overview of the Scan Session in the Intro's

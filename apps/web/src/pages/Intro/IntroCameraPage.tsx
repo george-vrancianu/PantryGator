@@ -1,7 +1,7 @@
-import { INTRO_PATHS, INTRO_REVIEW_PATH } from '../../lib/intro';
-import type { CameraMode } from '../../lib/cameraMode';
+import { INTRO_PATHS, INTRO_REVIEW_PATH } from '@/lib/intro';
+import type { CameraMode } from '@/lib/cameraMode';
 import { useNavigate } from 'react-router-dom';
-import { ScanPage } from '../Scan/ScanPage';
+import { ScanPage } from '@/pages/Scan/ScanPage';
 
 /** Setup's photos are of ingredients or a receipt: the only modes the Intro's camera offers. */
 const INTRO_MODES: readonly CameraMode[] = ['ingredients', 'receipt'];

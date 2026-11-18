@@ -1,10 +1,10 @@
 import { Box, tokens, Typography } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GatorBanner } from '../GatorBanner';
-import { ReviewActionBar } from '../ReviewActionBar';
-import type { SetupLeave } from './SetupLeave';
-import { SetupTopRow } from './SetupTopRow';
+import { GatorBanner } from '@/components/GatorBanner';
+import { ReviewActionBar } from '@/components/ReviewActionBar';
+import type { SetupLeave } from '../SetupLeave/SetupLeave';
+import { SetupTopRow } from '../SetupTopRow/SetupTopRow';
 
 /** The cream page frame of every Setup Review state (reading, failed, read): a phone-width column. */
 export function SetupReviewFrame({

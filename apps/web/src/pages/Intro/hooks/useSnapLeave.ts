@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { introPath, nextStep, skipStep } from '../../lib/intro';
-import { resetScanSession, useScanSession } from '../../lib/scanSession';
-import { useSetupLeave, type SetupLeave } from './SetupLeave';
+import { introPath, nextStep, skipStep } from '@/lib/intro';
+import { resetScanSession, useScanSession } from '@/lib/scanSession';
+import {
+  useSetupLeave,
+  type SetupLeave,
+} from '../components/SetupLeave/SetupLeave';
 
 /**
  * Next and the Skip confirm for Snap, its Setup overview and its line editor: the Scan Session holds
