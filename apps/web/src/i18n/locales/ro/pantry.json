@@ -93,9 +93,7 @@
     "chip": "Pe sfârșite"
   },
   "form": {
-    "close": "Închide",
     "title": "Adaugă în cămară",
-    "cancel": "Anulează",
     "saving": "Se salvează",
     "location": "Locație",
     "description": "Notă · opțional",
@@ -123,7 +121,6 @@
       "sayIt": "Spune"
     },
     "added": "Adăugate",
-    "done": "Gata",
     "addedToast": "Adăugat {{details}}",
     "addedList_one": "{{count}} lot adăugat",
     "addedList_few": "{{count}} loturi adăugate",
