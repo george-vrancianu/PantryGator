@@ -9,8 +9,13 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
-/** The line under a tile's name: a 12px decorative glyph, then text, in the reason's colour. */
-export type TileWhy = { glyph?: string; text: string; color: string };
+/** The line under a tile's name: a 12px decorative icon (preferred) or glyph (legacy, still used by RunningLowTiles and RecentlyStocked), then text, in the reason's colour. */
+export type TileWhy = {
+  glyph?: string;
+  icon?: ReactNode;
+  text: string;
+  color: string;
+};
 
 export type IngredientTileProps = {
   ingredientId: string;
@@ -114,7 +119,15 @@ export function IngredientTile({
               color: why.color,
             }}
           >
-            {why.glyph ? (
+            {why.icon ? (
+              <Box
+                component="span"
+                aria-hidden="true"
+                sx={{ display: 'flex', flexShrink: 0 }}
+              >
+                {why.icon}
+              </Box>
+            ) : why.glyph ? (
               <Box
                 component="span"
                 aria-hidden="true"

@@ -1,4 +1,13 @@
-import { Box, CloseIcon, Link, tokens, focusRing } from '@pocket-pantry/ui';
+import {
+  ArrowRightIcon,
+  Box,
+  ClockIcon,
+  CloseIcon,
+  Link,
+  StarFillIcon,
+  tokens,
+  focusRing,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '@/components/catalogSearch/emptyState/context';
 import { IngredientTile } from '@/components/catalogSearch/emptyState/IngredientTile/IngredientTile';
@@ -47,17 +56,17 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
     const { color } = tokens;
     const why = {
       expired: {
-        glyph: '◷',
+        icon: <ClockIcon size={12} />,
         text: t('suggestions.expiredWhen', { when: age }),
         color: color.urgentFg,
       },
       usedUp: {
-        glyph: '→',
+        icon: <ArrowRightIcon size={12} />,
         text: t('suggestions.usedUpWhen', { when: age }),
         color: color.muted,
       },
       staple: {
-        glyph: '★',
+        icon: <StarFillIcon size={12} />,
         text: t('suggestions.stapleWhy'),
         color: color.soonIcon,
       },
