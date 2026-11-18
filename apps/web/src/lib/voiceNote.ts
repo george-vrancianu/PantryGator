@@ -145,6 +145,8 @@ export type VoiceNoteAdapters = {
   startMicrophone: () => Promise<MicrophoneSession>;
   /** Tells the Member something. Can also be attached later with `attachNotifier`. */
   notify?: (notice: VoiceNotice) => void;
+  /** How long a network error waits before its one automatic retry. Default `NETWORK_RETRY_DELAY_MS`; 0 retries at once. */
+  retryDelayMs?: number;
 };
 
 export type VoiceNoteEdit = Partial<{
@@ -196,6 +198,9 @@ const MAX_NOTES = 5;
 /** The most Voice Actions one Apply takes (the API's limit); a merged Review over it is refused. */
 export const MAX_APPLY_ACTIONS = 50;
 
+/** A network error waits this long before its one automatic retry: a dropped signal needs a moment to come back. */
+export const NETWORK_RETRY_DELAY_MS = 1500;
+
 /** What `openMerged` came to. */
 type MergeOutcome = 'opened' | 'tooMany' | 'refused';
 
@@ -241,6 +246,9 @@ const nextUtcMidnight = (now: number) => {
     day.getUTCDate() + 1,
   );
 };
+
+const pause = (ms: number) =>
+  ms > 0 ? new Promise<void>((resolve) => setTimeout(resolve, ms)) : undefined;
 
 const isReady = (n: VoiceNoteEntry) =>
   n.phase === 'review' || n.phase === 'answers';
@@ -714,6 +722,9 @@ export function createVoiceNote(
           error instanceof ApiError &&
           error.code === 'network_error'
         ) {
+          await pause(adapters.retryDelayMs ?? NETWORK_RETRY_DELAY_MS);
+          // Cancelled while waiting: the note is already gone.
+          if (request.signal.aborted) return;
           continue;
         }
         settled();

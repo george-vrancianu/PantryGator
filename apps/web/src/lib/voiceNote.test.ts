@@ -46,7 +46,7 @@ async function record(
 }
 
 /** A fake sender whose answers the test settles by hand. */
-function setup() {
+function setup(retryDelayMs = 0) {
   const requests: VoiceNoteRequest[] = [];
   const pending: Array<{
     resolve: (value: VoiceNoteResult) => void;
@@ -77,6 +77,7 @@ function setup() {
     send,
     keepScreenAwake,
     startMicrophone,
+    retryDelayMs,
     notify: (notice) => notices.push(notice),
   });
   const answer = (value: VoiceNoteResult, at = pending.length - 1) =>
@@ -717,6 +718,29 @@ describe('Voice Note module', () => {
       expect(ctx.note.getState().inbox).toMatchObject({ ready: 1, failed: 0 });
       // One lock for the whole read, released once.
       expect(ctx.released()).toEqual([1]);
+    });
+
+    it('waits before the second try, and stops waiting if the note is cancelled', async () => {
+      vi.useFakeTimers();
+      try {
+        const ctx = setup(1500);
+        await record(ctx.note, options);
+        ctx.refuse(new ApiError('network_error', 0));
+        await vi.advanceTimersByTimeAsync(1499);
+        expect(ctx.send).toHaveBeenCalledOnce();
+        await vi.advanceTimersByTimeAsync(1);
+        expect(ctx.send).toHaveBeenCalledTimes(2);
+
+        const second = setup(1500);
+        await record(second.note, options);
+        second.refuse(new ApiError('network_error', 0));
+        await settle();
+        cancelFirst(second.note);
+        await vi.advanceTimersByTimeAsync(5000);
+        expect(second.send).toHaveBeenCalledOnce();
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('fails with the recording kept when the second try fails too, and does not try a third', async () => {
