@@ -249,6 +249,7 @@ export function FamilyRecipeForm({
                 value: 'details',
                 label: t('recipes:family.tabs.details'),
                 badge: detailsBad ? '!' : undefined,
+                badgeTone: 'urgent',
                 accessibleName: detailsBad
                   ? `${t('recipes:family.tabs.details')}, ${t('recipes:family.tabs.needsAttention')}`
                   : undefined,

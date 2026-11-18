@@ -135,7 +135,7 @@ export { Link, type LinkProps } from './atoms/Link';
 export { ProgressBar, type ProgressBarProps } from './atoms/ProgressBar';
 export { Snackbar, type SnackbarProps } from './atoms/Snackbar';
 export { Spinner } from './atoms/Spinner';
-export { Tag, type TagProps, type TagTone } from './atoms/Tag';
+export { Tag, tagColours, type TagProps, type TagTone } from './atoms/Tag';
 export {
   TagChip,
   type TagChipKind,

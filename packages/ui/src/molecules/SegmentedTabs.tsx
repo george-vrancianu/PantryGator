@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import { useRef, type KeyboardEvent } from 'react';
+import { tagColours } from '../atoms/Tag';
 import { canopyFocusRing, focusRing } from '../theme/focusRing';
 import { tokens } from '../theme/tokens';
 import { visuallyHidden } from '../theme/visuallyHidden';
@@ -15,8 +16,10 @@ import {
 export type SegmentedTab<T extends string> = {
   value: T;
   label: string;
-  /** A small urgent badge inside the tab, e.g. "2". */
+  /** A small badge inside the tab, e.g. "2". */
   badge?: string;
+  /** `accent` for a count (the default), `urgent` for a "!" that needs attention. */
+  badgeTone?: 'accent' | 'urgent';
   /** What screen readers hear in place of the badge, e.g. "2 to buy". */
   badgeLabel?: string;
   /** The tab's whole accessible name, when label plus badge should read differently, e.g. "Ingredients, 6". */
@@ -175,15 +178,16 @@ export function SegmentedTabs<T extends string>({
                 <Box
                   component="span"
                   aria-hidden={tab.badgeLabel ? true : undefined}
-                  sx={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    px: '6px',
-                    py: '2px',
-                    borderRadius: radius.box,
-                    backgroundColor: color.urgentBg,
-                    color: color.urgentFg,
-                  }}
+                  sx={[
+                    {
+                      fontSize: 11,
+                      fontWeight: 700,
+                      px: '6px',
+                      py: '2px',
+                      borderRadius: radius.box,
+                    },
+                    tagColours(tab.badgeTone ?? 'accent'),
+                  ]}
                 >
                   {tab.badge}
                 </Box>

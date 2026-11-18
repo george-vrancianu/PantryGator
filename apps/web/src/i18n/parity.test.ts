@@ -288,7 +288,7 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
     'available',
     'a service, camera, Recipe or voice target that is no longer available, not the Can Make state',
     [
-      'dashboard:mealPlan.status.unavailable',
+      'mealPlans:forecast.status.unavailable',
       'errors:scan.provider_unavailable',
       'errors:voice.provider_unavailable',
       'mealPlans:detail.unavailable',
@@ -406,7 +406,7 @@ const WORD_EXCEPTIONS: [term: string, reason: string, keys: string[]][] = [
   [
     'unknown',
     'plain adjective; copy drift for an Unmatched name, flag',
-    ['admin:recipe.lines.unknown', 'dashboard:mealPlan.line.unknown'],
+    ['admin:recipe.lines.unknown', 'mealPlans:forecast.line.unknown'],
   ],
   [
     'import',

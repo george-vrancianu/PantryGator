@@ -21,7 +21,7 @@ import { useUndoToast } from './useUndoToast';
  * Shopping Items the add created, and a refetch of the Shopping List and the Widget.
  */
 export function useAddMissing(today: IsoDate) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation('mealPlans');
   const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -72,7 +72,7 @@ export function useAddMissing(today: IsoDate) {
     },
     onSuccess: ({ createdIds, count }) => {
       if (count === 0) return;
-      const message = t('mealPlan.toast.added', { count });
+      const message = t('forecast.toast.added', { count });
       // Everything merged into lines already on the list: nothing was created, so nothing to undo.
       if (createdIds.length === 0) toast.show(message, { polite: true });
       else

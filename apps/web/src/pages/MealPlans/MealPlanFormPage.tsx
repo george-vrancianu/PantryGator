@@ -7,9 +7,9 @@ import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
 import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
 import { useFamily } from '@/lib/family';
+import { addDaysIso } from '@/lib/mealPlan';
 import { localIso, type IsoDate } from '@/lib/pantry';
 import {
-  addDaysIso,
   MAX_NAME_LENGTH,
   MAX_PLAN_DAYS,
   MAX_START_AHEAD_DAYS,

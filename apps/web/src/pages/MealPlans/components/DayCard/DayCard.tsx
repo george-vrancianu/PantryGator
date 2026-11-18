@@ -16,7 +16,7 @@ import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLa
 
 /** A filled slot's forecast as the Widget's Tag: covered, on list, short, or "No longer available". */
 function StatusTag({ slot }: { slot: PlanSlot }) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation('mealPlans');
   if (!slot.status) return null;
   return (
     <Box sx={{ mt: '6px' }}>
@@ -42,7 +42,6 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
   headingRef,
 ) {
   const { t, i18n } = useTranslation('mealPlans');
-  const { t: tDashboard } = useTranslation('dashboard');
   const { t: tRecipes } = useTranslation('recipes');
   const language = i18n.language;
   const headingId = `day-${day.date}`;
@@ -156,7 +155,7 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
                   title: slot.recipeTitle,
                 }),
                 !day.past && slot.status
-                  ? statusLabel(tDashboard, { ...slot, status: slot.status })
+                  ? statusLabel(t, { ...slot, status: slot.status })
                   : null,
                 slot.allergyWarning
                   ? allergenIndicatorLabel(tRecipes, slot.allergyWarning, true)

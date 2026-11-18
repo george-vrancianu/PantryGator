@@ -7,8 +7,9 @@ export type TagTone = 'accent' | 'ok' | 'soon' | 'urgent' | 'neutral';
 
 export type TagProps = Omit<BoxProps, 'children'> & {
   /**
-   * Handoff section 4: `accent` (On list, Staple), `ok` (In Pantry), `soon`
-   * and `urgent` (expiry); `neutral` is a muted chip for something inactive.
+   * Handoff section 4: `accent` (Covered, Staple), `ok` (In Pantry), `soon`
+   * (On list, expiring soon) and `urgent` (short, expired); `neutral` is a
+   * muted chip for something inactive.
    */
   tone: TagTone;
   /** Leading icon, e.g. for an expired item. */
@@ -16,7 +17,8 @@ export type TagProps = Omit<BoxProps, 'children'> & {
   children: ReactNode;
 };
 
-const pair = (tone: TagTone) => (theme: Theme) => {
+/** A tone's background and text colour from the Theme; for pills that are not a Tag but share its tones. */
+export const tagColours = (tone: TagTone) => (theme: Theme) => {
   const p = themePalette(theme);
   const [backgroundColor, color] = {
     accent: [p.pp.accentTint, p.pp.accentOnTint],
@@ -49,7 +51,7 @@ export function Tag({ tone, icon, children, sx, ...props }: TagProps) {
           whiteSpace: 'nowrap',
           '& svg': { flexShrink: 0 },
         },
-        pair(tone),
+        tagColours(tone),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...props}

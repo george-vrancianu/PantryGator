@@ -11,7 +11,6 @@ import {
   shadow,
   PlusIcon,
   ShoppingIcon,
-  Tag,
   tokens,
   color,
 } from '@pocket-pantry/ui';
@@ -29,6 +28,7 @@ import {
   BAR_FILL,
   BAR_RADIUS,
 } from '@/components/mealPlan/MealPlanPopover/barStyle';
+import { StatusTag } from '@/components/mealPlan/StatusTag/StatusTag';
 import { MealPlanPopover } from '@/components/mealPlan/MealPlanPopover/MealPlanPopover';
 import {
   columnName,
@@ -41,11 +41,11 @@ import {
   barStatuses,
   dayHeadline,
   dayMark,
+  planEnd,
   useMealWindow,
   type PlanTag,
   type WindowDay,
 } from '@/lib/mealPlan';
-import { planEnd } from '@/lib/mealPlanPage';
 import { fromIso, localIso, type IsoDate } from '@/lib/pantry';
 import { useAddMissing } from '@/lib/useAddMissing';
 import { useMealPlanLegend } from '@/lib/useMealPlanLegend';
@@ -76,22 +76,21 @@ function PlanTagView({ tag }: { tag: PlanTag }) {
   switch (tag.kind) {
     case 'short':
       return (
-        <Tag tone="urgent" icon={<BangIcon size={12} strokeWidth={3.4} />}>
+        <StatusTag
+          status="short"
+          icon={<BangIcon size={12} strokeWidth={3.4} />}
+        >
           {t('mealPlan.short', { count: tag.count })}
-        </Tag>
+        </StatusTag>
       );
     case 'coveredOnceYouShop':
       return (
-        <Tag tone="soon" icon={<ShoppingIcon size={12} strokeWidth={2.4} />}>
+        <StatusTag status="onList">
           {t('mealPlan.coveredOnceYouShop')}
-        </Tag>
+        </StatusTag>
       );
     case 'allCovered':
-      return (
-        <Tag tone="accent" icon={<CheckIcon size={12} strokeWidth={3} />}>
-          {t('mealPlan.allCovered')}
-        </Tag>
-      );
+      return <StatusTag status="covered">{t('mealPlan.allCovered')}</StatusTag>;
     case 'none':
       return null;
   }
@@ -159,6 +158,7 @@ function LegendSwatch({ fill }: { fill: object }) {
 /** The Family's plan for the next days: a column per planned day, three bars each, and a popover per day. */
 export function MealPlanWidget({ columns }: WidgetProps) {
   const { t, i18n } = useTranslation('dashboard');
+  const { t: tPlan } = useTranslation('mealPlans');
   const language = i18n.language;
   const todayIso = localIso(useToday());
   const mealWindow = useMealWindow(todayIso);
@@ -305,7 +305,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     aria-haspopup="dialog"
                     aria-expanded={isOpen}
                     aria-current={isToday ? 'date' : undefined}
-                    aria-label={columnName(t, language, day)}
+                    aria-label={columnName(tPlan, language, day)}
                     onClick={() => toggle(index)}
                     sx={{
                       all: 'unset',
@@ -351,7 +351,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                       }}
                     >
                       {isToday
-                        ? t('mealPlan.today')
+                        ? tPlan('forecast.today')
                         : shortWeekday(language, day.date)}
                     </Box>
                     <Box
@@ -488,15 +488,15 @@ export function MealPlanWidget({ columns }: WidgetProps) {
               >
                 <span>
                   <LegendSwatch fill={BAR_FILL.covered} />
-                  {t('mealPlan.legend.covered')}
+                  {tPlan('forecast.legend.covered')}
                 </span>
                 <span>
                   <LegendSwatch fill={BAR_FILL.onList} />
-                  {t('mealPlan.legend.onList')}
+                  {tPlan('forecast.legend.onList')}
                 </span>
                 <span>
                   <LegendSwatch fill={BAR_FILL.short} />
-                  {t('mealPlan.legend.short')}
+                  {tPlan('forecast.legend.short')}
                 </span>
                 <span>{t('mealPlan.legend.bars')}</span>
               </Box>

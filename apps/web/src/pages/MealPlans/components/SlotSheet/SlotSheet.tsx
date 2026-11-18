@@ -80,7 +80,6 @@ export function SlotSheet({
   onClose,
 }: Props) {
   const { t, i18n } = useTranslation('mealPlans');
-  const { t: tDashboard } = useTranslation('dashboard');
   return (
     <Sheet
       open={slot !== undefined}
@@ -129,18 +128,9 @@ export function SlotSheet({
           ) : (
             <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
               {slot.issues.map((issue) => {
-                const reason = reasonText(
-                  tDashboard,
-                  i18n.language,
-                  issue,
-                  today,
-                );
+                const reason = reasonText(t, i18n.language, issue, today);
                 const uncertain = issue.kind === 'uncertain';
-                const detailText = issueDetail(
-                  tDashboard,
-                  i18n.language,
-                  issue,
-                );
+                const detailText = issueDetail(t, i18n.language, issue);
                 // A short line's amount is in its pill; "need" has no pill amount.
                 const meta = [
                   issue.kind === 'missing' ? detailText : null,

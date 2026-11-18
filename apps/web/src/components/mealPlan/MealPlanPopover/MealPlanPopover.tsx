@@ -121,7 +121,7 @@ function IssueLine({
   onAdd: Props['onAdd'];
   adding: boolean;
 }) {
-  const { t, i18n } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('mealPlans');
   const language = i18n.language;
   const uncertain = issue.kind === 'uncertain';
   const detail = issueDetail(t, language, issue);
@@ -176,12 +176,12 @@ function IssueLine({
       </Box>
       {issue.onList ? (
         <Tag tone="soon" sx={{ py: '2px', px: '7px' }}>
-          {t('mealPlan.status.onList')}
+          {t('forecast.status.onList')}
         </Tag>
       ) : !uncertain ? (
         // Deliberately adds that Ingredient's total across the window, not just this day's amount.
         <IconButton
-          label={t('mealPlan.addLine', { name: issue.name })}
+          label={t('forecast.addLine', { name: issue.name })}
           tone="accentOutline"
           size={34}
           disabled={adding}
@@ -211,7 +211,7 @@ function MealBlock({
   onAdd: Props['onAdd'];
   adding: boolean;
 }) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation('mealPlans');
   const tint = aisleTint(slot.aisle?.id);
   const initials = Array.from(slot.recipeTitle).slice(0, 2).join('');
   return (
@@ -235,7 +235,7 @@ function MealBlock({
           color: tokens.color.muted,
         }}
       >
-        {t(`mealPlan.slot.${slot.mealtime}`)}
+        {t(`forecast.slot.${slot.mealtime}`)}
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Box
@@ -291,8 +291,8 @@ function MealBlock({
             }}
           >
             {slot.minutes === null
-              ? t('mealPlan.metaNoTime', { servings: slot.servings })
-              : t('mealPlan.meta', {
+              ? t('forecast.metaNoTime', { servings: slot.servings })
+              : t('forecast.meta', {
                   servings: slot.servings,
                   minutes: slot.minutes,
                 })}
@@ -349,7 +349,7 @@ export function MealPlanPopover({
   onAdd,
   adding,
 }: Props) {
-  const { t, i18n } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('mealPlans');
   const language = i18n.language;
   const day = days[index];
   const titleId = useId();
@@ -468,11 +468,11 @@ export function MealPlanPopover({
   const missing = dayMissing(day);
   const statusWord =
     day.status === 'covered'
-      ? t('mealPlan.legend.covered')
+      ? t('forecast.legend.covered')
       : day.status === 'onList'
-        ? t('mealPlan.legend.onList')
+        ? t('forecast.legend.onList')
         : day.status === 'short'
-          ? t('mealPlan.legend.short')
+          ? t('forecast.legend.short')
           : null;
   const subtitle = [fullDate(language, day.date), hasMeals ? statusWord : null]
     .filter(Boolean)
@@ -573,7 +573,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.prevDay')}
+          aria-label={t('forecast.prevDay')}
           disabled={index === 0}
           onClick={() => onStep(index - 1)}
           sx={ghostButton}
@@ -583,7 +583,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.nextDay')}
+          aria-label={t('forecast.nextDay')}
           disabled={index === days.length - 1}
           onClick={() => onStep(index + 1)}
           sx={ghostButton}
@@ -593,7 +593,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.close')}
+          aria-label={t('forecast.close')}
           onClick={() => onClose(true)}
           sx={ghostButton}
         >
@@ -627,7 +627,7 @@ export function MealPlanPopover({
             }}
           >
             <span>
-              {t('mealPlan.nothingOn', {
+              {t('forecast.nothingOn', {
                 day: longWeekday(language, day.date),
               })}
             </span>
@@ -640,7 +640,7 @@ export function MealPlanPopover({
               }
               sx={plainAction}
             >
-              {t(day.planId ? 'mealPlan.planMeal' : 'mealPlan.startPlan')}
+              {t(day.planId ? 'forecast.planMeal' : 'forecast.startPlan')}
             </Box>
           </Box>
         )}
@@ -664,7 +664,7 @@ export function MealPlanPopover({
               onClick={() => onAdd({ scope: 'date', date: day.date })}
               sx={{ flexShrink: 0, minHeight: 32, height: 32, fontSize: 12.5 }}
             >
-              {t('mealPlan.addNMissing', { count: missing.length })}
+              {t('forecast.addNMissing', { count: missing.length })}
             </Button>
           ) : null}
           <Box
@@ -673,7 +673,7 @@ export function MealPlanPopover({
             sx={plainAction}
           >
             <CalendarIcon size={14} />
-            {t('mealPlan.editDay')}
+            {t('forecast.editDay')}
           </Box>
         </Box>
       ) : null}

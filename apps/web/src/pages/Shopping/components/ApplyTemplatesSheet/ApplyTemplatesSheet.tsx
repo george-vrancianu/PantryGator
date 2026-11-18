@@ -13,8 +13,10 @@ import {
   Typography,
   insetFocusRing,
   radius,
+  tagColours,
   tokens,
   useToast,
+  type TagTone,
 } from '@pocket-pantry/ui';
 import { useQueries } from '@tanstack/react-query';
 import { useEffect, useId, useState } from 'react';
@@ -44,9 +46,11 @@ import {
   summarize,
   templateState,
   toggleLine,
+  type LineTag,
   type Selection,
   type TemplateState,
 } from '@/lib/templateSelection';
+import { onListTone } from '@/lib/statusTone';
 
 export type ApplyTemplatesSheetProps = {
   open: boolean;
@@ -549,8 +553,9 @@ function TemplateRow({
   );
 }
 
-const okTag = { fg: tokens.color.okFg, bg: tokens.color.okBg };
-const soonTag = { fg: tokens.color.soonFg, bg: tokens.color.soonBg };
+/** In Pantry and In trolley are fine (`ok`); On list shares the forecast's `onList` tone. */
+const lineTagTone = (kind: LineTag): TagTone =>
+  kind === 'onList' ? onListTone : 'ok';
 
 /** The Import sheet words the On list tag "adds up"; the editor keeps plain "On list". */
 const importTagKey = { ...lineTagKey, onList: 'shopping:import.onListAddsUp' };
@@ -586,7 +591,7 @@ function TemplateLines({
         const tag = kind
           ? {
               text: t(importTagKey[kind]),
-              ...(kind === 'onList' ? soonTag : okTag),
+              tone: lineTagTone(kind),
             }
           : null;
         const amount =
@@ -647,15 +652,16 @@ function TemplateLines({
             {tag ? (
               <Box
                 component="span"
-                sx={{
-                  px: 1.25,
-                  py: 0.25,
-                  borderRadius: radius.tag,
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: tag.fg,
-                  backgroundColor: tag.bg,
-                }}
+                sx={[
+                  {
+                    px: 1.25,
+                    py: 0.25,
+                    borderRadius: radius.tag,
+                    fontSize: 11.5,
+                    fontWeight: 700,
+                  },
+                  tagColours(tag.tone),
+                ]}
               >
                 {tag.text}
               </Box>
