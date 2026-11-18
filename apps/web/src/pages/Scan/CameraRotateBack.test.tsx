@@ -117,7 +117,7 @@ describe.each(cameras)('Rotate back in %s', (_name, route) => {
     await userEvent.click(
       screen.getByRole('button', { name: 'How scanning works' }),
     );
-    expect(frame()).toContainElement(screen.getByTestId('info-scrim'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('holds the Scan Language menu inside the turned box', async () => {

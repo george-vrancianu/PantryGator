@@ -162,11 +162,6 @@ describe('The Scan page in landscape on a tablet', () => {
       screen.getByRole('button', { name: 'How scanning works' }),
     );
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    // It portals out of the camera's subtree, so it carries the dark Theme itself.
-    expect(
-      screen.getByRole('dialog').closest('.MuiDialog-root'),
-    ).toHaveAttribute('data-theme', 'dark');
-    expect(screen.queryByTestId('info-scrim')).toBeNull();
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
   });

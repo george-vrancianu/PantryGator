@@ -54,7 +54,6 @@ describe('The add-Batch camera in landscape on a tablet', () => {
       screen.getByRole('button', { name: 'How scanning works' }),
     );
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.queryByTestId('info-scrim')).toBeNull();
   });
 
   it('centres the "adds to pantry" pill on the feed, left of the rail', async () => {

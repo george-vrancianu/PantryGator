@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Button, Dialog, Sheet } from '../index';
+import { Sheet } from '../index';
 import { renderWithTheme as render } from '../test/render';
 import { stubScreen } from '../test/stubScreen';
 import { isTextField } from '../theme/focusOpening';
@@ -11,7 +11,7 @@ import { isTextField } from '../theme/focusOpening';
  * button does not focus it, so `fireEvent.click` (no focus move) stands in for
  * the tap: the field the Member typed in keeps focus while the sheet opens.
  */
-function Page({ dialog = false }: { dialog?: boolean }) {
+function Page() {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -19,22 +19,11 @@ function Page({ dialog = false }: { dialog?: boolean }) {
       <button type="button" onClick={() => setOpen(true)}>
         Pick expiry
       </button>
-      {dialog ? (
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          title="Expiry"
-          actions={<Button onClick={() => setOpen(false)}>Done</Button>}
-        >
-          Pick a date
-        </Dialog>
-      ) : (
-        <Sheet open={open} onClose={() => setOpen(false)} label="Expiry">
-          <button type="button" onClick={() => setOpen(false)}>
-            Done
-          </button>
-        </Sheet>
-      )}
+      <Sheet open={open} onClose={() => setOpen(false)} label="Expiry">
+        <button type="button" onClick={() => setOpen(false)}>
+          Done
+        </button>
+      </Sheet>
     </>
   );
 }
@@ -72,20 +61,14 @@ describe('Sheet closing focus', () => {
     return opener;
   }
 
-  it.each([
-    ['sheet', false],
-    ['dialog', true],
-  ])(
-    'does not put focus back on a text field when a phone %s closes',
-    async (_kind, dialog) => {
-      stubScreen(false);
-      render(<Page dialog={dialog} />);
-      screen.getByRole('textbox', { name: 'Search' }).focus();
-      textFocus.length = 0;
-      await openAndClose(false);
-      expect(textFocus).toEqual([]);
-    },
-  );
+  it('does not put focus back on a text field when a phone sheet closes', async () => {
+    stubScreen(false);
+    render(<Page />);
+    screen.getByRole('textbox', { name: 'Search' }).focus();
+    textFocus.length = 0;
+    await openAndClose(false);
+    expect(textFocus).toEqual([]);
+  });
 
   it('puts focus back on the text field from md up, where no keyboard jumps', async () => {
     stubScreen(true);

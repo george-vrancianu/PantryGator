@@ -145,7 +145,7 @@ describe('ManageTagsSection', () => {
     await user.type(field, 'quick');
     await user.click(screen.getByRole('button', { name: 'Save' }));
     const dialog = await screen.findByRole('dialog');
-    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
     expect(
       calls.filter((c) => c.key === 'PATCH /api/recipes/tags/spare'),
     ).toHaveLength(1);

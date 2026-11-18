@@ -115,7 +115,6 @@ export { LocationChip, type LocationChipProps } from './atoms/LocationChip';
 export { Checkbox, type CheckboxProps } from './atoms/Checkbox';
 export { Collapse, type CollapseProps } from './atoms/Collapse';
 export { Popper, type PopperProps } from './atoms/Popper';
-export { Dialog, type DialogProps } from './atoms/Dialog';
 export { SafeAreaBand } from './atoms/SafeAreaBand';
 export { FieldUnit, type FieldUnitProps } from './atoms/FieldUnit';
 export {

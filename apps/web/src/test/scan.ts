@@ -35,14 +35,14 @@ export const lift = (x = 200, y = 700) =>
 /** The browser cancels the touch on the shutter. */
 export const cancelPress = () => fireEvent.pointerCancel(shutter(), touch);
 
-/** The mode slider (a radio group). */
+/** The mode slider (a radio group); `hidden` so it is found behind an open Sheet too. */
 export const slider = () =>
-  screen.getByRole('radiogroup', { name: 'Scan mode' });
+  screen.getByRole('radiogroup', { name: 'Scan mode', hidden: true });
 
 /** The words of the selected mode(s) in the mode slider. */
 export const selected = () =>
   within(slider())
-    .getAllByRole('radio')
+    .getAllByRole('radio', { hidden: true })
     .filter((radio) => radio.getAttribute('aria-checked') === 'true')
     .map((radio) => radio.getAttribute('aria-label') ?? radio.textContent);
 
