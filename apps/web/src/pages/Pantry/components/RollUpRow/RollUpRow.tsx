@@ -6,7 +6,6 @@ import {
   Typography,
   insetFocusRing,
   palette,
-  tokens,
   radius,
 } from '@pocket-pantry/ui';
 import {
@@ -244,8 +243,8 @@ export function RollUpRow({
                       px: '8px',
                       py: '2px',
                       borderRadius: radius.tag,
-                      bgcolor: tokens.color.soonBg,
-                      color: tokens.color.soonFg,
+                      bgcolor: palette('warning-light'),
+                      color: palette('warning-main'),
                     }}
                   >
                     {t('unmatched')}
@@ -260,7 +259,7 @@ export function RollUpRow({
                     alignItems: 'center',
                     gap: '6px',
                     fontSize: 12,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                     mt: '2px',
                   }}
                 >
@@ -281,10 +280,10 @@ export function RollUpRow({
                 width: 28,
                 height: 28,
                 borderRadius: '50%',
-                bgcolor: expanded ? tokens.color.accentTint : 'transparent',
+                bgcolor: expanded ? palette('pp-accentTint') : 'transparent',
                 color: expanded
-                  ? tokens.color.accentOnTint
-                  : tokens.color.muted,
+                  ? palette('pp-accentOnTint')
+                  : palette('text-secondary'),
                 transform: expanded ? 'rotate(180deg)' : 'none',
                 transition:
                   'transform 260ms cubic-bezier(.2,.8,.2,1), background-color 200ms, color 200ms',

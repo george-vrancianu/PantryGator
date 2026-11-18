@@ -5,7 +5,7 @@ import {
   Spinner,
   displayType,
   hero,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import type { ElementType, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,7 +69,7 @@ export function WidgetCard({
               boxShadow: hero.shadow,
             }
           : {}),
-        color: isHero ? hero.ink : tokens.color.ink,
+        color: isHero ? hero.ink : palette('text-primary'),
         textDecoration: 'none',
       }}
     >
@@ -90,7 +90,7 @@ export function WidgetCard({
 export function WidgetTitle({
   icon,
   children,
-  color = tokens.color.muted,
+  color = palette('text-secondary'),
   component = 'div',
 }: {
   icon: ReactNode;

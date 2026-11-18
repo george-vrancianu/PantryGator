@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
 import { Typography } from '../atoms/Typography';
-import { tokens } from '../theme/tokens';
+import { palette } from '../theme/themeVars';
 
 export type ListRowProps = {
   /** Before the text: a tick, an icon tile. */
@@ -58,7 +58,7 @@ export function ListRow({
             ...(done
               ? {
                   textDecoration: 'line-through',
-                  color: tokens.color.checkedText,
+                  color: palette('text-secondary'),
                 }
               : {}),
           }}
@@ -106,7 +106,7 @@ export function ListRow({
 export const listRowItemSx = {
   listStyle: 'none',
   position: 'relative',
-  '& + &': { borderTop: `1px solid ${tokens.color.divider}` },
+  '& + &': { borderTop: `1px solid ${palette('divider')}` },
 } as const;
 
 /** The `<li>` that holds a `ListRow` in a `<ul>`. */

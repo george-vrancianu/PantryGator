@@ -4,10 +4,10 @@ import {
   Card,
   PlusIcon,
   radius,
-  tokens,
   insetFocusRingStyle,
   Typography,
   SectionHeading,
+  palette,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
@@ -156,8 +156,8 @@ export function RowControls({ children }: { children: ReactNode }) {
 /** The 38 pt rounded tile that leads a row. */
 export function RowTile({
   children,
-  background = tokens.color.chipNeutral,
-  color = tokens.color.ink,
+  background = palette('pp-chip'),
+  color = palette('text-primary'),
 }: {
   children: ReactNode;
   background?: string;
@@ -193,7 +193,7 @@ export function OrderNumber({ value }: { value: number }) {
         width: 20,
         textAlign: 'center',
         fontWeight: 700,
-        color: tokens.color.muted,
+        color: palette('text-secondary'),
         fontVariantNumeric: 'tabular-nums',
       }}
     >

@@ -29,7 +29,7 @@ import {
 } from '../components/AmountSheet/AmountSheet';
 import { formatRowAmount } from '@/lib/amount';
 import { translateApiError } from '@/i18n/translateApiError';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useUndoToast } from '@/lib/useUndoToast';
 import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 import { useRowHint, type RowHint } from '@/lib/useRowHint';
 import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
@@ -156,7 +156,7 @@ function Editor({
 
   // Removing a Template Line saves at once, without it (ADR 0009: the exception, because a line is only
   // a name, an amount and a unit). Undo saves the lines again with it back at its old position.
-  const toast = useToast();
+  const { showUndo } = useUndoToast();
   // The toast outlives this page, but Undo builds on this instance's refs: take it down when we go.
   const undoToast = useRef<ToastHandle | null>(null);
   useEffect(() => () => undoToast.current?.close(), []);
@@ -176,16 +176,10 @@ function Editor({
       return current.filter((_, i) => i !== at).map(toLineBody);
     });
     if (gone) return;
-    undoToast.current = toast.show(
+    undoToast.current = showUndo(
       t('common:row.removed', { name: line.name }),
-      {
-        duration: UNDO_WINDOW_MS,
-        action: {
-          label: t('common:row.undo'),
-          onClick: () => {
-            void restore(line, index);
-          },
-        },
+      () => {
+        void restore(line, index);
       },
     );
   };

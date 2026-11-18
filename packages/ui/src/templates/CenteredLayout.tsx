@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
 import { Card } from '../atoms/Card';
 import { SAFE_TOP } from '../theme/safeArea';
-import { tokens } from '../theme/tokens';
+import { palette } from '../theme/themeVars';
 
 /** A centred card on the app background, for signed-out screens. */
 export function CenteredLayout({ children }: { children: ReactNode }) {
@@ -17,7 +17,7 @@ export function CenteredLayout({ children }: { children: ReactNode }) {
         justifyContent: 'center',
         px: '20px',
         py: '32px',
-        backgroundColor: tokens.color.bg,
+        backgroundColor: palette('background-default'),
       }}
     >
       <Card

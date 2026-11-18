@@ -33,8 +33,9 @@ function Chips() {
         <Chip icon={<TemplateIcon />} label="Weekly shop" meta="12 items" />
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-        <Tag tone="accent">On list</Tag>
+        <Tag tone="accent">Covered</Tag>
         <Tag tone="ok">In Pantry</Tag>
+        <Tag tone="soon">On list</Tag>
         <Tag tone="soon">2 days</Tag>
         <Tag tone="urgent">Expired</Tag>
       </Box>

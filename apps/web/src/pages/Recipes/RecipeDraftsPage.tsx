@@ -4,8 +4,8 @@ import {
   Button,
   Card,
   Spinner,
-  tokens,
   displayType,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
@@ -35,7 +35,9 @@ export function RecipeDraftsPage() {
           <Box sx={{ ...displayType, fontSize: 18 }}>
             {t('recipes:drafts.empty')}
           </Box>
-          <Box sx={{ fontSize: 14, color: tokens.color.muted, mt: '4px' }}>
+          <Box
+            sx={{ fontSize: 14, color: palette('text-secondary'), mt: '4px' }}
+          >
             {t('recipes:drafts.emptyHint')}
           </Box>
         </Box>

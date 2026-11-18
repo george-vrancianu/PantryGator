@@ -1,4 +1,4 @@
-import { Box, tokens, visuallyHidden, radius } from '@pocket-pantry/ui';
+import { Box, visuallyHidden, radius, palette } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent } from '@/lib/catalog';
@@ -58,8 +58,8 @@ function GroupHeaderRow({
         justifyContent: 'space-between',
         minHeight: 40,
         px: '20px',
-        bgcolor: tokens.color.subtle,
-        borderTop: `1px solid ${tokens.color.divider}`,
+        bgcolor: palette('pp-subtle'),
+        borderTop: `1px solid ${palette('divider')}`,
       }}
     >
       <Box
@@ -76,7 +76,7 @@ function GroupHeaderRow({
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
             color:
-              kind === 'review' ? tokens.color.urgentFg : tokens.color.accent,
+              kind === 'review' ? palette('error-main') : palette('pp-accent'),
           }}
         >
           {`${t(`group.${kind}`)} · ${count}`}
@@ -160,8 +160,8 @@ export function TabletReviewTable({
       aria-label={t('title')}
       sx={{
         mt: '24px',
-        bgcolor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
+        bgcolor: palette('background-paper'),
+        border: `1px solid ${palette('pp-line')}`,
         borderRadius: radius.card,
         overflow: 'hidden',
       }}
@@ -177,7 +177,7 @@ export function TabletReviewTable({
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
           }}
         >
           {TABLET_COLUMNS.map((column) => (
@@ -226,8 +226,8 @@ export function TabletReviewTable({
                 px: '20px',
                 py: '10px',
                 fontSize: 13,
-                color: tokens.color.muted,
-                borderTop: `1px solid ${tokens.color.divider}`,
+                color: palette('text-secondary'),
+                borderTop: `1px solid ${palette('divider')}`,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',

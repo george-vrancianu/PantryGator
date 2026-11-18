@@ -6,7 +6,7 @@ import {
   IconButton,
   SegmentedTabs,
   TextField,
-  tokens,
+  palette,
   radius,
 } from '@pocket-pantry/ui';
 import {
@@ -96,7 +96,6 @@ export function AddToCatalogForm({
   autoFocus = false,
   onAction,
 }: AddToCatalogFormProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   const id = useId();
   const [name, setName] = useState(typed);
@@ -177,7 +176,11 @@ export function AddToCatalogForm({
 
   const listId = `${id}-categories`;
   const hint = (text: string) => (
-    <Box sx={{ fontSize: 12.5, color: color.muted, p: '8px 4px' }}>{text}</Box>
+    <Box
+      sx={{ fontSize: 12.5, color: palette('text-secondary'), p: '8px 4px' }}
+    >
+      {text}
+    </Box>
   );
 
   return (
@@ -229,8 +232,8 @@ export function AddToCatalogForm({
                 gap: 1.5,
                 p: '8px 8px 8px 12px',
                 borderRadius: radius.control,
-                backgroundColor: color.accentTint,
-                color: color.accentOnTint,
+                backgroundColor: palette('pp-accentTint'),
+                color: palette('pp-accentOnTint'),
               }}
             >
               <AisleSwatch aisleId={category.aisle.id} size={12} />
@@ -298,7 +301,8 @@ export function AddToCatalogForm({
                   maxHeight: 176,
                   overflowY: 'auto',
                   borderRadius: radius.control,
-                  border: rows.length > 0 ? `1px solid ${color.line}` : 0,
+                  border:
+                    rows.length > 0 ? `1px solid ${palette('pp-line')}` : 0,
                 }}
               >
                 {rows.map((row, index) => (
@@ -319,9 +323,10 @@ export function AddToCatalogForm({
                       p: '6px 12px',
                       cursor: 'pointer',
                       backgroundColor:
-                        index === active ? color.subtle : 'transparent',
-                      borderTop: index === 0 ? 0 : `1px solid ${color.divider}`,
-                      '&:hover': { backgroundColor: color.subtle },
+                        index === active ? palette('pp-subtle') : 'transparent',
+                      borderTop:
+                        index === 0 ? 0 : `1px solid ${palette('divider')}`,
+                      '&:hover': { backgroundColor: palette('pp-subtle') },
                     }}
                   >
                     <AisleSwatch aisleId={row.aisle.id} size={12} />
@@ -329,7 +334,9 @@ export function AddToCatalogForm({
                       <Box sx={{ fontSize: 14, fontWeight: 600 }}>
                         {row.name}
                       </Box>
-                      <Box sx={{ fontSize: 12, color: color.muted }}>
+                      <Box
+                        sx={{ fontSize: 12, color: palette('text-secondary') }}
+                      >
                         {categoryMeta(row)}
                       </Box>
                     </Box>
@@ -339,8 +346,8 @@ export function AddToCatalogForm({
                         flexShrink: 0,
                         fontSize: 11.5,
                         fontWeight: 600,
-                        color: color.muted,
-                        backgroundColor: color.chipNeutral,
+                        color: palette('text-secondary'),
+                        backgroundColor: palette('pp-chip'),
                         borderRadius: radius.chip,
                         p: '5px 8px',
                       }}
@@ -384,12 +391,18 @@ export function AddToCatalogForm({
             disabled={create.isPending}
           />
           {failed ? (
-            <Box role="alert" sx={{ fontSize: 13, color: color.urgentFg }}>
+            <Box
+              role="alert"
+              sx={{ fontSize: 13, color: palette('error-main') }}
+            >
               {t('catalogAdd.failed')}
             </Box>
           ) : null}
           {existing ? (
-            <Box role="status" sx={{ fontSize: 13, color: color.muted }}>
+            <Box
+              role="status"
+              sx={{ fontSize: 13, color: palette('text-secondary') }}
+            >
               {t('catalogAdd.exists', { name: existing.name })}
             </Box>
           ) : null}
@@ -421,7 +434,11 @@ export function AddToCatalogForm({
                   {category ? null : (
                     <Box
                       component="span"
-                      sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
+                      sx={{
+                        ml: '6px',
+                        color: palette('error-main'),
+                        fontWeight: 600,
+                      }}
                     >
                       · {t('catalogAdd.pickOne')}
                     </Box>

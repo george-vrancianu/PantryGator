@@ -1,4 +1,4 @@
-import { Box, ChevronRightIcon, tokens, displayType } from '@pocket-pantry/ui';
+import { Box, ChevronRightIcon, palette, displayType } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -53,7 +53,7 @@ export function RecipeRowLayout({
     minHeight: 66,
     boxSizing: 'border-box',
     p: grouped ? '11px 0 11px 16px' : '12px 4px',
-    color: tokens.color.ink,
+    color: palette('text-primary'),
     textDecoration: 'none',
     opacity: dimmed ? 0.55 : 1,
     ...(to === undefined && onClick === undefined ? {} : { cursor: 'pointer' }),
@@ -79,7 +79,7 @@ export function RecipeRowLayout({
             sx={{
               fontSize: grouped ? 12.5 : 13,
               fontWeight: 500,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               ...(grouped ? { mt: '7px' } : {}),
             }}
           >
@@ -98,7 +98,11 @@ export function RecipeRowLayout({
         >
           {minutes === null ? (
             <Box
-              sx={{ fontSize: 11, fontWeight: 600, color: tokens.color.muted }}
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: palette('text-secondary'),
+              }}
             >
               —
             </Box>
@@ -111,7 +115,7 @@ export function RecipeRowLayout({
                 sx={{
                   fontSize: grouped ? 10.5 : 11,
                   fontWeight: grouped ? 700 : 600,
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   ...(grouped
                     ? { letterSpacing: '0.08em', textTransform: 'uppercase' }
                     : {}),
@@ -124,7 +128,10 @@ export function RecipeRowLayout({
         </Box>
       )}
       {!grouped && (to !== undefined || onClick !== undefined) ? (
-        <Box aria-hidden sx={{ display: 'flex', color: tokens.color.muted }}>
+        <Box
+          aria-hidden
+          sx={{ display: 'flex', color: palette('text-secondary') }}
+        >
           <ChevronRightIcon size={16} />
         </Box>
       ) : null}
@@ -134,7 +141,7 @@ export function RecipeRowLayout({
     <Box
       component="li"
       sx={{
-        '& + &': { borderTop: `1px solid ${tokens.color.line}` },
+        '& + &': { borderTop: `1px solid ${palette('pp-line')}` },
         ...(trailing
           ? {
               display: 'flex',

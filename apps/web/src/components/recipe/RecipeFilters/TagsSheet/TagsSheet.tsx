@@ -2,7 +2,7 @@ import {
   Box,
   Sheet,
   TagField,
-  tokens,
+  palette,
   visuallyHidden,
 } from '@pocket-pantry/ui';
 import { Trans, useTranslation } from 'react-i18next';
@@ -10,7 +10,9 @@ import { countWithTags } from '@/lib/tagFilter';
 import type { RecipeListItem } from '@/lib/recipes';
 import type { RecipeTag } from '@/lib/tags';
 
-const bold = { b: <Box component="b" sx={{ color: tokens.color.ink }} /> };
+const bold = {
+  b: <Box component="b" sx={{ color: palette('text-primary') }} />,
+};
 
 /**
  * A visually hidden polite status line, "Dinner, Vegan selected. 2 Recipes match.", that updates on
@@ -97,7 +99,7 @@ export function TagsSheet({
     >
       <TagStatus picked={picked} resultCount={resultCount} />
       <Box sx={{ px: 2.5, py: 1 }}>
-        <Box sx={{ fontSize: 13.5, color: tokens.color.muted, pb: 1 }}>
+        <Box sx={{ fontSize: 13.5, color: palette('text-secondary'), pb: 1 }}>
           <Trans t={t} i18nKey="tags.sheetHint" components={bold} />
         </Box>
         <TagField

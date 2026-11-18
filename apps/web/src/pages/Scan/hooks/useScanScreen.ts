@@ -425,7 +425,8 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     close: () => {
       const { closeTo } = config;
       if (closeTo !== undefined) {
-        clearScanLanguageOverride();
+        // The photos stay in the Scan Session, so its Scan Language does too; an empty Session has none to keep.
+        if (session.scans.length === 0) clearScanLanguageOverride();
         navigate(closeTo, { replace: true });
         return;
       }

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import type { Batch } from '@/lib/pantry';
 import { FLASH_HOLD_MS, resetRowFlash } from '@/lib/rowFlash';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useUndoToast';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { PantryPage } from './PantryPage';
 

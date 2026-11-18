@@ -5,9 +5,8 @@ import { useId, useState, type ReactNode, type Ref } from 'react';
 import { MoreIcon } from '../atoms/icons';
 import { HeaderButton } from '../atoms/HeaderButton';
 import { IconButton } from '../atoms/IconButton';
-import { tokens } from '../theme/tokens';
+import { nestedRadius, palette, radius, shadow } from '../theme/themeVars';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
-import { nestedRadius, radius, shadow } from '../theme/themeVars';
 
 export type ActionMenuItem = {
   label: string;
@@ -19,6 +18,8 @@ export type ActionMenuItem = {
   /** Renders the item as a link. */
   href?: string;
   onClick?: () => void;
+  /** The item stands for the current choice (a language, a sort): announced with `aria-current`. */
+  current?: boolean;
   /** `urgent` colours a destructive item. */
   tone?: 'urgent';
 };
@@ -91,7 +92,7 @@ export function ActionMenu({
               minWidth: 190,
               mt: '6px',
               borderRadius: radius.card,
-              border: `1px solid ${tokens.color.line}`,
+              border: `1px solid ${palette('pp-line')}`,
               boxShadow: shadow.float,
             },
           },
@@ -103,6 +104,7 @@ export function ActionMenu({
           return (
             <MenuItem
               key={item.label}
+              aria-current={item.current ? 'true' : undefined}
               // `button` + `href` lets ButtonBase use the theme's LinkComponent (the router link).
               {...(item.href ? { component: 'button', href: item.href } : {})}
               onClick={() => {
@@ -121,7 +123,7 @@ export function ActionMenu({
                         left: 0,
                         right: 0,
                         height: '1px',
-                        bgcolor: tokens.color.line,
+                        bgcolor: palette('pp-line'),
                       },
                     }
                   : {}),
@@ -132,12 +134,14 @@ export function ActionMenu({
                 borderRadius: nestedRadius(radius.card, 6),
                 fontSize: 15,
                 fontWeight: 600,
-                color: urgent ? tokens.color.urgentFg : tokens.color.ink,
-                '&:hover': { backgroundColor: tokens.color.subtle },
+                color: urgent ? palette('error-main') : palette('text-primary'),
+                '&:hover': { backgroundColor: palette('pp-subtle') },
                 '& svg': {
                   width: 18,
                   height: 18,
-                  color: urgent ? tokens.color.urgentFg : tokens.color.muted,
+                  color: urgent
+                    ? palette('error-main')
+                    : palette('text-secondary'),
                 },
               }}
             >
@@ -152,8 +156,8 @@ export function ActionMenu({
                     px: '7px',
                     py: '1px',
                     borderRadius: radius.box,
-                    bgcolor: tokens.color.accentTint,
-                    color: tokens.color.accentOnTint,
+                    bgcolor: palette('pp-accentTint'),
+                    color: palette('pp-accentOnTint'),
                     fontSize: 10.5,
                     fontWeight: 700,
                   }}

@@ -1,6 +1,6 @@
 import {
   Box,
-  tokens,
+  palette,
   usePrefersReducedMotion,
   visuallyHidden,
   focusRing,
@@ -357,8 +357,8 @@ export function CatalogSearch({
 
   const cardSurface = {
     borderRadius: radius.card,
-    border: `1px solid ${tokens.color.line}`,
-    backgroundColor: tokens.color.surface,
+    border: `1px solid ${palette('pp-line')}`,
+    backgroundColor: palette('background-paper'),
   };
   const popoverSx =
     inline && !row
@@ -434,7 +434,7 @@ export function CatalogSearch({
               display: 'block',
               border: 0,
               background: 'transparent',
-              color: tokens.color.accent,
+              color: palette('pp-accent'),
               font: 'inherit',
               fontSize: 13,
               fontWeight: 600,

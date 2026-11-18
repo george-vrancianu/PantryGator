@@ -7,9 +7,9 @@ import {
   displayType,
   plusBottomInset,
   radius,
-  tokens,
   useToast,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import { RowTags } from '@/components/recipe/RowTags/RowTags';
 import { TagChips } from '@/components/recipe/TagChips/TagChips';
@@ -51,7 +51,7 @@ const labelSx = {
   fontWeight: 700,
   letterSpacing: '.06em',
   textTransform: 'uppercase',
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
 } as const;
 
 /**
@@ -159,8 +159,8 @@ export function QuickViewSheet({
             <Box
               key={fact.label}
               sx={{
-                bgcolor: tokens.color.surface,
-                border: `1px solid ${tokens.color.line}`,
+                bgcolor: palette('background-paper'),
+                border: `1px solid ${palette('pp-line')}`,
                 borderRadius: radius.control,
                 px: '6px',
                 py: '8px',
@@ -240,10 +240,10 @@ export function QuickViewSheet({
                     pl: '4px',
                     pr: '10px',
                     borderRadius: radius.chip,
-                    bgcolor: tokens.color.surface,
+                    bgcolor: palette('background-paper'),
                     border: missing.has(line.id)
-                      ? `1px dashed ${tokens.color.soonFg}`
-                      : `1px solid ${tokens.color.line}`,
+                      ? `1px dashed ${palette('warning-main')}`
+                      : `1px solid ${palette('pp-line')}`,
                     fontSize: 12.5,
                     fontWeight: 600,
                   }}
@@ -281,9 +281,9 @@ export function QuickViewSheet({
                 listStyle: 'none',
                 m: 0,
                 p: 0,
-                bgcolor: tokens.color.surface,
+                bgcolor: palette('background-paper'),
                 borderRadius: radius.card,
-                border: `1px solid ${tokens.color.line}`,
+                border: `1px solid ${palette('pp-line')}`,
               }}
             >
               {variants.map((variant) => (
@@ -296,7 +296,7 @@ export function QuickViewSheet({
                     gap: '8px',
                     minHeight: 58,
                     pr: '10px',
-                    '& + &': { borderTop: `1px solid ${tokens.color.line}` },
+                    '& + &': { borderTop: `1px solid ${palette('pp-line')}` },
                   }}
                 >
                   <Box
@@ -313,7 +313,7 @@ export function QuickViewSheet({
                       border: 0,
                       bgcolor: 'transparent',
                       font: 'inherit',
-                      color: tokens.color.ink,
+                      color: palette('text-primary'),
                       textAlign: 'left',
                       cursor: 'pointer',
                     }}
@@ -326,7 +326,7 @@ export function QuickViewSheet({
                       <Box
                         sx={{
                           fontSize: 12.5,
-                          color: tokens.color.muted,
+                          color: palette('text-secondary'),
                         }}
                       >
                         <RowTags tags={variant.tags} />
@@ -372,7 +372,7 @@ export function QuickViewSheet({
           sx={{
             mt: '10px',
             fontSize: 12.5,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
             textAlign: 'center',
           }}
         >
@@ -404,8 +404,8 @@ function Cluster({
         gridTemplateColumns: icons.length > 1 ? '1fr 1fr' : '1fr',
         placeItems: 'center',
         borderRadius: radius.control,
-        bgcolor: tokens.color.accentTint,
-        color: tokens.color.accentOnTint,
+        bgcolor: palette('pp-accentTint'),
+        color: palette('pp-accentOnTint'),
         overflow: 'hidden',
       }}
     >

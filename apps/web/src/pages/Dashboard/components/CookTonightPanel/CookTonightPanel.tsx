@@ -3,8 +3,8 @@ import {
   displayType,
   Gator,
   Link,
-  tokens,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +68,7 @@ export function CookTonightPanel({
       {rest.map((text, i) => (
         <Box
           key={i}
-          sx={{ fontSize: 13, mt: '2px', color: tokens.color.accentOnTint }}
+          sx={{ fontSize: 13, mt: '2px', color: palette('pp-accentOnTint') }}
         >
           {text}
         </Box>

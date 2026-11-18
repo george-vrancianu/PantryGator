@@ -8,7 +8,7 @@ import {
   displayType,
   focusRing,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { forwardRef, type MouseEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,7 +69,7 @@ const Tile = forwardRef<HTMLButtonElement, TileProps>(function Tile(
           <Box
             sx={{
               fontSize: 12.5,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -78,7 +78,10 @@ const Tile = forwardRef<HTMLButtonElement, TileProps>(function Tile(
             {meta}
           </Box>
         </Box>
-        <Box aria-hidden sx={{ display: 'flex', color: tokens.color.muted }}>
+        <Box
+          aria-hidden
+          sx={{ display: 'flex', color: palette('text-secondary') }}
+        >
           <ChevronRightIcon size={18} />
         </Box>
       </Box>
@@ -113,8 +116,8 @@ export function EmptyListStart({
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
         <Tile
           icon={<SearchIcon size={20} />}
-          tint={tokens.color.accentTint}
-          ink={tokens.color.accentOnTint}
+          tint={palette('pp-accentTint')}
+          ink={palette('pp-accentOnTint')}
           title={t('empty.addTitle')}
           meta={t('empty.addMeta')}
           onClick={onAddItems}
@@ -122,8 +125,8 @@ export function EmptyListStart({
         {templateCount > 0 ? (
           <Tile
             icon={<ImportIcon size={20} />}
-            tint={tokens.color.butter}
-            ink={tokens.color.butterInk}
+            tint={palette('secondary-main')}
+            ink={palette('secondary-contrastText')}
             title={t('empty.importTitle')}
             meta={t('empty.importMeta', { count: templateCount })}
             onClick={onImport}

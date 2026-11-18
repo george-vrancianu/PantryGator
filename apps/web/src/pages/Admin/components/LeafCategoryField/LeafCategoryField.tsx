@@ -4,8 +4,8 @@ import {
   insetFocusRingStyle,
   radius,
   Sheet,
-  tokens,
   Typography,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -65,8 +65,8 @@ export function LeafCategoryField({ catalog, value, onChange }: Props) {
           color: 'inherit',
           textAlign: 'start',
           cursor: 'pointer',
-          backgroundColor: tokens.color.surface,
-          border: `1px solid ${tokens.color.line}`,
+          backgroundColor: palette('background-paper'),
+          border: `1px solid ${palette('pp-line')}`,
           borderRadius: radius.control,
         }}
       >
@@ -130,9 +130,7 @@ export function LeafCategoryField({ catalog, value, onChange }: Props) {
                     borderRadius: radius.control,
                     fontWeight: leaf.id === value ? 700 : 400,
                     backgroundColor:
-                      leaf.id === value
-                        ? tokens.color.chipNeutral
-                        : 'transparent',
+                      leaf.id === value ? palette('pp-chip') : 'transparent',
                     '&:focus-visible': insetFocusRingStyle,
                   }}
                 >

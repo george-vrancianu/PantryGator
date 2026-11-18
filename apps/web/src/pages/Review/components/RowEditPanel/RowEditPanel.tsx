@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '@/lib/catalog';
@@ -94,8 +94,8 @@ export function RowEditPanel({
             fontWeight: 600,
             color:
               status === 'qty' && !unmatched
-                ? tokens.color.soonFg
-                : tokens.color.urgentFg,
+                ? palette('warning-main')
+                : palette('error-main'),
           }}
         >
           {message}

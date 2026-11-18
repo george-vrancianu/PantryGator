@@ -2485,6 +2485,11 @@ describe('PantryPage', () => {
             await screen.findByText('Milk marked running low'),
           ).toBeVisible();
           expect(
+            screen
+              .getByText('Milk marked running low')
+              .closest('[role="status"]'),
+          ).not.toBeNull();
+          expect(
             screen.queryByRole('button', { name: 'Undo' }),
           ).not.toBeInTheDocument();
           release();
@@ -3595,7 +3600,29 @@ describe('PantryPage', () => {
           ?.body;
       }
 
-      it("shows the Batch's context and the five fixed quick picks, with no Usual tile", async () => {
+      it("offers a Usual tile for the Batch's Default Expiry", async () => {
+        const user = userEvent.setup();
+        stubManaged(
+          stock().map((b) =>
+            b.id === 'milk-2' ? { ...b, defaultExpiryDays: 7 } : b,
+          ),
+        );
+        renderWithProviders(<PantryPage />);
+        await user.click(await screen.findByRole('button', { name: /^Milk/ }));
+        await openEditor(user);
+        const form = screen.getByRole('form', { name: 'Edit Milk batch' });
+        await user.click(
+          within(form).getByRole('button', {
+            name: 'Expires, Friday, October 16, in 2 days',
+          }),
+        );
+        const sheet = await screen.findByRole('dialog', { name: 'Expires' });
+        expect(
+          within(sheet).getByRole('button', { name: /^Usual/ }),
+        ).toBeInTheDocument();
+      });
+
+      it("shows the Batch's context and the five fixed quick picks, with no Usual tile without a Default Expiry", async () => {
         const user = userEvent.setup();
         const { sheet } = await openExpirySheet(user);
 

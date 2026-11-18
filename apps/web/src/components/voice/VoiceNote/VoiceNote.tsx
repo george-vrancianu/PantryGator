@@ -1,7 +1,7 @@
 import {
+  APP_REVIEW,
   VoiceReview,
-  type AfterApply,
-  type ReviewLook,
+  type ReviewSettings,
 } from '../VoiceReview/VoiceReview';
 import { VoiceAnswers } from '../VoiceAnswerSheet/VoiceAnswerSheet';
 import { MicSheets } from '../MicSheets/MicSheets';
@@ -27,21 +27,14 @@ export function defaultTargetFor(pathname: string): VoiceDefaultTarget {
 export type VoiceNoteSettings = {
   /** The Default List this host forces over the route's (ADR 0021). Absent: the route's. */
   defaultTarget?: VoiceDefaultTarget;
-  /** How the Review looks: the app's, or the Intro's (happy Gator, "Here's what I heard", "Do these N"). */
-  reviewLook: ReviewLook;
-  /** Whether Apply toasts its result and flashes the rows. Off when the page itself shows what was saved. */
-  toastOnApply: boolean;
-  /** Told what was really applied, given the result. It changes neither the Review's look nor the toast. */
-  afterApply?: AfterApply;
+  /** How the Review looks and what Apply does: the app's, or the Intro's (happy Gator, "Here's what I heard", "Do these N"). */
+  review: ReviewSettings;
   /** Whether this host mounts the background strip itself. Default: yes. The app's layout turns it off and hosts the strip apart from voice, so it shows without voice too. */
   hostsStrip?: boolean;
 };
 
 /** Today's in-app settings: the background strip, the route's Default List, a toast. */
-export const APP_VOICE_SETTINGS: VoiceNoteSettings = {
-  reviewLook: 'app',
-  toastOnApply: true,
-};
+export const APP_VOICE_SETTINGS: VoiceNoteSettings = { review: APP_REVIEW };
 
 /**
  * Voice Notes, hosted once in the app layout: the hold-to-talk mic in the Dock's capsule with
@@ -96,13 +89,7 @@ function VoiceNoteControls({
 
       <MicSheets mic={voice.mic} target={defaultTarget} />
 
-      <VoiceReview
-        review={{
-          look: settings.reviewLook,
-          toastOnApply: settings.toastOnApply,
-          afterApply: settings.afterApply,
-        }}
-      />
+      <VoiceReview review={settings.review} />
 
       <VoiceAnswers />
     </>

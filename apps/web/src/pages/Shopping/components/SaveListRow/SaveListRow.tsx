@@ -1,11 +1,11 @@
 import {
   BookmarkIcon,
   Box,
-  tokens,
   border,
   color,
   radius,
   focusRing,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -48,15 +48,15 @@ export function SaveListRow({ count, onClick }: SaveListRowProps) {
           display: 'grid',
           placeItems: 'center',
           borderRadius: radius.control,
-          backgroundColor: tokens.color.butter,
-          color: tokens.color.butterInk,
+          backgroundColor: palette('secondary-main'),
+          color: palette('secondary-contrastText'),
         }}
       >
         <BookmarkIcon size={18} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box sx={{ fontSize: 15, fontWeight: 600 }}>{t('save.row')}</Box>
-        <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+        <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
           {t('save.rowHint', { count })}
         </Box>
       </Box>

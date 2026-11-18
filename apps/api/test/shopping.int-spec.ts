@@ -9,6 +9,7 @@ import {
   shoppingLists,
   user,
 } from '../src/database/schema';
+import { MAX_BULK_DELETE_SHOPPING_ITEMS } from '../src/shopping/shopping.schemas';
 import { ShoppingService } from '../src/shopping/shopping.service';
 import { createTestApp, TEST_ORIGIN } from './support/create-test-app';
 import { storeUiLanguage } from './support/stored-language';
@@ -511,6 +512,99 @@ describe('Shopping List (integration)', () => {
         .put(`/api/shopping-list/items/${id}/amount`)
         .set('origin', TEST_ORIGIN)
         .send({ quantity: 2 })
+        .expect(401);
+    });
+  });
+
+  describe('bulk removal (POST items/bulk-delete)', () => {
+    it('removes the given items in one call and keeps the rest', async () => {
+      const { cookie } = await signUp('Ana');
+      await add(cookie, { name: 'bulk one' });
+      await add(cookie, { name: 'bulk two' });
+      const list = await add(cookie, { name: 'bulk three' });
+      const [one, two, three] = items(list).map((i) => i.id);
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({ ids: [one, three] })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([two]);
+      expect(items(await getList(cookie)).map((i) => i.id)).toEqual([two]);
+    });
+
+    it('ignores ids that are already gone or unknown, removing the rest', async () => {
+      const { cookie } = await signUp('Ana');
+      const list = await add(cookie, { name: 'gone soon' });
+      const [id] = items(list).map((i) => i.id);
+      await call('delete', cookie, `/items/${id}`).expect(200);
+      const kept = await add(cookie, { name: 'kept' });
+      const keptId = items(kept)[0].id;
+      const fresh = await add(cookie, { name: 'fresh' });
+      const freshId = items(fresh).find((i) => i.name === 'fresh')!.id;
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({
+          ids: [id, freshId, '00000000-0000-4000-8000-000000000000', freshId],
+        })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([keptId]);
+    });
+
+    it("never removes another Family's items", async () => {
+      const ana = await signUp('Ana');
+      const stranger = await signUp('Stranger');
+      const mine = items(await add(ana.cookie, { name: 'mine' }))[0].id;
+      const theirs = items(await add(stranger.cookie, { name: 'theirs' }))[0]
+        .id;
+
+      const response = await call('post', ana.cookie, '/items/bulk-delete')
+        .send({ ids: [mine, theirs] })
+        .expect(200);
+
+      expect(items(response.body as List)).toEqual([]);
+      expect(items(await getList(stranger.cookie)).map((i) => i.id)).toEqual([
+        theirs,
+      ]);
+    });
+
+    it('rejects an empty, oversized or malformed ids array', async () => {
+      const { cookie } = await signUp('Ana');
+      const send = (ids: unknown) =>
+        call('post', cookie, '/items/bulk-delete').send({ ids });
+      await send([]).expect(400);
+      await send(['not-a-uuid']).expect(400);
+      await send(
+        Array.from(
+          { length: MAX_BULK_DELETE_SHOPPING_ITEMS + 1 },
+          () => '00000000-0000-4000-8000-000000000000',
+        ),
+      ).expect(400);
+    });
+
+    it('accepts exactly the cap, enough for the largest Add missing', async () => {
+      const { cookie } = await signUp('Ana');
+      const list = await add(cookie, { name: 'survivor' });
+      const survivorId = items(list)[0].id;
+      const unknown = Array.from(
+        { length: MAX_BULK_DELETE_SHOPPING_ITEMS },
+        (_, i) => `00000000-0000-4000-8000-${String(i).padStart(12, '0')}`,
+      );
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({ ids: unknown })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([
+        survivorId,
+      ]);
+    });
+
+    it('requires a signed-in Member', async () => {
+      await request(app.getHttpServer())
+        .post('/api/shopping-list/items/bulk-delete')
+        .set('origin', TEST_ORIGIN)
+        .send({ ids: ['00000000-0000-4000-8000-000000000000'] })
         .expect(401);
     });
   });

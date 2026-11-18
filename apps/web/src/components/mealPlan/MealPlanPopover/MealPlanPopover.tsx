@@ -19,7 +19,7 @@ import {
   shadow,
   border,
   Tag,
-  tokens,
+  palette,
   usePrefersReducedMotion,
   useBreakpointUp,
 } from '@pocket-pantry/ui';
@@ -37,6 +37,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { keyframesSx } from '@/lib/keyframesSx';
+import { onListTone } from '@/lib/statusTone';
 import {
   dayMissing,
   slotsInOrder,
@@ -102,7 +103,7 @@ const ghostButton = {
   borderRadius: '50%',
   display: 'grid',
   placeItems: 'center',
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
   cursor: 'pointer',
   flex: 'none',
   '&:disabled': { opacity: 0.3, cursor: 'default' },
@@ -121,7 +122,7 @@ function IssueLine({
   onAdd: Props['onAdd'];
   adding: boolean;
 }) {
-  const { t, i18n } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('mealPlans');
   const language = i18n.language;
   const uncertain = issue.kind === 'uncertain';
   const detail = issueDetail(t, language, issue);
@@ -154,10 +155,10 @@ function IssueLine({
                   fontWeight: uncertain ? 400 : 700,
                   fontVariantNumeric: 'tabular-nums',
                   color: uncertain
-                    ? tokens.color.muted
+                    ? palette('text-secondary')
                     : issue.onList
-                      ? tokens.color.soonFg
-                      : tokens.color.urgentFg,
+                      ? palette('warning-main')
+                      : palette('error-main'),
                 }}
               >
                 {detail}
@@ -168,20 +169,24 @@ function IssueLine({
         {reason ? (
           <Box
             component="span"
-            sx={{ fontSize: 12, color: tokens.color.muted, lineHeight: 1.3 }}
+            sx={{
+              fontSize: 12,
+              color: palette('text-secondary'),
+              lineHeight: 1.3,
+            }}
           >
             {reason}
           </Box>
         ) : null}
       </Box>
       {issue.onList ? (
-        <Tag tone="soon" sx={{ py: '2px', px: '7px' }}>
-          {t('mealPlan.status.onList')}
+        <Tag tone={onListTone} sx={{ py: '2px', px: '7px' }}>
+          {t('forecast.status.onList')}
         </Tag>
       ) : !uncertain ? (
         // Deliberately adds that Ingredient's total across the window, not just this day's amount.
         <IconButton
-          label={t('mealPlan.addLine', { name: issue.name })}
+          label={t('forecast.addLine', { name: issue.name })}
           tone="accentOutline"
           size={34}
           disabled={adding}
@@ -211,7 +216,7 @@ function MealBlock({
   onAdd: Props['onAdd'];
   adding: boolean;
 }) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation('mealPlans');
   const tint = aisleTint(slot.aisle?.id);
   const initials = Array.from(slot.recipeTitle).slice(0, 2).join('');
   return (
@@ -222,7 +227,7 @@ function MealBlock({
         display: 'flex',
         flexDirection: 'column',
         gap: '6px',
-        '& + &': { borderTop: `1px solid ${tokens.color.divider}` },
+        '& + &': { borderTop: `1px solid ${palette('divider')}` },
       }}
     >
       <Box
@@ -232,10 +237,10 @@ function MealBlock({
           fontWeight: 700,
           letterSpacing: '.07em',
           textTransform: 'uppercase',
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
-        {t(`mealPlan.slot.${slot.mealtime}`)}
+        {t(`forecast.slot.${slot.mealtime}`)}
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Box
@@ -275,7 +280,9 @@ function MealBlock({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              color: slot.unavailable ? tokens.color.muted : tokens.color.ink,
+              color: slot.unavailable
+                ? palette('text-secondary')
+                : palette('text-primary'),
             }}
           >
             {slot.recipeTitle}
@@ -284,15 +291,15 @@ function MealBlock({
             component="span"
             sx={{
               fontSize: 12.5,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
           >
             {slot.minutes === null
-              ? t('mealPlan.metaNoTime', { servings: slot.servings })
-              : t('mealPlan.meta', {
+              ? t('forecast.metaNoTime', { servings: slot.servings })
+              : t('forecast.meta', {
                   servings: slot.servings,
                   minutes: slot.minutes,
                 })}
@@ -349,7 +356,7 @@ export function MealPlanPopover({
   onAdd,
   adding,
 }: Props) {
-  const { t, i18n } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('mealPlans');
   const language = i18n.language;
   const day = days[index];
   const titleId = useId();
@@ -468,11 +475,11 @@ export function MealPlanPopover({
   const missing = dayMissing(day);
   const statusWord =
     day.status === 'covered'
-      ? t('mealPlan.legend.covered')
+      ? t('forecast.legend.covered')
       : day.status === 'onList'
-        ? t('mealPlan.legend.onList')
+        ? t('forecast.legend.onList')
         : day.status === 'short'
-          ? t('mealPlan.legend.short')
+          ? t('forecast.legend.short')
           : null;
   const subtitle = [fullDate(language, day.date), hasMeals ? statusWord : null]
     .filter(Boolean)
@@ -500,11 +507,11 @@ export function MealPlanPopover({
         maxHeight: 470,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: tokens.color.surface,
-        border: `${border.width} solid ${tokens.color.line}`,
+        backgroundColor: palette('background-paper'),
+        border: `${border.width} solid ${palette('pp-line')}`,
         borderRadius: radius.card,
         boxShadow: shadow.float,
-        color: tokens.color.ink,
+        color: palette('text-primary'),
         transformOrigin: above ? 'var(--arrow-x) 100%' : 'var(--arrow-x) 0',
         ...(reduceMotion
           ? {}
@@ -524,9 +531,9 @@ export function MealPlanPopover({
           width: 14,
           height: 14,
           left: 'calc(var(--arrow-x) - 7px)',
-          backgroundColor: tokens.color.surface,
-          borderLeft: `${border.width} solid ${tokens.color.line}`,
-          borderTop: `${border.width} solid ${tokens.color.line}`,
+          backgroundColor: palette('background-paper'),
+          borderLeft: `${border.width} solid ${palette('pp-line')}`,
+          borderTop: `${border.width} solid ${palette('pp-line')}`,
           ...(above
             ? { bottom: -8, transform: 'rotate(225deg)' }
             : { top: -8, transform: 'rotate(45deg)' }),
@@ -538,7 +545,7 @@ export function MealPlanPopover({
           alignItems: 'center',
           gap: '6px',
           p: '12px 10px 10px 16px',
-          borderBottom: `1px solid ${tokens.color.divider}`,
+          borderBottom: `1px solid ${palette('divider')}`,
         }}
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -564,7 +571,7 @@ export function MealPlanPopover({
               mt: '2px',
               fontSize: 12,
               fontWeight: 600,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             {subtitle}
@@ -573,7 +580,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.prevDay')}
+          aria-label={t('forecast.prevDay')}
           disabled={index === 0}
           onClick={() => onStep(index - 1)}
           sx={ghostButton}
@@ -583,7 +590,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.nextDay')}
+          aria-label={t('forecast.nextDay')}
           disabled={index === days.length - 1}
           onClick={() => onStep(index + 1)}
           sx={ghostButton}
@@ -593,7 +600,7 @@ export function MealPlanPopover({
         <Box
           component="button"
           type="button"
-          aria-label={t('mealPlan.close')}
+          aria-label={t('forecast.close')}
           onClick={() => onClose(true)}
           sx={ghostButton}
         >
@@ -623,11 +630,11 @@ export function MealPlanPopover({
               gap: '10px',
               alignItems: 'flex-start',
               fontSize: 13.5,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             <span>
-              {t('mealPlan.nothingOn', {
+              {t('forecast.nothingOn', {
                 day: longWeekday(language, day.date),
               })}
             </span>
@@ -640,7 +647,7 @@ export function MealPlanPopover({
               }
               sx={plainAction}
             >
-              {t(day.planId ? 'mealPlan.planMeal' : 'mealPlan.startPlan')}
+              {t(day.planId ? 'forecast.planMeal' : 'forecast.startPlan')}
             </Box>
           </Box>
         )}
@@ -649,7 +656,7 @@ export function MealPlanPopover({
         <Box
           sx={{
             p: '10px 16px 14px',
-            borderTop: `1px solid ${tokens.color.divider}`,
+            borderTop: `1px solid ${palette('divider')}`,
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -664,7 +671,7 @@ export function MealPlanPopover({
               onClick={() => onAdd({ scope: 'date', date: day.date })}
               sx={{ flexShrink: 0, minHeight: 32, height: 32, fontSize: 12.5 }}
             >
-              {t('mealPlan.addNMissing', { count: missing.length })}
+              {t('forecast.addNMissing', { count: missing.length })}
             </Button>
           ) : null}
           <Box
@@ -673,7 +680,7 @@ export function MealPlanPopover({
             sx={plainAction}
           >
             <CalendarIcon size={14} />
-            {t('mealPlan.editDay')}
+            {t('forecast.editDay')}
           </Box>
         </Box>
       ) : null}

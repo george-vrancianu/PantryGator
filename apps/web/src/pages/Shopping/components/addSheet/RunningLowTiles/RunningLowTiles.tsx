@@ -1,4 +1,4 @@
-import { tokens } from '@pocket-pantry/ui';
+import { palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '@/components/catalogSearch/emptyState/context';
 import { IngredientTile } from '@/components/catalogSearch/emptyState/IngredientTile/IngredientTile';
@@ -28,7 +28,7 @@ export function RunningLowTiles({ runningLow }: { runningLow: Suggestion[] }) {
           why={{
             glyph: '▽',
             text: t('suggestions.runningLowWhy'),
-            color: tokens.color.soonIcon,
+            color: palette('warning-main'),
           }}
           label={t('suggestions.runningLowTile', { name })}
           onSelect={() => search.select(ingredient)}

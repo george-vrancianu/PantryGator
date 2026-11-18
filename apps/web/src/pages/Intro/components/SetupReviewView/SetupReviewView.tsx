@@ -1,4 +1,4 @@
-import { Box, tokens, Typography } from '@pocket-pantry/ui';
+import { Box, Typography, palette } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GatorBanner } from '@/components/gator/GatorBanner/GatorBanner';
@@ -83,7 +83,9 @@ export function SetupReviewView({
         <Typography variant="h2" component="h1">
           {tReview('title')}
         </Typography>
-        <Typography sx={{ fontSize: 13, color: tokens.color.muted, mt: '2px' }}>
+        <Typography
+          sx={{ fontSize: 13, color: palette('text-secondary'), mt: '2px' }}
+        >
           {subtitle}
         </Typography>
       </Box>

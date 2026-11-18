@@ -4,11 +4,11 @@ import {
   ShoppingIcon,
   CheckIcon,
   IconButton,
-  tokens,
   usePrefersReducedMotion,
   Card,
   nestedRadius,
   radius,
+  palette,
 } from '@pocket-pantry/ui';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -92,9 +92,9 @@ function IngredientRow({
     <Box
       component="li"
       sx={{
-        borderTop: `1px solid ${tokens.color.divider}`,
+        borderTop: `1px solid ${palette('divider')}`,
         '&:first-of-type': { borderTop: 0 },
-        bgcolor: selected ? tokens.color.accentTint : undefined,
+        bgcolor: selected ? palette('pp-accentTint') : undefined,
       }}
     >
       {/* The add button cannot sit inside the toggle, so the two are siblings on one line. */}
@@ -127,7 +127,9 @@ function IngredientRow({
               sx={{
                 fontSize: 15,
                 fontWeight: 600,
-                color: optionalOrBasic ? tokens.color.muted : tokens.color.ink,
+                color: optionalOrBasic
+                  ? palette('text-secondary')
+                  : palette('text-primary'),
               }}
             >
               {line.ingredientName}
@@ -143,11 +145,11 @@ function IngredientRow({
                     fontWeight: 700,
                     fontVariantNumeric: 'tabular-nums',
                     bgcolor: optionalOrBasic
-                      ? tokens.color.okBg
-                      : tokens.color.accentTint,
+                      ? palette('success-light')
+                      : palette('pp-accentTint'),
                     color: optionalOrBasic
-                      ? tokens.color.muted
-                      : tokens.color.accentOnTint,
+                      ? palette('text-secondary')
+                      : palette('pp-accentOnTint'),
                   }}
                 >
                   {amount}
@@ -155,7 +157,7 @@ function IngredientRow({
               ) : null}
             </Box>
             {sub ? (
-              <Box sx={{ fontSize: 12.5, color: tokens.color.muted }}>
+              <Box sx={{ fontSize: 12.5, color: palette('text-secondary') }}>
                 {sub}
               </Box>
             ) : null}
@@ -183,12 +185,12 @@ function IngredientRow({
                         borderRadius: radius.tag,
                         bgcolor:
                           severity === 'strong'
-                            ? tokens.color.urgentBg
-                            : tokens.color.soonBg,
+                            ? palette('error-light')
+                            : palette('warning-light'),
                         color:
                           severity === 'strong'
-                            ? tokens.color.urgentFg
-                            : tokens.color.soonFg,
+                            ? palette('error-main')
+                            : palette('warning-main'),
                       }}
                     >
                       {t('recipes:allergyWarning.lineMarker', {

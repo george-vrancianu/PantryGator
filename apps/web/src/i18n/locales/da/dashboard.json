@@ -181,77 +181,12 @@
     "nextPlanStarts": "Næste plan starter {{date}}",
     "nothingThisWeek": "Intet planlagt denne uge.",
     "planWeek": "Planlæg ugen",
-    "nothingOn": "Intet planlagt til {{day}}.",
     "nothingYet": "Intet endnu",
-    "today": "I dag",
-    "tomorrow": "I morgen",
-    "editDay": "Redigér dagen",
     "missingForPlan": "Mangler til planen:",
     "moreMissing": "+{{count}}",
     "addN": "Tilføj {{count}}",
-    "addNMissing_one": "Tilføj {{count}} manglende",
-    "addNMissing_other": "Tilføj {{count}} manglende",
-    "addLine": "Tilføj {{name}} til indkøbslisten",
-    "toast": {
-      "added_one": "{{count}} føjet til indkøbslisten",
-      "added_other": "{{count}} føjet til indkøbslisten"
-    },
-    "planMeal": "Planlæg et måltid",
-    "startPlan": "Start en plan",
-    "slot": {
-      "breakfast": "Morgenmad",
-      "lunch": "Frokost",
-      "dinner": "Aftensmad"
-    },
     "legend": {
-      "covered": "Dækket",
-      "onList": "På listen",
-      "short": "Mangler",
       "bars": "Bjælker: M · F · A"
-    },
-    "status": {
-      "covered": "Dækket",
-      "onList": "På listen",
-      "short_one": "{{count}} mangler",
-      "short_other": "{{count}} mangler",
-      "unavailable": "Ikke længere tilgængelig"
-    },
-    "meta": "{{servings}} portioner · {{minutes}} min",
-    "metaNoTime": "{{servings}} portioner",
-    "line": {
-      "short": "mangler {{amount}}",
-      "need": "skal bruge {{amount}}",
-      "unknown": "mængde ukendt, dit spisekammer har ingen mængde"
-    },
-    "reason": {
-      "usesLast": "{{who}} bruger det sidste",
-      "useLast": "{{who}} bruger det sidste",
-      "earlierMeals_one": "{{count}} tidligere måltid",
-      "earlierMeals_other": "{{count}} tidligere måltider",
-      "mealOf": "{{name}} ({{day}})",
-      "and": "{{first}} og {{second}}",
-      "expires": "Dit udløber {{day}}",
-      "notInPantry": "Ikke i dit spisekammer",
-      "onlyLeftAfter": "Kun {{amount}} tilbage efter {{who}}",
-      "onlyInPantry": "Kun {{amount}} i dit spisekammer"
-    },
-    "prevDay": "Forrige dag",
-    "nextDay": "Næste dag",
-    "close": "Luk",
-    "aria": {
-      "column": "{{date}}: {{summary}}",
-      "meals_one": "{{count}} måltid, {{status}}",
-      "meals_other": "{{count}} måltider, {{status}}",
-      "allUnavailable_one": "{{count}} måltid utilgængeligt",
-      "allUnavailable_other": "{{count}} måltider utilgængelige",
-      "alsoUnavailable_one": "{{count}} utilgængeligt",
-      "alsoUnavailable_other": "{{count}} utilgængelige",
-      "nothing": "intet planlagt",
-      "status": {
-        "covered": "dækket",
-        "onList": "på listen",
-        "short": "mangler"
-      }
     }
   }
 }

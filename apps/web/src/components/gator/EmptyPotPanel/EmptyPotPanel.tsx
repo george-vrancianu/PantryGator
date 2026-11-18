@@ -1,4 +1,4 @@
-import { Box, Gator, tokens } from '@pocket-pantry/ui';
+import { Box, Gator, palette } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { GatorBubblePanel } from '../GatorBubblePanel/GatorBubblePanel';
@@ -43,7 +43,7 @@ export function EmptyPotPanel() {
           b: (
             <Box
               component="b"
-              sx={{ fontWeight: 700, color: tokens.color.accentOnTint }}
+              sx={{ fontWeight: 700, color: palette('pp-accentOnTint') }}
             />
           ),
         }}

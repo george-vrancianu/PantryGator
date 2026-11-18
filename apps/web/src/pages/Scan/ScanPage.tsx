@@ -2,13 +2,13 @@ import {
   Alert,
   bodyFont,
   Box,
-  tokens,
   useForcedThemeColor,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { shade } from '@/components/scan/camera/glass';
+import { scrim } from '@/components/scan/camera/glass';
 import {
   CameraFrame,
   swipeTouchAction,
@@ -84,8 +84,8 @@ export function ScanPage(props: ScanPageProps) {
         inset: 0,
         zIndex: 20,
         overflow: 'hidden',
-        backgroundColor: tokens.color.bg,
-        color: tokens.color.ink,
+        backgroundColor: palette('background-default'),
+        color: palette('text-primary'),
         // Resolved under this subtree's Theme, not inherited from the root's.
         fontFamily: bodyFont,
       }}
@@ -122,7 +122,7 @@ export function ScanPage(props: ScanPageProps) {
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
+            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${scrim(45)} 100%)`,
           }}
         />
       </Box>

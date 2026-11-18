@@ -1,4 +1,4 @@
-import { Box, color, tokens } from '@pocket-pantry/ui';
+import { Box, color, palette } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
@@ -94,7 +94,7 @@ export function SetupNextButton({
       onClick={leave.onNext}
       sx={{
         ...linkButtonStyle,
-        color: tone === 'olive' ? color.cardBg : tokens.color.accent,
+        color: tone === 'olive' ? color.cardBg : palette('pp-accent'),
       }}
     >
       {t('setupStep.next')}

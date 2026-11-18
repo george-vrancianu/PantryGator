@@ -2,7 +2,7 @@ import { useToast } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useRowToggleOutcome } from '@/components/lists/RowToggleErrors/RowToggleErrors';
 import { useSetRunningLow } from '@/lib/pantry';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useUndoToast } from '@/lib/useUndoToast';
 
 export type RunningLowChange = {
   ingredientId: string;
@@ -21,6 +21,7 @@ export function useRunningLowToggle() {
   const { t } = useTranslation('pantry');
   const save = useSetRunningLow();
   const toast = useToast();
+  const { undoOptions } = useUndoToast();
   const outcome = useRowToggleOutcome();
 
   const send = (ingredientId: string, on: boolean) =>
@@ -34,15 +35,7 @@ export function useRunningLowToggle() {
       send(ingredientId, on);
       toast.show(
         t(on ? 'toast.low.on' : 'toast.low.off', { name }),
-        undo
-          ? {
-              duration: UNDO_WINDOW_MS,
-              action: {
-                label: t('common:row.undo'),
-                onClick: () => send(ingredientId, !on),
-              },
-            }
-          : undefined,
+        undo ? undoOptions(() => send(ingredientId, !on)) : { polite: true },
       );
     },
     isPending: save.isPending,

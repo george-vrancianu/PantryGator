@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { Trans, useTranslation } from 'react-i18next';
 
 /** A `recipes` string with the Recipe's title between `<b>` tags, set bold. */
@@ -16,7 +16,7 @@ export function BoldTitle({
       i18nKey={i18nKey}
       values={{ title }}
       components={{
-        b: <Box component="b" sx={{ color: tokens.color.ink }} />,
+        b: <Box component="b" sx={{ color: palette('text-primary') }} />,
       }}
     />
   );

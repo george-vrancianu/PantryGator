@@ -3,7 +3,7 @@ import {
   CheckIcon,
   PlusIcon,
   radius,
-  tokens,
+  palette,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { useState } from 'react';
@@ -46,8 +46,8 @@ export function AddToFamilyButton({ title, state, onAdd }: Props) {
   } as const;
   const hover = {
     '&:hover': {
-      bgcolor: tokens.color.accentTint,
-      color: tokens.color.accentOnTint,
+      bgcolor: palette('pp-accentTint'),
+      color: palette('pp-accentOnTint'),
     },
   } as const;
   if (state.status === 'none') {
@@ -62,9 +62,9 @@ export function AddToFamilyButton({ title, state, onAdd }: Props) {
         }}
         sx={{
           ...base,
-          color: tokens.color.accent,
-          border: `1.5px solid ${tokens.color.accent}`,
-          bgcolor: tokens.color.surface,
+          color: palette('pp-accent'),
+          border: `1.5px solid ${palette('pp-accent')}`,
+          bgcolor: palette('background-paper'),
           ...hover,
         }}
       >
@@ -75,8 +75,8 @@ export function AddToFamilyButton({ title, state, onAdd }: Props) {
   const added = {
     ...base,
     border: 0,
-    bgcolor: tokens.color.accentTint,
-    color: tokens.color.accentOnTint,
+    bgcolor: palette('pp-accentTint'),
+    color: palette('pp-accentOnTint'),
   };
   const check = (
     <Box

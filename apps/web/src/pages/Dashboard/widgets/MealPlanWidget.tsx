@@ -11,9 +11,8 @@ import {
   shadow,
   PlusIcon,
   ShoppingIcon,
-  Tag,
-  tokens,
   color,
+  palette,
 } from '@pocket-pantry/ui';
 import {
   useCallback,
@@ -29,6 +28,7 @@ import {
   BAR_FILL,
   BAR_RADIUS,
 } from '@/components/mealPlan/MealPlanPopover/barStyle';
+import { StatusTag } from '@/components/mealPlan/StatusTag/StatusTag';
 import { MealPlanPopover } from '@/components/mealPlan/MealPlanPopover/MealPlanPopover';
 import {
   columnName,
@@ -41,11 +41,11 @@ import {
   barStatuses,
   dayHeadline,
   dayMark,
+  planEnd,
   useMealWindow,
   type PlanTag,
   type WindowDay,
 } from '@/lib/mealPlan';
-import { planEnd } from '@/lib/mealPlanPage';
 import { fromIso, localIso, type IsoDate } from '@/lib/pantry';
 import { useAddMissing } from '@/lib/useAddMissing';
 import { useMealPlanLegend } from '@/lib/useMealPlanLegend';
@@ -65,7 +65,7 @@ const emptyAction = {
   minHeight: 44,
   fontSize: 13,
   fontWeight: 700,
-  color: tokens.color.accent,
+  color: palette('pp-accent'),
 } as const;
 
 /** Titles go under the bars when the columns are wide enough for them. */
@@ -76,22 +76,21 @@ function PlanTagView({ tag }: { tag: PlanTag }) {
   switch (tag.kind) {
     case 'short':
       return (
-        <Tag tone="urgent" icon={<BangIcon size={12} strokeWidth={3.4} />}>
+        <StatusTag
+          status="short"
+          icon={<BangIcon size={12} strokeWidth={3.4} />}
+        >
           {t('mealPlan.short', { count: tag.count })}
-        </Tag>
+        </StatusTag>
       );
     case 'coveredOnceYouShop':
       return (
-        <Tag tone="soon" icon={<ShoppingIcon size={12} strokeWidth={2.4} />}>
+        <StatusTag status="onList">
           {t('mealPlan.coveredOnceYouShop')}
-        </Tag>
+        </StatusTag>
       );
     case 'allCovered':
-      return (
-        <Tag tone="accent" icon={<CheckIcon size={12} strokeWidth={3} />}>
-          {t('mealPlan.allCovered')}
-        </Tag>
-      );
+      return <StatusTag status="covered">{t('mealPlan.allCovered')}</StatusTag>;
     case 'none':
       return null;
   }
@@ -113,15 +112,15 @@ function DayMark({ day }: { day: WindowDay }) {
   const look =
     kind === 'covered'
       ? {
-          backgroundColor: tokens.color.accentTint,
-          color: tokens.color.accentOnTint,
+          backgroundColor: palette('pp-accentTint'),
+          color: palette('pp-accentOnTint'),
         }
       : kind === 'short'
-        ? { backgroundColor: tokens.color.urgentFg, color: color.cardBg }
+        ? { backgroundColor: palette('error-main'), color: color.cardBg }
         : kind === 'onList'
           ? {
-              backgroundColor: tokens.color.soonBg,
-              color: tokens.color.soonFg,
+              backgroundColor: palette('warning-light'),
+              color: palette('warning-main'),
             }
           : { boxShadow: `inset 0 0 0 1.5px ${color.lineStrong}` };
   return (
@@ -159,6 +158,7 @@ function LegendSwatch({ fill }: { fill: object }) {
 /** The Family's plan for the next days: a column per planned day, three bars each, and a popover per day. */
 export function MealPlanWidget({ columns }: WidgetProps) {
   const { t, i18n } = useTranslation('dashboard');
+  const { t: tPlan } = useTranslation('mealPlans');
   const language = i18n.language;
   const todayIso = localIso(useToday());
   const mealWindow = useMealWindow(todayIso);
@@ -271,7 +271,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   fontWeight: 700,
                   letterSpacing: '.1em',
                   textTransform: 'uppercase',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -305,7 +305,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     aria-haspopup="dialog"
                     aria-expanded={isOpen}
                     aria-current={isToday ? 'date' : undefined}
-                    aria-label={columnName(t, language, day)}
+                    aria-label={columnName(tPlan, language, day)}
                     onClick={() => toggle(index)}
                     sx={{
                       all: 'unset',
@@ -320,16 +320,16 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                       cursor: 'pointer',
                       transition: 'transform .08s, background-color .15s',
                       backgroundColor: isOpen
-                        ? tokens.color.chipNeutral
+                        ? palette('pp-chip')
                         : isToday
-                          ? tokens.color.accentTint
+                          ? palette('pp-accentTint')
                           : 'transparent',
                       '&:hover': {
                         backgroundColor: isOpen
-                          ? tokens.color.chipNeutral
+                          ? palette('pp-chip')
                           : isToday
-                            ? tokens.color.accentTint
-                            : tokens.color.subtle,
+                            ? palette('pp-accentTint')
+                            : palette('pp-subtle'),
                       },
                       '&:active': { transform: 'scale(.96)' },
                       '@media (prefers-reduced-motion: reduce)': {
@@ -346,12 +346,12 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                         textTransform: 'uppercase',
                         letterSpacing: '.04em',
                         color: isToday
-                          ? tokens.color.accentOnTint
-                          : tokens.color.muted,
+                          ? palette('pp-accentOnTint')
+                          : palette('text-secondary'),
                       }}
                     >
                       {isToday
-                        ? t('mealPlan.today')
+                        ? tPlan('forecast.today')
                         : shortWeekday(language, day.date)}
                     </Box>
                     <Box
@@ -400,8 +400,8 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                           lineHeight: 1.25,
                           textAlign: 'center',
                           color: headline
-                            ? tokens.color.ink
-                            : tokens.color.muted,
+                            ? palette('text-primary')
+                            : palette('text-secondary'),
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
@@ -424,7 +424,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   alignItems: 'center',
                   gap: '10px',
                   pt: '10px',
-                  borderTop: `1px solid ${tokens.color.divider}`,
+                  borderTop: `1px solid ${palette('divider')}`,
                 }}
               >
                 <Box
@@ -433,13 +433,13 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     flex: 1,
                     minWidth: 0,
                     fontSize: 12.5,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }}
                 >
                   {t('mealPlan.missingForPlan')}{' '}
                   <Box
                     component="b"
-                    sx={{ fontWeight: 700, color: tokens.color.ink }}
+                    sx={{ fontWeight: 700, color: palette('text-primary') }}
                   >
                     {view.missing
                       .slice(0, FOOTER_NAMES)
@@ -478,7 +478,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   gap: '4px 12px',
                   fontSize: 11.5,
                   fontWeight: 600,
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   '& > span': {
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -488,15 +488,15 @@ export function MealPlanWidget({ columns }: WidgetProps) {
               >
                 <span>
                   <LegendSwatch fill={BAR_FILL.covered} />
-                  {t('mealPlan.legend.covered')}
+                  {tPlan('forecast.legend.covered')}
                 </span>
                 <span>
                   <LegendSwatch fill={BAR_FILL.onList} />
-                  {t('mealPlan.legend.onList')}
+                  {tPlan('forecast.legend.onList')}
                 </span>
                 <span>
                   <LegendSwatch fill={BAR_FILL.short} />
-                  {t('mealPlan.legend.short')}
+                  {tPlan('forecast.legend.short')}
                 </span>
                 <span>{t('mealPlan.legend.bars')}</span>
               </Box>
@@ -513,7 +513,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: radius.control,
-                bgcolor: tokens.color.chipNeutral,
+                bgcolor: palette('pp-chip'),
                 boxShadow: shadow.recess,
                 color: color.ink2,
               }}
@@ -545,7 +545,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                   fontWeight: 700,
                   letterSpacing: '.1em',
                   textTransform: 'uppercase',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                 }}
               >
                 {t('mealPlan.titleEmpty')}
@@ -565,7 +565,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     mb: '-26px',
                     fontSize: 15,
                     fontWeight: 600,
-                    color: tokens.color.ink,
+                    color: palette('text-primary'),
                   }}
                 >
                   {t('mealPlan.nextPlanStarts', {
@@ -580,7 +580,7 @@ export function MealPlanWidget({ columns }: WidgetProps) {
                     fontSize: 15,
                     lineHeight: '18px',
                     fontWeight: 600,
-                    color: tokens.color.ink,
+                    color: palette('text-primary'),
                   }}
                 >
                   {t('mealPlan.nothingThisWeek')}

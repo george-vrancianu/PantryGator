@@ -7,8 +7,8 @@ import {
   PlusIcon,
   Spinner,
   Stack,
-  tokens,
   displayType,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -222,7 +222,7 @@ export function RecipesPage() {
             sx={{
               fontSize: 15,
               fontWeight: 700,
-              color: tokens.color.accent,
+              color: palette('pp-accent'),
               textDecoration: 'none',
             }}
           >
@@ -263,7 +263,9 @@ export function RecipesPage() {
                   cookTonight.data?.hiddenByAllergiesCount ?? 0,
                 )
           }
+          showing={showHidden}
           onShow={() => setShowHidden(true)}
+          onHide={() => setShowHidden(false)}
         />
         {recipes.error ? (
           <Alert>{translateApiError(t, recipes.error)}</Alert>
@@ -292,7 +294,9 @@ export function RecipesPage() {
             <Box sx={{ ...displayType, fontSize: 18 }}>
               {filtering ? t('recipes:noMatches') : t('recipes:allHidden')}
             </Box>
-            <Box sx={{ fontSize: 14, color: tokens.color.muted, mt: '4px' }}>
+            <Box
+              sx={{ fontSize: 14, color: palette('text-secondary'), mt: '4px' }}
+            >
               {filtering
                 ? t('recipes:noMatchesHint')
                 : t('recipes:allHiddenHint')}
@@ -320,7 +324,13 @@ export function RecipesPage() {
               ))}
             </Box>
             {!filtering && hasVariants ? (
-              <Box sx={{ fontSize: 13, color: tokens.color.muted, mt: '12px' }}>
+              <Box
+                sx={{
+                  fontSize: 13,
+                  color: palette('text-secondary'),
+                  mt: '12px',
+                }}
+              >
                 {t('recipes:variantsHint')}
               </Box>
             ) : null}

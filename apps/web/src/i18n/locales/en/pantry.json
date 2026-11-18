@@ -114,7 +114,8 @@
       "sayIt": "Say it"
     },
     "added": "Added",
-    "addedToast": "Added {{details}}",
+    "addedToast": "Added {{name}} · {{location}}",
+    "addedToastAmount": "Added {{name}} · {{amount}} · {{location}}",
     "addedList_one": "{{count}} batch added",
     "addedList_other": "{{count}} batches added",
     "amount": "Amount",

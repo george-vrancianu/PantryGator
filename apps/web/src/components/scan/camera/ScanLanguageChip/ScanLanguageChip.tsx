@@ -1,4 +1,4 @@
-import { Box, GlobeIcon, tokens, radius } from '@pocket-pantry/ui';
+import { Box, GlobeIcon, radius, palette } from '@pocket-pantry/ui';
 import {
   useEffect,
   useId,
@@ -104,7 +104,7 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
         display: 'inline-flex',
         alignItems: 'center',
         mx: '4px',
-        color: tokens.color.ink,
+        color: palette('text-primary'),
         opacity: disabled ? 0.5 : 1,
       }}
     >
@@ -127,7 +127,7 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
           boxSizing: 'border-box',
           px: '10px',
           borderRadius: radius.chip,
-          border: `1.5px solid ${translucent(tokens.color.ink, 75)}`,
+          border: `1.5px solid ${translucent(palette('text-primary'), 75)}`,
           backgroundColor: 'transparent',
           color: 'inherit',
           fontFamily: 'inherit',
@@ -157,8 +157,8 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
             boxSizing: 'border-box',
             p: '6px',
             borderRadius: radius.card,
-            border: `1px solid ${translucent(tokens.color.ink, 12)}`,
-            backgroundColor: translucent(tokens.color.bg, 82),
+            border: `1px solid ${translucent(palette('text-primary'), 12)}`,
+            backgroundColor: translucent(palette('background-default'), 82),
             backdropFilter: 'blur(18px) saturate(1.2)',
             transformOrigin: 'top right',
             ...keyframesSx('pp-language-menu-in', '180ms ease-out both', {
@@ -198,7 +198,7 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
                   fontWeight: 600,
                   cursor: 'pointer',
                   '&:hover': {
-                    backgroundColor: translucent(tokens.color.ink, 7),
+                    backgroundColor: translucent(palette('text-primary'), 7),
                   },
                   '&:focus-visible': glassFocusRing,
                 }}
@@ -210,7 +210,9 @@ export function ScanLanguageChip({ value, disabled, onChange }: Props) {
                   sx={{
                     fontSize: 11,
                     fontWeight: 800,
-                    color: checked ? tokens.color.accent : tokens.color.muted,
+                    color: checked
+                      ? palette('pp-accent')
+                      : palette('text-secondary'),
                   }}
                 >
                   {language.toUpperCase()}

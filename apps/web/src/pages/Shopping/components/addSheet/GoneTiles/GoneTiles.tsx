@@ -1,4 +1,4 @@
-import { Box, CloseIcon, Link, tokens, focusRing } from '@pocket-pantry/ui';
+import { Box, CloseIcon, Link, focusRing, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '@/components/catalogSearch/emptyState/context';
 import { IngredientTile } from '@/components/catalogSearch/emptyState/IngredientTile/IngredientTile';
@@ -44,22 +44,21 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
   const tile = ({ suggestion, reason }: GoneEntry) => {
     const { name, since } = suggestion;
     const age = since === null ? '' : ago(since);
-    const { color } = tokens;
     const why = {
       expired: {
         glyph: '◷',
         text: t('suggestions.expiredWhen', { when: age }),
-        color: color.urgentFg,
+        color: palette('error-main'),
       },
       usedUp: {
         glyph: '→',
         text: t('suggestions.usedUpWhen', { when: age }),
-        color: color.muted,
+        color: palette('text-secondary'),
       },
       staple: {
         glyph: '★',
         text: t('suggestions.stapleWhy'),
-        color: color.soonIcon,
+        color: palette('warning-main'),
       },
     }[reason];
     const label = {
@@ -91,11 +90,11 @@ export function GoneTiles({ suggestions, onPick }: GoneTilesProps) {
               display: 'grid',
               placeItems: 'center',
               p: 0,
-              color: color.muted,
+              color: palette('text-secondary'),
               background: 'none',
               border: 0,
               cursor: 'pointer',
-              '&:hover': { color: color.ink },
+              '&:hover': { color: palette('text-primary') },
               ...focusRing,
             }}
           >

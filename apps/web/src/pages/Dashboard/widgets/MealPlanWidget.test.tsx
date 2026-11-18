@@ -1058,14 +1058,10 @@ describe('MealPlanWidget Add missing', () => {
     before: MealWindow,
     after: MealWindow,
     created = ['sh1', 'sh2', 'sh3'],
-    {
-      failPost = false,
-      missingDeletes = [] as string[],
-      count = created.length,
-    } = {},
+    { failPost = false, failDelete = false, count = created.length } = {},
   ) {
     let current = before;
-    const deleted: string[] = [];
+    const deleted: string[][] = [];
     let release = () => {};
     let gate = Promise.resolve();
     const list = () =>
@@ -1088,20 +1084,19 @@ describe('MealPlanWidget Add missing', () => {
         current = after;
         return Response.json({ createdIds: created, count });
       },
-      ...Object.fromEntries(
-        ['sh1', 'sh2', 'sh3'].map((id) => [
-          `DELETE /api/shopping-list/items/${id}`,
-          () => {
-            deleted.push(id);
-            return missingDeletes.includes(id)
-              ? Response.json(
-                  { code: 'shopping.item_not_found', params: {} },
-                  { status: 404 },
-                )
-              : list();
-          },
-        ]),
-      ),
+      'POST /api/shopping-list/items/bulk-delete': () => {
+        const last = calls
+          .filter((c) => c.key === 'POST /api/shopping-list/items/bulk-delete')
+          .at(-1) as { body: { ids: string[] } };
+        deleted.push(last.body.ids);
+        if (failDelete) {
+          return Response.json(
+            { code: 'validation_failed', params: {} },
+            { status: 400 },
+          );
+        }
+        return list();
+      },
     });
     vi.stubGlobal('fetch', fetchMock);
     return {
@@ -1191,7 +1186,7 @@ describe('MealPlanWidget Add missing', () => {
 
     await u.click(screen.getByRole('button', { name: 'Undo' }));
 
-    await waitFor(() => expect(api.deleted).toEqual(['sh1', 'sh3']));
+    await waitFor(() => expect(api.deleted).toEqual([['sh1', 'sh3']]));
   });
 
   it('adds one day from the popover, sending only its date', async () => {
@@ -1325,23 +1320,42 @@ describe('MealPlanWidget Add missing', () => {
     expect(screen.queryByRole('button', { name: 'Undo' })).toBeNull();
   });
 
-  it('carries on undoing past an item that is already gone', async () => {
+  it('undoes in one call, however many items the add created', async () => {
     const u = user();
-    const api = setup(
-      shortWeek(),
-      allOnList(shortWeek()),
-      ['sh1', 'sh2', 'sh3'],
-      {
-        missingDeletes: ['sh1'],
-      },
-    );
+    const api = setup(shortWeek(), allOnList(shortWeek()), [
+      'sh1',
+      'sh2',
+      'sh3',
+    ]);
     renderWidget();
     await u.click(await screen.findByRole('button', { name: 'Add 4' }));
     await screen.findByText('3 added to the Shopping List');
 
     await u.click(screen.getByRole('button', { name: 'Undo' }));
 
-    await waitFor(() => expect(api.deleted).toEqual(['sh1', 'sh2', 'sh3']));
+    await waitFor(() => expect(api.deleted).toEqual([['sh1', 'sh2', 'sh3']]));
+  });
+
+  it('shows the error and refetches what the list feeds when the Undo call fails', async () => {
+    const u = user();
+    const api = setup(shortWeek(), allOnList(shortWeek()), ['sh1'], {
+      failDelete: true,
+    });
+    renderWidget();
+    await u.click(await screen.findByRole('button', { name: 'Add 4' }));
+    await screen.findByText('1 added to the Shopping List');
+    // The list change keys include the forecast, which this Widget keeps mounted.
+    const windowReads = () =>
+      api.calls.filter((c) => c.key === 'GET /api/meal-plans/window').length;
+    const before = windowReads();
+
+    await u.click(screen.getByRole('button', { name: 'Undo' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Please check what you entered',
+    );
+    expect(api.deleted).toEqual([['sh1']]);
+    await waitFor(() => expect(windowReads()).toBeGreaterThan(before));
   });
 
   it('counts an Unmatched Ingredient once however its name is cased', async () => {

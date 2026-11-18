@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@pocket-pantry/ui';
 import { apiRequest } from './api';
 import { recipeChangeQueryKeys } from './queryKeys';
+import { useUndoToast } from './useUndoToast';
 
 /** What a Catalog Recipe's add button needs to know: add it, or open the Family's copy. */
 export type AddState =
@@ -57,20 +58,19 @@ export function useAddToFamily({
 } = {}) {
   const { t } = useTranslation(['recipes', 'common', 'errors']);
   const toastApi = useToast();
+  const { showUndo } = useUndoToast();
+  const bottomExtras = useMemo(
+    () => (toastBottom === undefined ? undefined : { bottom: toastBottom }),
+    [toastBottom],
+  );
   const toast = useMemo(
     () => ({
       show: (
         message: string,
         options: Parameters<typeof toastApi.show>[1] = {},
-      ) =>
-        toastApi.show(
-          message,
-          toastBottom === undefined
-            ? options
-            : { ...options, bottom: toastBottom },
-        ),
+      ) => toastApi.show(message, { ...options, ...bottomExtras }),
     }),
-    [toastApi, toastBottom],
+    [toastApi, bottomExtras],
   );
   const queryClient = useQueryClient();
   const [overrides, setOverrides] = useState<Record<string, AddState>>({});
@@ -132,17 +132,15 @@ export function useAddToFamily({
       pending.current.set(recipe.id, request);
       // Optimistic: the toast is up before the copy is, and Undo waits for the copy's id.
       // Undo only archives a copy this tap made: if the Family already had one, the toast is replaced.
-      toast.show(t('recipes:explore.added', { title: recipe.title }), {
-        polite: true,
-        action: {
-          label: t('common:row.undo'),
-          onClick: () =>
-            void request.then(
-              (body) => (body.created ? undo(recipe, body.id) : undefined),
-              () => undefined,
-            ),
-        },
-      });
+      showUndo(
+        t('recipes:explore.added', { title: recipe.title }),
+        () =>
+          void request.then(
+            (body) => (body.created ? undo(recipe, body.id) : undefined),
+            () => undefined,
+          ),
+        bottomExtras,
+      );
       try {
         const body = await request;
         set(recipe.id, { status: 'added', copyId: body.id });
@@ -163,7 +161,7 @@ export function useAddToFamily({
       }
       await settle(recipe.id);
     },
-    [set, settle, t, toast, undo],
+    [set, settle, t, toast, undo, showUndo, bottomExtras],
   );
 
   const stateOf = (recipe: AddableRecipe): AddState => {

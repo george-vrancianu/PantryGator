@@ -1,8 +1,7 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, palette, radius } from '@pocket-pantry/ui';
 
 /** A host's short per-row pill (for example "On list"). */
 export function RowTag({ children }: { children: string }) {
-  const { color } = tokens;
   return (
     <Box
       component="span"
@@ -11,8 +10,8 @@ export function RowTag({ children }: { children: string }) {
         px: '9px',
         py: '3px',
         borderRadius: radius.tag,
-        backgroundColor: color.accentTint,
-        color: color.accentOnTint,
+        backgroundColor: palette('pp-accentTint'),
+        color: palette('pp-accentOnTint'),
         fontSize: 11,
         fontWeight: 700,
       }}

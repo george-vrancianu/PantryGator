@@ -8,10 +8,11 @@ import {
   ImagePlusIcon,
   HeaderButton,
   Typography,
-  tokens,
   nestedRadius,
   radius,
   useToast,
+  palette,
+  shade,
 } from '@pocket-pantry/ui';
 import {
   useEffect,
@@ -34,7 +35,7 @@ import {
 } from './components/ReceiptCropper/ReceiptCropper';
 import { cropToReceiptArea } from '@/lib/image';
 import { MAX_BULK_BATCHES } from '@/lib/scan';
-import { loadLastScanMode } from '@/lib/cameraMode';
+import { loadLastScanMode, type CameraMode } from '@/lib/cameraMode';
 import { importPhotos } from '@/lib/importPhotos';
 import { useSessionScanLanguage } from '@/lib/sessionScanLanguage';
 import {
@@ -69,7 +70,7 @@ const linkButton = {
   p: 0,
   border: 0,
   background: 'none',
-  color: tokens.color.accent,
+  color: palette('pp-accent'),
   font: 'inherit',
   fontSize: 13,
   fontWeight: 700,
@@ -81,7 +82,7 @@ const dashedButton = {
   minHeight: 56,
   height: 'auto',
   borderRadius: radius.card,
-  border: `1.5px dashed ${tokens.color.line}`,
+  border: `1.5px dashed ${palette('pp-line')}`,
   fontSize: 14,
   fontWeight: 800,
   gap: '9px',
@@ -92,8 +93,11 @@ const dashedButton = {
  * with the camera at `/scan`, a card opening at `/scan/review/:scanId` and the camera as the landing.
  */
 export type ReviewOverviewSettings = {
-  /** The camera: "Camera", "Take more" and Retake lead here. */
-  cameraPath?: string;
+  /**
+   * The camera: "Camera", "Take more" and Retake lead here. It gets the Scan Mode to reopen in: a card's own
+   * for Retake, the last scan's for the others (none when the Scan Session is empty).
+   */
+  cameraPath?: (mode: CameraMode | undefined) => string;
   /** Where a card opens. */
   cardPath?: (scanId: string) => string;
   /** Whether Add from photos is offered. Defaults to true. */
@@ -117,7 +121,7 @@ export type ReviewOverviewSettings = {
 export function ReviewOverviewPage({
   settings = {},
 }: { settings?: ReviewOverviewSettings } = {}) {
-  const cameraPath = settings.cameraPath ?? '/scan';
+  const cameraPathFor = settings.cameraPath ?? (() => '/scan');
   const importOffered = settings.importOffered ?? true;
   const cardPath = settings.cardPath ?? ((id: string) => `/scan/review/${id}`);
   const { t } = useTranslation('review');
@@ -133,6 +137,7 @@ export function ReviewOverviewPage({
   const { scanLanguageToSend: scanLanguage } = useSessionScanLanguage();
   const photosInput = useRef<HTMLInputElement>(null);
   const session = useScanSession();
+  const cameraPath = cameraPathFor(session.scans.at(-1)?.mode);
   const uncropped = uncroppedCount(session);
   // Uncropped receipts wait for the Member, not for a read.
   const reading = pendingCount(session) - uncropped;
@@ -282,7 +287,7 @@ export function ReviewOverviewPage({
         tabIndex={-1}
         sx={{
           '&:focus-visible': {
-            outline: `2px solid ${tokens.color.accentMid}`,
+            outline: `2px solid ${shade.accentMid}`,
             outlineOffset: 2,
           },
           position: 'relative',
@@ -290,8 +295,8 @@ export function ReviewOverviewPage({
           gap: 1.5,
           p: 1.5,
           borderRadius: radius.card,
-          border: `1px solid ${tokens.color.line}`,
-          backgroundColor: tokens.color.surface,
+          border: `1px solid ${palette('pp-line')}`,
+          backgroundColor: palette('background-paper'),
         }}
       >
         <Box
@@ -313,7 +318,7 @@ export function ReviewOverviewPage({
               fontWeight: 800,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: tokens.color.accent,
+              color: palette('pp-accent'),
             }}
           >
             {tScan(`mode.${scan.mode}`)}
@@ -386,7 +391,7 @@ export function ReviewOverviewPage({
                     dispatchScanSession({ type: 'remove', id: scan.id });
                     // Scans held back by the Scan Cap can go on now.
                     readScans();
-                    if (!barcode) navigate(cameraPath);
+                    if (!barcode) navigate(cameraPathFor(scan.mode));
                   }}
                   sx={linkButton}
                 >
@@ -406,7 +411,7 @@ export function ReviewOverviewPage({
                   mt: 0.5,
                   border: 0,
                   background: 'none',
-                  color: tokens.color.accent,
+                  color: palette('pp-accent'),
                   font: 'inherit',
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -465,8 +470,8 @@ export function ReviewOverviewPage({
                       py: '2px',
                       borderRadius: radius.chip,
                       fontSize: 12,
-                      backgroundColor: tokens.color.accentTint,
-                      color: tokens.color.accentOnTint,
+                      backgroundColor: palette('pp-accentTint'),
+                      color: palette('pp-accentOnTint'),
                     }}
                   >
                     {displayName(line)}
@@ -516,7 +521,7 @@ export function ReviewOverviewPage({
                     mt: 0.75,
                     fontSize: 13,
                     fontWeight: 700,
-                    color: tokens.color.urgentFg,
+                    color: palette('error-main'),
                   }}
                 >
                   {t('overview.check', { count: check })}

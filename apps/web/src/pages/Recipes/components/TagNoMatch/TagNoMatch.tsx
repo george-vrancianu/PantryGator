@@ -1,4 +1,4 @@
-import { Box, displayType, radius, tokens } from '@pocket-pantry/ui';
+import { Box, displayType, radius, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import {
   usePickedTags,
@@ -44,7 +44,7 @@ export function TagNoMatch({ browse, onChange, scope, showHidden }: Props) {
           ? `${title} ${t('tags.noMatchQuery', { q: browse.search.trim() })}`
           : title}
       </Box>
-      <Box sx={{ fontSize: 14, color: tokens.color.muted, mt: '4px' }}>
+      <Box sx={{ fontSize: 14, color: palette('text-secondary'), mt: '4px' }}>
         {t('tags.tryWithout')}
       </Box>
       <Box
@@ -84,9 +84,9 @@ export function TagNoMatch({ browse, onChange, scope, showHidden }: Props) {
                 height: 36,
                 px: '12px',
                 borderRadius: radius.chip,
-                border: `1px solid ${tokens.color.line}`,
-                bgcolor: tokens.color.surface,
-                color: tokens.color.ink,
+                border: `1px solid ${palette('pp-line')}`,
+                bgcolor: palette('background-paper'),
+                color: palette('text-primary'),
                 font: 'inherit',
                 fontSize: 13,
                 fontWeight: 600,

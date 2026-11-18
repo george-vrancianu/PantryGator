@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import type { CompactAllergyWarning } from './recipes';
 import { apiRequest } from './api';
-import type { IsoDate } from './pantry';
+import { fromIso, localDate, localIso, type IsoDate } from './pantry';
 import { normalizeName } from './normalizeName';
 import { mealPlanQueryKey } from './queryKeys';
 
@@ -84,6 +84,17 @@ export type MealPlanSummary = {
   days: number;
   servings: number;
 };
+
+export const addDaysIso = (iso: IsoDate, days: number): IsoDate => {
+  const date = fromIso(iso);
+  return localIso(
+    localDate(date.getFullYear(), date.getMonth(), date.getDate() + days),
+  );
+};
+
+/** The last day of a plan. */
+export const planEnd = (plan: Pick<MealPlanSummary, 'startDate' | 'days'>) =>
+  addDaysIso(plan.startDate, plan.days - 1);
 
 export type MealWindow = {
   today: IsoDate;

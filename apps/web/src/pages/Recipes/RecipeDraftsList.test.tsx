@@ -13,7 +13,7 @@ import type {
   RecipeDraftContent,
   RecipeDraftSummary,
 } from '@/lib/recipeDrafts';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useUndoToast';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { NewRecipePage } from './NewRecipePage';
 import { RecipeDraftsPage } from './RecipeDraftsPage';

@@ -9,8 +9,7 @@ import {
 } from '../theme/dock';
 import { canopyFocusRing } from '../theme/focusRing';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
-import { dock, radius } from '../theme/themeVars';
-import { tokens } from '../theme/tokens';
+import { dock, palette, radius } from '../theme/themeVars';
 
 /** The half of the capsule a teaching Dock lights. */
 export type DockTeach = 'camera' | 'mic';
@@ -20,14 +19,14 @@ export type DockTeach = 'camera' | 'mic';
  * that spreads out and fades, 1.6 s, forever.
  */
 const lit = (pulse: boolean) => ({
-  bgcolor: tokens.color.butter,
-  color: tokens.color.butterInk,
+  bgcolor: palette('secondary-main'),
+  color: palette('secondary-contrastText'),
   ...(pulse
     ? {
         animation: 'pp-dock-pulse 1.6s ease-out infinite',
         '@keyframes pp-dock-pulse': {
           from: {
-            boxShadow: `0 0 0 0 color-mix(in srgb, ${tokens.color.butter} 75%, transparent)`,
+            boxShadow: `0 0 0 0 color-mix(in srgb, ${palette('secondary-main')} 75%, transparent)`,
           },
           to: { boxShadow: `0 0 0 16px transparent` },
         },

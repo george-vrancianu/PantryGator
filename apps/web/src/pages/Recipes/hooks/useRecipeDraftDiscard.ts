@@ -45,14 +45,10 @@ export function useRecipeDraftDiscard({
     remove.mutateAsync,
     removeAll,
   );
-  // The Undo toast is a polite status (CODING_STANDARDS).
-  const discard = (id: string) =>
-    removal.remove(id, '', t('drafts.discarded'), { polite: true });
+  const discard = (id: string) => removal.remove(id, '', t('drafts.discarded'));
   /** Every given Recipe Draft as one discard: one Undo toast, which brings them all back. */
   const discardMany = (ids: string[]) =>
-    removal.removeMany(ids, t('drafts.discardedMany', { count: ids.length }), {
-      polite: true,
-    });
+    removal.removeMany(ids, t('drafts.discardedMany', { count: ids.length }));
   const location = useLocation();
   const navigate = useNavigate();
   const taken = useRef<string | null>(null);

@@ -8,8 +8,8 @@ import {
   Stack,
   Tag,
   radius,
+  palette,
   Typography,
-  tokens,
   useToast,
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState, type Ref } from 'react';
@@ -266,7 +266,6 @@ function DaysEditor({
   catalogDays: number | null;
 }) {
   const { t } = useTranslation('settings');
-  const { color } = tokens;
   return (
     <Stack spacing={2} sx={{ px: 2, pb: 2 }}>
       {error ? <Alert>{error}</Alert> : null}
@@ -298,9 +297,11 @@ function DaysEditor({
                   minHeight: 54,
                   borderRadius: radius.control,
                   border: '1px solid',
-                  borderColor: pressed ? 'transparent' : color.line,
-                  backgroundColor: pressed ? color.accent : color.surface,
-                  color: pressed ? 'pp.accentInk' : color.ink,
+                  borderColor: pressed ? 'transparent' : palette('pp-line'),
+                  backgroundColor: pressed
+                    ? palette('pp-accent')
+                    : palette('background-paper'),
+                  color: pressed ? 'pp.accentInk' : palette('text-primary'),
                   font: 'inherit',
                   cursor: 'pointer',
                 }}
@@ -329,8 +330,8 @@ function DaysEditor({
           px: 2,
           py: 1.5,
           borderRadius: radius.card,
-          backgroundColor: color.surface,
-          border: `1px solid ${color.line}`,
+          backgroundColor: palette('background-paper'),
+          border: `1px solid ${palette('pp-line')}`,
         }}
       >
         <IconButton

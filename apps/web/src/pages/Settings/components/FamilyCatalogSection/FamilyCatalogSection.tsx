@@ -10,11 +10,11 @@ import {
   Tag,
   Typography,
   radius,
-  tokens,
   useToast,
   visuallyHidden,
   type SwipeRowHandle,
   type SwipeRowLabels,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -134,8 +134,8 @@ export function FamilyCatalogSection() {
             px: 1.5,
             py: 1.25,
             borderRadius: radius.control,
-            bgcolor: tokens.color.soonBg,
-            color: tokens.color.soonFg,
+            bgcolor: palette('warning-light'),
+            color: palette('warning-main'),
             fontSize: 13,
             fontWeight: 600,
           }}
@@ -182,7 +182,6 @@ export function FamilyCatalogSection() {
                       t('settings:familyCatalog.deleted', {
                         name: ingredient.name,
                       }),
-                      { polite: true },
                     )
                   }
                 />
@@ -225,7 +224,6 @@ export function FamilyCatalogSection() {
                         t('settings:familyCatalog.synonymRemoved', {
                           name: synonym.name,
                         }),
-                        { polite: true },
                       )
                     }
                   />
@@ -327,7 +325,7 @@ function IngredientRow({
                 {t('settings:familyCatalog.checkTag')}
               </Tag>
             ) : names.length > 0 ? (
-              <Tag tone="neutral" sx={{ color: tokens.color.ink }}>
+              <Tag tone="neutral" sx={{ color: palette('text-primary') }}>
                 <Box component="span" sx={visuallyHidden}>
                   {t('settings:familyCatalog.containsA11y', {
                     names: new Intl.ListFormat(i18n.language, {

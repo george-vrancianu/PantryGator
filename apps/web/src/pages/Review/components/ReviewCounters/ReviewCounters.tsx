@@ -1,4 +1,4 @@
-import { Box, tokens, displayType, radius } from '@pocket-pantry/ui';
+import { Box, displayType, radius, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 export type Counts = { save: number; check: number; excluded: number };
@@ -6,19 +6,19 @@ export type Counts = { save: number; check: number; excluded: number };
 /** How each counter looks, on phone tiles and tablet chips alike. */
 export const COUNTER_TONE = {
   save: {
-    bgcolor: tokens.color.surface,
-    border: `1px solid ${tokens.color.line}`,
-    color: tokens.color.ink,
+    bgcolor: palette('background-paper'),
+    border: `1px solid ${palette('pp-line')}`,
+    color: palette('text-primary'),
   },
   check: {
-    bgcolor: tokens.color.urgentBg,
+    bgcolor: palette('error-light'),
     border: '1px solid transparent',
-    color: tokens.color.urgentFg,
+    color: palette('error-main'),
   },
   excluded: {
-    bgcolor: tokens.color.chipNeutral,
+    bgcolor: palette('pp-chip'),
     border: '1px solid transparent',
-    color: tokens.color.muted,
+    color: palette('text-secondary'),
   },
 } as const;
 

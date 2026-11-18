@@ -6,7 +6,7 @@ import {
   Stack,
   Tag,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import {
@@ -80,7 +80,6 @@ export function SlotSheet({
   onClose,
 }: Props) {
   const { t, i18n } = useTranslation('mealPlans');
-  const { t: tDashboard } = useTranslation('dashboard');
   return (
     <Sheet
       open={slot !== undefined}
@@ -129,18 +128,9 @@ export function SlotSheet({
           ) : (
             <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
               {slot.issues.map((issue) => {
-                const reason = reasonText(
-                  tDashboard,
-                  i18n.language,
-                  issue,
-                  today,
-                );
+                const reason = reasonText(t, i18n.language, issue, today);
                 const uncertain = issue.kind === 'uncertain';
-                const detailText = issueDetail(
-                  tDashboard,
-                  i18n.language,
-                  issue,
-                );
+                const detailText = issueDetail(t, i18n.language, issue);
                 // A short line's amount is in its pill; "need" has no pill amount.
                 const meta = [
                   issue.kind === 'missing' ? detailText : null,
@@ -157,7 +147,7 @@ export function SlotSheet({
                       alignItems: 'center',
                       gap: '10px',
                       py: '10px',
-                      borderTop: `1px solid ${tokens.color.divider}`,
+                      borderTop: `1px solid ${palette('divider')}`,
                       '&:first-of-type': { borderTop: 0 },
                     }}
                   >
@@ -166,12 +156,22 @@ export function SlotSheet({
                         {issue.name}
                       </Box>
                       {meta ? (
-                        <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+                        <Box
+                          sx={{
+                            fontSize: 13,
+                            color: palette('text-secondary'),
+                          }}
+                        >
                           {meta}
                         </Box>
                       ) : null}
                       {uncertain ? (
-                        <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+                        <Box
+                          sx={{
+                            fontSize: 13,
+                            color: palette('text-secondary'),
+                          }}
+                        >
                           {t('detail.uncertainNote')}
                         </Box>
                       ) : null}

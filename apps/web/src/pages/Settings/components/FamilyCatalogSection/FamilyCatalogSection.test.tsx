@@ -5,7 +5,7 @@ import type {
   FamilyCatalog,
   FamilyCatalogIngredient,
 } from '@/lib/familyCatalog';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useUndoToast';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { FamilyCatalogSection } from './FamilyCatalogSection';
 

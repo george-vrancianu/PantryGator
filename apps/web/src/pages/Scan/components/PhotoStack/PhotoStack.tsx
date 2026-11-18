@@ -1,8 +1,8 @@
 import {
   Box,
   radius,
-  tokens,
   usePrefersReducedMotion,
+  palette,
 } from '@pocket-pantry/ui';
 import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import type { SessionScan } from '@/lib/scanSession';
 import { BARCODE_GLYPH } from '@/components/scan/camera/barcodeGlyph';
 import {
   glassFocusRing,
-  shade,
+  scrim,
   translucent,
 } from '@/components/scan/camera/glass';
 
@@ -73,9 +73,9 @@ function Badge({ summary }: { summary: StackSummary }) {
         fontSize: 12,
         fontWeight: 800,
         fontVariantNumeric: 'tabular-nums',
-        backgroundColor: read ? tokens.color.accent : tokens.color.soonFg,
-        color: tokens.color.bg,
-        boxShadow: `0 0 0 2px ${shade(90)}`,
+        backgroundColor: read ? palette('pp-accent') : palette('warning-main'),
+        color: palette('background-default'),
+        boxShadow: `0 0 0 2px ${scrim(90)}`,
       }}
     >
       {summary.state === 'reading' ? (
@@ -85,8 +85,8 @@ function Badge({ summary }: { summary: StackSummary }) {
             width: 9,
             height: 9,
             borderRadius: '50%',
-            border: `1.5px solid ${translucent(tokens.color.bg, 30)}`,
-            borderTopColor: tokens.color.bg,
+            border: `1.5px solid ${translucent(palette('background-default'), 30)}`,
+            borderTopColor: palette('background-default'),
             animation: 'pp-stack-spin 0.8s linear infinite',
             '@keyframes pp-stack-spin': { to: { transform: 'rotate(1turn)' } },
             '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
@@ -132,11 +132,13 @@ export function PhotoStack({ scans, onOpen, stackRef }: Props) {
         width: SIZE,
         height: SIZE,
         p: 0,
-        border: empty ? `1.5px dashed ${translucent(tokens.color.ink, 30)}` : 0,
+        border: empty
+          ? `1.5px dashed ${translucent(palette('text-primary'), 30)}`
+          : 0,
         borderRadius: radius.control,
         boxSizing: 'border-box',
         backgroundColor: 'transparent',
-        color: tokens.color.ink,
+        color: palette('text-primary'),
         cursor: empty ? 'default' : 'pointer',
         '&:focus-visible': glassFocusRing,
       }}
@@ -155,8 +157,8 @@ export function PhotoStack({ scans, onOpen, stackRef }: Props) {
               boxSizing: 'border-box',
               borderRadius: radius.control,
               overflow: 'hidden',
-              border: `2px solid ${translucent(tokens.color.ink, 85)}`,
-              backgroundColor: tokens.color.surface,
+              border: `2px solid ${translucent(palette('text-primary'), 85)}`,
+              backgroundColor: palette('background-paper'),
               display: 'grid',
               placeItems: 'center',
               transform: layer.transform,

@@ -23,7 +23,7 @@ All 42 catalog ingredients from `docs/shopping/prototype.html`. The handoff ids 
 - 24-pt grid, 1.5 pt stroke, round caps and joins. Stroke = `currentColor`. The `body` part(s) are filled with the aisle tint; a few tiny parts (fish eye) are filled `currentColor`.
 - Aisle tints, light (from the shopping handoff): Produce `#DDEBE2`, Bakery `#F6EBC8`, Dairy & eggs `#E3ECF3`, Meat & fish `#FBE6DA`, Pantry `#E2E8DD`, Frozen `#E6E9F4`, Drinks `#EFE6F1`.
 - Aisle tints, dark (new): Produce `#24392E`, Bakery `#3B3320`, Dairy & eggs `#243440`, Meat & fish `#42291E`, Pantry `#2B332C`, Frozen `#272C3F`, Drinks `#362A3A`.
-- Fallback for unknown or missing aisles: `tokens.color.chipNeutral` (`#E2E8DD`).
+- Fallback for unknown or missing aisles: `palette('pp-chip')` (`#E2E8DD`).
 - Sizes: 24 px in shopping/pantry/recipe rows, 40 px in scan tiles. Not below 20 px. Keep the stroke unscaled (`vector-effect: non-scaling-stroke`) above 48 px.
 
 ## Files

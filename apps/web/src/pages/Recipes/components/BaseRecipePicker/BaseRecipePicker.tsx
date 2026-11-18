@@ -7,7 +7,7 @@ import {
   Tag,
   TextField,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,7 +81,7 @@ function BaseOption({
         gap: 1.5,
         ...(card && {
           minHeight: 46,
-          '& + &': { borderTop: `1px solid ${tokens.color.line}` },
+          '& + &': { borderTop: `1px solid ${palette('pp-line')}` },
         }),
       }}
     >
@@ -96,7 +96,7 @@ function BaseOption({
           ...(card && {
             flex: 1,
             fontWeight: muted ? 500 : 600,
-            color: muted ? tokens.color.muted : undefined,
+            color: muted ? palette('text-secondary') : undefined,
           }),
         }}
       >

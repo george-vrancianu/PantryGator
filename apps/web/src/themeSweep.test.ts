@@ -40,7 +40,6 @@ const rules: Rule[] = [
     find: (line) =>
       /var\(--(?:font-display|font-body|shadow-dock|r-[a-z]+)\)/.test(line),
   },
-  { name: 'fixed radius token', find: (line) => /tokens\.radius/.test(line) },
   {
     name: 'fixed borderRadius',
     find: (line) => {

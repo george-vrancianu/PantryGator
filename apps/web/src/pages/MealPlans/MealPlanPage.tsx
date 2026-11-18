@@ -9,7 +9,7 @@ import {
   Toggle,
   useToast,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { TFunction } from 'i18next';
@@ -335,7 +335,7 @@ function PlanToolbar({
             alignItems: 'center',
             gap: '8px',
             fontSize: 14,
-            color: tokens.color.ink,
+            color: palette('text-primary'),
           }}
         >
           <Toggle
