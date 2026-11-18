@@ -164,6 +164,7 @@
     "overlapUnnamed": "Datoerne overlapper {{dates}}. Vælg andre datoer.",
     "start_date_in_past": "En plan kan ikke starte før i dag.",
     "start_date_too_far": "En plan kan starte op til 14 dage fra i dag.",
+    "today_out_of_range": "Din dato ligger for langt fra serverens dato. Tjek enhedens ur, og prøv igen.",
     "day_in_past": "Den dag er gået og kan ikke ændres.",
     "already_started": "En plan, der er startet, kan ikke flyttes.",
     "day_out_of_range": "Den dag er ikke en del af planen.",

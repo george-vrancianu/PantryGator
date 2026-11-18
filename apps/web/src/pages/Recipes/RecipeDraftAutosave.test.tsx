@@ -301,6 +301,41 @@ describe('Recipe Drafts autosave on New Recipe', () => {
     expect(screen.getByLabelText(/^Title/)).toHaveValue('Gran stew');
   });
 
+  it('autosaves a Suggest Guidance result into the Recipe Draft', async () => {
+    const user = typer();
+    const calls = setup('/recipes/new', {
+      'POST /api/recipe-drafts': () =>
+        Response.json({ id: DRAFT_ID, version: 1 }, { status: 201 }),
+      [`PUT /api/recipe-drafts/${DRAFT_ID}`]: () =>
+        Response.json({ id: DRAFT_ID, version: 2 }),
+      'POST /api/recipes/suggest-guidance': () =>
+        Response.json({
+          guidance: { nutritionNote: 'Rich in protein.' },
+          noSuggestions: [],
+        }),
+    });
+    await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
+    await elapse(1600);
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+
+    await user.click(screen.getByRole('button', { name: 'Suggest' }));
+    await vi.waitFor(() =>
+      expect(screen.getByLabelText('Nutrition Note')).toHaveValue(
+        'Rich in protein.',
+      ),
+    );
+    await elapse(1600);
+    const puts = sent(calls, `PUT /api/recipe-drafts/${DRAFT_ID}`);
+    expect(puts).toHaveLength(1);
+    expect(puts[0].body).toMatchObject({
+      version: 1,
+      content: {
+        title: 'Gran stew',
+        guidance: { nutritionNote: 'Rich in protein.' },
+      },
+    });
+  });
+
   it('updates with the version it holds, one request at a time, sending later edits together', async () => {
     const user = typer();
     const releases: Array<() => void> = [];

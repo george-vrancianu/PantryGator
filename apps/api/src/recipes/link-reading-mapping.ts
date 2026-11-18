@@ -9,6 +9,8 @@ export type ReadingContext = {
   ingredientNames: ReadonlyMap<string, string>;
   /** A Match below this confidence leaves the line Unmatched. */
   matchThreshold: number;
+  /** Ingredient id to whose it is, for the Family pill; an id not in it reads as Catalog. */
+  ingredientOwners?: ReadonlyMap<string, 'catalog' | 'family'>;
 };
 
 const NOTE_MAX = 200;
@@ -68,6 +70,10 @@ export function draftOfReading(
       ingredientId: catalogName === undefined ? null : line.ingredientId,
       rawName: catalogName === undefined ? name : null,
       ingredientName: catalogName ?? name,
+      ingredientOwner:
+        catalogName === undefined || line.ingredientId === null
+          ? null
+          : (context.ingredientOwners?.get(line.ingredientId) ?? 'catalog'),
       ...amountOf(line),
       optional: line.optional,
       note: note === '' ? null : note,

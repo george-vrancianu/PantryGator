@@ -11,11 +11,11 @@ import {
   Typography,
   focusRingStyle,
   palette,
+  IntroLook,
 } from '@pocket-pantry/ui';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { IntroLook } from '@/components/IntroLook';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useGatorAlt } from '@/lib/useGatorAlt';
 import { useIntro } from '@/lib/useIntro';

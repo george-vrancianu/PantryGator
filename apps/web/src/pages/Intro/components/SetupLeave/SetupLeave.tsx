@@ -1,7 +1,7 @@
 import { Box, color, tokens } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmPrompt } from '@/components/ConfirmAction';
+import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
 
 /**
  * How a Setup step is left early, shared by Snap (and its Review) and Say it. The step says whether it

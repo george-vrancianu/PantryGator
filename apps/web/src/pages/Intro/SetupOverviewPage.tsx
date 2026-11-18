@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@pocket-pantry/ui';
-import { IntroLook } from '@/components/IntroLook';
+import { IntroLook, useToast } from '@pocket-pantry/ui';
 import { SetupReviewFrame } from './components/SetupReviewView/SetupReviewView';
 import { useSnapLeave } from './hooks/useSnapLeave';
 import { SetupTopRow } from './components/SetupTopRow/SetupTopRow';

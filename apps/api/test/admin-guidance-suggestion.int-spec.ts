@@ -198,6 +198,20 @@ describe('Suggest Guidance for a Catalog Recipe (integration)', () => {
     expect(await rowCounts()).toEqual(before);
   });
 
+  it('keeps a half-filled line: an Unmatched name reaches the prompt', async () => {
+    await suggest(
+      request(emptyGuidance, {
+        recipe: {
+          title: 'Catalog stew',
+          servings: 4,
+          lines: [{ ingredientId: null, rawName: 'saffron threads' }],
+          steps: [],
+        },
+      }),
+    ).expect(200);
+    expect(prompts[0].prompt).toContain('saffron threads');
+  });
+
   it('asks only for the empty fields', async () => {
     const res = await suggest(
       request({

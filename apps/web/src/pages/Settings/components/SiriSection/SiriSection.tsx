@@ -9,6 +9,8 @@ import {
   TextField,
   Typography,
   useToast,
+  ScopeCaption,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +33,6 @@ import {
   siriShortcutUrl,
 } from '@/lib/siriShortcut';
 import { usePreferredSpokenLanguage } from '@/lib/usePreferredSpokenLanguage';
-import { ScopeCaption, SectionHeading } from '@/components/SectionHeading';
 
 /** Keep in step with NAME_MAX_LENGTH in the API's assistant-token.schemas.ts. */
 const NAME_MAX_LENGTH = 60;

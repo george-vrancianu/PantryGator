@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from './api';
-import type { Unit } from './catalog';
+import type { CatalogSearchResult, Unit } from './catalog';
 import type { GuidanceSuggestion } from './guidanceSuggestion';
 import type { GuidanceInput, RecipeStep, RecipeTip } from './adminRecipes';
 import type { Difficulty } from './recipeVocabulary';
@@ -33,6 +33,8 @@ export type FamilyRecipeDraft = {
     ingredientId: string | null;
     rawName: string | null;
     ingredientName: string;
+    /** Whose Ingredient: a Family's own or the Catalog's; null on an Unmatched line. */
+    ingredientOwner?: CatalogSearchResult['owner'] | null;
     quantity: number | null;
     unit: Unit | null;
     optional: boolean;
@@ -55,6 +57,8 @@ export type FamilyRecipeEdit = {
   cookMinutes: number | null;
   difficulty: Difficulty | null;
   tagIds: string[];
+  /** A Variant's Catalog base title, in the Member's language; null on a Base Recipe. */
+  parentTitle: string | null;
   archived: boolean;
   /** The page the Recipe was read from; null otherwise. It can be removed, never changed. */
   sourceLink: string | null;
@@ -63,6 +67,8 @@ export type FamilyRecipeEdit = {
   lines: {
     id: string;
     ingredientId: string | null;
+    /** Whose Ingredient: a Family's own or the Catalog's; null on an Unmatched line. */
+    ingredientOwner: 'catalog' | 'family' | null;
     rawName: string | null;
     ingredientName: string;
     quantity: number | null;

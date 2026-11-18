@@ -33,34 +33,36 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `allergy/`: Allergen indicators and the "hidden by Allergies" note.
   - `auth/`: the sign-in and sign-up shell and the language switcher.
   - `backgroundRead/`: the Background Read host, Gator bubble and sheet.
-  - `catalog/`: Catalog Ingredient icon slot and the amount field.
+  - `catalog/`: Catalog Ingredient icon slot and the amount field (with its usual-amount row as a sub-part).
   - `catalogSearch/`: Catalog search and "add to Catalog" with aisle views.
   - `credits/`: Credit price display.
   - `dashboard/`: the Dashboard widget catalog.
+  - `editor/`: the app's `EditorForm` (the `packages/ui` one with the editors' words and the translated API error filled in) and `ConfirmAction` / `ConfirmPrompt` (with the Confirm and Cancel words). Not a GLOSSARY term: the group is the app-word wrappers of the edit-and-delete step, which `EditorForm` nests.
   - `expiryPicker/`: the Expiry field, sheet and calendar helpers.
   - `gator/`: Gator banner, bubble panel and the empty-pot panel.
   - `intro/`: the setup callout.
   - `layout/`: the app frame, dock and providers (below).
   - `lists/`: shared list-row parts (flash, hint note, toggle errors, status icon, Staple toggle).
   - `mealPlan/`: the Meal Plan popover.
-  - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip, usual amount).
+  - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip).
   - `recipe/`: Recipe rows, filters, badges and Pantry status.
   - `recipeEditor/`: the Recipe editor's sections and fields.
+  - `review/`: the app's `ReviewActionBar`, the `packages/ui` bar plus the Gator-bubble bound.
   - `scan/`: Scan camera and barcode lookup notes.
   - `voice/`: Voice Note cards, sheets, answers and action editing.
-  - Components at the `components/` root (`BrandLockup`, `ConfirmAction`, `EditorForm`, `IntroLook`, `ReviewActionBar`, `RowControls`, `SectionHeading`, `StepNumber`, `editorSheetContext.ts`) have no group yet: shared UI that awaits a home in `packages/ui` or a group.
+  - Nothing sits loose at the `components/` root: it holds only group folders. Domain-free shared UI goes to `packages/ui` (BrandLockup, IntroLook, RowControls, SectionHeading, StepNumber, and `EditorForm`, `ConfirmAction` and `ReviewActionBar`, which the app wraps in `editor/` and `review/`). `packages/ui` has no i18n, so such components take their words as props, and an app-side wrapper in a group supplies them when several callers share the strings.
 - `components/layout/` is the shared layout: `LayoutFrame` (top bar, header and the one scrolling sheet, page transitions, pull-to-refresh) and `Screen`, which every in-layout page renders to fill those regions. The window never scrolls: use `useScroller()` (`lib/scroller.tsx`) instead of `window.scrollTo/scrollBy/scrollY`. `lib/layoutKind.ts` says which route is a camera, editor or page, and which are Dock tab roots (`isRecipeEditor` is shared with `lib/dockState.ts`).
 - Cross-page tests: a `*.test.*` file under `components/` or `lib/` may import pages (ADR 0044 amendment), so a test of behaviour across several pages sits beside the shared module it checks (`components/layout/LayoutFrame/RefreshScreen.test.tsx`). Non-test shared files still never import pages.
 - Import alias and rules (ADR 0044): `@/` maps to `apps/web/src` (tsconfig `paths`, no `baseUrl`; Vite 8 reads it, so tests and `vi.mock('@/lib/...')` resolve it too). Imports inside a page area stay relative; everything else uses `@/`. oxlint `no-restricted-imports` (error, in `.oxlintrc.json`, no file excluded) enforces two rules: **Rule A**, `components/` and `lib/` never import `pages/` (except the test carve-out above); **Rule B**, nothing imports another area's `components` or `hooks` (a whole-page import across areas is allowed). Rule B lists every page area by name (oxlint globs have no braces), so a new `pages/Foo/` needs its `components`/`hooks` pattern pair added to all three overrides; the self-test cannot notice a missing area or a mistyped area pattern. `vi.mock` and `vi.importActual` strings are not checked by the rules; reviewers check them. The globs start with `apps/web/` because they are relative to the root config, an override replaces the base rule's options (so the second and third overrides repeat Rule B), and the rule matches the raw import string (relative and `@/` need patterns). The self-test fixtures import made-up modules (oxlint only reads the raw string), so moving a module cannot break them; `lintSelfTest/` folders are excluded from tsc (`apps/web/tsconfig.json`).
-- `import/no-cycle` is off: with the `import` plugin on, `apps/web` has one cycle (`lib/pantry.ts` -> `settings.ts` -> `recipes.ts` -> `pantry.ts`, reported 3 times), and turning it on would fail lint. Enable it (plugin `import`, level `error`; the scan takes under a second) once that cycle is gone.
+- `import/no-cycle` is on (error; the `import` plugin adds about 0.1s to the web lint run, 0.4s to 0.5s). `apps/web` has no import cycle; the last one (`lib/pantry.ts` -> `settings.ts` -> `recipes.ts` -> `pantry.ts`) went when `localIso` moved to `lib/localIso.ts` (`pantry.ts` still re-exports it). Break a new cycle by moving the shared piece into a module both sides import. The plugin's other rules add no findings.
 - Rule self-test: `npm run check:web-layout` (CI step) lints six fixtures that break the rules, one per `files` glob (`.ts` and `.tsx` in `components/lintSelfTest/`, `lib/lintSelfTest/`, `pages/Pantry/lintSelfTest/`; `npm run lint -w apps/web` ignores them), plus two shared-test fixtures (`AllowsPageInTest.test.fixture.ts` in `components/lintSelfTest/` and `lib/lintSelfTest/`) that must get 0 Rule A and exactly 1 Rule B, and fails if any rule glob stops matching or a whole-page import is flagged.
 - `lib/` holds non-visual logic: API client (`api.ts`), data hooks, the Voice Note module (`voiceNote.ts` composes `voiceInbox`, `voiceReads`, `voiceRecorder`, `voiceReview`; types in `voiceNoteTypes`), dates, amounts. `lib/tags.ts` holds the `RecipeTag` type and row ordering (`orderRowTags`, `splitRowTags`, `rowTagNames`).
-- `test/` holds shared test helpers: `render.tsx` (render with providers), `voice.ts` (fake voice environment), `voiceDom.ts` (mock-free bubble and Review-sheet DOM helpers: use it when a test does not need the voice mocks; import `test/voice` FIRST when it does), `setup.ts` (vitest setup), plus per-feature helpers (`scan.ts`, `review.ts`, `mealPlans.ts`, `viewport.ts`, `scroll.ts`).
+- `test/` holds shared test helpers: `render.tsx` (render with providers), `voice.ts` (fake voice environment), `voiceDom.ts` (mock-free bubble and Review-sheet DOM helpers: use it when a test does not need the voice mocks; import `test/voice` FIRST when it does), `setup.ts` (vitest setup), plus per-feature helpers (`scan.ts`, `review.ts`, `mealPlans.ts`, `viewport.ts`, `scroll.ts`, `familyRecipePages.tsx` (the New Recipe, New Variant and Edit Family Recipe pages rendered with their routes and stubbed API)).
 - i18n: `i18n/locales/{en,ro,da}/<namespace>.json`, one file per namespace, same names in all three. Wiring in `i18n/resources.ts`; API error codes map to copy in `i18n/translateApiError.ts`.
 
 ## UI package (`packages/ui/src`)
 
-Atomic layout: `atoms/`, `molecules/` (includes `Sheet.tsx`, which also exports `SheetContainerProvider`, and `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Public exports go through `src/index.ts`. Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
+Atomic layout: `atoms/`, `molecules/` (includes `Sheet.tsx`, which also exports `SheetContainerProvider`, and `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Tiers are flat files (`atoms/Foo.tsx`, with `Foo.stories.tsx` and `Foo.test.tsx` beside it), not folders per component; the folder-per-component rule of ADR 0044 is for `apps/web`. Public exports go through `src/index.ts`. The package has no i18n: components take their words as props (`EditorForm` takes `labels`, `ConfirmAction` takes `confirmLabels`). The few words the design system draws everywhere (a Sheet's X and Back, `theme/uiLabels.tsx`) come in once through `PocketPantryUiProvider`. Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
 
 ## Commands
 

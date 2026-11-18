@@ -11,6 +11,8 @@ import {
   focusRing,
   resolveTheme,
   useToast,
+  ScopeCaption,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +23,6 @@ import {
   useAppearance,
   useChooseTheme,
 } from '@/lib/appearance';
-import { ScopeCaption, SectionHeading } from '@/components/SectionHeading';
 
 /**
  * Settings → You → Appearance (handoff §8.3): two Theme tiles, Light and

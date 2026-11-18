@@ -38,7 +38,8 @@ type Slot = {
 };
 type PlanDetail = Plan & { slots: Slot[]; forecast: unknown };
 
-const TODAY = '2030-01-10';
+/** A write's today must be near the server's UTC date. */
+const TODAY = new Date().toISOString().slice(0, 10);
 const at = (offset: number) =>
   new Date(Date.parse(`${TODAY}T00:00:00Z`) + offset * 86_400_000)
     .toISOString()
@@ -88,8 +89,12 @@ describe('Meal Plans (integration)', () => {
   const params = (res: { body: unknown }) =>
     (res.body as { params: Record<string, unknown> }).params;
 
-  async function create(api: Api, body: Record<string, unknown> = {}) {
-    const res = await api.post(`${q}`, {
+  async function create(
+    api: Api,
+    body: Record<string, unknown> = {},
+    query = q,
+  ) {
+    const res = await api.post(`${query}`, {
       startDate: TODAY,
       days: 3,
       ...body,
@@ -244,6 +249,41 @@ describe('Meal Plans (integration)', () => {
       ).toBe('meal_plan.start_date_too_far');
     });
 
+    it('refuses a today more than a day from the server UTC date on every write, but reads it', async () => {
+      const { api } = await member('skew');
+      const utc = new Date().toISOString().slice(0, 10);
+      const shift = (days: number) =>
+        new Date(Date.parse(`${utc}T00:00:00Z`) + days * 86_400_000)
+          .toISOString()
+          .slice(0, 10);
+      const plan = await create(api, { startDate: utc, days: 2 });
+      for (const days of [-2, 2]) {
+        const bad = `?locale=en&today=${shift(days)}`;
+        const refused = [
+          await api.post(bad, { startDate: utc, days: 1 }),
+          await api.patch(`/${plan.id}${bad}`, { name: 'x' }),
+          await api.put(`/${plan.id}/slots/0/dinner${bad}`, {
+            recipeId: '00000000-0000-4000-8000-000000000000',
+          }),
+          await api.del(`/${plan.id}/slots/0/dinner${bad}`),
+          await api.post(`/${plan.id}/fill${bad}`, { onlyWhatIHave: false }),
+          await api.post(`/add-missing${bad}`, { scope: 'window' }),
+        ];
+        for (const res of refused) {
+          expect(res.status).toBe(400);
+          expect(code(res)).toBe('meal_plan.today_out_of_range');
+        }
+        // A read with that today still works: it only picks the day shown.
+        await api.get(`/${plan.id}${bad}`).expect(200);
+      }
+      // A day either side is a real local date somewhere on Earth.
+      for (const days of [-1, 1]) {
+        await api
+          .patch(`/${plan.id}?locale=en&today=${shift(days)}`, { name: 'ok' })
+          .expect(200);
+      }
+    });
+
     it('falls back to the UTC date when the client sends no today', async () => {
       const { api } = await member('utc');
       const utc = new Date().toISOString().slice(0, 10);
@@ -328,36 +368,41 @@ describe('Meal Plans (integration)', () => {
         .expect(400);
       expect(code(refused)).toBe('meal_plan.already_started');
       // Not yet started (starts today): moving is fine.
-      const fresh = await create(api, { startDate: at(8), days: 1 });
-      await api
-        .patch(`/${fresh.id}?locale=en&today=${at(8)}`, { startDate: at(9) })
+      const fresh = await create(api, { startDate: at(5), days: 1 });
+      await api.patch(`/${fresh.id}${later}`, { startDate: at(6) }).expect(200);
+      // A plan that starts on the client's today has not started yet.
+      const { api: other } = await member('started-today');
+      const onToday = await create(other, { startDate: at(1), days: 1 });
+      await other
+        .patch(`/${onToday.id}${later}`, { startDate: at(2) })
         .expect(200);
     });
 
     it('refuses to shorten away a past day, but drops future slots', async () => {
       const { api, email } = await member('shorten');
       const recipe = await ownRecipe(email);
-      const plan = await create(api, { startDate: at(0), days: 4 });
-      for (const day of [0, 2, 3]) {
+      const early = `?locale=en&today=${at(-1)}`;
+      const plan = await create(api, { startDate: at(-1), days: 3 }, early);
+      for (const day of [0, 1, 2]) {
         await api
-          .put(`/${plan.id}/slots/${day}/dinner${q}`, { recipeId: recipe })
+          .put(`/${plan.id}/slots/${day}/dinner${early}`, { recipeId: recipe })
           .expect(200);
       }
-      // Day 2 (at(2)) is past for a client whose today is at(3).
-      const late = `?locale=en&today=${at(3)}`;
+      // Day 1 (at(0)) is past for a client whose today is at(1).
+      const late = `?locale=en&today=${at(1)}`;
       const refused = await api
-        .patch(`/${plan.id}${late}`, { days: 2 })
+        .patch(`/${plan.id}${late}`, { days: 1 })
         .expect(400);
       expect(code(refused)).toBe('meal_plan.day_in_past');
       expect(
         ((await api.get(`/${plan.id}${q}`).expect(200)).body as PlanDetail)
           .slots,
       ).toHaveLength(3);
-      // Dropping only days that are still ahead works.
+      // Dropping only a day that is not past (the client's today) works.
       const ok = (
-        await api.patch(`/${plan.id}${late}`, { days: 3 }).expect(200)
+        await api.patch(`/${plan.id}${late}`, { days: 2 }).expect(200)
       ).body as PlanDetail;
-      expect(ok.slots.map((x) => x.dayIndex)).toEqual([0, 2]);
+      expect(ok.slots.map((x) => x.dayIndex)).toEqual([0, 1]);
     });
 
     it('refuses a start date in the past or too far ahead when moving, but accepts an unchanged one', async () => {
@@ -366,7 +411,7 @@ describe('Meal Plans (integration)', () => {
       await api.patch(`/${plan.id}${q}`, { startDate: at(15) }).expect(400);
       await api.patch(`/${plan.id}${q}`, { startDate: at(-1) }).expect(400);
       // The plan is now in the past for a later client; keeping its date is not a move.
-      const later = `?locale=en&today=${at(5)}`;
+      const later = `?locale=en&today=${at(1)}`;
       await api
         .patch(`/${plan.id}${later}`, { startDate: at(0), name: 'Kept' })
         .expect(200);
