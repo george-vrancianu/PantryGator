@@ -29,10 +29,8 @@ describe('the fake voice environment: pending reads', () => {
     await recordAndSend({ spokenLanguage: 'en', defaultTarget: 'pantry' });
     await vi.waitFor(() => expect(fake.reads).toHaveLength(1));
     fake.reads[0].reject(new TypeError('Failed to fetch'));
-    // A network error is tried once more by itself, after its wait.
-    await vi.waitFor(() => expect(fake.reads).toHaveLength(2), {
-      timeout: 3000,
-    });
+    // A network error is tried once more by itself, without a wait in tests.
+    await vi.waitFor(() => expect(fake.reads).toHaveLength(2));
     fake.reads[1].reject(new TypeError('Failed to fetch'));
 
     await vi.waitFor(() => expect(voiceNote.getState().inbox.failed).toBe(1));

@@ -30,7 +30,7 @@ export function useVoiceBackgroundItems(): BackgroundItem[] {
   const { inbox, voiceCap } = useVoiceNoteState();
   const { spokenLanguage } = usePreferredSpokenLanguage();
 
-  /** Why a note failed, in the words the Gator bubble used. */
+  /** Why a note failed, in the Gator bubble's words. */
   const failureText = (note: Note) => {
     if (note.phase !== 'failed') return undefined;
     const reason = failureReason(
