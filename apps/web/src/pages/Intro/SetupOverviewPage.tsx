@@ -28,7 +28,6 @@ export function SetupOverviewPage() {
 
   if (advancing || leaving) return null;
 
-  const mode = scans[scans.length - 1]?.mode;
   // Adding ends by emptying the Scan Session, which `useAutoAdvance` reacts to. When the Member empties it
   // without saving anything (discarding, or removing the last card) they go back to Snap and stay there.
   const backToSnapIfNothingSaved = () => {
@@ -39,9 +38,8 @@ export function SetupOverviewPage() {
     <IntroLook>
       <ReviewOverviewPage
         settings={{
-          cameraPath: mode
-            ? `${INTRO_CAMERA_PATH}?mode=${mode}`
-            : INTRO_CAMERA_PATH,
+          cameraPath: (mode) =>
+            mode ? `${INTRO_CAMERA_PATH}?mode=${mode}` : INTRO_CAMERA_PATH,
           cardPath: setupReviewPath,
           importOffered: false,
           onCardSaved: (lines) => recordSaved({ batches: lines }, 'snap'),

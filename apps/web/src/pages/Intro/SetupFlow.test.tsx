@@ -492,6 +492,29 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(stackCount()).toBe(1);
   });
 
+  it("Retake on a card goes to the camera in that card's own Scan Mode, not the last scan's", async () => {
+    const { user } = await openSnap({
+      routes: {
+        'POST /api/scan/ingredients': () =>
+          Response.json({ code: 'internal', params: {} }, { status: 500 }),
+      },
+    });
+    await snapPhotos(user, 1);
+    await user.click(screen.getByRole('radio', { name: 'Receipt' }));
+    await waitFor(() => expect(shutter()).toBeEnabled());
+    takeScan();
+    await waitFor(() => expect(stackCount()).toBe(2));
+    await flush();
+    await openOverview(user);
+
+    const [first] = await cards();
+    await waitFor(() =>
+      expect(first).toHaveTextContent("Couldn't read, retake"),
+    );
+    await user.click(within(first).getByRole('button', { name: 'Retake' }));
+    await waitFor(() => expect(where()).toBe('/intro/camera?mode=ingredients'));
+  });
+
   it('shows the card as reading while the photo is read, then it opens in the line editor', async () => {
     let finish: (response: Response) => void = () => {};
     const { user } = await openSnap({
