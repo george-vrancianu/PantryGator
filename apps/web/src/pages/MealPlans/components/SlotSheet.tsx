@@ -87,18 +87,15 @@ export function SlotSheet({
       onClose={onClose}
       title={slot?.recipeTitle ?? t('detail.lines')}
       subtitle={slot ? context : undefined}
-      primary={{ label: t('detail.done'), onClick: onClose }}
-      secondary={{
+      primary={{
         label: t('detail.changeRecipe'),
-        onClick: () => {
-          if (!busy) onChangeRecipe();
-        },
+        disabled: busy,
+        onClick: onChangeRecipe,
       }}
       destructive={{
         label: t('detail.clear'),
-        onClick: () => {
-          if (!busy) onClear();
-        },
+        disabled: busy,
+        onClick: onClear,
       }}
     >
       {slot ? (

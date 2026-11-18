@@ -1734,6 +1734,33 @@ describe('PantryHealthCluster', () => {
       ).toBeInTheDocument();
     });
 
+    it('saves nothing when the X closes the set-date sheet, and Done saves the date', async () => {
+      const { user, sheet, patches } = await openWith([pesto(), ...filler(9)]);
+      await user.click(
+        within(sheet).getByRole('button', { name: /^Date 1 Batch/ }),
+      );
+      await user.click(
+        within(sheet).getByRole('button', { name: 'Set date for Pesto' }),
+      );
+      const picker = await screen.findByRole('dialog', { name: 'Expires' });
+      await user.click(within(picker).getByRole('button', { name: 'Close' }));
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      expect(patches).toEqual([]);
+
+      await user.click(
+        within(sheet).getByRole('button', { name: 'Set date for Pesto' }),
+      );
+      const again = await screen.findByRole('dialog', { name: 'Expires' });
+      await user.click(within(again).getByRole('button', { name: 'Done' }));
+      await waitFor(() =>
+        expect(patches).toEqual([{ id: 'pesto', expiryDate: isoIn(30) }]),
+      );
+    });
+
     it('saves nothing when the Batch is closed with no expiry', async () => {
       const { user, sheet, patches } = await openWith([pesto(), ...filler(9)]);
       await user.click(
@@ -1746,7 +1773,6 @@ describe('PantryHealthCluster', () => {
       await user.click(
         within(picker).getByRole('button', { name: 'No expiry' }),
       );
-      await user.click(within(picker).getByRole('button', { name: 'Done' }));
 
       await waitFor(() =>
         expect(

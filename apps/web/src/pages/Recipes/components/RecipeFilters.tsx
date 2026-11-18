@@ -46,7 +46,9 @@ type Props = {
 
 /**
  * The search box with a Tags button beside it, and the picked Tags as chips below (tap one to
- * remove it), pinned to the top while the list scrolls. The Tags sheet holds the picking.
+ * remove it). It is layout-neutral: it does no pinning of its own. Its two callers pin it differently,
+ * RecipesPage with its own sticky header and the Meal plan picker with the Sheet's `toolbar`.
+ * The Tags sheet holds the picking.
  */
 export function RecipeFilters({
   value,
@@ -75,19 +77,7 @@ export function RecipeFilters({
     );
   }
   return (
-    <Box
-      sx={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 2,
-        bgcolor: canopy.sheetTop,
-        ml: bleedSx.ml,
-        mr: bleedSx.mr,
-        pl: bleedSx.pl,
-        pr: bleedSx.pr,
-        py: '8px',
-      }}
-    >
+    <Box>
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <TextField
