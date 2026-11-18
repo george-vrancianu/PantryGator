@@ -6,12 +6,12 @@ import {
   radius,
   tokens,
   Typography,
+  IntroLook,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AppDock } from '@/components/layout/AppDock/AppDock';
-import { IntroLook } from '@/components/IntroLook';
-import { creamFocus } from './components/creamFocus';
+import { creamFocus } from './hooks/creamFocus';
 import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSetupLeave } from './components/SetupLeave/SetupLeave';

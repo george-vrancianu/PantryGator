@@ -11,6 +11,8 @@ import {
   Stack,
   Typography,
   useToast,
+  ScopeCaption,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +33,6 @@ import { AllergiesSection } from '../AllergiesSection/AllergiesSection';
 import { AppearanceCard } from '../AppearanceCard/AppearanceCard';
 import { LanguagePreferencePicker } from '../LanguagePreferencePicker/LanguagePreferencePicker';
 import { SiriSection } from '../SiriSection/SiriSection';
-import { ScopeCaption, SectionHeading } from '@/components/SectionHeading';
 
 const initials = (name: string) =>
   name

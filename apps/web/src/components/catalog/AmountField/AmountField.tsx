@@ -32,7 +32,7 @@ import {
   type AmountScale,
 } from '@/lib/usualAmounts';
 import { segmentSx, stripSx, STRIP_DIVIDER } from '../amountStrip';
-import { UsualAmountRow } from '@/components/pantry/UsualAmountRow/UsualAmountRow';
+import { UsualAmountRow } from './UsualAmountRow/UsualAmountRow';
 
 const TYPED_UNITS: Record<string, Unit> = {
   g: 'g',

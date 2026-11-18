@@ -1,6 +1,13 @@
-import { Box, ClockIcon, Stack, tokens, Card, radius } from '@pocket-pantry/ui';
+import {
+  Box,
+  ClockIcon,
+  Stack,
+  tokens,
+  Card,
+  radius,
+  StepNumber,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { StepNumber } from '@/components/StepNumber';
 import type { RecipeDetailStep, RecipeDetailTip } from '@/lib/recipes';
 
 function formatTimer(seconds: number) {

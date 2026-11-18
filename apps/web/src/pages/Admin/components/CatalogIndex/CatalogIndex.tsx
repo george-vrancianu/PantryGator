@@ -13,12 +13,12 @@ import {
   WarningIcon,
   insetFocusRingStyle,
   type IconProps,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import type { ComponentType } from 'react';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { SectionHeading } from '@/components/SectionHeading';
 import { RowTile } from '../CatalogRowParts/CatalogRowParts';
 import type { AdminCatalog } from '@/lib/admin';
 import { useAdminRecipes } from '@/lib/adminRecipes';

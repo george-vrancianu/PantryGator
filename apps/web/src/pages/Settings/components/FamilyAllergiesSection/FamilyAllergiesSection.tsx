@@ -6,6 +6,7 @@ import {
   Stack,
   TextField,
   Typography,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,6 @@ import {
   useFamilyAllergies,
   useRemoveFamilyAllergy,
 } from '@/lib/settings';
-import { SectionHeading } from '@/components/SectionHeading';
 
 /**
  * The Family's Allergies for people without an account, such as a child, each with an optional label.

@@ -51,6 +51,12 @@ export const OliveTone: StoryObj<typeof ChoiceRadioGroup> = {
   ),
 };
 
+export const Disabled: StoryObj<typeof ChoiceRadioGroup> = {
+  render: () => (
+    <Group choices={languages} hint="Locked while saving." disabled />
+  ),
+};
+
 export const LongText: StoryObj<typeof ChoiceRadioGroup> = {
   render: () => (
     <Group

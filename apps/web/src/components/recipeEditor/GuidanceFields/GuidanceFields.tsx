@@ -1,4 +1,10 @@
-import { Stack, TextField, Typography, Button } from '@pocket-pantry/ui';
+import {
+  Stack,
+  TextField,
+  Typography,
+  Button,
+  RowControls,
+} from '@pocket-pantry/ui';
 import { useId, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
@@ -28,7 +34,6 @@ import {
 } from '@/lib/guidanceDraft';
 import type { CatalogScopeName } from '@/lib/catalog';
 import { moved } from '@/lib/recipeDraft';
-import { RowControls } from '@/components/RowControls';
 import {
   NoSuggestionsMessage,
   SuggestGuidanceButton,

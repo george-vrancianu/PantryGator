@@ -1,9 +1,15 @@
-import { Alert, Button, Stack } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Alert } from '../atoms/Alert';
+import { Button } from '../atoms/Button';
+import { Stack } from '../atoms/Layout';
 
-type Props = {
+/** The words of the "are you sure" step, worded by the app (this package has no i18n). */
+export type ConfirmLabels = { confirm: string; cancel: string };
+
+export type ConfirmActionProps = {
   label: string;
+  /** The Confirm and Cancel buttons of the step the trigger opens. */
+  confirmLabels: ConfirmLabels;
   /** Accessible name of the trigger, when `label` alone is ambiguous (e.g. per-row buttons). */
   triggerName?: string;
   message: string;
@@ -18,12 +24,13 @@ type Props = {
  */
 export function ConfirmAction({
   label,
+  confirmLabels,
   triggerName,
   message,
   disabled,
   variant = 'secondary',
   onConfirm,
-}: Props) {
+}: ConfirmActionProps) {
   const [asking, setAsking] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const restoreFocus = useRef(false);
@@ -51,6 +58,7 @@ export function ConfirmAction({
   return (
     <ConfirmPrompt
       message={message}
+      labels={confirmLabels}
       disabled={disabled}
       onConfirm={() => {
         setAsking(false);
@@ -64,22 +72,25 @@ export function ConfirmAction({
   );
 }
 
+export type ConfirmPromptProps = {
+  message: string;
+  labels: ConfirmLabels;
+  disabled?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+};
+
 /**
  * The "are you sure" step on its own, for a destructive action started from
  * elsewhere (e.g. a menu item). Focus moves to Confirm when it appears.
  */
 export function ConfirmPrompt({
   message,
+  labels,
   disabled,
   onConfirm,
   onCancel,
-}: {
-  message: string;
-  disabled?: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
-}) {
-  const { t } = useTranslation('common');
+}: ConfirmPromptProps) {
   const confirmRef = useRef<HTMLButtonElement>(null);
   useEffect(() => confirmRef.current?.focus(), []);
   return (
@@ -87,10 +98,10 @@ export function ConfirmPrompt({
       <Alert severity="warning">{message}</Alert>
       <Stack direction="row" spacing={1}>
         <Button ref={confirmRef} disabled={disabled} onClick={onConfirm}>
-          {t('confirm')}
+          {labels.confirm}
         </Button>
         <Button variant="ghost" sx={{ height: 52 }} onClick={onCancel}>
-          {t('cancel')}
+          {labels.cancel}
         </Button>
       </Stack>
     </Stack>

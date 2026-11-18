@@ -5,6 +5,7 @@ import {
   Stack,
   TextField,
   Typography,
+  RowControls,
 } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,6 @@ import {
   type RecipeTip,
 } from '@/lib/adminRecipes';
 import { moved } from '@/lib/recipeDraft';
-import { RowControls } from '@/components/RowControls';
 
 type TipsRecipe = Pick<AdminRecipe, 'id' | 'steps' | 'tips' | 'parentTips'>;
 export type TipWrites = ReturnType<typeof useTipWrites>;
