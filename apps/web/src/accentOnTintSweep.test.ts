@@ -16,14 +16,14 @@ const sources = import.meta.glob<string>(
 
 const TINT_FILL = /\b(?:bgcolor|backgroundColor|bg):\s*[^,]*accentTint/;
 const ACCENT_TEXT =
-  /\b(?:color|fg):\s*(?:palette\('pp-accent'\)|'pp\.accent'|shade\.accent\w*|color\.accent\b(?!\w))/;
+  /\b(?:color|fg):\s*(?:palette\('pp-accent'\)|'pp\.accent'|shade\.accent\w*)/;
 
 /**
  * Accent on a tint that is not text. QuickRow's icon tile is aria-hidden and
  * decorative, so the 3:1 non-text ratio applies, not 4.5:1.
  */
 const NOT_TEXT = [
-  'pages/Pantry/components/QuickRow/QuickRow.tsx:' + "color: 'pp.accent',",
+  "pages/Pantry/components/QuickRow/QuickRow.tsx:color: 'pp.accent',",
 ];
 
 function offences() {
