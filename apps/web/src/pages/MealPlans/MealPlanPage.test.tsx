@@ -258,8 +258,8 @@ describe('Meal Plan page', () => {
       within(picker).getByRole('img', { name: 'Contains Peanuts' }),
     ).toBeVisible();
     // The search is the Sheet's pinned toolbar, not part of the scrolling list.
-    const toolbar = picker.querySelector<HTMLElement>('[data-sheet-toolbar]');
-    expect(toolbar).not.toBeNull();
+    const toolbar = picker.querySelector('[data-sheet-toolbar]');
+    expect(toolbar).toBeInstanceOf(HTMLElement);
     expect(within(toolbar as HTMLElement).getByRole('searchbox')).toBeVisible();
     await u.type(within(picker).getByRole('searchbox'), 'lemon');
     await waitFor(() =>
@@ -282,8 +282,8 @@ describe('Meal Plan page', () => {
 
     await u.click(await screen.findByRole('button', { name: /Tomato pasta/ }));
     const dialog = await screen.findByRole('dialog');
-    const footer = dialog.querySelector<HTMLElement>('[data-sheet-footer]');
-    expect(footer).not.toBeNull();
+    const footer = dialog.querySelector('[data-sheet-footer]');
+    expect(footer).toBeInstanceOf(HTMLElement);
     expect(
       within(footer as HTMLElement).getByRole('button', {
         name: 'Change Recipe',

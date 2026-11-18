@@ -90,7 +90,7 @@ export function RecipePickerSheet({
       onClose={onClose}
       title={t('mealPlans:picker.title')}
       subtitle={context}
-      toolbar={<RecipeFilters inToolbar value={browse} onChange={setBrowse} />}
+      toolbar={<RecipeFilters value={browse} onChange={setBrowse} />}
     >
       <Box sx={{ px: 3, pb: 2 }}>
         {error ? <Alert>{error}</Alert> : null}

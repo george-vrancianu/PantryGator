@@ -42,16 +42,12 @@ type Props = {
    * not pinned. The picked Tags and the status line are left out; render `TagFilterRows` in the sheet.
    */
   onCanopy?: boolean;
-  /**
-   * For a Sheet's `toolbar` (the Meal plan picker): the Sheet pins it, so no sticky wrapper and no
-   * page-gutter bleed.
-   */
-  inToolbar?: boolean;
 };
 
 /**
  * The search box with a Tags button beside it, and the picked Tags as chips below (tap one to
- * remove it), pinned to the top while the list scrolls. The Tags sheet holds the picking.
+ * remove it), laid out by the caller: RecipesPage pins it, a Sheet's `toolbar` (the Meal plan picker) pins it
+ * itself. The Tags sheet holds the picking.
  */
 export function RecipeFilters({
   value,
@@ -59,7 +55,6 @@ export function RecipeFilters({
   searchLabel,
   tags,
   onCanopy = false,
-  inToolbar = false,
 }: Props) {
   const { t } = useTranslation('recipes');
   if (onCanopy) {
@@ -81,23 +76,7 @@ export function RecipeFilters({
     );
   }
   return (
-    <Box
-      sx={
-        inToolbar
-          ? { py: '8px' }
-          : {
-              position: 'sticky',
-              top: 0,
-              zIndex: 2,
-              bgcolor: canopy.sheetTop,
-              ml: bleedSx.ml,
-              mr: bleedSx.mr,
-              pl: bleedSx.pl,
-              pr: bleedSx.pr,
-              py: '8px',
-            }
-      }
-    >
+    <Box>
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <TextField
