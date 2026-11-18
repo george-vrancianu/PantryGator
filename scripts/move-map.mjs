@@ -59,7 +59,7 @@ const GROUP_HINTS = {
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
-const FEATURE_GROUPS = ['catalogSearch'];
+const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor'];
 const GUARDS = [
   'RequireAuth',
   'RequireAdmin',

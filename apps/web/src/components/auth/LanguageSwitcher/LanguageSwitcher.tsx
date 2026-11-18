@@ -1,6 +1,6 @@
 import { SegmentedControl } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { changeLocale, LOCALES, type Locale } from '@/i18n/index';
+import { changeLocale, LOCALES, type Locale } from '@/i18n';
 import { isLocale } from '@/i18n/resources';
 
 type Props = {

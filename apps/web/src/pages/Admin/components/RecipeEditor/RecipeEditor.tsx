@@ -9,7 +9,7 @@ import { RecipeAllergens } from '../RecipeAllergens/RecipeAllergens';
 import { RecipeActions } from '../RecipeActions/RecipeActions';
 import { RecipeGuidance } from '../RecipeGuidance/RecipeGuidance';
 import { RecipeForm } from '../RecipeForm/RecipeForm';
-import { RecipeTips } from '../RecipeTips/RecipeTips';
+import { RecipeTips } from '@/components/recipeEditor/RecipeTips';
 import { RecipeTranslations } from '../RecipeTranslations/RecipeTranslations';
 
 type Props = {
