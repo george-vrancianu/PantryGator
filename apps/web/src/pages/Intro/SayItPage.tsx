@@ -33,7 +33,7 @@ import {
   type VoiceReviewAction,
 } from '@/lib/voice';
 import { useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
-import { aboveMic, PILL_OFFSET, VOICE_LAYER } from '@/lib/voicePlacement';
+import { aboveMic, CARD_OFFSET, VOICE_LAYER } from '@/lib/voicePlacement';
 
 /** Where Skip goes without a confirm: the Intro module's rule, never a path written here. */
 const SKIP_TO = introPath(skipStep('say-it'));
@@ -79,7 +79,7 @@ function CoachLine({ held }: { held: boolean }) {
         position: 'fixed',
         left: 0,
         right: 0,
-        bottom: aboveMic(PILL_OFFSET + 112),
+        bottom: aboveMic(CARD_OFFSET + 112),
         zIndex: VOICE_LAYER.card,
         px: '24px',
         textAlign: 'center',
