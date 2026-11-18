@@ -25,10 +25,6 @@
       "excludeFiles": [
         // #838 splits the Dashboard widget registry
         "apps/web/src/lib/dashboardLayout.ts",
-        // #839 moves the route guards into routing/
-        "apps/web/src/components/RequireAuth.tsx",
-        // #839 moves the in-app scan settings constant into lib/
-        "apps/web/src/App.tsx",
         // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
         // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
@@ -124,10 +120,6 @@
       "excludeFiles": [
         // #838 splits the Dashboard widget registry
         "apps/web/src/lib/dashboardLayout.ts",
-        // #839 moves the route guards into routing/
-        "apps/web/src/components/RequireAuth.tsx",
-        // #839 moves the in-app scan settings constant into lib/
-        "apps/web/src/App.tsx",
         // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
         // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854

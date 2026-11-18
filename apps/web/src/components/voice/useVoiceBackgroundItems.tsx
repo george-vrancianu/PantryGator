@@ -8,7 +8,7 @@ import type {
   BackgroundAction,
   BackgroundItem,
   BackgroundStatus,
-} from '../background/backgroundItem';
+} from '@/lib/backgroundItem';
 import { failureReason } from './failureReason';
 import { noteListMeta } from './noteMeta';
 

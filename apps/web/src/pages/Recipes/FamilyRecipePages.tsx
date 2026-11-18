@@ -17,11 +17,8 @@ import { useRecipeDraftRoute } from './useRecipeDraftRoute';
 import { RecipeDraftContinue } from './RecipeDraftContinue';
 import { plateMatchInput, useResumedPlateBases } from './useResumedPlateBases';
 import { useRecipeDraftAutosave } from '../../lib/recipeDraftAutosave';
-import {
-  STANDALONE,
-  noBasePick,
-  type BaseRecipeOption,
-} from '../../components/BaseRecipePicker';
+import { STANDALONE, noBasePick } from '../../components/BaseRecipePicker';
+import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
 import { Screen } from '../../components/layout/Screen';
 import { RemovableSourceLink, isSourceLink } from '../../components/SourceLink';
 import { translateApiError } from '../../i18n/translateApiError';

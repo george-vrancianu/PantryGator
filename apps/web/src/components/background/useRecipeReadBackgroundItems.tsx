@@ -23,7 +23,7 @@ import type {
   BackgroundAction,
   BackgroundItem,
   BackgroundStatus,
-} from './backgroundItem';
+} from '@/lib/backgroundItem';
 
 /** The server's answer when a Plate token cannot write a dish any more (used up or expired). */
 const PLATE_TOKEN_INVALID = 'scan.plate_token_invalid';

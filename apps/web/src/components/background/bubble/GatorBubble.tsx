@@ -18,7 +18,11 @@ import {
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { VOICE_LAYER } from '../../../lib/voicePlacement';
-import type { BackgroundItem } from '../backgroundItem';
+import {
+  BUBBLE_BOTTOM_VAR,
+  BUBBLE_TOP_VAR,
+} from '@/components/layout/bubbleVars';
+import type { BackgroundItem } from '@/lib/backgroundItem';
 import { bubbleSentence } from './bubbleCopy';
 import {
   BUBBLE_SIZE,
@@ -38,21 +42,8 @@ import {
 } from './bubbleState';
 import { useBubbleAnnouncement } from './useBubbleAnnouncement';
 
-/**
- * The CSS custom property that sets the bubble's upper bound: the distance from the top of the
- * screen to the bottom of the header, as a CSS length. Whoever lays out the header sets it on an
- * ancestor (or `:root`); until then the bubble keeps clear of the top safe area plus 12 px.
- */
-export const BUBBLE_TOP_VAR = '--gator-bubble-top';
 const TOP_BOUND = `var(${BUBBLE_TOP_VAR}, calc(${SAFE_TOP} + 12px))`;
 
-/**
- * The CSS custom property that sets the bubble's lowest spot where there is no Dock: the height
- * of a page's own fixed bottom bar, as a CSS length. A page that has such a bar sets it on
- * `:root` while it is mounted (`useBubbleBottomBound`); without one the bubble keeps clear of the
- * bottom safe area.
- */
-export const BUBBLE_BOTTOM_VAR = '--gator-bubble-bottom';
 const BOTTOM_BASE = `var(${BUBBLE_BOTTOM_VAR}, ${SAFE_BOTTOM})`;
 
 /** The bubble's lowest spot: 16 above the Dock, or above the page's bottom bar (or the bottom safe area) where there is no Dock. */

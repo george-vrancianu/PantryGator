@@ -1,5 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
-import { nextBackgroundOrder } from '../components/background/backgroundItem';
+import { nextBackgroundOrder } from './backgroundItem';
 import { ApiError, isNetworkError } from './api';
 import { isOutOfCredits } from './credits';
 import {

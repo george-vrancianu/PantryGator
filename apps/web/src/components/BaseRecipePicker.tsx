@@ -11,6 +11,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { BaseRecipeOption } from '../lib/baseRecipeOption';
 import { recipeHref } from '../lib/recipeHref';
 import { useRecipes, type CompactAllergyWarning } from '../lib/recipes';
 import { AllergenIndicator } from './AllergenIndicator';
@@ -18,15 +19,6 @@ import { HiddenByAllergiesNote } from './HiddenByAllergiesNote';
 
 /** The `chosen` value of "standalone". */
 export const STANDALONE = 'standalone';
-
-/** A Catalog Base Recipe offered as the base of a new Family Recipe. */
-export type BaseRecipeOption = {
-  id: string;
-  title: string;
-  allergyWarning?: CompactAllergyWarning | null;
-  /** The Family's live copy of this Catalog Base, else null (or unknown). */
-  familyCopyId?: string | null;
-};
 
 /** What the Member has done in the picker; the caller holds it so it survives the picker unmounting. */
 export type BasePick = {
