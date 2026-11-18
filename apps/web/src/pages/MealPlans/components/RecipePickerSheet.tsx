@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-  canopy,
-  Sheet,
-  Spinner,
-  Typography,
-} from '@pocket-pantry/ui';
+import { Alert, Box, Sheet, Spinner, Typography } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -97,19 +90,9 @@ export function RecipePickerSheet({
       onClose={onClose}
       title={t('mealPlans:picker.title')}
       subtitle={context}
+      toolbar={<RecipeFilters value={browse} onChange={setBrowse} />}
     >
       <Box sx={{ px: 3, pb: 2 }}>
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            bgcolor: canopy.sheetTop,
-            overflowX: 'clip',
-          }}
-        >
-          <RecipeFilters value={browse} onChange={setBrowse} />
-        </Box>
         {error ? <Alert>{error}</Alert> : null}
         {addError ? <Alert>{addError}</Alert> : null}
         {recipes.error ? (

@@ -1120,7 +1120,11 @@ describe('ReviewPage', () => {
           await screen.findByRole('dialog', { name: 'Expires' }),
         ).getByRole('button', { name: 'No expiry' }),
       );
-      await done(user);
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
       expect(
         screen.getByRole('button', { name: 'Expires, no expiry date' }),
       ).toBeInTheDocument();

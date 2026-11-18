@@ -22,7 +22,7 @@ export type ExpiryFieldProps = {
   label: string;
   /** Null for no expiry. */
   value: IsoDate | null;
-  /** Called on every tap in the sheet, so closing it never throws a change away. */
+  /** Called when Done (or No expiry) is tapped in the sheet; the X discards. */
   onChange: (value: IsoDate | null) => void;
   /** The Default Expiry in days, for the "Usual" quick pick; null when there is none (or for an Unmatched name). */
   usualDays: number | null;

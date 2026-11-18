@@ -386,11 +386,8 @@ export function FamilyIngredientSheet({
   return (
     <Sheet
       open={open}
-      // Escape on the picker step goes back to the form.
-      onClose={() => {
-        if (view === 'pick') setView('form');
-        else onClose();
-      }}
+      // The X, scrim and Escape close the whole sheet on every step (ADR 0043).
+      onClose={onClose}
       onExited={() => {
         onExited();
         if (deleteRequested.current) {
