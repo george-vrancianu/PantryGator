@@ -4,12 +4,13 @@ import {
   useEffect,
   useId,
   useRef,
+  useState,
   type FormEvent,
   type ReactNode,
+  type Ref,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { ConfirmAction } from './ConfirmAction';
+import { ConfirmAction, ConfirmPrompt } from './ConfirmAction';
 import { translateApiError } from '../i18n/translateApiError';
 import { EditorSheetContext } from './editorSheetContext';
 
@@ -27,8 +28,15 @@ type BaseProps = {
   /** Omit when creating: there is nothing to delete yet. */
   onDelete?: () => void;
   deleting?: boolean;
-  /** Own delete step, rendered where Delete goes, when the plain two-step `onDelete` does not fit. */
-  deleteSlot?: ReactNode;
+  /**
+   * Own delete step, when the plain two-step `onDelete` does not fit: `onDeleteRequest` is what
+   * Delete does (the sheet's destructive link, or the inline button) and `deletePrompt` is the
+   * step it opens, shown in the form while there is one.
+   */
+  onDeleteRequest?: () => void;
+  deletePrompt?: ReactNode;
+  /** The inline Delete button, for focus to return to after the prompt (no sheet only). */
+  deleteTriggerRef?: Ref<HTMLButtonElement>;
   /** Replace Save / Saving… on the submit button. */
   saveLabel?: string;
   savingLabel?: string;
@@ -60,7 +68,9 @@ export function EditorForm({
   onCancel,
   onDelete,
   deleting,
-  deleteSlot,
+  onDeleteRequest,
+  deletePrompt,
+  deleteTriggerRef,
   saveLabel,
   savingLabel,
   hideActions,
@@ -69,17 +79,62 @@ export function EditorForm({
   const { t } = useTranslation(['admin', 'errors']);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const formId = useId();
-  // In a sheet the title names the editor and Save / Cancel sit in the sheet's pinned footer.
+  // In a sheet the title names the editor and Save / Delete are the sheet's roles.
   const sheet = useContext(EditorSheetContext);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
 
-  const setSheetTitle = sheet?.setTitle;
+  const saveText = saving
+    ? (savingLabel ?? t('admin:common.saving'))
+    : (saveLabel ?? t('admin:common.save'));
+  const deleteLabel = t('admin:common.delete');
+  const canDelete = Boolean(onDelete ?? onDeleteRequest);
+  const startDelete = () => {
+    if (onDelete) setConfirmingDelete(true);
+    else onDeleteRequest?.();
+  };
+  const startRef = useRef(startDelete);
   useEffect(() => {
-    setSheetTitle?.(heading);
-  }, [setSheetTitle, heading]);
+    startRef.current = startDelete;
+  });
+  const report = sheet?.report;
+  useEffect(() => {
+    report?.({
+      title: heading,
+      ...(hideActions
+        ? {}
+        : {
+            primary: {
+              label: saveText,
+              pending: saving,
+              disabled: !canSave,
+              form: formId,
+            },
+          }),
+      ...(canDelete
+        ? {
+            destructive: {
+              label: deleteLabel,
+              onClick: () => startRef.current(),
+            },
+          }
+        : {}),
+    });
+  }, [
+    report,
+    heading,
+    hideActions,
+    saveText,
+    saving,
+    canSave,
+    formId,
+    canDelete,
+    deleteLabel,
+  ]);
+  useEffect(() => () => report?.(null), [report]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -89,15 +144,55 @@ export function EditorForm({
   const actions = (
     <Stack direction="row" spacing={1}>
       <Button type="submit" form={formId} disabled={saving || !canSave}>
-        {saving
-          ? (savingLabel ?? t('admin:common.saving'))
-          : (saveLabel ?? t('admin:common.save'))}
+        {saveText}
       </Button>
       <Button variant="ghost" sx={{ height: 52 }} onClick={onCancel}>
         {t('admin:common.cancel')}
       </Button>
     </Stack>
   );
+
+  const renderDelete = () => {
+    if (sheet) {
+      if (onDelete && confirmingDelete) {
+        return (
+          <ConfirmPrompt
+            message={t('admin:common.deleteConfirm')}
+            disabled={deleting}
+            onConfirm={() => {
+              setConfirmingDelete(false);
+              onDelete();
+            }}
+            onCancel={() => setConfirmingDelete(false)}
+          />
+        );
+      }
+      return deletePrompt ?? null;
+    }
+    if (onDelete) {
+      return (
+        <ConfirmAction
+          variant="ghost"
+          label={deleteLabel}
+          message={t('admin:common.deleteConfirm')}
+          disabled={deleting}
+          onConfirm={onDelete}
+        />
+      );
+    }
+    if (deletePrompt) return deletePrompt;
+    return onDeleteRequest ? (
+      <Button
+        ref={deleteTriggerRef}
+        type="button"
+        variant="ghost"
+        disabled={deleting}
+        onClick={onDeleteRequest}
+      >
+        {deleteLabel}
+      </Button>
+    ) : null;
+  };
 
   return (
     <Stack
@@ -125,24 +220,8 @@ export function EditorForm({
       ) : null}
       {error ? <Alert>{errorText ?? translateApiError(t, error)}</Alert> : null}
       {children}
-      {hideActions
-        ? null
-        : sheet
-          ? sheet.footer
-            ? createPortal(actions, sheet.footer)
-            : null
-          : actions}
-      {onDelete ? (
-        <ConfirmAction
-          variant="ghost"
-          label={t('admin:common.delete')}
-          message={t('admin:common.deleteConfirm')}
-          disabled={deleting}
-          onConfirm={onDelete}
-        />
-      ) : (
-        (deleteSlot ?? null)
-      )}
+      {sheet || hideActions ? null : actions}
+      {renderDelete()}
     </Stack>
   );
 }

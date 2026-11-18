@@ -1,4 +1,4 @@
-import { Button, Stack, TextField } from '@pocket-pantry/ui';
+import { Stack, TextField } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -64,33 +64,29 @@ export function CatalogTagEditor({ tag, groups, onDone }: Props) {
     );
   };
 
-  const deleteSlot = !tag ? undefined : asking === null ? (
-    <Button
-      ref={triggerRef}
-      type="button"
-      variant="ghost"
-      disabled={remove.isPending}
-      onClick={() =>
-        tag.recipeCount > 0 ? deleteTag(false) : setAsking('unused')
-      }
-    >
-      {t('common.delete')}
-    </Button>
-  ) : (
-    <ConfirmPrompt
-      message={
-        asking === 'unused'
-          ? t('tag.deleteConfirmUnused')
-          : t('tag.deleteConfirm', { count: asking })
-      }
-      disabled={remove.isPending}
-      onConfirm={() => deleteTag(asking !== 'unused')}
-      onCancel={() => {
-        restoreFocus.current = true;
-        setAsking(null);
-      }}
-    />
-  );
+  const onDeleteRequest = !tag
+    ? undefined
+    : () => {
+        if (asking !== null) return;
+        if (tag.recipeCount > 0) deleteTag(false);
+        else setAsking('unused');
+      };
+  const deletePrompt =
+    tag && asking !== null ? (
+      <ConfirmPrompt
+        message={
+          asking === 'unused'
+            ? t('tag.deleteConfirmUnused')
+            : t('tag.deleteConfirm', { count: asking })
+        }
+        disabled={remove.isPending}
+        onConfirm={() => deleteTag(asking !== 'unused')}
+        onCancel={() => {
+          restoreFocus.current = true;
+          setAsking(null);
+        }}
+      />
+    ) : undefined;
 
   return (
     <Stack spacing={3}>
@@ -107,7 +103,9 @@ export function CatalogTagEditor({ tag, groups, onDone }: Props) {
           save.mutate({ name: name.trim(), groupId }, { onSuccess: onDone })
         }
         onCancel={onDone}
-        deleteSlot={deleteSlot}
+        onDeleteRequest={onDeleteRequest}
+        deletePrompt={deletePrompt}
+        deleteTriggerRef={triggerRef}
       >
         <TextField
           label={t('tag.name')}

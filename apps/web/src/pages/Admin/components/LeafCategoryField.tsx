@@ -10,7 +10,6 @@ import {
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { localName, type AdminCatalog } from '../../../lib/admin';
-import { SheetHeader } from '../../../components/SheetHeader';
 
 type Props = {
   catalog: AdminCatalog;
@@ -94,15 +93,7 @@ export function LeafCategoryField({ catalog, value, onChange }: Props) {
       <Sheet
         open={open}
         onClose={() => setOpen(false)}
-        label={t('ingredient.leafCategory')}
-        header={
-          <SheetHeader
-            size="roomy"
-            title={t('ingredient.leafCategory')}
-            onClose={() => setOpen(false)}
-            closeLabel={t('common.close')}
-          />
-        }
+        title={t('ingredient.leafCategory')}
       >
         <Box sx={{ px: 3, pb: 3, display: 'grid', gap: 2 }}>
           {groups.map(({ parent, leaves }) => (

@@ -232,13 +232,13 @@ describe('UnmatchedQueue: Family ingredients', () => {
     );
   });
 
-  it('goes back to the list on Cancel without promoting anything', async () => {
+  it('goes back to the list on Close without promoting anything', async () => {
     const calls = stub();
     const user = userEvent.setup();
     await openQueue(user);
 
     await openPicker(user, 'Kombucha');
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(
       await screen.findByRole('button', { name: /^Kombucha/ }),
