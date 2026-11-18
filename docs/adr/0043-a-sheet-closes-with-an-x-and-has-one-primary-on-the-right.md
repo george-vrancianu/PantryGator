@@ -60,7 +60,7 @@ Spec: #871. Shipping the rule left five places where the code and the rule disag
   - **Meal Plan slot:** Clear becomes a destructive link, and (amended) it loses its Done: Change Recipe is its primary.
   - **Voice Answer and Family synonym:** they lose their Done.
   - **Revoke a Promo Code:** it is drawn in danger tone.
-- Amendment (#871): the expiry pickers commit on Done and the X discards the pick; the Recipe picker and Add to Catalog move their search into `toolbar`; Tags filter, Meal Plan slot and the Admin editors show unavailable alternatives disabled instead of hiding them.
+- Amendment (#871): the expiry pickers commit on Done and the X discards the pick; the Recipe picker moves its filters into `toolbar`; Tags filter, Meal Plan slot and the Admin editors show unavailable alternatives disabled instead of hiding them.
 - Page tests that clicked Cancel or a header Done now use the X.
 - New handoffs reference this ADR for Sheet actions instead of specifying them.
 - Page bars that replace the Dock (Review, Catalog Recipe preview), popovers and full-screen camera tools are not Sheets and are not covered here.

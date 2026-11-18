@@ -650,8 +650,10 @@ describe('UnmatchedQueue', () => {
       name: 'Resolve Brânză ciudată',
     });
     await user.click(within(dialog).getByRole('button', { name: 'Restore' }));
-    // A secondary has no disabled state: the second click is ignored while the request is pending.
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Restore' }));
+    // Restore is drawn disabled while the request is pending.
+    expect(
+      within(dialog).getByRole('button', { name: 'Restore' }),
+    ).toBeDisabled();
     release();
 
     expect(await within(dialog).findByRole('alert')).toBeVisible();

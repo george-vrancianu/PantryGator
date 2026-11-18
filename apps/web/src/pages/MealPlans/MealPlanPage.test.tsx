@@ -257,6 +257,10 @@ describe('Meal Plan page', () => {
     expect(
       within(picker).getByRole('img', { name: 'Contains Peanuts' }),
     ).toBeVisible();
+    // The search is the Sheet's pinned toolbar, not part of the scrolling list.
+    const toolbar = picker.querySelector('[data-sheet-toolbar]');
+    expect(toolbar).toBeInstanceOf(HTMLElement);
+    expect(within(toolbar as HTMLElement).getByRole('searchbox')).toBeVisible();
     await u.type(within(picker).getByRole('searchbox'), 'lemon');
     await waitFor(() =>
       expect(within(picker).queryByText('Green curry')).toBeNull(),
@@ -269,6 +273,26 @@ describe('Meal Plan page', () => {
           ?.body,
       ).toEqual({ recipeId: 'rc-1' }),
     );
+  });
+
+  it('pins Change Recipe as the slot primary, with no Done', async () => {
+    setup();
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /Tomato pasta/ }));
+    const dialog = await screen.findByRole('dialog');
+    const footer = dialog.querySelector('[data-sheet-footer]');
+    expect(footer).toBeInstanceOf(HTMLElement);
+    expect(
+      within(footer as HTMLElement).getByRole('button', {
+        name: 'Change Recipe',
+      }),
+    ).toBeEnabled();
+    expect(within(dialog).queryByRole('button', { name: 'Done' })).toBeNull();
+    expect(
+      within(dialog).getByRole('button', { name: 'Clear this meal' }),
+    ).toBeEnabled();
   });
 
   it('changes the Recipe of a filled slot', async () => {

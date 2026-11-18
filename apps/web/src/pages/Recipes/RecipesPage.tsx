@@ -1,6 +1,7 @@
 import {
   Alert,
   Box,
+  canopy,
   CompassIcon,
   HeaderButton,
   PlusIcon,
@@ -42,6 +43,7 @@ import {
   FromTextSheet,
   type FromTextPrefill,
 } from './components/FromTextSheet';
+import { bleedSx } from './components/bleed';
 import { RecipeFilters } from './components/RecipeFilters';
 import { RecipeRow } from './components/RecipeRow';
 import { TagNoMatch } from './components/TagNoMatch';
@@ -205,15 +207,29 @@ export function RecipesPage() {
           </Box>
         ) : null}
         {empty ? null : (
-          <RecipeFilters
-            value={browse}
-            onChange={setBrowse}
-            tags={{
-              scope: 'family',
-              showHidden,
-              resultCount: recipes.data ? items.length : undefined,
+          <Box
+            sx={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 2,
+              bgcolor: canopy.sheetTop,
+              ml: bleedSx.ml,
+              mr: bleedSx.mr,
+              pl: bleedSx.pl,
+              pr: bleedSx.pr,
+              py: '8px',
             }}
-          />
+          >
+            <RecipeFilters
+              value={browse}
+              onChange={setBrowse}
+              tags={{
+                scope: 'family',
+                showHidden,
+                resultCount: recipes.data ? items.length : undefined,
+              }}
+            />
+          </Box>
         )}
         <HiddenByAllergiesNote
           count={

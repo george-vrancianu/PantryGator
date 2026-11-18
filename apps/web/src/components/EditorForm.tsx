@@ -110,7 +110,7 @@ export function EditorForm({
   const deleteLabel = t('admin:common.delete');
   const canDelete = Boolean(onDelete ?? onDeleteRequest);
   const startDelete = () => {
-    if (deleting || confirmingDelete) return;
+    if (confirmingDelete) return;
     if (onDelete) setConfirmingDelete(true);
     else onDeleteRequest?.();
   };
@@ -229,7 +229,13 @@ export function EditorForm({
             }
       }
       destructive={
-        canDelete ? { label: deleteLabel, onClick: startDelete } : undefined
+        canDelete
+          ? {
+              label: deleteLabel,
+              disabled: deleting,
+              onClick: startDelete,
+            }
+          : undefined
       }
     >
       <Box sx={{ px: 3, pt: 1, pb: 3 }}>
