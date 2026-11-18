@@ -1,4 +1,4 @@
-import { Box, GalleryIcon, PlusIcon, tokens } from '@pocket-pantry/ui';
+import { Box, GalleryIcon, PlusIcon, palette } from '@pocket-pantry/ui';
 import { useRef, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Fading } from '@/components/scan/camera/Fading/Fading';
@@ -47,8 +47,8 @@ export function ImportButton({ hidden, disabled, onFiles }: Props) {
           p: 0,
           borderRadius: '50%',
           border: 0,
-          backgroundColor: translucent(tokens.color.ink, 14),
-          color: tokens.color.ink,
+          backgroundColor: translucent(palette('text-primary'), 14),
+          color: palette('text-primary'),
           cursor: disabled ? 'default' : 'pointer',
           opacity: disabled ? 0.5 : 1,
           '&:focus-visible': glassFocusRing,
@@ -68,8 +68,8 @@ export function ImportButton({ hidden, disabled, onFiles }: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: tokens.color.accent,
-            color: tokens.color.bg,
+            backgroundColor: palette('pp-accent'),
+            color: palette('background-default'),
             boxShadow: `0 0 0 2px ${shade(90)}`,
           }}
         >

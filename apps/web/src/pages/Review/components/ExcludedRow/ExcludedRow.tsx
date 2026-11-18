@@ -1,4 +1,4 @@
-import { Box, tokens, insetFocusRing } from '@pocket-pantry/ui';
+import { Box, insetFocusRing, palette } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { displayName, type ReviewLine } from '@/lib/review';
@@ -24,7 +24,7 @@ export function ExcludedRow({ lines, onRestore }: Props) {
     <Box
       component="section"
       aria-label={t('excluded.title', { count: lines.length })}
-      sx={{ borderTop: `1px solid ${tokens.color.divider}` }}
+      sx={{ borderTop: `1px solid ${palette('divider')}` }}
     >
       <Box
         component="button"
@@ -41,7 +41,7 @@ export function ExcludedRow({ lines, onRestore }: Props) {
           minHeight: 52,
           px: '12px',
           border: 0,
-          bgcolor: tokens.color.subtle,
+          bgcolor: palette('pp-subtle'),
           fontFamily: 'inherit',
           textAlign: 'left',
           cursor: 'pointer',
@@ -55,16 +55,18 @@ export function ExcludedRow({ lines, onRestore }: Props) {
               fontWeight: 700,
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             {t('excluded.title', { count: lines.length })}
           </Box>
-          <Box sx={{ fontSize: 12, color: tokens.color.muted }}>
+          <Box sx={{ fontSize: 12, color: palette('text-secondary') }}>
             {t('excluded.hint')}
           </Box>
         </Box>
-        <Box sx={{ fontSize: 13, fontWeight: 700, color: tokens.color.accent }}>
+        <Box
+          sx={{ fontSize: 13, fontWeight: 700, color: palette('pp-accent') }}
+        >
           {t(open ? 'excluded.hide' : 'excluded.show')}
         </Box>
       </Box>
@@ -87,12 +89,14 @@ export function ExcludedRow({ lines, onRestore }: Props) {
                     gap: '8px',
                     px: '12px',
                     py: '8px',
-                    borderTop: `1px solid ${tokens.color.divider}`,
+                    borderTop: `1px solid ${palette('divider')}`,
                   }}
                 >
                   <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                     <Box sx={{ fontSize: 14, fontWeight: 600 }}>{name}</Box>
-                    <Box sx={{ fontSize: 12, color: tokens.color.muted }}>
+                    <Box
+                      sx={{ fontSize: 12, color: palette('text-secondary') }}
+                    >
                       {t(`excluded.reason.${line.excluded?.reason ?? 'other'}`)}
                     </Box>
                   </Box>
@@ -106,7 +110,7 @@ export function ExcludedRow({ lines, onRestore }: Props) {
                       px: '10px',
                       border: 0,
                       bgcolor: 'transparent',
-                      color: tokens.color.accent,
+                      color: palette('pp-accent'),
                       fontFamily: 'inherit',
                       fontSize: 13,
                       fontWeight: 700,

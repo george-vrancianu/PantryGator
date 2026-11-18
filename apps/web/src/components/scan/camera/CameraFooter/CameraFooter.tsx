@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { FOOTER_MIN_BOTTOM, SHUTTER_ROW_HEIGHT } from '@/lib/scanGuides';
 import { glassBar, translucent } from '../glass';
@@ -73,7 +73,7 @@ export function CameraFooter({
       <Box
         sx={{
           ...glassBar,
-          borderTop: `1px solid ${translucent(tokens.color.ink, 6)}`,
+          borderTop: `1px solid ${translucent(palette('text-primary'), 6)}`,
           pb: `max(${insetBottom}, ${FOOTER_MIN_BOTTOM}px)`,
           pl: insetLeft,
           pr: insetRight,

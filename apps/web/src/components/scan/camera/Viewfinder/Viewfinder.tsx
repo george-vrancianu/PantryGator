@@ -1,8 +1,8 @@
 import {
   Box,
   radius,
-  tokens,
   usePrefersReducedMotion,
+  palette,
 } from '@pocket-pantry/ui';
 import { shade, translucent } from '../glass';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -54,8 +54,8 @@ function ScanLine({ animated }: { animated: boolean }) {
         top: '50%',
         height: 2,
         borderRadius: radius.tag,
-        backgroundColor: tokens.color.accent,
-        boxShadow: `0 0 12px 2px ${translucent(tokens.color.accent, 70)}`,
+        backgroundColor: palette('pp-accent'),
+        boxShadow: `0 0 12px 2px ${translucent(palette('pp-accent'), 70)}`,
         ...(animated && {
           animation: 'pp-scan-line 1.4s ease-in-out infinite alternate',
           '@keyframes pp-scan-line': {
@@ -127,7 +127,7 @@ export function Viewfinder({
           sx={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: tokens.color.ink,
+            backgroundColor: palette('text-primary'),
             opacity: 0,
             animation: 'pp-scan-flash 280ms ease-out',
             '@keyframes pp-scan-flash': {
@@ -171,7 +171,7 @@ export function Viewfinder({
             sx={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: tokens.color.ink,
+              backgroundColor: palette('text-primary'),
               opacity: 0,
               animation: `pp-scan-fill ${FLASH_MS}ms ease-out`,
               '@keyframes pp-scan-fill': {
@@ -199,8 +199,8 @@ export function Viewfinder({
               [`border${v}`]: `${flash ? 6 : 3.5}px solid`,
               [`border${h}`]: `${flash ? 6 : 3.5}px solid`,
               [`border${v}${h}Radius`]: '10px',
-              [`border${v}Color`]: tokens.color.ink,
-              [`border${h}Color`]: tokens.color.ink,
+              [`border${v}Color`]: palette('text-primary'),
+              [`border${h}Color`]: palette('text-primary'),
               filter: `drop-shadow(0 1px 4px ${shade(50)})`,
               ...noMotion,
             }}

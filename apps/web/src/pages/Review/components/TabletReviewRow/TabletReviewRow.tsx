@@ -7,7 +7,7 @@ import {
   IconButton,
   ManualEntryIcon,
   SwapIcon,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -76,7 +76,7 @@ const compactSx = { ...controlSx, height: 32, fontSize: 12 } as const;
 
 function CellError({ id, children }: { id: string; children: ReactNode }) {
   return (
-    <Box id={id} sx={{ mt: '4px', fontSize: 12, color: tokens.color.urgentFg }}>
+    <Box id={id} sx={{ mt: '4px', fontSize: 12, color: palette('error-main') }}>
       {children}
     </Box>
   );
@@ -176,12 +176,14 @@ export function TabletReviewRow({
         alignItems: readOnly ? 'center' : 'start',
         minHeight: readOnly ? 52 : 68,
         py: readOnly ? '6px' : '14px',
-        borderTop: `1px solid ${tokens.color.divider}`,
+        borderTop: `1px solid ${palette('divider')}`,
         // Only a row that still needs a look is tinted, by its live status; sure rows stay white even when open.
         bgcolor:
-          editing && status !== 'ok' ? ROW_TINT[status] : tokens.color.surface,
+          editing && status !== 'ok'
+            ? ROW_TINT[status]
+            : palette('background-paper'),
         cursor: readOnly ? 'pointer' : undefined,
-        '&:hover': readOnly ? { bgcolor: tokens.color.subtle } : undefined,
+        '&:hover': readOnly ? { bgcolor: palette('pp-subtle') } : undefined,
       }}
     >
       <Box
@@ -214,7 +216,7 @@ export function TabletReviewRow({
               <Box
                 component="span"
                 title={line.description}
-                sx={{ fontSize: 12, color: tokens.color.muted }}
+                sx={{ fontSize: 12, color: palette('text-secondary') }}
               >
                 {` · ${line.description}`}
               </Box>

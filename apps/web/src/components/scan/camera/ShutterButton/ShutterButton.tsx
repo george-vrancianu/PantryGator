@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import {
   useEffect,
   useLayoutEffect,
@@ -230,8 +230,8 @@ export function ShutterButton({
           display: 'grid',
           placeItems: 'center',
           borderRadius: '50%',
-          border: `4px solid ${tokens.color.ink}`,
-          color: tokens.color.ink,
+          border: `4px solid ${palette('text-primary')}`,
+          color: palette('text-primary'),
           pointerEvents: 'none',
           ...fadeIn,
         }}
@@ -270,7 +270,7 @@ export function ShutterButton({
         placeItems: 'center',
         p: 0,
         borderRadius: '50%',
-        border: `4px solid ${tokens.color.ink}`,
+        border: `4px solid ${palette('text-primary')}`,
         backgroundColor: 'transparent',
         cursor: disabled ? 'default' : 'pointer',
         touchAction: 'manipulation',
@@ -289,8 +289,8 @@ export function ShutterButton({
           height: 62,
           borderRadius: '50%',
           backgroundColor: pressed
-            ? `color-mix(in srgb, ${tokens.color.ink} 92%, ${tokens.color.bg})`
-            : tokens.color.ink,
+            ? `color-mix(in srgb, ${palette('text-primary')} 92%, ${palette('background-default')})`
+            : palette('text-primary'),
           boxShadow: `0 1px 4px ${shade(35)}`,
           opacity: disabled ? 0.55 : 1,
           transform: pressed ? 'scale(.88)' : 'none',

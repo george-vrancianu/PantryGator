@@ -18,6 +18,7 @@ export {
   stockBar,
   segOff,
   color,
+  shade,
   control,
   displayType,
   nestedRadius,

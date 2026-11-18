@@ -6,7 +6,7 @@ import {
   SAFE_RIGHT,
   SAFE_TOP,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Cropper from 'react-easy-crop';
@@ -111,8 +111,8 @@ export function ReceiptCropper({
         pb: SAFE_BOTTOM,
         pl: SAFE_LEFT,
         pr: SAFE_RIGHT,
-        backgroundColor: tokens.color.bg,
-        color: tokens.color.ink,
+        backgroundColor: palette('background-default'),
+        color: palette('text-primary'),
       }}
     >
       <Typography sx={{ p: 2, textAlign: 'center', fontSize: 14 }}>
@@ -149,7 +149,7 @@ export function ReceiptCropper({
             sx={{
               display: 'block',
               width: '100%',
-              accentColor: tokens.color.accent,
+              accentColor: palette('pp-accent'),
             }}
           />
         </Box>
@@ -165,21 +165,21 @@ export function ReceiptCropper({
       >
         <Button
           variant="ghost"
-          sx={{ color: tokens.color.ink, height: 52 }}
+          sx={{ color: palette('text-primary'), height: 52 }}
           onClick={() => onCancel()}
         >
           {t('crop.cancel')}
         </Button>
         <Button
           variant="ghost"
-          sx={{ color: tokens.color.ink, height: 52 }}
+          sx={{ color: palette('text-primary'), height: 52 }}
           onClick={() => setQuarterTurns((turns) => (turns + 3) % 4)}
         >
           {t('crop.rotateLeft')}
         </Button>
         <Button
           variant="ghost"
-          sx={{ color: tokens.color.ink, height: 52 }}
+          sx={{ color: palette('text-primary'), height: 52 }}
           onClick={() => setQuarterTurns((turns) => (turns + 1) % 4)}
         >
           {t('crop.rotateRight')}

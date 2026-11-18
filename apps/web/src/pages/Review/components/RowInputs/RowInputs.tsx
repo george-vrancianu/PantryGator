@@ -1,4 +1,4 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, radius, palette, shade } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { expiryContext } from '@/components/expiryPicker/expiryContext';
 import { ExpirySheet } from '@/components/expiryPicker/ExpirySheet/ExpirySheet';
@@ -46,10 +46,10 @@ export function QuantityUnitInput({
   const { t } = useTranslation(['review', 'common']);
   const missing = line.quantity.trim() === '';
   const border = invalid
-    ? tokens.color.urgentFg
+    ? palette('error-main')
     : missing
-      ? tokens.color.soonBorder
-      : tokens.color.line;
+      ? shade.soonBorder
+      : palette('pp-line');
   return (
     <Box
       sx={{
@@ -58,10 +58,10 @@ export function QuantityUnitInput({
         boxSizing: 'border-box',
         borderRadius: radius.control,
         border: `1px solid ${border}`,
-        bgcolor: tokens.color.surface,
+        bgcolor: palette('background-paper'),
         overflow: 'hidden',
         '&:focus-within': {
-          outline: `3px solid ${tokens.color.accent}`,
+          outline: `3px solid ${palette('pp-accent')}`,
           outlineOffset: 1,
         },
       }}
@@ -103,8 +103,8 @@ export function QuantityUnitInput({
           height: '100%',
           border: 0,
           borderRadius: 0,
-          borderLeft: `1px solid ${tokens.color.divider}`,
-          bgcolor: tokens.color.subtle,
+          borderLeft: `1px solid ${palette('divider')}`,
+          bgcolor: palette('pp-subtle'),
           '&:focus-visible': { outline: 'none' },
         }}
       >

@@ -3,10 +3,10 @@ import {
   bodyFont,
   Box,
   radius,
-  tokens,
   Typography,
   useForcedThemeColor,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import {
   type KeyboardEvent as ReactKeyboardEvent,
@@ -330,8 +330,8 @@ export function CameraOverlay({
         inset: 0,
         zIndex: 20,
         overflow: 'hidden',
-        backgroundColor: tokens.color.bg,
-        color: tokens.color.ink,
+        backgroundColor: palette('background-default'),
+        color: palette('text-primary'),
         fontFamily: bodyFont,
       }}
     >
@@ -458,8 +458,8 @@ export function CameraOverlay({
               py: 0.75,
               px: 1.375,
               borderRadius: radius.chip,
-              backgroundColor: translucent(tokens.color.accent, 16),
-              color: tokens.color.accent,
+              backgroundColor: translucent(palette('pp-accent'), 16),
+              color: palette('pp-accent'),
               fontSize: 12,
               fontWeight: 700,
               pointerEvents: 'auto',
@@ -473,7 +473,7 @@ export function CameraOverlay({
               sx={{
                 border: 0,
                 background: 'none',
-                color: tokens.color.ink,
+                color: palette('text-primary'),
                 font: 'inherit',
                 textDecoration: 'underline',
                 cursor: 'pointer',

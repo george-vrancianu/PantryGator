@@ -1,4 +1,4 @@
-import { tokens, insetFocusRing } from '@pocket-pantry/ui';
+import { insetFocusRing, palette, shade } from '@pocket-pantry/ui';
 import type { RowStatus } from '@/lib/review';
 
 /** The column grid shared by the header row and the item rows (handoff §4.3). */
@@ -77,9 +77,9 @@ export const tabletRowSx = {
 
 /** Row backgrounds by status: tinted for rows to check. */
 export const ROW_TINT: Record<RowStatus, string> = {
-  low: tokens.color.urgentRow,
-  qty: tokens.color.soonRow,
-  ok: tokens.color.subtle,
+  low: shade.urgentRow,
+  qty: shade.soonRow,
+  ok: palette('pp-subtle'),
 };
 
 /** A borderless accent text button (Collapse, Change match). */
@@ -88,7 +88,7 @@ export const linkButtonSx = {
   px: '8px',
   border: 0,
   bgcolor: 'transparent',
-  color: tokens.color.accent,
+  color: palette('pp-accent'),
   fontFamily: 'inherit',
   fontSize: 13,
   fontWeight: 700,

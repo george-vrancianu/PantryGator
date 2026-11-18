@@ -1,4 +1,4 @@
-import { Box, radius, tokens } from '@pocket-pantry/ui';
+import { Box, radius, palette } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { glassFocusRing, shade } from '../glass';
@@ -18,9 +18,9 @@ const button = {
   fontWeight: 800,
   cursor: 'pointer',
   backgroundColor: shade(35),
-  color: tokens.color.ink,
+  color: palette('text-primary'),
   transition: 'width 200ms, color 200ms',
-  '&[aria-pressed="true"]': { width: 38, color: tokens.color.accent },
+  '&[aria-pressed="true"]': { width: 38, color: palette('pp-accent') },
   '&:focus-visible': glassFocusRing,
   '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
 };

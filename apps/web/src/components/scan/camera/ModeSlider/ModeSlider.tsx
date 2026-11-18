@@ -1,4 +1,4 @@
-import { Box, tokens, visuallyHidden } from '@pocket-pantry/ui';
+import { Box, visuallyHidden, palette } from '@pocket-pantry/ui';
 import {
   useEffect,
   useLayoutEffect,
@@ -410,7 +410,9 @@ export function ModeSlider<Mode extends CameraMode>({
                 whiteSpace: 'nowrap',
                 cursor: 'pointer',
                 userSelect: 'none',
-                color: active ? tokens.color.accent : tokens.color.muted,
+                color: active
+                  ? palette('pp-accent')
+                  : palette('text-secondary'),
                 transition: 'color 200ms',
                 '&:disabled': { cursor: 'default' },
                 '&:focus-visible': glassFocusRing,

@@ -2,9 +2,9 @@ import {
   Alert,
   bodyFont,
   Box,
-  tokens,
   useForcedThemeColor,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -84,8 +84,8 @@ export function ScanPage(props: ScanPageProps) {
         inset: 0,
         zIndex: 20,
         overflow: 'hidden',
-        backgroundColor: tokens.color.bg,
-        color: tokens.color.ink,
+        backgroundColor: palette('background-default'),
+        color: palette('text-primary'),
         // Resolved under this subtree's Theme, not inherited from the root's.
         fontFamily: bodyFont,
       }}
