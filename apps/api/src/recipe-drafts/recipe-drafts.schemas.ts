@@ -12,6 +12,12 @@ import {
   MAX_TIPS,
 } from '../recipes/recipes.schemas';
 
+/**
+ * A Recipe Draft holds the form as typed, so its text caps are looser than the
+ * saved Recipe's: this many times the Recipe's own cap.
+ */
+export const RECIPE_DRAFT_CAP_FACTOR = 10;
+
 /** Most Recipe Drafts one Member can hold (ADR 0028). */
 export const MAX_RECIPE_DRAFTS = 20;
 /** A Recipe Draft is deleted this many days after its last edit (ADR 0028). */
@@ -76,7 +82,7 @@ const draftEatingMoment = z
 
 const draftGuidance = z
   .object({
-    nutritionNote: text(MAX_NUTRITION_NOTE * 10),
+    nutritionNote: text(MAX_NUTRITION_NOTE * RECIPE_DRAFT_CAP_FACTOR),
     /** Proposed by Suggest Guidance and not yet kept by the Member. */
     nutritionNoteSuggested: z.boolean().optional(),
     pairings: z.array(draftPairing).max(MAX_PAIRINGS),

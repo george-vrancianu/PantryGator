@@ -193,6 +193,11 @@ describe('Voice Note (integration)', () => {
     expect(await usage(memberId, 'voice')).toBe(0);
   });
 
+  it('takes a recording over the default JSON body limit (multipart is unchanged)', async () => {
+    const { cookie } = await signUp();
+    await note(cookie, { audio: Buffer.alloc(1536 * 1024) }).expect(201);
+  });
+
   it('returns voice.not_configured when the server has no transcription', async () => {
     const { cookie, memberId } = await signUp();
     configured = false;

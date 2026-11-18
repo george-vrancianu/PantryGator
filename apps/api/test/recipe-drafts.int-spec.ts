@@ -12,6 +12,8 @@ import {
 } from '../src/database/schema';
 import { seedId } from '../src/catalog/seed/seed-catalog';
 import { client, signUp } from './support/admin-session';
+import { MAX_NUTRITION_NOTE } from '../src/recipes/recipe-guidance.schemas';
+import { RECIPE_DRAFT_CAP_FACTOR } from '../src/recipe-drafts/recipe-drafts.schemas';
 import { createTestApp } from './support/create-test-app';
 
 jest.setTimeout(30_000);
@@ -448,6 +450,13 @@ describe('Recipe Drafts (integration)', () => {
       await a1.get(`/${inside.id}`).expect(200);
     });
 
+    it('deletes an expired, not yet purged one with 204, then 404s it', async () => {
+      const old = await create(a1);
+      await ageDraft(old.id, 31);
+      await a1.del(`/${old.id}`).expect(204);
+      await a1.del(`/${old.id}`).expect(404);
+    });
+
     it('moves expires at with every edit', async () => {
       const { id } = await create(a1);
       await ageDraft(id, 20);
@@ -460,6 +469,31 @@ describe('Recipe Drafts (integration)', () => {
   });
 
   describe('content checks', () => {
+    it('allows a nutrition note up to the Recipe Draft cap and refuses more', async () => {
+      const cap = MAX_NUTRITION_NOTE * RECIPE_DRAFT_CAP_FACTOR;
+      const guidance = (nutritionNote: string) => ({
+        nutritionNote,
+        pairings: [],
+        eatingMoments: [],
+      });
+      await a1
+        .post(
+          '',
+          newDraft({
+            content: content({ guidance: guidance('a'.repeat(cap)) }),
+          }),
+        )
+        .expect(201);
+      await a1
+        .post(
+          '',
+          newDraft({
+            content: content({ guidance: guidance('a'.repeat(cap + 1)) }),
+          }),
+        )
+        .expect(400);
+    });
+
     it('accepts half-typed values', async () => {
       await create(a1, {
         content: content({
@@ -735,6 +769,15 @@ describe('Recipe Drafts (integration)', () => {
       const res = await recipesApi.post('', doc({ recipeDraftId: draft.id }));
       expect(res.status).toBe(201);
       expect(await exists(draft.id)).toBe(false);
+    });
+
+    it('refuses a recipeDraftId longer than 64 characters', async () => {
+      const res = await recipesApi.post(
+        '',
+        doc({ recipeDraftId: 'x'.repeat(65) }),
+      );
+      expect(res.status).toBe(400);
+      expect(code(res)).toBe('validation_failed');
     });
 
     it('creates a Variant and ends its Recipe Draft', async () => {

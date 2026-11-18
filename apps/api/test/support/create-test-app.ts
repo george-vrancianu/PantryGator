@@ -19,7 +19,7 @@ import {
   PAGE_FETCHER,
   type PageFetcher,
 } from '../../src/page-fetch/page-fetcher';
-import { configureApp, MAX_REQUEST_BODY_BYTES } from '../../src/app.setup';
+import { configureApp, DEFAULT_REQUEST_BODY_BYTES } from '../../src/app.setup';
 import { serveWebApp } from '../../src/web-app';
 
 /** What a fake provider call reports when the test does not say (an explicit `usage` key, even `undefined`, wins). */
@@ -95,7 +95,7 @@ export async function createTestApp(
     );
   }
   const app = moduleRef.createNestApplication<NestFastifyApplication>(
-    new FastifyAdapter({ bodyLimit: MAX_REQUEST_BODY_BYTES }),
+    new FastifyAdapter({ bodyLimit: DEFAULT_REQUEST_BODY_BYTES }),
   );
   configureApp(app);
   if (webDistDir) await serveWebApp(app, webDistDir);

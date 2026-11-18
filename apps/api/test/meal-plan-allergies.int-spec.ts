@@ -27,7 +27,8 @@ type Slot = {
 type PlanDetail = { id: string; slots: Slot[] };
 type Window = { days: { slots: Slot[] }[] };
 
-const TODAY = '2030-01-10';
+/** A write's today must be near the server's UTC date. */
+const TODAY = new Date().toISOString().slice(0, 10);
 const MILK = seedId.allergen('milk');
 
 // Spec: #350 / #361, ADR 0014, ADR 0012. Plan Slots carry the Allergy Warning naming whose

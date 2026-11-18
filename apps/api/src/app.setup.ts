@@ -10,8 +10,19 @@ import { allowedOrigins, isAllowedOrigin } from './config/origins';
 import { MAX_VOICE_AUDIO_BYTES } from './voice/voice.schemas';
 import { registerAuthHandler } from './auth/register-auth-handler';
 
-/** Scan images arrive as data URLs in the JSON body, so the default 1 MB is far too small. */
-export const MAX_REQUEST_BODY_BYTES = 12 * 1024 * 1024;
+/** The JSON body limit of every route except the Scan routes below. */
+export const DEFAULT_REQUEST_BODY_BYTES = 1024 * 1024;
+
+/** Scan images arrive as data URLs in the JSON body, so the default is far too small for them. */
+export const SCAN_REQUEST_BODY_BYTES = 12 * 1024 * 1024;
+
+/** The Scan routes that take an image (not `scan/plate/recipe` or `scan/receipt/confirm`). */
+const SCAN_IMAGE_ROUTES = new Set([
+  '/api/scan/product',
+  '/api/scan/ingredients',
+  '/api/scan/plate',
+  '/api/scan/receipt',
+]);
 
 /** Wiring shared by the real server and the integration tests. */
 export function configureApp(app: NestFastifyApplication): void {
@@ -27,6 +38,16 @@ export function configureApp(app: NestFastifyApplication): void {
     // The mobile apps read the session token from this header (Better Auth's bearer plugin).
     exposedHeaders: ['set-auth-token'],
   });
+  // Registered before any route: only the Scan image routes keep the large body limit.
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onRoute', (route) => {
+      const methods = [route.method].flat();
+      if (methods.includes('POST') && SCAN_IMAGE_ROUTES.has(route.url)) {
+        route.bodyLimit = SCAN_REQUEST_BODY_BYTES;
+      }
+    });
   // Before any route: guards, the auth handler and limiters read request.clientIp.
   registerClientIp(
     app.getHttpAdapter().getInstance(),

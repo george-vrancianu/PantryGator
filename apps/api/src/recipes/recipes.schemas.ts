@@ -159,7 +159,7 @@ export const familyRecipeCreate = familyRecipeUpdate
      * Optional: the Member's Recipe Draft this save ends (ADR 0028). It is deleted in the
      * same transaction as the create; an unknown, malformed or another Member's id is ignored.
      */
-    recipeDraftId: z.string().optional(),
+    recipeDraftId: z.string().max(64).optional(),
   })
   .refine(
     (body) => body.sourceLanguage === undefined || Boolean(body.sourceLink),
