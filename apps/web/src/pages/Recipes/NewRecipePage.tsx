@@ -32,7 +32,7 @@ import { useMomentOptions } from './components/FamilyGuidance';
 import { draftOfVariantDraft, type NewRecipeDraft } from './hooks/familyDraft';
 import { BaseRecipeCard } from './components/BaseRecipeCard';
 import { FamilyRecipeForm } from './components/FamilyRecipeForm';
-import { namedGuidance, routePropsOf } from './familyRecipeShared';
+import { namedGuidance, routePropsOf } from './hooks/familyRecipeShared';
 
 /**
  * What can be handed to the New Recipe page (react-router `location.state`) to open it filled:

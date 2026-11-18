@@ -10,7 +10,7 @@ import {
   openTab,
   guidanceToggle,
   openGuidance,
-} from './familyRecipeTestHelpers';
+} from '@/test/familyRecipePages';
 
 describe('NewVariantPage', () => {
   afterEach(() => vi.unstubAllGlobals());

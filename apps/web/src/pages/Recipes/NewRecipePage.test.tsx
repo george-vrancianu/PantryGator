@@ -17,7 +17,7 @@ import {
   newRecipeWith,
   guidanceToggle,
   openGuidance,
-} from './familyRecipeTestHelpers';
+} from '@/test/familyRecipePages';
 
 describe('NewRecipePage with a supplied draft', () => {
   afterEach(() => vi.unstubAllGlobals());

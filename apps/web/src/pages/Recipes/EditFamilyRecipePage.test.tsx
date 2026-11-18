@@ -24,7 +24,7 @@ import {
   sourced,
   newRecipeWith,
   openGuidance,
-} from './familyRecipeTestHelpers';
+} from '@/test/familyRecipePages';
 
 describe('The Tag field in the Family Recipe editor', () => {
   afterEach(() => vi.unstubAllGlobals());

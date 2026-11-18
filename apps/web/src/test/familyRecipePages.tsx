@@ -1,11 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
-import { EditFamilyRecipePage } from './EditFamilyRecipePage';
-import { NewRecipePage } from './NewRecipePage';
-import { NewVariantPage } from './NewVariantPage';
+import { EditFamilyRecipePage } from '@/pages/Recipes/EditFamilyRecipePage';
+import { NewRecipePage } from '@/pages/Recipes/NewRecipePage';
+import { NewVariantPage } from '@/pages/Recipes/NewVariantPage';
 import type { InitialEntry } from 'react-router-dom';
-import type { NewRecipeState } from './NewRecipePage';
+import type { NewRecipeState } from '@/pages/Recipes/NewRecipePage';
 import { vi } from 'vitest';
 import type { FamilyRecipeDraft, FamilyRecipeEdit } from '@/lib/familyRecipes';
 import { renderWithProviders, stubApi } from '@/test/render';
@@ -169,7 +169,7 @@ export function setup(
   const { fetchMock, calls } = stubApi({
     'GET /api/recipes/filters': () => Response.json(filters),
     'GET /api/recipes/tags': () => Response.json(pickable),
-    // Edit's Save also stores the Guidance (issue 595).
+    // Edit's Save also stores the Guidance (#595).
     'PUT /api/recipes/g/guidance': () => Response.json(saved),
     ...routes,
   });
