@@ -169,6 +169,8 @@
       "delete": "Șterge Sfatul rețetei {{number}}",
       "new": "Sfat nou al rețetei",
       "cancelNew": "Renunță la Sfatul nou al rețetei",
+      "moveUp": "Mută Sfatul {{number}} al rețetei mai sus",
+      "moveDown": "Mută Sfatul {{number}} al rețetei mai jos",
       "add": "Adaugă un Sfat al rețetei"
     },
     "details": {

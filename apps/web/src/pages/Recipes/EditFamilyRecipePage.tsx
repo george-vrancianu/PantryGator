@@ -95,7 +95,10 @@ export function EditFamilyRecipePage() {
   const back = { label: t('recipes:back'), href: `/recipes/${id}` };
   // A failed delete is reported by the deferred-removal toast, not here.
   const tipError =
-    tipWrites.add.error ?? tipWrites.update.error ?? tipWrites.hide.error;
+    tipWrites.add.error ??
+    tipWrites.update.error ??
+    tipWrites.reorder.error ??
+    tipWrites.hide.error;
   const tips = (recipe?.tips ?? []).filter(
     (tip) => !tipRemoval.hiddenIds.has(tip.id),
   );
@@ -108,6 +111,19 @@ export function EditFamilyRecipePage() {
       tipRemoval.remove(tipId, '', t('recipes:family.tips.deleted'), {
         polite: true,
       }),
+    // The API takes every Tip of the Recipe: swap the Tip with its neighbour among the ones shown in its group.
+    move: (tipId: string, offset: -1 | 1) => {
+      const all = (recipe?.tips ?? []).map((tip) => tip.id);
+      const own = tips.find((tip) => tip.id === tipId);
+      const group = tips.filter((tip) => tip.stepId === own?.stepId);
+      const neighbour =
+        group[group.findIndex((tip) => tip.id === tipId) + offset];
+      if (!own || !neighbour) return;
+      const from = all.indexOf(tipId);
+      const to = all.indexOf(neighbour.id);
+      [all[from], all[to]] = [all[to], all[from]];
+      tipWrites.reorder.mutate(all);
+    },
   };
   if (!recipe || recipe.archived) {
     return (

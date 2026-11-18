@@ -409,6 +409,20 @@ export function RecipeStepsSection({
                                     },
                                   )}
                                   actions={stepTips.actions}
+                                  order={{
+                                    up: t('admin:recipe.steps.moveTipUp', {
+                                      n: tipIndex + 1,
+                                      step: number,
+                                    }),
+                                    down: t('admin:recipe.steps.moveTipDown', {
+                                      n: tipIndex + 1,
+                                      step: number,
+                                    }),
+                                    first: tipIndex === 0,
+                                    last:
+                                      tipIndex ===
+                                      stepTips.of(step.id!).length - 1,
+                                  }}
                                 />
                               ))}
                               {addingTip.has(step.id) ? (

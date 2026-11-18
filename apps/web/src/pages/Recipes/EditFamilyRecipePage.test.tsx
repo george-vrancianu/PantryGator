@@ -2218,3 +2218,53 @@ describe('EditFamilyRecipeRoute', () => {
     ).toHaveAttribute('href', 'https://www.example.com/h');
   });
 });
+
+describe('Reordering Tips in the Family editor', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  const withTips: FamilyRecipeEdit = {
+    ...saved,
+    parentId: null,
+    parentTips: null,
+    tips: [
+      { id: 't1', stepId: null, text: 'Use butter' },
+      { id: 't2', stepId: 's1', text: 'Low heat' },
+      { id: 't3', stepId: null, text: 'Serve hot' },
+      { id: 't4', stepId: 's1', text: 'Salt late' },
+    ],
+  };
+  const edit = () =>
+    setup('/recipes/g/edit', {
+      'GET /api/recipes/g/edit': () => Response.json(withTips),
+      'PUT /api/recipes/g/tips/order': () => Response.json(withTips),
+    });
+  const order = (calls: ReturnType<typeof setup>) =>
+    calls.find((c) => c.key === 'PUT /api/recipes/g/tips/order')?.body;
+
+  it('moves a Recipe Tip down, sending every Tip of the Recipe in its new order', async () => {
+    const user = userEvent.setup({ delay: null });
+    const calls = edit();
+    await openTab(user, 'Steps');
+    expect(
+      screen.getByRole('button', { name: 'Move Recipe Tip 1 up' }),
+    ).toHaveAttribute('aria-disabled', 'true');
+    await user.click(
+      screen.getByRole('button', { name: 'Move Recipe Tip 1 down' }),
+    );
+    await vi.waitFor(() =>
+      expect(order(calls)).toEqual({ ids: ['t3', 't2', 't1', 't4'] }),
+    );
+  });
+
+  it('moves a Step Tip inside its own Step', async () => {
+    const user = userEvent.setup({ delay: null });
+    const calls = edit();
+    await openTab(user, 'Steps');
+    await user.click(
+      screen.getByRole('button', { name: 'Move Tip 1 of Step 1 down' }),
+    );
+    await vi.waitFor(() =>
+      expect(order(calls)).toEqual({ ids: ['t1', 't4', 't3', 't2'] }),
+    );
+  });
+});

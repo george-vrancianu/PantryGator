@@ -1,4 +1,6 @@
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   CloseIcon,
   IconButton,
   radius,
@@ -13,6 +15,8 @@ export type TipActions = {
   add: (text: string, stepId: string | null) => Promise<unknown>;
   update: (tipId: string, text: string) => void;
   remove: (tipId: string) => void;
+  /** Move a Tip one place up or down among those of its group; leave out where Tips cannot be reordered. */
+  move?: (tipId: string, offset: -1 | 1) => void;
 };
 
 /** The dashed, subtle look of a Tip row under its Step. */
@@ -37,15 +41,18 @@ type RowProps = {
   placeholder: string;
   removeLabel: string;
   actions: TipActions;
+  /** The names of the move buttons and whether the Tip is at either end; shown only when `actions.move` is. */
+  order?: { up: string; down: string; first: boolean; last: boolean };
 };
 
-/** A saved Tip: bulb, input that saves a change on blur, and ×. */
+/** A saved Tip: bulb, input that saves a change on blur, the move buttons when it can be reordered, and ×. */
 export function TipRow({
   tip,
   label,
   placeholder,
   removeLabel,
   actions,
+  order,
 }: RowProps) {
   const [text, setText] = useState(tip.text);
   return (
@@ -66,6 +73,28 @@ export function TipRow({
         placeholder={placeholder}
         slotProps={{ htmlInput: { 'aria-label': label } }}
       />
+      {actions.move && order ? (
+        <>
+          <IconButton
+            tone="plain"
+            size={40}
+            label={order.up}
+            ariaDisabled={order.first}
+            onClick={() => actions.move?.(tip.id, -1)}
+          >
+            <ChevronUpIcon />
+          </IconButton>
+          <IconButton
+            tone="plain"
+            size={40}
+            label={order.down}
+            ariaDisabled={order.last}
+            onClick={() => actions.move?.(tip.id, 1)}
+          >
+            <ChevronDownIcon />
+          </IconButton>
+        </>
+      ) : null}
       <IconButton
         tone="plain"
         size={40}
