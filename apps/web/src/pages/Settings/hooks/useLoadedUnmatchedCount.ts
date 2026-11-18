@@ -1,9 +1,6 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
 import type { InfiniteData } from '@tanstack/react-query';
-import {
-  unmatchedQueueQueryKey,
-  type UnmatchedPage,
-} from '../../../lib/unmatched';
+import { unmatchedQueueQueryKey, type UnmatchedPage } from '@/lib/unmatched';
 
 /**
  * The open unmatched queue, only if the Admin page (or an earlier visit) already

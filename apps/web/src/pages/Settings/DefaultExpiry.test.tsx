@@ -7,9 +7,9 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CategoryOptions } from '../../lib/settings';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubViewport } from '../../test/viewport';
+import type { CategoryOptions } from '@/lib/settings';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 type Override = { categoryId: string; name: string; days: number };
