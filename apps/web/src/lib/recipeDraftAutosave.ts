@@ -20,6 +20,9 @@ export const AUTOSAVE_DELAY_MS = 1500;
 /** Waits before the 1st, 2nd, ... retry of a failed save; the last one repeats. */
 export const AUTOSAVE_RETRY_DELAYS_MS = [3000, 6000, 12_000, 24_000, 30_000];
 
+/** The browser caps a `keepalive` body at 64 KB (bytes). */
+const KEEPALIVE_MAX_BYTES = 60_000;
+
 /**
  * `failed`: the last save failed and is being retried (the header says so).
  * `rejected`: the server refused the write for good (a 4xx that waiting cannot
@@ -27,9 +30,6 @@ export const AUTOSAVE_RETRY_DELAYS_MS = [3000, 6000, 12_000, 24_000, 30_000];
  * `conflict`: another device or tab saved a newer version; autosave has stopped
  * until the form is reloaded from the server.
  */
-/** The browser caps a `keepalive` body at 64 KB (bytes). */
-const KEEPALIVE_MAX_BYTES = 60_000;
-
 export type AutosaveStatus =
   'idle' | 'saving' | 'saved' | 'failed' | 'rejected' | 'conflict';
 
@@ -322,7 +322,10 @@ export function useRecipeDraftAutosave(options: AutosaveOptions): Autosave {
       if (state.stopped) return;
       // A request is in flight (edits go on being sent, and 404): the tap waits for it, not lost.
       if (state.busy) {
-        void state.busy.then(start);
+        void state.busy.then(() => {
+          // The write that was waited for succeeded (an earlier tap's create): no gone draft is left to recover.
+          if (state.failed) start();
+        });
         return;
       }
       if (state.timer) clearTimeout(state.timer);

@@ -389,7 +389,8 @@ describe('Recipe Drafts on New Variant', () => {
       await screen.findByText(`at ${VARIANT}?draft=${DRAFT_ID} by REPLACE`),
     ).toBeVisible();
     expect(await screen.findByLabelText(/^Title/)).toHaveValue('Gran omelette');
-    // The page starts the copy of the URL's base beside the route lookup (one GET, wasted here); the right base is then read once.
+    // The page starts the copy of the URL's base beside the route lookup (one GET, wasted here); the right base is then read once, by the form.
+    expect(sent(calls, 'GET /api/recipes/other/variant-draft')).toHaveLength(1);
     expect(sent(calls, `GET /api/recipes/${BASE}/variant-draft`)).toHaveLength(
       1,
     );

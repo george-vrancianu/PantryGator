@@ -701,6 +701,37 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
       });
     });
 
+    it('creates only one new Recipe Draft when Keep as new is tapped twice while an update is in flight', async () => {
+      const user = typer();
+      let release: (response: Response) => void = () => {};
+      let puts = 0;
+      const calls = setup({
+        [POST]: () => created(),
+        [PUT]: () => {
+          puts += 1;
+          if (puts === 1) return failure(404, 'recipe_drafts.not_found');
+          return new Promise<Response>((resolve) => {
+            release = resolve;
+          });
+        },
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      const keep = await screen.findByRole('button', {
+        name: 'Keep as a new Recipe Draft',
+      });
+      await user.type(title, '!');
+      await elapse(1600);
+      await user.click(keep);
+      await user.click(keep);
+      await act(async () => release(failure(404, 'recipe_drafts.not_found')));
+      await elapse(100);
+      expect(sent(calls, POST)).toHaveLength(2);
+    });
+
     it('does not offer it for a refusal other than a gone Recipe Draft', async () => {
       const user = typer();
       setup({
