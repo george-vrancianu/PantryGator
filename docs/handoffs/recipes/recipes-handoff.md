@@ -6,7 +6,7 @@ Reference prototypes (self-contained HTML, open in a browser; the same files are
 - `recipes-list-prototypes.html` — list page, **Variant C "Cook tonight first"** is the chosen one (the other two are kept for context). Live: https://claude.ai/artifact/QDsuQDKHpFtxRtVm5e92KF
 - `recipe-detail-prototypes.html` — detail page, **Variant B "Tabs"** is the chosen one. Live: https://claude.ai/artifact/Vqe85xKL3ojgdCYg6uVX29
 
-The prototypes are the source of truth for look, spacing and interaction; the numbers below are copied from them. Both pages use the app's existing light tokens (`packages/ui/src/theme/tokens.ts`) and fonts (Bricolage Grotesque display, DM Sans body); nothing new is introduced at token level.
+The prototypes are the source of truth for look, spacing and interaction; the numbers below are copied from them. Both pages use the app's existing light tokens (`packages/ui/src/theme/themes.ts`) and fonts (Bricolage Grotesque display, DM Sans body); nothing new is introduced at token level.
 
 Code touched: `apps/web/src/pages/Recipes/*` (`RecipesPage.tsx`, `RecipeDetailPage.tsx`, `components/*`), `apps/web/src/lib/recipes.ts`, `apps/web/src/lib/cookTonight.ts`, `apps/web/src/i18n/locales/*/recipes.json`.
 

@@ -1,4 +1,4 @@
-import { Box, tokens, displayType, radius } from '@pocket-pantry/ui';
+import { Box, displayType, radius, palette, shade } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WidgetCard } from './WidgetCard';
@@ -30,7 +30,11 @@ function Placeholder({
       >
         <Box
           component="span"
-          sx={{ fontSize: 13, fontWeight: 600, color: tokens.color.muted }}
+          sx={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: palette('text-secondary'),
+          }}
         >
           {title}
         </Box>
@@ -42,8 +46,8 @@ function Placeholder({
             px: '8px',
             py: '2px',
             borderRadius: radius.tag,
-            bgcolor: tokens.color.soonBg,
-            color: tokens.color.soonFg,
+            bgcolor: palette('warning-light'),
+            color: palette('warning-main'),
             whiteSpace: 'nowrap',
           }}
         >
@@ -59,7 +63,11 @@ function Bar({ value, color }: { value: number; color: string }) {
   return (
     <Box
       aria-hidden="true"
-      sx={{ height: 6, borderRadius: radius.tag, bgcolor: tokens.color.bg }}
+      sx={{
+        height: 6,
+        borderRadius: radius.tag,
+        bgcolor: palette('background-default'),
+      }}
     >
       <Box
         sx={{
@@ -92,7 +100,7 @@ export function BudgetWidget({ size, columns }: WidgetProps) {
       >
         {t('widgets.budget.sample')}
       </Box>
-      <Bar value={60} color={tokens.color.accent} />
+      <Bar value={60} color={palette('pp-accent')} />
     </Placeholder>
   );
 }
@@ -116,11 +124,11 @@ export function NutritionWidget({ size, columns }: WidgetProps) {
           <Box key={nutrient}>
             <Box
               component="span"
-              sx={{ fontSize: 11, color: tokens.color.muted }}
+              sx={{ fontSize: 11, color: palette('text-secondary') }}
             >
               {t(`widgets.nutrition.${nutrient}`)}
             </Box>
-            <Bar value={value} color={tokens.color.accentMid} />
+            <Bar value={value} color={shade.accentMid} />
           </Box>
         ))}
       </Box>

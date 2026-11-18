@@ -7,9 +7,9 @@ import {
   TextField,
   Typography,
   radius,
-  tokens,
   useToast,
   SectionHeading,
+  palette,
 } from '@pocket-pantry/ui';
 import type { TFunction } from 'i18next';
 import { useId, useState, type FormEvent } from 'react';
@@ -159,7 +159,7 @@ export function CreditsSection() {
               sx={{
                 height: 44,
                 borderRadius: radius.control,
-                bgcolor: tokens.color.subtle,
+                bgcolor: palette('pp-subtle'),
               }}
             />
           ) : null}

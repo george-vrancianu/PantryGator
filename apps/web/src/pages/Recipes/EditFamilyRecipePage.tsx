@@ -150,9 +150,7 @@ export function EditFamilyRecipePage() {
     update: (tipId: string, text: string) =>
       tipWrites.update.mutate({ tipId, text }),
     remove: (tipId: string) =>
-      tipRemoval.remove(tipId, '', t('recipes:family.tips.deleted'), {
-        polite: true,
-      }),
+      tipRemoval.remove(tipId, '', t('recipes:family.tips.deleted')),
     // The API takes every Tip of the Recipe: swap the Tip with its neighbour among the ones shown in its group.
     // Blocked while a reorder is in flight: the list is stale until it returns, so a second move would undo the first.
     moving: tipWrites.reorder.isPending,

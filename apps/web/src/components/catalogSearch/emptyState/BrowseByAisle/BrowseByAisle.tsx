@@ -1,4 +1,4 @@
-import { Box, tokens, focusRing, radius } from '@pocket-pantry/ui';
+import { Box, palette, focusRing, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useCatalogAisles } from '@/lib/catalog';
 import { AisleSwatch } from '../../AisleSwatch/AisleSwatch';
@@ -11,14 +11,20 @@ import { useEmptyStateSearch } from '../context';
  * or until the Aisles have loaded.
  */
 export function BrowseByAisle() {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   const browse = useEmptyStateSearch();
   const aisles = useCatalogAisles(browse?.scope, browse !== null);
   if (!browse || !aisles.data || aisles.data.length === 0) return null;
   return (
-    <Box sx={{ borderTop: `1px solid ${color.divider}`, pt: 1.5 }}>
-      <Box sx={{ fontSize: 12, fontWeight: 600, color: color.muted, mb: 1 }}>
+    <Box sx={{ borderTop: `1px solid ${palette('divider')}`, pt: 1.5 }}>
+      <Box
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: palette('text-secondary'),
+          mb: 1,
+        }}
+      >
         {t('search.browseAisles')}
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -35,9 +41,9 @@ export function BrowseByAisle() {
               minHeight: 36,
               p: '0 12px',
               borderRadius: radius.chip,
-              border: `1px solid ${color.line}`,
-              backgroundColor: color.surface,
-              color: color.ink,
+              border: `1px solid ${palette('pp-line')}`,
+              backgroundColor: palette('background-paper'),
+              color: palette('text-primary'),
               font: 'inherit',
               fontSize: 13.5,
               fontWeight: 600,

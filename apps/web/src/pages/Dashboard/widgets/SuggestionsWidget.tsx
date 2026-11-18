@@ -1,4 +1,4 @@
-import { Box, ShoppingIcon, tokens } from '@pocket-pantry/ui';
+import { Box, ShoppingIcon, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { localIso } from '@/lib/pantry';
@@ -44,7 +44,7 @@ export function SuggestionsWidget({ size, columns }: WidgetProps) {
           mt: 'auto',
           pt: '8px',
           fontSize: 12,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {names.length === 0

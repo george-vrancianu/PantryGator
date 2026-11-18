@@ -3,7 +3,7 @@ import {
   CalendarIcon,
   ChevronRightIcon,
   Typography,
-  tokens,
+  palette,
   nestedRadius,
   radius,
 } from '@pocket-pantry/ui';
@@ -56,7 +56,6 @@ export function ExpiryField({
   const row = useRef<HTMLButtonElement>(null);
   const today = useToday();
   const { tagFor } = useExpiryTags(today);
-  const { color } = tokens;
   const shown =
     value === null ? null : dateAndRelativeDay(value, today, i18n.language);
 
@@ -97,16 +96,16 @@ export function ExpiryField({
           gap: '12px',
           p: '8px 10px 8px 14px',
           borderRadius: radius.control,
-          border: `1.5px solid ${error ? color.urgentFg : color.line}`,
-          backgroundColor: color.surface,
-          color: color.ink,
+          border: `1.5px solid ${error ? palette('error-main') : palette('pp-line')}`,
+          backgroundColor: palette('background-paper'),
+          color: palette('text-primary'),
           font: 'inherit',
           textAlign: 'left',
           cursor: 'pointer',
           '&:focus-visible': {
             outline: 'none',
-            borderColor: error ? color.urgentFg : color.accent,
-            boxShadow: `0 0 0 3px ${color.accentTint}`,
+            borderColor: error ? palette('error-main') : palette('pp-accent'),
+            boxShadow: `0 0 0 3px ${palette('pp-accentTint')}`,
           },
         }}
       >
@@ -119,8 +118,8 @@ export function ExpiryField({
             display: 'grid',
             placeItems: 'center',
             borderRadius: nestedRadius(radius.control, 2),
-            backgroundColor: color.accentTint,
-            color: color.accentOnTint,
+            backgroundColor: palette('pp-accentTint'),
+            color: palette('pp-accentOnTint'),
           }}
         >
           <CalendarIcon size={18} />
@@ -147,14 +146,17 @@ export function ExpiryField({
           >
             {shown === null ? t('picker.none') : shown.date}
           </Box>
-          <Box component="span" sx={{ fontSize: 12.5, color: color.muted }}>
+          <Box
+            component="span"
+            sx={{ fontSize: 12.5, color: palette('text-secondary') }}
+          >
             {shown === null ? t('picker.tapToSet') : shown.relative}
           </Box>
         </Box>
         {value === null || range ? null : <ExpiryTag tag={tagFor(value)} />}
         <ChevronRightIcon
           size={18}
-          color={color.muted}
+          color={palette('text-secondary')}
           style={{ flex: 'none' }}
         />
       </Box>
@@ -162,7 +164,7 @@ export function ExpiryField({
         <Typography
           id={errorId}
           variant="meta"
-          sx={{ display: 'block', mt: 0.75, color: color.urgentFg }}
+          sx={{ display: 'block', mt: 0.75, color: palette('error-main') }}
         >
           {error}
         </Typography>

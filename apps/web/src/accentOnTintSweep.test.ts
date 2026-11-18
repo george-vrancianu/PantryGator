@@ -15,7 +15,16 @@ const sources = import.meta.glob<string>(
 );
 
 const TINT_FILL = /\b(?:bgcolor|backgroundColor|bg):\s*[^,]*accentTint/;
-const ACCENT_TEXT = /\b(?:color|fg):\s*(?:tokens\.)?color\.accent\b(?!\w)/;
+const ACCENT_TEXT =
+  /\b(?:color|fg):\s*(?:palette\('pp-accent'\)|'pp\.accent'|shade\.accent\w*)/;
+
+/**
+ * Accent on a tint that is not text. QuickRow's icon tile is aria-hidden and
+ * decorative, so the 3:1 non-text ratio applies, not 4.5:1.
+ */
+const NOT_TEXT = [
+  "pages/Pantry/components/QuickRow/QuickRow.tsx:color: 'pp.accent',",
+];
 
 function offences() {
   const found: string[] = [];
@@ -25,9 +34,10 @@ function offences() {
       if (!TINT_FILL.test(line)) return;
       const from = Math.max(0, index - 4);
       lines.slice(from, index + 4).forEach((near, offset) => {
-        if (ACCENT_TEXT.test(near)) {
-          found.push(`${path}:${from + 1 + offset} ${near.trim()}`);
-        }
+        if (!ACCENT_TEXT.test(near)) return;
+        if (NOT_TEXT.some((ok) => `${path}:${near.trim()}`.endsWith(ok)))
+          return;
+        found.push(`${path}:${from + 1 + offset} ${near.trim()}`);
       });
     });
   }

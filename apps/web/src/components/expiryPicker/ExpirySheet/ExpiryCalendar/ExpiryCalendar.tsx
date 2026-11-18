@@ -1,6 +1,6 @@
 import {
   Box,
-  tokens,
+  palette,
   usePrefersReducedMotion,
   color,
   displayType,
@@ -241,8 +241,8 @@ export function ExpiryCalendar({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        backgroundColor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
+        backgroundColor: palette('background-paper'),
+        border: `1px solid ${palette('pp-line')}`,
         borderRadius: radius.card,
       }}
     >
@@ -251,7 +251,7 @@ export function ExpiryCalendar({
         sx={{
           ...grid,
           p: '8px 8px 4px',
-          borderBottom: `1px solid ${tokens.color.divider}`,
+          borderBottom: `1px solid ${palette('divider')}`,
         }}
       >
         {Array.from({ length: 7 }, (_, index) => (
@@ -261,7 +261,7 @@ export function ExpiryCalendar({
             sx={{
               fontSize: 11,
               fontWeight: 700,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               textAlign: 'center',
               letterSpacing: '.04em',
             }}
@@ -305,18 +305,18 @@ export function ExpiryCalendar({
             fontSize: 13.5,
             fontWeight: 600,
             fontVariantNumeric: 'tabular-nums',
-            color: tokens.color.ink,
+            color: palette('text-primary'),
             backgroundColor: 'transparent',
             cursor: 'pointer',
             transition: 'background-color .1s',
-            '&:hover': { backgroundColor: tokens.color.chipNeutral },
+            '&:hover': { backgroundColor: palette('pp-chip') },
             ...focusRing,
             '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
           },
-          '& .day[data-past]': { color: tokens.color.muted },
+          '& .day[data-past]': { color: palette('text-secondary') },
           '& .day:disabled': { opacity: 0.35, cursor: 'default' },
           '& .day[data-band]': {
-            backgroundColor: `color-mix(in srgb, ${tokens.color.soonBg} 70%, transparent)`,
+            backgroundColor: `color-mix(in srgb, ${palette('warning-light')} 70%, transparent)`,
           },
           '& .day[aria-current="date"]::after': {
             content: '""',
@@ -327,10 +327,10 @@ export function ExpiryCalendar({
             height: 4,
             ml: '-2px',
             borderRadius: '50%',
-            backgroundColor: tokens.color.accent,
+            backgroundColor: palette('pp-accent'),
           },
           '& .day[aria-pressed="true"]': {
-            backgroundColor: tokens.color.accent,
+            backgroundColor: palette('pp-accent'),
             color: color.accentInk,
             boxShadow: shadow.button,
           },
@@ -356,7 +356,7 @@ export function ExpiryCalendar({
                   zIndex: 1,
                   m: 0,
                   p: '8px 4px 4px',
-                  backgroundColor: tokens.color.surface,
+                  backgroundColor: palette('background-paper'),
                   ...displayType,
                   fontSize: 15,
                 }}
@@ -412,9 +412,9 @@ export function ExpiryCalendar({
           justifyContent: 'space-between',
           minHeight: 36,
           p: '6px 10px',
-          borderTop: `1px solid ${tokens.color.divider}`,
+          borderTop: `1px solid ${palette('divider')}`,
           fontSize: 12.5,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {range ? (
@@ -431,7 +431,7 @@ export function ExpiryCalendar({
                 width: 10,
                 height: 10,
                 borderRadius: nestedRadius(radius.box, 4),
-                backgroundColor: tokens.color.soonBg,
+                backgroundColor: palette('warning-light'),
               }}
             />
             <span id={legendId}>
@@ -451,7 +451,7 @@ export function ExpiryCalendar({
             font: 'inherit',
             fontSize: 13,
             fontWeight: 700,
-            color: tokens.color.accent,
+            color: palette('pp-accent'),
             cursor: 'pointer',
             ...focusRing,
           }}

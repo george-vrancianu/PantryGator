@@ -39,7 +39,6 @@ const rules: Rule[] = [
     name: 'raw Theme variable',
     find: (line) => /var\(--(?:pp|mui-palette)-/.test(line),
   },
-  { name: 'fixed radius token', find: (line) => /tokens\.radius/.test(line) },
   {
     name: 'fixed borderRadius',
     find: (line) => {

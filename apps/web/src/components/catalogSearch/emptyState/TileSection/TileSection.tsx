@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { Children, useId, type ReactNode } from 'react';
 
 /** An empty-state block shows at most this many tiles; the rest are reached by typing. */
@@ -25,7 +25,6 @@ export function TileSection({
   children,
 }: TileSectionProps) {
   const headingId = useId();
-  const { color } = tokens;
   const tiles = Children.toArray(children).slice(0, MAX_TILES);
   return (
     <Box component="section" aria-labelledby={headingId}>
@@ -39,7 +38,7 @@ export function TileSection({
           fontWeight: 700,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
-          color: color.muted,
+          color: palette('text-secondary'),
         }}
       >
         <Box
@@ -69,7 +68,13 @@ export function TileSection({
         ) : null}
       </Box>
       {tiles.length === 0 && none ? (
-        <Box sx={{ p: '4px 2px 14px', fontSize: 13, color: color.muted }}>
+        <Box
+          sx={{
+            p: '4px 2px 14px',
+            fontSize: 13,
+            color: palette('text-secondary'),
+          }}
+        >
           {none}
         </Box>
       ) : (

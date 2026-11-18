@@ -1,9 +1,8 @@
-import { Box, InfoIcon, tokens, focusRing, radius } from '@pocket-pantry/ui';
+import { Box, InfoIcon, palette, focusRing, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 /** The inline `role="alert"` row for a failed search, with Retry. */
 export function ErrorRow({ onRetry }: { onRetry: () => void }) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   return (
     <Box
@@ -13,8 +12,8 @@ export function ErrorRow({ onRetry }: { onRetry: () => void }) {
         alignItems: 'center',
         gap: 1.5,
         p: '10px 14px',
-        backgroundColor: color.urgentBg,
-        color: color.urgentFg,
+        backgroundColor: palette('error-light'),
+        color: palette('error-main'),
       }}
     >
       <Box aria-hidden="true" sx={{ display: 'flex', flexShrink: 0 }}>
@@ -38,10 +37,10 @@ export function ErrorRow({ onRetry }: { onRetry: () => void }) {
           flexShrink: 0,
           px: '12px',
           py: '9px',
-          border: `1.5px solid ${color.urgentFg}`,
+          border: `1.5px solid ${palette('error-main')}`,
           borderRadius: radius.control,
           background: 'none',
-          color: color.urgentFg,
+          color: palette('error-main'),
           font: 'inherit',
           fontSize: 13,
           fontWeight: 700,

@@ -13,9 +13,9 @@ import {
   PlusIcon,
   radius,
   StarIcon,
-  tokens,
   usePrefersReducedMotion,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,28 +46,28 @@ const SEVERITY: Record<
 > = {
   expired: {
     icon: <DeleteIcon size={16} strokeWidth={2.2} />,
-    background: tokens.color.urgentBg,
-    color: tokens.color.urgentFg,
+    background: palette('error-light'),
+    color: palette('error-main'),
   },
   missingStaples: {
     icon: <StarIcon size={16} strokeWidth={2.2} />,
-    background: tokens.color.urgentBg,
-    color: tokens.color.urgentFg,
+    background: palette('error-light'),
+    color: palette('error-main'),
   },
   expiringSoon: {
     icon: <CookIcon size={16} strokeWidth={2.2} />,
-    background: tokens.color.soonBg,
-    color: tokens.color.soonFg,
+    background: palette('warning-light'),
+    color: palette('warning-main'),
   },
   runningLow: {
     icon: <BatteryLowIcon size={16} strokeWidth={2.2} />,
-    background: tokens.color.butter,
-    color: tokens.color.butterInk,
+    background: palette('secondary-main'),
+    color: palette('secondary-contrastText'),
   },
   undated: {
     icon: <CalendarIcon size={16} strokeWidth={2.2} />,
-    background: tokens.color.chipNeutral,
-    color: tokens.color.ink,
+    background: palette('pp-chip'),
+    color: palette('text-primary'),
   },
 };
 
@@ -126,7 +126,7 @@ export function HealthTodos({ state, today }: Props) {
             gap: '12px',
             py: '16px',
             fontSize: 13.5,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
           }}
         >
           <Box
@@ -138,8 +138,8 @@ export function HealthTodos({ state, today }: Props) {
               borderRadius: '50%',
               display: 'grid',
               placeItems: 'center',
-              bgcolor: tokens.color.accentTint,
-              color: tokens.color.accentOnTint,
+              bgcolor: palette('pp-accentTint'),
+              color: palette('pp-accentOnTint'),
             }}
           >
             <CheckIcon size={16} />
@@ -163,7 +163,7 @@ export function HealthTodos({ state, today }: Props) {
                 fontWeight: 800,
                 letterSpacing: '.08em',
                 textTransform: 'uppercase',
-                color: tokens.color.muted,
+                color: palette('text-secondary'),
               }}
             >
               <span>{t(`health.group.${group}`)}</span>
@@ -221,8 +221,8 @@ export function HealthTodos({ state, today }: Props) {
                 height: 28,
                 p: '0 9px 0 7px',
                 borderRadius: radius.tag,
-                bgcolor: tokens.color.okBg,
-                color: tokens.color.okFg,
+                bgcolor: palette('success-light'),
+                color: palette('success-main'),
                 fontSize: 12.5,
                 fontWeight: 700,
               }}
@@ -352,7 +352,7 @@ function TodoRow({
             gap: '12px',
             cursor: 'pointer',
             '&:focus-visible': {
-              outline: `2px solid ${tokens.color.accent}`,
+              outline: `2px solid ${palette('pp-accent')}`,
               outlineOffset: 2,
             },
           }}
@@ -396,8 +396,8 @@ function TodoRow({
                     borderRadius: radius.tag,
                     fontSize: 11,
                     fontWeight: 800,
-                    bgcolor: tokens.color.okBg,
-                    color: tokens.color.okFg,
+                    bgcolor: palette('success-light'),
+                    color: palette('success-main'),
                   }}
                 >
                   <span aria-hidden="true">+{todo.gain}</span>
@@ -411,7 +411,7 @@ function TodoRow({
                 aria-hidden="true"
                 sx={{
                   display: 'flex',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   transform: open ? 'rotate(180deg)' : 'none',
                   transition: reduceMotion
                     ? 'none'
@@ -426,7 +426,7 @@ function TodoRow({
               sx={{
                 display: 'block',
                 fontSize: 13,
-                color: tokens.color.muted,
+                color: palette('text-secondary'),
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -542,7 +542,7 @@ function TodoItemRow({
         minHeight: 42,
         p: '4px 8px 4px 6px',
         borderRadius: radius.control,
-        bgcolor: tokens.color.subtle,
+        bgcolor: palette('pp-subtle'),
       }}
     >
       <IngredientIconSlot
@@ -568,7 +568,7 @@ function TodoItemRow({
             alignItems: 'center',
             gap: '4px',
             fontSize: 12,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
           }}
         >
           {item.forgotten ? (

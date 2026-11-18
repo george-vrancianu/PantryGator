@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useId, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { linkButtonSx } from '../layout';
@@ -35,8 +35,8 @@ export function ReviewGroup({
           justifyContent: 'space-between',
           minHeight: 40,
           px: '12px',
-          bgcolor: tokens.color.subtle,
-          borderTop: `1px solid ${tokens.color.divider}`,
+          bgcolor: palette('pp-subtle'),
+          borderTop: `1px solid ${palette('divider')}`,
         }}
       >
         <Box
@@ -48,7 +48,7 @@ export function ReviewGroup({
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
             color:
-              kind === 'review' ? tokens.color.urgentFg : tokens.color.accent,
+              kind === 'review' ? palette('error-main') : palette('pp-accent'),
           }}
         >
           {`${t(`group.${kind}`)} · ${count}`}
@@ -76,8 +76,8 @@ export function ReviewGroup({
             px: '12px',
             py: '10px',
             fontSize: 13,
-            color: tokens.color.muted,
-            borderTop: `1px solid ${tokens.color.divider}`,
+            color: palette('text-secondary'),
+            borderTop: `1px solid ${palette('divider')}`,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',

@@ -1,4 +1,10 @@
-import { Box, PlusIcon, tokens, radius, nestedRadius } from '@pocket-pantry/ui';
+import {
+  Box,
+  PlusIcon,
+  palette,
+  radius,
+  nestedRadius,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { OptionRow } from '../OptionRow/OptionRow';
 import { RowTag } from '../RowTag/RowTag';
@@ -24,7 +30,6 @@ export function UseTypedRow({
   tag = null,
   onSelect,
 }: UseTypedRowProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   return (
     <OptionRow
@@ -43,17 +48,23 @@ export function UseTypedRow({
           display: 'grid',
           placeItems: 'center',
           borderRadius: nestedRadius(radius.control, 5),
-          backgroundColor: color.chipNeutral,
-          color: color.muted,
+          backgroundColor: palette('pp-chip'),
+          color: palette('text-secondary'),
         }}
       >
         <PlusIcon size={20} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Box sx={{ fontSize: 15, fontWeight: 600, color: color.accentOnTint }}>
+        <Box
+          sx={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: palette('pp-accentOnTint'),
+          }}
+        >
           {t('search.useTyped', { name })}
         </Box>
-        <Box sx={{ fontSize: 13, color: color.muted }}>
+        <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
           {t('search.useTypedHint')}
         </Box>
       </Box>

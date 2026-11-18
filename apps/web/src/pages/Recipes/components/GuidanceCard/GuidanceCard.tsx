@@ -11,8 +11,8 @@ import {
   Stack,
   TextField,
   Typography,
-  tokens,
   usePrefersReducedMotion,
+  palette,
 } from '@pocket-pantry/ui';
 import { CreditPrice } from '@/components/credits/CreditPrice/CreditPrice';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
@@ -464,9 +464,9 @@ export function GuidanceCard({
                   sx={
                     use?.polarity === 'avoid'
                       ? {
-                          backgroundColor: tokens.color.soonBg,
-                          color: tokens.color.soonFg,
-                          '& .chip-icon': { color: tokens.color.soonFg },
+                          backgroundColor: palette('warning-light'),
+                          color: palette('warning-main'),
+                          '& .chip-icon': { color: palette('warning-main') },
                         }
                       : undefined
                   }

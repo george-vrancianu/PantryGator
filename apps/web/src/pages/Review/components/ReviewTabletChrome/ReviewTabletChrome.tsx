@@ -1,4 +1,4 @@
-import { Box, Button, tokens, displayType, radius } from '@pocket-pantry/ui';
+import { Box, Button, displayType, radius, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { COUNTER_TONE, type Counts } from '../ReviewCounters/ReviewCounters';
 
@@ -70,7 +70,7 @@ export function ReviewTabletFooter({
         mt: '20px',
       }}
     >
-      <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+      <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
         {t('footer.helper')}
       </Box>
       <Box sx={{ display: 'flex', gap: '10px' }}>
@@ -79,9 +79,9 @@ export function ReviewTabletFooter({
           onClick={onDiscard}
           sx={{
             height: 52,
-            bgcolor: tokens.color.surface,
-            border: `1px solid ${tokens.color.line}`,
-            color: tokens.color.ink,
+            bgcolor: palette('background-paper'),
+            border: `1px solid ${palette('pp-line')}`,
+            color: palette('text-primary'),
             fontSize: 15,
             fontWeight: 700,
           }}

@@ -1,4 +1,4 @@
-import { Box, PeopleIcon, radius, tokens } from '@pocket-pantry/ui';
+import { Box, PeopleIcon, radius, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 /** The butter "In your Recipes" pill that follows a Catalog Recipe's title once the Family has added it. */
@@ -16,8 +16,8 @@ export function InFamilyPill() {
         px: '8px',
         py: '3px',
         borderRadius: radius.tag,
-        bgcolor: tokens.color.butter,
-        color: tokens.color.butterInk,
+        bgcolor: palette('secondary-main'),
+        color: palette('secondary-contrastText'),
         fontSize: 11.5,
         fontWeight: 700,
         lineHeight: 1.2,

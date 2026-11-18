@@ -4,8 +4,9 @@ import {
   PantryIcon,
   RecipesIcon,
   ShoppingIcon,
-  tokens,
   radius,
+  palette,
+  shade,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import {
@@ -53,11 +54,11 @@ const PREVIEWS: Record<WidgetType, ReactNode> = {
       }}
     >
       {[
-        [tokens.color.accent, tokens.color.accent, tokens.color.accent],
-        [tokens.color.accent, tokens.color.urgentFg, tokens.color.accent],
-        [tokens.color.accent, tokens.color.urgentFg, tokens.color.urgentFg],
-        [tokens.color.accent, HATCH, HATCH],
-        [tokens.color.accent, tokens.color.accent, tokens.color.accent],
+        [palette('pp-accent'), palette('pp-accent'), palette('pp-accent')],
+        [palette('pp-accent'), palette('error-main'), palette('pp-accent')],
+        [palette('pp-accent'), palette('error-main'), palette('error-main')],
+        [palette('pp-accent'), HATCH, HATCH],
+        [palette('pp-accent'), palette('pp-accent'), palette('pp-accent')],
       ].map((bars, day) => (
         <Box
           key={day}
@@ -95,8 +96,8 @@ const PREVIEWS: Record<WidgetType, ReactNode> = {
         height: '100%',
       }}
     >
-      {bar('50%', tokens.color.ink)}
-      {bar('68%', tokens.color.accent)}
+      {bar('50%', palette('text-primary'))}
+      {bar('68%', palette('pp-accent'))}
     </Box>
   ),
   nutrition: (
@@ -109,9 +110,9 @@ const PREVIEWS: Record<WidgetType, ReactNode> = {
         height: '100%',
       }}
     >
-      {bar('80%', tokens.color.accent)}
-      {bar('55%', tokens.color.accentMid)}
-      {bar('35%', tokens.color.butter)}
+      {bar('80%', palette('pp-accent'))}
+      {bar('55%', shade.accentMid)}
+      {bar('35%', palette('secondary-main'))}
     </Box>
   ),
 };
@@ -123,8 +124,8 @@ export function WidgetPreview({ type }: { type: WidgetType }) {
       sx={{
         height: 64,
         borderRadius: radius.control,
-        bgcolor: tokens.color.bg,
-        color: tokens.color.ink,
+        bgcolor: palette('background-default'),
+        color: palette('text-primary'),
         p: '12px',
         boxSizing: 'border-box',
         display: 'flex',

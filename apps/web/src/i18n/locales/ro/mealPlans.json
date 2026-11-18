@@ -92,5 +92,81 @@
     "exploreLoading": "Se încarcă Explorează",
     "explore": "Explorează",
     "exploreHint": "Dacă alegi una, o adaugi la rețetele tale și o planifici."
+  },
+  "forecast": {
+    "today": "Azi",
+    "tomorrow": "Mâine",
+    "editDay": "Editează ziua",
+    "addNMissing_one": "Adaugă {{count}} ingredient lipsă",
+    "addNMissing_other": "Adaugă {{count}} de ingrediente lipsă",
+    "addLine": "Adaugă {{name}} pe lista de cumpărături",
+    "toast": {
+      "added_one": "{{count}} adăugat pe lista de cumpărături",
+      "added_few": "{{count}} adăugate pe lista de cumpărături",
+      "added_other": "{{count}} adăugate pe lista de cumpărături"
+    },
+    "planMeal": "Planifică o masă",
+    "startPlan": "Începe un plan",
+    "slot": {
+      "breakfast": "Mic dejun",
+      "lunch": "Prânz",
+      "dinner": "Cină"
+    },
+    "status": {
+      "covered": "Acoperit",
+      "onList": "Pe listă",
+      "short_one": "{{count}} lipsă",
+      "short_few": "{{count}} lipsă",
+      "short_other": "{{count}} lipsă",
+      "unavailable": "Nu mai este disponibilă"
+    },
+    "meta": "{{servings}} porții · {{minutes}} min",
+    "metaNoTime": "{{servings}} porții",
+    "line": {
+      "short": "lipsesc {{amount}}",
+      "need": "ai nevoie de {{amount}}",
+      "unknown": "cantitate necunoscută, în Cămara ta nu este o cantitate"
+    },
+    "reason": {
+      "usesLast": "{{who}} folosește tot ce a rămas",
+      "useLast": "{{who}} folosesc tot ce a rămas",
+      "earlierMeals_one": "{{count}} masă anterioară",
+      "earlierMeals_few": "{{count}} mese anterioare",
+      "earlierMeals_other": "{{count}} de mese anterioare",
+      "mealOf": "{{name}} de {{day}}",
+      "and": "{{first}} și {{second}}",
+      "expires": "Al tău expiră {{day}}",
+      "notInPantry": "Nu e în Cămara ta",
+      "onlyLeftAfter": "Au rămas doar {{amount}} după {{who}}",
+      "onlyInPantry": "Ai doar {{amount}} în Cămară"
+    },
+    "prevDay": "Ziua anterioară",
+    "nextDay": "Ziua următoare",
+    "close": "Închide",
+    "aria": {
+      "column": "{{date}}: {{summary}}",
+      "meals_one": "{{count}} masă, {{status}}",
+      "meals_few": "{{count}} mese, {{status}}",
+      "meals_other": "{{count}} de mese, {{status}}",
+      "allUnavailable_one": "{{count}} masă indisponibilă",
+      "allUnavailable_few": "{{count}} mese indisponibile",
+      "allUnavailable_other": "{{count}} de mese indisponibile",
+      "alsoUnavailable_one": "{{count}} indisponibilă",
+      "alsoUnavailable_few": "{{count}} indisponibile",
+      "alsoUnavailable_other": "{{count}} indisponibile",
+      "nothing": "nimic planificat",
+      "status": {
+        "covered": "acoperit",
+        "onList": "pe listă",
+        "short": "lipsă"
+      }
+    },
+    "nothingOn": "Nimic planificat pentru {{day}}.",
+    "legend": {
+      "covered": "Acoperit",
+      "onList": "Pe listă",
+      "short": "Lipsă"
+    },
+    "addNMissing_few": "Adaugă {{count}} ingrediente lipsă"
   }
 }

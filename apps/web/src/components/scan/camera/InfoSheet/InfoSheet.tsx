@@ -1,4 +1,4 @@
-import { Box, Sheet, Typography, tokens } from '@pocket-pantry/ui';
+import { Box, Sheet, Typography, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { CAMERA_MODES, type CameraMode } from '@/lib/cameraMode';
 import { isBarcodeMode } from '@/lib/cameraMode';
@@ -43,7 +43,7 @@ function InfoBody({
   const { t } = useTranslation('scan');
   return (
     <>
-      <Typography sx={{ fontSize: 14, color: tokens.color.muted }}>
+      <Typography sx={{ fontSize: 14, color: palette('text-secondary') }}>
         {t('info.intro')}
       </Typography>
       <Box
@@ -53,12 +53,15 @@ function InfoBody({
         {modes.map((mode) => (
           <Box component="li" key={mode} sx={{ mt: 0.75 }}>
             <strong>{t(`mode.${mode}`)}</strong>{' '}
-            <Box component="span" sx={{ color: tokens.color.muted }}>
+            <Box component="span" sx={{ color: palette('text-secondary') }}>
               {t(isBarcodeMode(mode) ? 'info.barcode' : `detail.${mode}`)}
             </Box>
             {mode === 'receipt'
               ? (['guide.receipt', 'guide.receiptFold'] as const).map((key) => (
-                  <Box key={key} sx={{ mt: 0.5, color: tokens.color.muted }}>
+                  <Box
+                    key={key}
+                    sx={{ mt: 0.5, color: palette('text-secondary') }}
+                  >
                     {t(key)}
                   </Box>
                 ))
@@ -67,7 +70,9 @@ function InfoBody({
         ))}
       </Box>
       {stackTip ? (
-        <Typography sx={{ mt: 1.5, fontSize: 14, color: tokens.color.muted }}>
+        <Typography
+          sx={{ mt: 1.5, fontSize: 14, color: palette('text-secondary') }}
+        >
           {t('info.tip')}
         </Typography>
       ) : null}

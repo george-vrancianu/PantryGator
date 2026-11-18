@@ -13,8 +13,10 @@ import {
   Typography,
   insetFocusRing,
   radius,
-  tokens,
+  tagColours,
   useToast,
+  type TagTone,
+  palette,
 } from '@pocket-pantry/ui';
 import { useQueries } from '@tanstack/react-query';
 import { useEffect, useId, useState } from 'react';
@@ -44,9 +46,11 @@ import {
   summarize,
   templateState,
   toggleLine,
+  type LineTag,
   type Selection,
   type TemplateState,
 } from '@/lib/templateSelection';
+import { onListTone } from '@/lib/statusTone';
 
 export type ApplyTemplatesSheetProps = {
   open: boolean;
@@ -241,7 +245,7 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
         {detailsError ? (
           <Alert>{translateApiError(t, detailsError)}</Alert>
         ) : null}
-        <Typography variant="meta" sx={{ color: tokens.color.muted }}>
+        <Typography variant="meta" sx={{ color: palette('text-secondary') }}>
           {t('shopping:import.hint')}
         </Typography>
         <Box component="section">
@@ -256,7 +260,7 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
             <Typography
               component="h3"
               variant="sectionLabel"
-              sx={{ color: tokens.color.muted }}
+              sx={{ color: palette('text-secondary') }}
             >
               {t('shopping:import.section', { count: summaries.length })}
             </Typography>
@@ -271,7 +275,7 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
           {templates.data && summaries.length === 0 ? (
             <Card
               variant="list"
-              sx={{ p: 2, fontSize: 13.5, color: tokens.color.muted }}
+              sx={{ p: 2, fontSize: 13.5, color: palette('text-secondary') }}
             >
               {t('shopping:import.none')}
             </Card>
@@ -335,14 +339,14 @@ function ApplyForm({ open, onClose, onExited }: ApplyTemplatesSheetProps) {
             variant="meta"
             sx={{
               textAlign: 'center',
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
               // Stays above the pinned Import so the reason it is disabled never scrolls away.
               position: 'sticky',
               bottom: 0,
               mx: '-20px',
               px: '20px',
               py: 1,
-              backgroundColor: tokens.color.bg,
+              backgroundColor: palette('background-default'),
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -396,10 +400,9 @@ function TemplateRow({
 }: TemplateRowProps) {
   const linesId = useId();
   const { t } = useTranslation(['shopping', 'templates']);
-  const { color } = tokens;
   const included = state !== 'excluded';
   return (
-    <Box sx={{ '& + &': { borderTop: `1px solid ${color.divider}` } }}>
+    <Box sx={{ '& + &': { borderTop: `1px solid ${palette('divider')}` } }}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box
           component="button"
@@ -428,14 +431,15 @@ function TemplateRow({
               display: 'grid',
               placeItems: 'center',
               borderRadius: radius.box,
-              border: `2px solid ${included ? color.accent : color.tickBorder}`,
+              border: `2px solid ${included ? palette('pp-accent') : palette('pp-box')}`,
               backgroundColor:
                 state === 'all'
-                  ? color.accent
+                  ? palette('pp-accent')
                   : state === 'mixed'
-                    ? color.accentTint
+                    ? palette('pp-accentTint')
                     : 'transparent',
-              color: state === 'all' ? themeColor.accentInk : color.accent,
+              color:
+                state === 'all' ? themeColor.accentInk : palette('pp-accent'),
               '& .MuiCircularProgress-root': {
                 width: '14px !important',
                 height: '14px !important',
@@ -482,8 +486,8 @@ function TemplateRow({
               display: 'grid',
               placeItems: 'center',
               borderRadius: radius.control,
-              backgroundColor: color.butter,
-              color: color.butterInk,
+              backgroundColor: palette('secondary-main'),
+              color: palette('secondary-contrastText'),
             }}
           >
             <TemplateIcon size={20} />
@@ -503,7 +507,7 @@ function TemplateRow({
             <Box
               sx={{
                 fontSize: 12.5,
-                color: color.muted,
+                color: palette('text-secondary'),
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -524,7 +528,7 @@ function TemplateRow({
             sx={{
               flexShrink: 0,
               display: 'grid',
-              color: color.muted,
+              color: palette('text-secondary'),
               transform: open ? 'rotate(90deg)' : 'none',
               transition: 'transform 150ms',
             }}
@@ -539,8 +543,8 @@ function TemplateRow({
         aria-label={open ? summary.name : undefined}
         hidden={!open}
         sx={{
-          backgroundColor: color.subtle,
-          borderTop: open ? `1px solid ${color.divider}` : 0,
+          backgroundColor: palette('pp-subtle'),
+          borderTop: open ? `1px solid ${palette('divider')}` : 0,
         }}
       >
         {open ? lines : null}
@@ -549,8 +553,9 @@ function TemplateRow({
   );
 }
 
-const okTag = { fg: tokens.color.okFg, bg: tokens.color.okBg };
-const soonTag = { fg: tokens.color.soonFg, bg: tokens.color.soonBg };
+/** In Pantry and In trolley are fine (`ok`); On list shares the forecast's `onList` tone. */
+const lineTagTone = (kind: LineTag): TagTone =>
+  kind === 'onList' ? onListTone : 'ok';
 
 /** The Import sheet words the On list tag "adds up"; the editor keeps plain "On list". */
 const importTagKey = { ...lineTagKey, onList: 'shopping:import.onListAddsUp' };
@@ -570,10 +575,15 @@ function TemplateLines({
   onLineTap,
 }: TemplateLinesProps) {
   const { t } = useTranslation(['shopping', 'templates', 'common']);
-  const { color } = tokens;
   if (detail.lines.length === 0) {
     return (
-      <Box sx={{ p: '12px 14px 12px 28px', fontSize: 13, color: color.muted }}>
+      <Box
+        sx={{
+          p: '12px 14px 12px 28px',
+          fontSize: 13,
+          color: palette('text-secondary'),
+        }}
+      >
         {t('templates:apply.empty')}
       </Box>
     );
@@ -586,7 +596,7 @@ function TemplateLines({
         const tag = kind
           ? {
               text: t(importTagKey[kind]),
-              ...(kind === 'onList' ? soonTag : okTag),
+              tone: lineTagTone(kind),
             }
           : null;
         const amount =
@@ -616,7 +626,7 @@ function TemplateLines({
               font: 'inherit',
               textAlign: 'left',
               cursor: 'pointer',
-              '& + &': { borderTop: `1px solid ${color.divider}` },
+              '& + &': { borderTop: `1px solid ${palette('divider')}` },
               ...insetFocusRing,
             }}
           >
@@ -629,8 +639,8 @@ function TemplateLines({
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: radius.box,
-                border: `2px solid ${on ? color.accent : color.tickBorder}`,
-                backgroundColor: on ? color.accent : 'transparent',
+                border: `2px solid ${on ? palette('pp-accent') : palette('pp-box')}`,
+                backgroundColor: on ? palette('pp-accent') : 'transparent',
                 color: themeColor.accentInk,
               }}
             >
@@ -639,7 +649,13 @@ function TemplateLines({
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Box sx={{ fontSize: 15, fontWeight: 600 }}>{line.name}</Box>
               {amount ? (
-                <Box sx={{ fontSize: 13, fontWeight: 500, color: color.muted }}>
+                <Box
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: palette('text-secondary'),
+                  }}
+                >
                   {amount}
                 </Box>
               ) : null}
@@ -647,15 +663,16 @@ function TemplateLines({
             {tag ? (
               <Box
                 component="span"
-                sx={{
-                  px: 1.25,
-                  py: 0.25,
-                  borderRadius: radius.tag,
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: tag.fg,
-                  backgroundColor: tag.bg,
-                }}
+                sx={[
+                  {
+                    px: 1.25,
+                    py: 0.25,
+                    borderRadius: radius.tag,
+                    fontSize: 11.5,
+                    fontWeight: 700,
+                  },
+                  tagColours(tag.tone),
+                ]}
               >
                 {tag.text}
               </Box>

@@ -28,11 +28,11 @@ import {
   PlusIcon,
   Spinner,
   Typography,
-  tokens,
   usePrefersReducedMotion,
   visuallyHidden,
   border,
   radius,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -64,7 +64,7 @@ import { WidgetPreview } from './components/WidgetPreview/WidgetPreview';
 
 const FOCUS_RING = {
   '&:focus-visible': {
-    outline: `3px solid ${tokens.color.accent}`,
+    outline: `3px solid ${palette('pp-accent')}`,
     outlineOffset: 2,
   },
 };
@@ -132,8 +132,10 @@ function WidgetRow({
         alignItems: 'center',
         columnGap: '4px',
         minHeight: 58,
-        borderTop: `1px solid ${tokens.color.divider}`,
-        bgcolor: isDragging ? tokens.color.accentTint : tokens.color.surface,
+        borderTop: `1px solid ${palette('divider')}`,
+        bgcolor: isDragging
+          ? palette('pp-accentTint')
+          : palette('background-paper'),
         position: 'relative',
         zIndex: isDragging ? 1 : 0,
         '&:first-of-type': { borderTop: 0 },
@@ -165,7 +167,7 @@ function WidgetRow({
             sx={{
               display: 'flex',
               flexShrink: 0,
-              color: tokens.color.accent,
+              color: palette('pp-accent'),
             }}
           >
             <Icon size={20} />
@@ -224,9 +226,11 @@ function WidgetRow({
               height: 44,
               px: '12px',
               borderRadius: radius.control,
-              border: `${border.width} solid ${tokens.color.line}`,
-              bgcolor: tokens.color.subtle,
-              color: canResize ? tokens.color.ink : tokens.color.muted,
+              border: `${border.width} solid ${palette('pp-line')}`,
+              bgcolor: palette('pp-subtle'),
+              color: canResize
+                ? palette('text-primary')
+                : palette('text-secondary'),
               fontFamily: 'inherit',
               fontSize: 12,
               fontWeight: 600,
@@ -403,10 +407,10 @@ export function CustomisePage() {
           mb: '8px',
           fontSize: 12,
           fontWeight: 700,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
-          '&:focus-visible': { outline: `3px solid ${tokens.color.accent}` },
+          '&:focus-visible': { outline: `3px solid ${palette('pp-accent')}` },
         }}
       >
         {t('onDashboard')}
@@ -452,8 +456,8 @@ export function CustomisePage() {
               listStyle: 'none',
               m: 0,
               p: '0 10px',
-              bgcolor: tokens.color.surface,
-              border: `1px solid ${tokens.color.line}`,
+              bgcolor: palette('background-paper'),
+              border: `1px solid ${palette('pp-line')}`,
               borderRadius: radius.card,
               overflow: 'hidden',
             }}
@@ -490,7 +494,7 @@ export function CustomisePage() {
             mb: '8px',
             fontSize: 12,
             fontWeight: 700,
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
           }}
@@ -516,8 +520,8 @@ export function CustomisePage() {
                   key={type}
                   sx={{
                     gridColumn: `span ${widgetSpan(WIDGET_SIZES[type].defaultSize, columns).columns}`,
-                    bgcolor: tokens.color.surface,
-                    border: `1px solid ${tokens.color.line}`,
+                    bgcolor: palette('background-paper'),
+                    border: `1px solid ${palette('pp-line')}`,
                     borderRadius: radius.card,
                     p: '10px',
                   }}

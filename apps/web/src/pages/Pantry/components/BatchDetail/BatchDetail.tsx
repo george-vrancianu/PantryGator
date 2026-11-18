@@ -3,9 +3,9 @@ import {
   Sheet,
   SwipeRow,
   Typography,
-  tokens,
   useToast,
   type SwipeRowHandle,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -118,7 +118,7 @@ export function BatchDetail({
               width: 22,
               height: 22,
               borderRadius: '50%',
-              bgcolor: tokens.color.chipNeutral,
+              bgcolor: palette('pp-chip'),
               display: 'grid',
               placeItems: 'center',
               fontSize: 11,
@@ -150,14 +150,18 @@ export function BatchDetail({
                   {amount}
                 </Box>
               ) : null}
-              <Box component="span" sx={{ color: tokens.color.muted }}>
+              <Box component="span" sx={{ color: palette('text-secondary') }}>
                 {amount ? ` · ${expires}` : expires}
               </Box>
             </Typography>
             {batch.productDescription ? (
               <Typography
                 component="span"
-                sx={{ fontSize: 12.5, color: tokens.color.muted, ...ellipsis }}
+                sx={{
+                  fontSize: 12.5,
+                  color: palette('text-secondary'),
+                  ...ellipsis,
+                }}
               >
                 {batch.productDescription}
               </Typography>

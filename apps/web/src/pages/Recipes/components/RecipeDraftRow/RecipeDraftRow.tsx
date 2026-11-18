@@ -3,7 +3,7 @@ import {
   Box,
   ChevronRightIcon,
   SwipeRow,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -74,7 +74,7 @@ export function RecipeDraftRow({
             minHeight: 66,
             boxSizing: 'border-box',
             p: '12px 4px',
-            color: tokens.color.ink,
+            color: palette('text-primary'),
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
@@ -84,18 +84,27 @@ export function RecipeDraftRow({
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Box sx={{ fontSize: 15, fontWeight: 700 }}>{name}</Box>
             <Box
-              sx={{ fontSize: 13, fontWeight: 600, color: tokens.color.accent }}
+              sx={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: palette('pp-accent'),
+              }}
             >
               {kind}
             </Box>
             {origin ? (
-              <Box sx={{ fontSize: 13, color: tokens.color.muted }}>
+              <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
                 {origin}
               </Box>
             ) : null}
-            <Box sx={{ fontSize: 13, color: tokens.color.muted }}>{dates}</Box>
+            <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
+              {dates}
+            </Box>
           </Box>
-          <Box aria-hidden sx={{ display: 'flex', color: tokens.color.muted }}>
+          <Box
+            aria-hidden
+            sx={{ display: 'flex', color: palette('text-secondary') }}
+          >
             <ChevronRightIcon size={16} />
           </Box>
         </Box>

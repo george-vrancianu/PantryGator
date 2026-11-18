@@ -400,8 +400,7 @@ describe('Meal Plan page', () => {
     const addMissing = () => ({
       'POST /api/meal-plans/add-missing': () =>
         Response.json({ createdIds: ['sh1', 'sh2'], count: 2 }),
-      'DELETE /api/shopping-list/items/sh1': shoppingList,
-      'DELETE /api/shopping-list/items/sh2': shoppingList,
+      'POST /api/shopping-list/items/bulk-delete': shoppingList,
     });
 
     it('adds for the plan and undoes exactly what it created', async () => {
@@ -424,12 +423,11 @@ describe('Meal Plan page', () => {
       await waitFor(() =>
         expect(
           api.calls
-            .filter((c) => c.key.startsWith('DELETE /api/shopping-list'))
-            .map((c) => c.key),
-        ).toEqual([
-          'DELETE /api/shopping-list/items/sh1',
-          'DELETE /api/shopping-list/items/sh2',
-        ]),
+            .filter(
+              (c) => c.key === 'POST /api/shopping-list/items/bulk-delete',
+            )
+            .map((c) => c.body),
+        ).toEqual([{ ids: ['sh1', 'sh2'] }]),
       );
     });
 

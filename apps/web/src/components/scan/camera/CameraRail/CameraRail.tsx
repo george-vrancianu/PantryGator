@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { RAIL_WIDTH, TOP_BAR_HEIGHT } from '@/lib/scanGuides';
 import { glassBar, translucent } from '../glass';
@@ -58,7 +58,7 @@ export function CameraRail({
           bottom: 0,
           width: `calc(${RAIL_WIDTH}px + ${insetRight})`,
           boxSizing: 'border-box',
-          borderLeft: `1px solid ${translucent(tokens.color.ink, 6)}`,
+          borderLeft: `1px solid ${translucent(palette('text-primary'), 6)}`,
           pb: `max(${insetBottom}, 16px)`,
           pt: 2,
           pl: 1.5,

@@ -1,4 +1,4 @@
-import { Box, ClockIcon, tokens } from '@pocket-pantry/ui';
+import { Box, ClockIcon, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { translateApiError } from '@/i18n/translateApiError';
@@ -46,7 +46,7 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
             minHeight: 44,
             fontSize: 13,
             fontWeight: 700,
-            color: tokens.color.accent,
+            color: palette('pp-accent'),
             textDecoration: 'none',
           }}
         >
@@ -54,7 +54,9 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
         </Box>
       </Box>
       {soonest.length === 0 ? (
-        <Box sx={{ fontSize: 14, color: tokens.color.muted, py: '10px' }}>
+        <Box
+          sx={{ fontSize: 14, color: palette('text-secondary'), py: '10px' }}
+        >
           {t('widgets.useSoon.empty')}
         </Box>
       ) : (
@@ -70,7 +72,7 @@ export function UseSoonWidget({ size, columns }: WidgetProps) {
                   justifyContent: 'space-between',
                   gap: '12px',
                   height: 44,
-                  borderTop: `1px solid ${tokens.color.divider}`,
+                  borderTop: `1px solid ${palette('divider')}`,
                 }}
               >
                 <Box

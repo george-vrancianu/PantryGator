@@ -3,7 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { withOnShoppingList, type HealthTodoKey } from '@/lib/health';
-import { useHealthToast } from '@/lib/useHealthToast';
+import { useUndoToast } from '@/lib/useUndoToast';
+import { useHealthScoreMessage } from '@/lib/useHealthScoreMessage';
 import {
   shoppingListQueryKey,
   useShoppingMutations,
@@ -23,10 +24,11 @@ export type ShoppingFix = {
  */
 export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
   const { t } = useTranslation('dashboard');
-  const { messageWithScore, undoOptions } = useHealthToast();
+  const { messageWithScore } = useHealthScoreMessage();
+  const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { addMany, remove } = useShoppingMutations();
+  const { addMany, removeMany } = useShoppingMutations();
 
   const itemsFor = (
     key: HealthTodoKey,
@@ -45,8 +47,7 @@ export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
 
   const undo = async (insertedIds: string[]) => {
     try {
-      // One at a time: each delete answers with the whole list, and parallel answers could cache a stale one.
-      for (const id of new Set(insertedIds)) await remove.mutateAsync(id);
+      await removeMany.mutateAsync(insertedIds);
     } catch (error) {
       toast.show(translateApiError(t, error));
     } finally {

@@ -4,8 +4,8 @@ import {
   Sheet,
   TextField,
   Typography,
-  tokens,
   useToast,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -95,6 +95,7 @@ function SaveForm({
         onClose();
         toast.show(t('templates:save.saved', { name: trimmed }), {
           duration: SHOPPING_TOAST_MS,
+          polite: true,
           action: {
             label: t('templates:save.edit'),
             onClick: () => navigate(`/shopping/templates/${created.id}`),
@@ -147,7 +148,7 @@ function SaveForm({
           {atLimit ? (
             <Typography
               variant="meta"
-              sx={{ mt: 0.75, color: tokens.color.muted }}
+              sx={{ mt: 0.75, color: palette('text-secondary') }}
             >
               {t('errors:shopping.template_limit_reached', {
                 max: MAX_TEMPLATES,
@@ -159,12 +160,16 @@ function SaveForm({
           <Typography
             component="h3"
             variant="sectionLabel"
-            sx={{ mx: 0.5, mb: 1, color: tokens.color.muted }}
+            sx={{ mx: 0.5, mb: 1, color: palette('text-secondary') }}
           >
             {t('templates:save.preview', { count: items.length })}
           </Typography>
           <Box
-            sx={{ fontSize: 13.5, lineHeight: 1.5, color: tokens.color.muted }}
+            sx={{
+              fontSize: 13.5,
+              lineHeight: 1.5,
+              color: palette('text-secondary'),
+            }}
           >
             {preview}
           </Box>

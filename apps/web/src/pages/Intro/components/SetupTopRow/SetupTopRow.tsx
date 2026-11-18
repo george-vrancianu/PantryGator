@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import {
   linkButtonStyle,
@@ -7,7 +7,7 @@ import {
 } from '../SetupLeave/SetupLeave';
 import { SetupProgress } from '../SetupProgress/SetupProgress';
 
-const linkSx = { ...linkButtonStyle, color: tokens.color.accent } as const;
+const linkSx = { ...linkButtonStyle, color: palette('pp-accent') } as const;
 
 type Props = {
   /** The "‹ label" link back, when the screen has one. */

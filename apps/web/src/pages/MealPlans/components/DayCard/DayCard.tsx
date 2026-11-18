@@ -1,4 +1,4 @@
-import { Box, Button, Card, focusRing, Tag, tokens } from '@pocket-pantry/ui';
+import { Box, Button, Card, focusRing, Tag, palette } from '@pocket-pantry/ui';
 import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,8 +15,8 @@ import { missingFor, type PlanDay, type PlanSlot } from '@/lib/mealPlanPage';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 
 /** A filled slot's forecast as the Widget's Tag: covered, on list, short, or "No longer available". */
-function StatusTag({ slot }: { slot: PlanSlot }) {
-  const { t } = useTranslation('dashboard');
+function SlotStatus({ slot }: { slot: PlanSlot }) {
+  const { t } = useTranslation('mealPlans');
   if (!slot.status) return null;
   return (
     <Box sx={{ mt: '6px' }}>
@@ -42,7 +42,6 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
   headingRef,
 ) {
   const { t, i18n } = useTranslation('mealPlans');
-  const { t: tDashboard } = useTranslation('dashboard');
   const { t: tRecipes } = useTranslation('recipes');
   const language = i18n.language;
   const headingId = `day-${day.date}`;
@@ -70,7 +69,9 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
             fontWeight: 700,
             outline: 'none',
             ...focusRing,
-            color: day.past ? tokens.color.muted : tokens.color.ink,
+            color: day.past
+              ? palette('text-secondary')
+              : palette('text-primary'),
           }}
         >
           {label}
@@ -103,11 +104,17 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
                   alignItems: 'center',
                   gap: '12px',
                   minHeight: 48,
-                  borderTop: `1px solid ${tokens.color.line}`,
+                  borderTop: `1px solid ${palette('pp-line')}`,
                   opacity: day.past ? 0.55 : 1,
                 }}
               >
-                <Box sx={{ flex: 1, fontSize: 13, color: tokens.color.muted }}>
+                <Box
+                  sx={{
+                    flex: 1,
+                    fontSize: 13,
+                    color: palette('text-secondary'),
+                  }}
+                >
                   <Box component="span" sx={{ fontWeight: 700 }}>
                     {mealtimeName}
                   </Box>
@@ -136,7 +143,7 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
               meta={[mealtimeName, t('servings', { count: slot.servings })]}
               pills={
                 <>
-                  {day.past ? null : <StatusTag slot={slot} />}
+                  {day.past ? null : <SlotStatus slot={slot} />}
                   {slot.allergyWarning ? (
                     <Box sx={{ mt: '6px' }}>
                       <AllergenIndicator
@@ -156,7 +163,7 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
                   title: slot.recipeTitle,
                 }),
                 !day.past && slot.status
-                  ? statusLabel(tDashboard, { ...slot, status: slot.status })
+                  ? statusLabel(t, { ...slot, status: slot.status })
                   : null,
                 slot.allergyWarning
                   ? allergenIndicatorLabel(tRecipes, slot.allergyWarning, true)

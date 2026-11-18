@@ -1,9 +1,9 @@
 import {
   Box,
-  tokens,
   visuallyHidden,
   radius,
   insetFocusRing,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '@/lib/cameraMode';
@@ -44,7 +44,8 @@ export function ReviewRow({
   const qualified = accessibleName !== name;
   const unit = t(`common:units.${line.unit}`);
   // A row to check is tinted by its status; a sure one stays plain.
-  const background = status !== 'ok' ? ROW_TINT[status] : tokens.color.surface;
+  const background =
+    status !== 'ok' ? ROW_TINT[status] : palette('background-paper');
   const cell = {
     fontSize: 12,
     minWidth: 0,
@@ -57,7 +58,7 @@ export function ReviewRow({
     <Box
       component="li"
       sx={{
-        borderTop: `1px solid ${tokens.color.divider}`,
+        borderTop: `1px solid ${palette('divider')}`,
         bgcolor: background,
       }}
     >
@@ -121,8 +122,8 @@ export function ReviewRow({
               px: '8px',
               py: '2px',
               borderRadius: radius.tag,
-              bgcolor: tokens.color.soonBg,
-              color: tokens.color.soonFg,
+              bgcolor: palette('warning-light'),
+              color: palette('warning-main'),
               fontSize: 12,
               fontWeight: 700,
               whiteSpace: 'nowrap',

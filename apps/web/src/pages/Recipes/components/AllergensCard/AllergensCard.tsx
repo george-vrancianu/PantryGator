@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, radius, tokens } from '@pocket-pantry/ui';
+import { Box, Stack, Typography, radius, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { RecipeAllergens } from '@/lib/recipes';
 import { Section } from '../Section/Section';
@@ -55,8 +55,8 @@ export function AllergensCard({ allergens }: { allergens: RecipeAllergens }) {
                       px: '10px',
                       py: '2px',
                       borderRadius: radius.tag,
-                      bgcolor: tokens.color.soonBg,
-                      color: tokens.color.soonFg,
+                      bgcolor: palette('warning-light'),
+                      color: palette('warning-main'),
                     }}
                   >
                     {t('allergens.optional')}
@@ -66,7 +66,7 @@ export function AllergensCard({ allergens }: { allergens: RecipeAllergens }) {
                   sx={{
                     fontSize: 13.5,
                     lineHeight: 1.4,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }}
                 >
                   {sourceNames(item, (name) =>

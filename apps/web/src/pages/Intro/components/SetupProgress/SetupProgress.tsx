@@ -1,16 +1,16 @@
-import { Box, color, radius, tokens, Typography } from '@pocket-pantry/ui';
+import { Box, color, radius, Typography, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 const TONES = {
   olive: {
-    filled: tokens.color.butter,
+    filled: palette('secondary-main'),
     empty: `color-mix(in srgb, ${color.cardBg} 28%, transparent)`,
     text: undefined,
   },
   cream: {
-    filled: tokens.color.accent,
-    empty: tokens.color.line,
-    text: tokens.color.muted,
+    filled: palette('pp-accent'),
+    empty: palette('pp-line'),
+    text: palette('text-secondary'),
   },
 } as const;
 

@@ -1,4 +1,4 @@
-import { Typography, tokens } from '@pocket-pantry/ui';
+import { Typography, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '@/lib/cameraMode';
 
@@ -17,7 +17,7 @@ export function SourceText({ text, mode, inline }: Props) {
   const label = t(mode === 'receipt' ? 'row.receiptPrefix' : 'row.readPrefix', {
     text,
   });
-  const sx = { fontSize: 12, color: tokens.color.muted };
+  const sx = { fontSize: 12, color: palette('text-secondary') };
   if (inline)
     return (
       <Typography component="span" title={text} sx={sx}>

@@ -2,7 +2,7 @@ import {
   AlertIcon,
   CheckCircleIcon,
   WarningIcon,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { RowStatus } from '@/lib/review';
@@ -19,8 +19,8 @@ export function StatusIcon({ status }: { status: RowStatus }) {
     style: { flexShrink: 0 },
   } as const;
   if (status === 'low')
-    return <WarningIcon {...props} color={tokens.color.urgentFg} />;
+    return <WarningIcon {...props} color={palette('error-main')} />;
   if (status === 'qty')
-    return <AlertIcon {...props} color={tokens.color.soonIcon} />;
-  return <CheckCircleIcon {...props} color={tokens.color.accent} />;
+    return <AlertIcon {...props} color={palette('warning-main')} />;
+  return <CheckCircleIcon {...props} color={palette('pp-accent')} />;
 }

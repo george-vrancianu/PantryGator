@@ -5,9 +5,8 @@ import { Box } from '../atoms/Layout';
 import { PeopleIcon, PlusIcon, TagIcon } from '../atoms/icons';
 import { TagChip, type TagChipKind } from '../atoms/TagChip';
 import { TextField } from '../atoms/TextField';
-import { tokens } from '../theme/tokens';
-import { visuallyHidden } from '../theme/visuallyHidden';
 import { bodyFont, palette, radius } from '../theme/themeVars';
+import { visuallyHidden } from '../theme/visuallyHidden';
 
 /** What the field needs of a Tag; the web's `RecipeTag` fits. */
 export type TagFieldOption = {
@@ -137,8 +136,8 @@ const optionSx = {
   fontFamily: bodyFont,
   fontSize: 15,
   fontWeight: 600,
-  color: tokens.color.ink,
-  '&.Mui-focused, &:hover': { bgcolor: tokens.color.subtle },
+  color: palette('text-primary'),
+  '&.Mui-focused, &:hover': { bgcolor: palette('pp-subtle') },
   '&.Mui-disabled, &[aria-disabled="true"]': { opacity: 0.42 },
 } as const;
 
@@ -247,8 +246,8 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                 height: 26,
                 px: '9px',
                 borderRadius: radius.tag,
-                bgcolor: tokens.color.subtle,
-                border: `1px solid ${tokens.color.line}`,
+                bgcolor: palette('pp-subtle'),
+                border: `1px solid ${palette('pp-line')}`,
                 fontSize: 12.5,
                 fontWeight: 700,
                 color: palette('pp-accentOnTint'),
@@ -296,7 +295,7 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
           // A touch screen has no hover: keep the clear (x) in view whenever there is a pick.
           '& .MuiAutocomplete-clearIndicator': {
             visibility: 'visible',
-            color: tokens.color.muted,
+            color: palette('text-secondary'),
             width: 32,
             height: 32,
           },
@@ -354,12 +353,14 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                   pt: '12px',
                   pb: '4px',
                   // Inline, the list sits on the sheet itself, so the header matches it.
-                  bgcolor: inline ? tokens.color.bg : tokens.color.surface,
+                  bgcolor: inline
+                    ? palette('background-default')
+                    : palette('background-paper'),
                   fontSize: 11.5,
                   fontWeight: 700,
                   letterSpacing: '.07em',
                   textTransform: 'uppercase',
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                 }}
               >
                 {params.group === labels.yourTags ? (
@@ -367,7 +368,10 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                     <Box
                       component="span"
                       aria-hidden
-                      sx={{ display: 'flex', color: tokens.color.butterInk }}
+                      sx={{
+                        display: 'flex',
+                        color: palette('secondary-contrastText'),
+                      }}
                     >
                       <PeopleIcon size={13} />
                     </Box>
@@ -415,7 +419,7 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                     flexShrink: 0,
                     width: 20,
                     height: 20,
-                    color: tokens.color.accent,
+                    color: palette('pp-accent'),
                   }}
                 >
                   <PlusIcon size={16} />
@@ -445,8 +449,8 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                   width: 20,
                   height: 20,
                   borderRadius: radius.box,
-                  border: `1.5px solid ${selected ? tokens.color.accent : palette('pp-lineStrong')}`,
-                  bgcolor: selected ? tokens.color.accent : 'transparent',
+                  border: `1.5px solid ${selected ? palette('pp-accent') : palette('pp-lineStrong')}`,
+                  bgcolor: selected ? palette('pp-accent') : 'transparent',
                   color: palette('pp-accentInk'),
                 }}
               >
@@ -461,7 +465,7 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                   sx={{
                     fontSize: 13,
                     fontWeight: 600,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                     fontVariantNumeric: 'tabular-nums',
                   }}
                 >
@@ -495,7 +499,7 @@ export function TagField<T extends TagFieldOption = TagFieldOption>({
                       aria-hidden
                       sx={{
                         display: 'flex',
-                        color: tokens.color.accent,
+                        color: palette('pp-accent'),
                         borderRadius: radius.chip,
                       }}
                     >

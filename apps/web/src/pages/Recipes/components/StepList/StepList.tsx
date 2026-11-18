@@ -2,10 +2,10 @@ import {
   Box,
   ClockIcon,
   Stack,
-  tokens,
   Card,
   radius,
   StepNumber,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { RecipeDetailStep, RecipeDetailTip } from '@/lib/recipes';
@@ -28,14 +28,17 @@ export function TipCallout({ tip }: { tip: RecipeDetailTip }) {
         px: '11px',
         py: '9px',
         borderRadius: radius.control,
-        bgcolor: tokens.color.subtle,
-        border: `1px dashed ${tokens.color.line}`,
+        bgcolor: palette('pp-subtle'),
+        border: `1px dashed ${palette('pp-line')}`,
         fontSize: 13,
         lineHeight: 1.4,
-        color: tokens.color.muted,
+        color: palette('text-secondary'),
       }}
     >
-      <Box component="b" sx={{ color: tokens.color.ink, fontWeight: 700 }}>
+      <Box
+        component="b"
+        sx={{ color: palette('text-primary'), fontWeight: 700 }}
+      >
         {t('tipLabel')}:
       </Box>{' '}
       {tip.text}
@@ -94,7 +97,7 @@ export function StepList({
             display: 'flex',
             gap: '12px',
             py: '12px',
-            borderTop: index === 0 ? 0 : `1px solid ${tokens.color.divider}`,
+            borderTop: index === 0 ? 0 : `1px solid ${palette('divider')}`,
           }}
         >
           <StepNumber>{index + 1}</StepNumber>
@@ -111,8 +114,8 @@ export function StepList({
                     height: 32,
                     px: '11px',
                     borderRadius: radius.chip,
-                    bgcolor: tokens.color.accentTint,
-                    color: tokens.color.accentOnTint,
+                    bgcolor: palette('pp-accentTint'),
+                    color: palette('pp-accentOnTint'),
                     fontSize: 12.5,
                     fontWeight: 700,
                     fontVariantNumeric: 'tabular-nums',

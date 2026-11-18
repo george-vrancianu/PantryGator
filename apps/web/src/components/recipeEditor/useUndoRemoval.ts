@@ -1,7 +1,7 @@
-import { useToast, type ToastHandle } from '@pocket-pantry/ui';
+import type { ToastHandle } from '@pocket-pantry/ui';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useUndoToast } from '@/lib/useUndoToast';
 
 /**
  * Removing a row of a draft list shows an Undo toast that puts it back at its old index.
@@ -16,7 +16,7 @@ export function useUndoRemoval<T extends { key: number }>(
   seedKey?: string,
 ) {
   const { t } = useTranslation('common');
-  const toast = useToast();
+  const { showUndo } = useUndoToast();
   const latest = useRef({ items, onChange });
   useLayoutEffect(() => {
     latest.current = { items, onChange };
@@ -37,22 +37,11 @@ export function useUndoRemoval<T extends { key: number }>(
       latest.current.items.filter((other) => other.key !== item.key),
     );
     close();
-    undoToast.current = toast.show(t('row.removed', { name }), {
-      polite: true,
-      duration: UNDO_WINDOW_MS,
-      action: {
-        label: t('row.undo'),
-        onClick: () => {
-          const now = latest.current;
-          if (now.items.some((other) => other.key === item.key)) return;
-          const at = Math.min(index, now.items.length);
-          now.onChange([
-            ...now.items.slice(0, at),
-            item,
-            ...now.items.slice(at),
-          ]);
-        },
-      },
+    undoToast.current = showUndo(t('row.removed', { name }), () => {
+      const now = latest.current;
+      if (now.items.some((other) => other.key === item.key)) return;
+      const at = Math.min(index, now.items.length);
+      now.onChange([...now.items.slice(0, at), item, ...now.items.slice(at)]);
     });
   };
 }

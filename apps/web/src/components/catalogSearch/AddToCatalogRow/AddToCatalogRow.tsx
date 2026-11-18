@@ -1,7 +1,7 @@
 import {
   Box,
   BookPlusIcon,
-  tokens,
+  palette,
   radius,
   nestedRadius,
 } from '@pocket-pantry/ui';
@@ -24,7 +24,6 @@ export function AddToCatalogRow({
   active,
   onSelect,
 }: AddToCatalogRowProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   return (
     <OptionRow
@@ -43,17 +42,23 @@ export function AddToCatalogRow({
           display: 'grid',
           placeItems: 'center',
           borderRadius: nestedRadius(radius.control, 5),
-          backgroundColor: color.accentTint,
-          color: color.accentOnTint,
+          backgroundColor: palette('pp-accentTint'),
+          color: palette('pp-accentOnTint'),
         }}
       >
         <BookPlusIcon size={20} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Box sx={{ fontSize: 15, fontWeight: 600, color: color.accentOnTint }}>
+        <Box
+          sx={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: palette('pp-accentOnTint'),
+          }}
+        >
           {t('search.addToCatalog', { query: name })}
         </Box>
-        <Box sx={{ fontSize: 13, color: color.muted }}>
+        <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
           {t('search.addToCatalogHint')}
         </Box>
       </Box>

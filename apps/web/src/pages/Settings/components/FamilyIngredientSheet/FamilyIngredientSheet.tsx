@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -480,7 +480,7 @@ export function FamilyIngredientSheet({
             <Typography
               id={`${id}-category`}
               variant="meta"
-              sx={{ fontWeight: 700, color: tokens.color.ink }}
+              sx={{ fontWeight: 700, color: palette('text-primary') }}
             >
               {t('settings:familyCatalog.category')}
             </Typography>
@@ -501,9 +501,9 @@ export function FamilyIngredientSheet({
                 width: '100%',
                 textAlign: 'start',
                 font: 'inherit',
-                color: tokens.color.ink,
-                bgcolor: tokens.color.surface,
-                border: `1px solid ${tokens.color.line}`,
+                color: palette('text-primary'),
+                bgcolor: palette('background-paper'),
+                border: `1px solid ${palette('pp-line')}`,
                 borderRadius: radius.control,
                 cursor: 'pointer',
               }}
@@ -524,7 +524,7 @@ export function FamilyIngredientSheet({
                 sx={{
                   fontSize: 13.5,
                   fontWeight: 700,
-                  color: tokens.color.accent,
+                  color: palette('pp-accent'),
                 }}
               >
                 {t('settings:familyCatalog.categoryChange')} ›
@@ -556,7 +556,7 @@ export function FamilyIngredientSheet({
             <Typography
               id={`${id}-names`}
               variant="meta"
-              sx={{ fontWeight: 700, color: tokens.color.ink }}
+              sx={{ fontWeight: 700, color: palette('text-primary') }}
             >
               {t('settings:familyCatalog.otherNames')}
             </Typography>
@@ -605,9 +605,9 @@ export function FamilyIngredientSheet({
                       font: 'inherit',
                       fontSize: 13.5,
                       fontWeight: 600,
-                      color: tokens.color.accent,
+                      color: palette('pp-accent'),
                       bgcolor: 'transparent',
-                      border: `1px dashed ${tokens.color.line}`,
+                      border: `1px dashed ${palette('pp-line')}`,
                       borderRadius: radius.chip,
                       cursor: 'pointer',
                     }}
@@ -668,8 +668,8 @@ export function FamilyIngredientSheet({
               gap: 1,
               p: 1.5,
               borderRadius: radius.control,
-              bgcolor: tokens.color.subtle,
-              color: tokens.color.ink,
+              bgcolor: palette('pp-subtle'),
+              color: palette('text-primary'),
             }}
           >
             <Box sx={{ flexShrink: 0, pt: '2px' }}>
@@ -717,8 +717,8 @@ function NameChip({
         pl: 1.5,
         pr: 0.5,
         borderRadius: radius.chip,
-        bgcolor: tokens.color.chipNeutral,
-        color: tokens.color.ink,
+        bgcolor: palette('pp-chip'),
+        color: palette('text-primary'),
         fontSize: 13.5,
         fontWeight: 600,
       }}
@@ -743,7 +743,7 @@ function FieldError({ children }: { children: ReactNode }) {
       sx={{
         fontSize: 12.5,
         fontWeight: 600,
-        color: tokens.color.urgentFg,
+        color: palette('error-main'),
       }}
     >
       {children}

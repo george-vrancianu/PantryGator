@@ -5,7 +5,7 @@ import {
   Stack,
   Typography,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -64,7 +64,7 @@ export function FamilySynonymSheet({
             gap: 1.5,
             p: 1.5,
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
+            bgcolor: palette('pp-subtle'),
           }}
         >
           <IngredientIconSlot ingredientId={synonym.ingredient.id} />
@@ -83,8 +83,8 @@ export function FamilySynonymSheet({
             gap: 1,
             p: 1.5,
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
-            color: tokens.color.ink,
+            bgcolor: palette('pp-subtle'),
+            color: palette('text-primary'),
           }}
         >
           <Box sx={{ flexShrink: 0, pt: '2px' }}>

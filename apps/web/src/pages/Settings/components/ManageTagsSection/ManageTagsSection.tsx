@@ -26,7 +26,7 @@ import {
   type ManagedTag,
 } from '@/lib/familyTags';
 import { MAX_TAG_NAME_LENGTH } from '@/lib/tags';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useUndoToast } from '@/lib/useUndoToast';
 
 type Editing = { id: string; value: string };
 type Merging = { id: string; from: string; name: string };
@@ -39,6 +39,7 @@ export function ManageTagsSection() {
   const { t } = useTranslation(['settings', 'common']);
   const id = useId();
   const toast = useToast();
+  const { showUndo } = useUndoToast();
   const list = useFamilyTags();
   const rename = useRenameFamilyTag();
   const remove = useDeleteFamilyTag();
@@ -97,21 +98,14 @@ export function ManageTagsSection() {
     setError(null);
     remove.mutate(tag.id, {
       onSuccess: (deleted) =>
-        toast.show(
+        showUndo(
           deleted.recipeCount === 0
             ? t('settings:manageTags.deletedUnused', { name: tag.name })
             : t('settings:manageTags.deleted', {
                 name: tag.name,
                 count: deleted.recipeCount,
               }),
-          {
-            polite: true,
-            duration: UNDO_WINDOW_MS,
-            action: {
-              label: t('common:row.undo'),
-              onClick: () => undo(deleted),
-            },
-          },
+          () => undo(deleted),
         ),
       onError: (failure) => setError(translateApiError(t, failure)),
     });

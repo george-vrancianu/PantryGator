@@ -1,12 +1,18 @@
-import { AlertIcon, Box, Tag, tokens, visuallyHidden } from '@pocket-pantry/ui';
+import {
+  AlertIcon,
+  Box,
+  Tag,
+  palette,
+  visuallyHidden,
+} from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { ExpiryTagState } from '@/lib/pantry';
 
 /** "No expiry": dashed and muted, so a missing date reads as deliberate rather than broken. */
 const NO_EXPIRY = {
   bgcolor: 'transparent',
-  color: tokens.color.muted,
-  outline: `1px dashed ${tokens.color.muted}`,
+  color: palette('text-secondary'),
+  outline: `1px dashed ${palette('text-secondary')}`,
   outlineOffset: '-1px',
 } as const;
 

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { AdminCatalog } from '@/lib/admin';
 import type { AdminRecipe } from '@/lib/adminRecipes';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useUndoToast';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { RecipeForm } from './RecipeForm';
 

@@ -15,7 +15,7 @@ import type {
 } from 'react';
 import { Box } from '../atoms/Layout';
 import { DeleteIcon } from '../atoms/icons';
-import { tokens } from '../theme/tokens';
+import { nestedRadius, palette, radius } from '../theme/themeVars';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 import { listRowItemSx } from './ListRow';
 import {
@@ -26,7 +26,6 @@ import {
   vibrate,
 } from './useRowGestures';
 import { visuallyHidden } from '../theme/visuallyHidden';
-import { nestedRadius, radius } from '../theme/themeVars';
 
 /** The confirmation counts down this long, then the row returns to idle. */
 const CONFIRM_MS = 6000;
@@ -379,7 +378,7 @@ export function SwipeRow({
         touchAction: 'pan-y',
         outline: 'none',
         '&:focus-visible': {
-          outline: `2px solid ${tokens.color.accent}`,
+          outline: `2px solid ${palette('pp-accent')}`,
           outlineOffset: -2,
         },
         ...(collapsing
@@ -404,7 +403,7 @@ export function SwipeRow({
         sx={{
           position: 'absolute',
           inset: 0,
-          bgcolor: solid ? tokens.color.urgentFg : tokens.color.urgentBg,
+          bgcolor: solid ? palette('error-main') : palette('error-light'),
           opacity: solid ? 1 : x < 0 || peekOut ? 0.35 + 0.65 * progress : 0,
           transition: motion('background-color 180ms, opacity 120ms'),
         }}
@@ -420,7 +419,7 @@ export function SwipeRow({
           // The row's inline padding; lists put nothing around the content.
           pl: '12px',
           pr: '10px',
-          bgcolor: tokens.color.surface,
+          bgcolor: palette('background-paper'),
           cursor: onTap ? 'pointer' : undefined,
           transform: flying
             ? `translateX(calc(-100% - ${REVEAL_PT}px))`
@@ -446,7 +445,7 @@ export function SwipeRow({
                           : 'transform 300ms cubic-bezier(.25,1.35,.45,1), opacity 200ms',
               ),
           // Flying off leaves the band solid, so the content itself stays opaque.
-          ...(flying ? { bgcolor: tokens.color.surface } : {}),
+          ...(flying ? { bgcolor: palette('background-paper') } : {}),
         }}
       >
         {pressing && origin && !reduceMotion ? (
@@ -472,7 +471,7 @@ export function SwipeRow({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: solid ? tokens.color.surface : tokens.color.urgentFg,
+            color: solid ? palette('background-paper') : palette('error-main'),
             opacity: dragging ? 0.3 + 0.7 * progress : 1,
             transform: `scale(${dragging ? 0.86 + 0.14 * progress : 1})`,
             transition: dragging ? 'none' : motion('opacity 150ms'),
@@ -497,7 +496,7 @@ export function SwipeRow({
             whiteSpace: 'nowrap',
             fontSize: 12.5,
             fontWeight: 700,
-            color: tokens.color.surface,
+            color: palette('background-paper'),
             opacity: solid ? 1 : 0,
             transform: `translateY(-50%) translateX(${solid ? 0 : 6}px)`,
             transition: motion('opacity 150ms, transform 180ms'),
@@ -523,7 +522,7 @@ export function SwipeRow({
             alignItems: 'center',
             gap: '10px',
             p: '8px 10px 8px 14px',
-            bgcolor: tokens.color.urgentBg,
+            bgcolor: palette('error-light'),
             pointerEvents: phase === 'removing' ? 'none' : undefined,
             animation: reduceMotion
               ? 'none'
@@ -541,8 +540,8 @@ export function SwipeRow({
               width: 30,
               height: 30,
               borderRadius: '50%',
-              bgcolor: tokens.color.urgentFg,
-              color: tokens.color.surface,
+              bgcolor: palette('error-main'),
+              color: palette('background-paper'),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -555,7 +554,7 @@ export function SwipeRow({
               sx={{
                 fontSize: 14,
                 fontWeight: 600,
-                color: tokens.color.ink,
+                color: palette('text-primary'),
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -563,7 +562,7 @@ export function SwipeRow({
             >
               {labels.question}
             </Box>
-            <Box sx={{ fontSize: 12, color: tokens.color.urgentFg }}>
+            <Box sx={{ fontSize: 12, color: palette('error-main') }}>
               {labels.context}
             </Box>
           </Box>
@@ -588,7 +587,7 @@ export function SwipeRow({
                 right: 0,
                 bottom: 0,
                 height: 3,
-                bgcolor: tokens.color.urgentFg,
+                bgcolor: palette('error-main'),
                 opacity: 0.55,
                 transformOrigin: 'left',
                 animation: reduceMotion
@@ -652,13 +651,13 @@ function HoldCircle({
     borderRadius: '50%',
     pointerEvents: 'none',
   } as const;
-  const halo = `color-mix(in srgb, ${tokens.color.accent} 22%, transparent)`;
+  const halo = `color-mix(in srgb, ${palette('pp-accent')} 22%, transparent)`;
   return (
     <Box aria-hidden="true" data-hold-circle="">
       <Box
         sx={{
           ...centre,
-          bgcolor: tokens.color.accentTint,
+          bgcolor: palette('pp-accentTint'),
           opacity: 0.55,
           transform: 'scale(20)',
           animation: armed
@@ -682,7 +681,7 @@ function HoldCircle({
       <Box
         sx={{
           ...centre,
-          border: `1.5px solid ${tokens.color.accent}`,
+          border: `1.5px solid ${palette('pp-accent')}`,
           boxSizing: 'border-box',
           opacity: 0,
           animation: `pp-hold-ring ${growMs}ms linear`,
@@ -697,7 +696,7 @@ function HoldCircle({
         <Box
           sx={{
             ...centre,
-            border: `1.5px solid ${tokens.color.accent}`,
+            border: `1.5px solid ${palette('pp-accent')}`,
             boxSizing: 'border-box',
             opacity: 0,
             animation: 'pp-hold-armed-ring 500ms ease-out',
@@ -738,9 +737,9 @@ function ConfirmButton({
         fontSize: 13.5,
         fontWeight: 700,
         cursor: 'pointer',
-        border: danger ? 0 : `1px solid ${tokens.color.line}`,
-        bgcolor: danger ? tokens.color.urgentFg : tokens.color.surface,
-        color: danger ? tokens.color.surface : tokens.color.ink,
+        border: danger ? 0 : `1px solid ${palette('pp-line')}`,
+        bgcolor: danger ? palette('error-main') : palette('background-paper'),
+        color: danger ? palette('background-paper') : palette('text-primary'),
         '&:active': { transform: 'scale(.96)' },
       }}
     >

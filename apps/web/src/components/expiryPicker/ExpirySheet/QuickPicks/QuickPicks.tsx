@@ -1,6 +1,6 @@
 import {
   Box,
-  tokens,
+  palette,
   bodyFont,
   displayType,
   radius,
@@ -15,8 +15,6 @@ import {
   fullDate,
   type IsoDate,
 } from '@/lib/pantry';
-
-const { color } = tokens;
 
 type PickUnit = 'Day' | 'Week' | 'Month';
 type QuickPick = { days: number; amount: number; unit: PickUnit; usual?: true };
@@ -68,7 +66,7 @@ export function QuickPicks({
     month: 'short',
   });
   const muted = {
-    color: color.muted,
+    color: palette('text-secondary'),
     '[aria-pressed="true"] &': { color: 'inherit', opacity: 0.8 },
   };
 
@@ -91,9 +89,9 @@ export function QuickPicks({
           gap: '1px',
           p: '8px 6px 7px',
           font: 'inherit',
-          color: color.ink,
-          backgroundColor: color.surface,
-          border: `1.5px solid ${color.line}`,
+          color: palette('text-primary'),
+          backgroundColor: palette('background-paper'),
+          border: `1.5px solid ${palette('pp-line')}`,
           borderRadius: radius.control,
           cursor: 'pointer',
           transition:
@@ -106,9 +104,9 @@ export function QuickPicks({
           },
         },
         '& .tile[aria-pressed="true"]': {
-          backgroundColor: color.accentTint,
+          backgroundColor: palette('pp-accentTint'),
           borderColor: 'transparent',
-          color: color.accentOnTint,
+          color: palette('pp-accentOnTint'),
         },
         '& .tile[data-usual]::before': {
           content: '""',
@@ -118,7 +116,7 @@ export function QuickPicks({
           width: 6,
           height: 6,
           borderRadius: '50%',
-          backgroundColor: color.butter,
+          backgroundColor: palette('secondary-main'),
         },
         '& .tile[data-usual][aria-pressed="true"]::before': {
           backgroundColor: 'currentColor',

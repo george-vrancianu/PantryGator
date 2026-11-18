@@ -4,7 +4,7 @@ import {
   radius,
   segOff,
   Sheet,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { MIN_BATCHES_FOR_SCORE, presentFactors, verdictOf } from '@/lib/health';
@@ -40,7 +40,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
       <Box
         sx={{
           p: '6px 18px 14px',
-          borderBottom: `1px solid ${tokens.color.line}`,
+          borderBottom: `1px solid ${palette('pp-line')}`,
         }}
       >
         <Box
@@ -71,7 +71,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
                 sx={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                 }}
               >
                 <ScoreOf total={health.total} />
@@ -108,7 +108,7 @@ export function HealthSheet({ open, onClose, state, today }: Props) {
                       flex: 'none',
                       fontSize: 11.5,
                       fontWeight: 600,
-                      color: tokens.color.muted,
+                      color: palette('text-secondary'),
                     }}
                   >
                     {t(`health.factor.${factor}`)}

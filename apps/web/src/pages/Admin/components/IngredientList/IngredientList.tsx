@@ -9,7 +9,7 @@ import {
   Tag,
   TextField,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -94,7 +94,7 @@ export function IngredientList({
                   sx={{
                     display: 'flex',
                     mr: 1,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }}
                 >
                   <SearchIcon size={18} />
