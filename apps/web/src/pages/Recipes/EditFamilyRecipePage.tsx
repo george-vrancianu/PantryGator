@@ -1,9 +1,11 @@
 import { Alert, Link, Spinner, Stack, Typography } from '@pocket-pantry/ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { RemovableSourceLink } from './components/SourceLink/SourceLink';
+import { ApiError } from '@/lib/api';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   useFamilyRecipeEdit,
@@ -42,10 +44,17 @@ export function EditFamilyRecipePage() {
   const momentOptions = useMomentOptions();
   const tipWrites = useFamilyTipWrites(id);
   // Deleting a Tip waits for its Undo window to end (ADR 0009).
-  const tipRemoval = useDeferredRemoval(
-    [...recipesQueryKey, 'edit', id],
-    tipWrites.remove.mutateAsync,
-  );
+  const queryClient = useQueryClient();
+  const editKey = [...recipesQueryKey, 'edit', id];
+  const tipRemoval = useDeferredRemoval(editKey, async (tipId: string) => {
+    try {
+      await tipWrites.remove.mutateAsync(tipId);
+    } catch (error) {
+      // A Tip that is already gone is deleted: saving the Recipe without its Step took it, inside the Undo window.
+      if (!(error instanceof ApiError && error.status === 404)) throw error;
+      await queryClient.invalidateQueries({ queryKey: editKey });
+    }
+  });
   const recipe = query.data;
   /** Bumped when the Recipe is stored so the form reseeds with the new line and Step ids. */
   const [recipeSaves, setRecipeSaves] = useState(0);
