@@ -100,7 +100,7 @@ function Editor({
   const [name, setName] = useState(template.name);
 
   const lines = template.lines;
-  const rowKeys = useStableLineKeys(lines);
+  const [rowKeys, retireKey] = useStableLineKeys(lines);
   const hint = useRowHint('template', lines.length > 0);
   const full = lines.length >= MAX_TEMPLATE_LINES;
 
@@ -161,6 +161,8 @@ function Editor({
   const undoToast = useRef<ToastHandle | null>(null);
   useEffect(() => () => undoToast.current?.close(), []);
   const removeLine = async (line: TemplateLine) => {
+    // Its row is collapsing: no other line may take over its key.
+    retireKey(line);
     let index = 0;
     let gone = false;
     await save((current) => {
@@ -187,28 +189,31 @@ function Editor({
       },
     );
   };
+  // The row index to focus once the list shows again after an Undo from an emptied Template.
+  const pendingFocusIndex = useRef<number | null>(null);
+  const list = useRef<HTMLUListElement>(null);
   const restore = async (line: TemplateLine, index: number) => {
     // Queued behind any save still in flight, so the line goes back on top of it.
     // A failure shows in the page's alert.
     // Undo from an emptied Template: the list is about to remount, so focus its row once it does.
-    if (latest.current.length === 0) focusRestored.current = index;
     await save((current) => {
+      // Decided when this save is built, after the saves queued before it have landed.
+      if (current.length === 0) pendingFocusIndex.current = 0;
       const next = current.map(toLineBody);
       next.splice(Math.min(index, next.length), 0, toLineBody(line));
       return next;
     }).catch(() => {
-      focusRestored.current = null;
+      pendingFocusIndex.current = null;
     });
   };
-  const focusRestored = useRef<number | null>(null);
-  const list = useRef<HTMLUListElement>(null);
   useEffect(() => {
-    if (focusRestored.current === null || lines.length === 0) return;
+    if (pendingFocusIndex.current === null || lines.length === 0) return;
+    // Every child of the list is a LineRow.
     const row = list.current?.children[
-      Math.min(focusRestored.current, lines.length - 1)
+      Math.min(pendingFocusIndex.current, lines.length - 1)
     ] as HTMLElement | undefined;
     row?.focus();
-    focusRestored.current = null;
+    pendingFocusIndex.current = null;
   }, [lines]);
 
   // The sheet shows a failed save itself, so the page's alert does not repeat it.
@@ -322,11 +327,12 @@ function Editor({
 function indexOfLine(lines: TemplateLine[], line: TemplateLine) {
   const byId = lines.findIndex((l) => l.id === line.id);
   if (byId >= 0) return byId;
-  return lines.findIndex(
-    (l) =>
-      l.ingredientId === line.ingredientId &&
-      l.name === line.name &&
-      l.unit === line.unit,
+  return lines.findIndex((l) => sameLine(l, line));
+}
+
+function sameLine(a: TemplateLine, b: TemplateLine) {
+  return (
+    a.ingredientId === b.ingredientId && a.name === b.name && a.unit === b.unit
   );
 }
 
@@ -341,7 +347,17 @@ function useStableLineKeys(lines: TemplateLine[]) {
     lines: TemplateLine[];
     keys: string[];
     next: number;
-  }>({ lines: [], keys: [], next: 0 });
+    retired: string[];
+  }>({ lines: [], keys: [], next: 0, retired: [] });
+  /** The row of this line is being removed (collapsing, inert): its key must not pass to another line. */
+  const retire = (line: TemplateLine) =>
+    setState((s) => {
+      const at = indexOfLine(s.lines, line);
+      const key = s.keys[at];
+      return key === undefined || s.retired.includes(key)
+        ? s
+        : { ...s, retired: [...s.retired, key] };
+    });
   if (state.lines !== lines) {
     const claimed = new Set<number>();
     const find = (match: (l: TemplateLine) => boolean) => {
@@ -355,19 +371,18 @@ function useStableLineKeys(lines: TemplateLine[]) {
       if (at < 0) {
         at = find(
           (l) =>
-            l.ingredientId === line.ingredientId &&
-            l.name === line.name &&
-            l.unit === line.unit,
+            sameLine(l, line) &&
+            !state.retired.includes(state.keys[state.lines.indexOf(l)]!),
         );
       }
       return at >= 0 ? state.keys[at]! : `line-${++next}`;
     });
-    const updated = { lines, keys, next };
+    const updated = { ...state, lines, keys, next };
     // Derived from props during render (React's pattern for state that follows props).
     setState(updated);
-    return keys;
+    return [keys, retire] as const;
   }
-  return state.keys;
+  return [state.keys, retire] as const;
 }
 
 function LineRow({

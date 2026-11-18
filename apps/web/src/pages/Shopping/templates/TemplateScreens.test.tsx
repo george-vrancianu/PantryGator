@@ -326,6 +326,57 @@ describe('Shopping Template screens', () => {
     expect(screen.queryByText('Removed Eggs')).toBeNull();
   });
 
+  it('does not hand the key of a row being removed to the identical line that stays', async () => {
+    statefulTemplate([milk, { ...milk, id: 'l9' }]);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const [first] = await screen.findAllByRole('group', { name: 'Milk' });
+    act(() => first!.focus());
+    await user.keyboard('{Delete}');
+    await user.click(within(first!).getByRole('button', { name: 'Remove' }));
+    await act(() => vi.advanceTimersByTimeAsync(1500));
+    expect(await screen.findByText('Removed Milk')).toBeVisible();
+
+    const remaining = screen.getAllByRole('group', { name: 'Milk' });
+    expect(remaining).toHaveLength(1);
+    expect(remaining[0]).not.toBe(first);
+    expect(
+      within(remaining[0]!).queryByRole('button', { name: 'Remove' }),
+    ).toBeNull();
+  });
+
+  it('focuses the restored row when Undo is pressed while the save that empties the Template is in flight', async () => {
+    const { fetchMock } = statefulTemplate([eggs, bread]);
+    let releaseSecond: () => void = () => undefined;
+    const secondGate = new Promise<void>(
+      (resolve) => (releaseSecond = resolve),
+    );
+    let n = 0;
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) =>
+      init?.method === 'PATCH' && ++n === 2
+        ? secondGate.then(() => fetchMock(input, init))
+        : fetchMock(input, init),
+    );
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderEditor();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await screen.findByRole('group', { name: 'Eggs' });
+    for (const name of ['Eggs', 'Bread']) {
+      const row = screen.getByRole('group', { name });
+      act(() => row.focus());
+      await user.keyboard('{Delete}');
+      await user.click(within(row).getByRole('button', { name: 'Remove' }));
+    }
+    await act(() => vi.advanceTimersByTimeAsync(700));
+    // Eggs is saved and its Undo shows; the save that removes Bread is still in flight.
+    await user.click(await screen.findByRole('button', { name: 'Undo' }));
+    releaseSecond();
+    await act(() => vi.advanceTimersByTimeAsync(700));
+
+    expect(await screen.findByRole('group', { name: 'Eggs' })).toHaveFocus();
+  });
+
   it('opens the sheet when a line is held for 500 ms', async () => {
     statefulTemplate([milk]);
     renderEditor();
