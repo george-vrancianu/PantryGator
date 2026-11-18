@@ -1,11 +1,11 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { IngredientIconSlot } from '../IngredientIconSlot';
-import { FamilyTag } from './FamilyTag';
-import { RowTag } from './RowTag';
-import { OptionRow } from './OptionRow';
-import { Highlighted } from './matchRange';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { FamilyTag } from '../FamilyTag/FamilyTag';
+import { RowTag } from '../RowTag/RowTag';
+import { OptionRow } from '../OptionRow/OptionRow';
+import { Highlighted } from '../matchRange';
 
 export type SearchResultRowProps = {
   id: string;

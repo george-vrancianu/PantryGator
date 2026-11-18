@@ -1,37 +1,37 @@
-import {
-  Box,
-  BookPlusIcon,
-  tokens,
-  radius,
-  nestedRadius,
-} from '@pocket-pantry/ui';
+import { Box, PlusIcon, tokens, radius, nestedRadius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { OptionRow } from './OptionRow';
+import { OptionRow } from '../OptionRow/OptionRow';
+import { RowTag } from '../RowTag/RowTag';
 
-export type AddToCatalogRowProps = {
+export type UseTypedRowProps = {
   id: string;
   /** The trimmed name the Member typed. */
   name: string;
   /** Keyboard-highlighted. */
   active: boolean;
+  first: boolean;
+  /** The host's pill for this row, if any. */
+  tag?: string | null;
   onSelect: () => void;
 };
 
-/** The first option when nothing matches: opens the Add to your catalog popover. */
-export function AddToCatalogRow({
+/** The dashed last option "Use “…” as typed": the name is saved as an Unmatched item. */
+export function UseTypedRow({
   id,
   name,
   active,
+  first,
+  tag = null,
   onSelect,
-}: AddToCatalogRowProps) {
+}: UseTypedRowProps) {
   const { color } = tokens;
   const { t } = useTranslation('catalog');
   return (
     <OptionRow
       id={id}
       active={active}
-      first
-      label={`${t('search.addToCatalog', { query: name })}, ${t('search.addToCatalogHint')}`}
+      first={first}
+      rule="dashed"
       onSelect={onSelect}
     >
       <Box
@@ -43,20 +43,21 @@ export function AddToCatalogRow({
           display: 'grid',
           placeItems: 'center',
           borderRadius: nestedRadius(radius.control, 5),
-          backgroundColor: color.accentTint,
-          color: color.accentOnTint,
+          backgroundColor: color.chipNeutral,
+          color: color.muted,
         }}
       >
-        <BookPlusIcon size={20} />
+        <PlusIcon size={20} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box sx={{ fontSize: 15, fontWeight: 600, color: color.accentOnTint }}>
-          {t('search.addToCatalog', { query: name })}
+          {t('search.useTyped', { name })}
         </Box>
         <Box sx={{ fontSize: 13, color: color.muted }}>
-          {t('search.addToCatalogHint')}
+          {t('search.useTypedHint')}
         </Box>
       </Box>
+      {tag ? <RowTag>{tag}</RowTag> : null}
     </OptionRow>
   );
 }

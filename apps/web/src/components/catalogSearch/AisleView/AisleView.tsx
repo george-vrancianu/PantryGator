@@ -1,7 +1,7 @@
 import { Box, CloseIcon, tokens, focusRing, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import type { CatalogAisle } from '../../lib/catalog';
-import { AisleSwatch } from './AisleSwatch';
+import type { CatalogAisle } from '@/lib/catalog';
+import { AisleSwatch } from '../AisleSwatch/AisleSwatch';
 
 export type AisleViewHeaderProps = {
   aisle: CatalogAisle;

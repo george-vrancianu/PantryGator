@@ -15,13 +15,13 @@ import type { CatalogSearchResult } from '../../lib/catalog';
 import {
   AddToCatalog,
   ADD_TO_CATALOG_TRIGGER,
-} from '../catalogSearch/AddToCatalog';
+} from '@/components/catalogSearch/AddToCatalog/AddToCatalog';
 import {
   reordered,
   type DraftProblems,
   type LineDraft,
 } from '../../lib/recipeDraft';
-import { FamilyTag } from '../catalogSearch/FamilyTag';
+import { FamilyTag } from '@/components/catalogSearch/FamilyTag/FamilyTag';
 import { RowControls } from '../RowControls';
 import { GripGlyph, SortableItem, SortableList } from './sortable';
 import { LineAmountField } from './LineAmountField';

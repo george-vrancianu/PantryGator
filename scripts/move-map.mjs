@@ -57,6 +57,9 @@ const GROUP_HINTS = {
   mealPlan: ['MealPlanPopover'],
   expiryPicker: ['ExpiryPicker'],
 };
+// Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
+// included, is placed within its own folder, never moved down into a page or up to another group.
+const FEATURE_GROUPS = ['catalogSearch'];
 const GUARDS = [
   'RequireAuth',
   'RequireAdmin',
@@ -184,6 +187,14 @@ function computeTarget(m, visiting) {
   const stem = stemOf(m);
   if (inShared && GUARDS.includes(stem))
     return posix.join('routing', basename(m));
+
+  const featureGroup = /^components\/([^/]+)\//.exec(m)?.[1];
+  if (featureGroup && FEATURE_GROUPS.includes(featureGroup)) {
+    // Strip a component folder (Foo/) from the directory: the module goes to the group level.
+    const dir = dirname(m).split('/');
+    if (dir.length > 2 && dir[dir.length - 1] === stem) dir.pop();
+    return placed(m, dir.join('/'));
+  }
 
   // Already inside a component folder (Foo/Foo.tsx plus its parts): follow the main file.
   const pascalDir =

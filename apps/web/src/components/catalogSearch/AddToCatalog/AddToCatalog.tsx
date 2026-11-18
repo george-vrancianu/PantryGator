@@ -17,12 +17,9 @@ import {
   type RefObject,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import {
-  AddToCatalogForm,
-  type FormAction,
-  type PickOutcome,
-} from './AddToCatalogForm';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { AddToCatalogForm } from '../AddToCatalogForm/AddToCatalogForm';
+import type { FormAction, PickOutcome } from '../addToCatalogAction';
 
 /** Marks the button that opens the popover, so a tap on it is not an "outside" tap. */
 export const ADD_TO_CATALOG_TRIGGER = 'data-add-to-catalog-trigger';
