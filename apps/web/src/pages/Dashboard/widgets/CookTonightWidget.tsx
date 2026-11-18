@@ -65,7 +65,9 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
   const note = (
     <HiddenByAllergiesNote
       count={cookTonight.data?.hiddenByAllergiesCount ?? 0}
+      showing={showHidden}
       onShow={() => setShowHidden(true)}
+      onHide={() => setShowHidden(false)}
     />
   );
 

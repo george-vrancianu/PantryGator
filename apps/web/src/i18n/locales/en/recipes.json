@@ -257,7 +257,9 @@
   "hiddenByAllergies": {
     "note_one": "{{count}} Recipe hidden by your Allergies",
     "note_other": "{{count}} Recipes hidden by your Allergies",
-    "show": "Show"
+    "show": "Show",
+    "showing": "Showing Recipes hidden by your Allergies",
+    "hide": "Hide"
   },
   "cookTonight": {
     "title": "Cook tonight",

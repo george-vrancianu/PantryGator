@@ -36,7 +36,9 @@ export function CookTonightPage() {
       <Stack spacing={1.5} useFlexGap>
         <HiddenByAllergiesNote
           count={cookTonight.data?.hiddenByAllergiesCount ?? 0}
+          showing={showHidden}
           onShow={() => setShowHidden(true)}
+          onHide={() => setShowHidden(false)}
         />
         {cookTonight.error ? (
           <Alert>{translateApiError(t, cookTonight.error)}</Alert>
