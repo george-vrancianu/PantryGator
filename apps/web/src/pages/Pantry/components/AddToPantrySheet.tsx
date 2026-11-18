@@ -65,7 +65,7 @@ export function AddToPantrySheet({
       setFormKey(0);
     }
   }
-  // The footer's submit button: the form reports its label and whether it can save.
+  // The Sheet's primary: the form reports its label and whether it can save.
   const formId = useId();
   const [submit, setSubmit] = useState<SubmitState | null>(null);
   // The camera overlay owns Escape while it is up; the sheet must not close under it.
@@ -113,7 +113,12 @@ export function AddToPantrySheet({
       title={t('form.title')}
       primary={
         submit
-          ? { label: submit.label, disabled: submit.disabled, form: formId }
+          ? {
+              label: submit.label,
+              disabled: submit.disabled,
+              pending: submit.pending,
+              form: formId,
+            }
           : undefined
       }
     >

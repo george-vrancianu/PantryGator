@@ -17,7 +17,11 @@ type Props = {
 };
 
 /** What the Sheet's Save button says, and whether it can be pressed. */
-export type EditSubmitState = { label: string; disabled: boolean };
+export type EditSubmitState = {
+  label: string;
+  disabled: boolean;
+  pending: boolean;
+};
 
 export function EditBatchForm({
   batch,
@@ -31,9 +35,10 @@ export function EditBatchForm({
   const formRef = useRef<HTMLFormElement>(null);
   const label = form.saving ? t('form.saving') : t('edit.save');
   const disabled = !form.canSave;
+  const pending = form.saving;
   useEffect(() => {
-    onSubmitChange({ label, disabled });
-  }, [label, disabled, onSubmitChange]);
+    onSubmitChange({ label, disabled, pending });
+  }, [label, disabled, pending, onSubmitChange]);
 
   return (
     <Stack

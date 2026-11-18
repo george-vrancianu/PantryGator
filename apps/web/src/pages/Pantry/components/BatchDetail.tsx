@@ -60,6 +60,7 @@ export function BatchDetail({
   const [submit, setSubmit] = useState<EditSubmitState>({
     label: t('edit.save'),
     disabled: true,
+    pending: false,
   });
   // "Remove from Pantry" closes the sheet and asks once it has finished closing (focus is back on the row).
   const removeRequested = useRef(false);
@@ -175,6 +176,7 @@ export function BatchDetail({
         primary={{
           label: submit.label,
           disabled: submit.disabled,
+          pending: submit.pending,
           form: formId,
         }}
         destructive={{
