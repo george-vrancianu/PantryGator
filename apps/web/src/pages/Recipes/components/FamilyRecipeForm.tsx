@@ -36,7 +36,7 @@ import { translateApiError } from '../../../i18n/translateApiError';
 import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection/RecipeLinesSection';
 import { FamilyDetailsBasics } from './FamilyDetailsBasics';
 import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection/RecipeStepsSection';
-import { documentOf, type FamilyDraft } from '../familyDraft';
+import { documentOf, type FamilyDraft } from '../hooks/familyDraft';
 import {
   hasProblems,
   newKey,

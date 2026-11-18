@@ -11,7 +11,7 @@ import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '../../i18n/translateApiError';
 import { useRecipeDrafts } from '../../lib/recipeDrafts';
 import { RecipeDraftRow } from './components/RecipeDraftRow';
-import { useRecipeDraftDiscard } from './useRecipeDraftDiscard';
+import { useRecipeDraftDiscard } from './hooks/useRecipeDraftDiscard';
 
 /** The Member's Recipe Drafts (ADR 0028), newest edit first: open one to carry on, or discard it with an Undo. */
 export function RecipeDraftsPage() {

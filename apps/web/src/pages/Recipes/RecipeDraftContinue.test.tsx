@@ -10,7 +10,8 @@ import {
 } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '../../test/render';
-import { NewRecipePage, NewVariantPage } from './FamilyRecipePages';
+import { NewRecipePage } from './NewRecipePage';
+import { NewVariantPage } from './NewVariantPage';
 
 const A = '5b0f6c2e-7d3a-4c58-9a51-1f2e3d4c5b6a';
 const B = '6c1a7d3f-8e4b-4d69-8b62-2a3f4e5d6c7b';

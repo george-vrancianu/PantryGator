@@ -25,11 +25,9 @@ import {
 import { MealPlanPage } from './pages/MealPlans/MealPlanPage';
 import { MealPlansPage } from './pages/MealPlans/MealPlansPage';
 import { PantryPage } from './pages/Pantry/PantryPage';
-import {
-  EditFamilyRecipePage,
-  NewRecipePage,
-  NewVariantPage,
-} from './pages/Recipes/FamilyRecipePages';
+import { EditFamilyRecipePage } from './pages/Recipes/EditFamilyRecipePage';
+import { NewRecipePage } from './pages/Recipes/NewRecipePage';
+import { NewVariantPage } from './pages/Recipes/NewVariantPage';
 import { CookTonightPage } from './pages/Recipes/CookTonightPage';
 import {
   RecipeDetailPage,

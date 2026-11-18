@@ -43,7 +43,7 @@ import {
 import type { GuidanceField } from '../../../lib/guidanceSuggestion';
 import { useCreditPrice, useRefreshCredits } from '../../../lib/credits';
 import { suggestFamilyGuidance } from '../../../lib/familyRecipes';
-import { suggestionRecipeOf, type FamilyDraft } from '../familyDraft';
+import { suggestionRecipeOf, type FamilyDraft } from '../hooks/familyDraft';
 import { FamilyRecipePicker } from './FamilyGuidance';
 
 const fieldsetReset = { border: 0, p: 0, m: 0, minWidth: 0 };

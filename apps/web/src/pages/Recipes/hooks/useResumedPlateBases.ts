@@ -1,8 +1,8 @@
 import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
-import { ApiError } from '../../lib/api';
-import { usePlateMatches } from '../../lib/plateRecipe';
-import type { RecipeDraftForm } from '../../lib/recipeDraftContent';
-import { useRecipe } from '../../lib/recipes';
+import { ApiError } from '@/lib/api';
+import { usePlateMatches } from '@/lib/plateRecipe';
+import type { RecipeDraftForm } from '@/lib/recipeDraftContent';
+import { useRecipe } from '@/lib/recipes';
 
 /** What Plate matches are asked from: the title and the Matched Ingredients of the lines. */
 export function plateMatchInput(

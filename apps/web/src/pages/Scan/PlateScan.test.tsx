@@ -10,7 +10,7 @@ import { takeScan } from '@/test/scan';
 import { openBubbleSheet } from '@/test/voiceDom';
 import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
 import { BackgroundHost } from '@/components/background/BackgroundHost';
-import { NewRecipePage } from '@/pages/Recipes/FamilyRecipePages';
+import { NewRecipePage } from '@/pages/Recipes/NewRecipePage';
 import { ScanPage } from './ScanPage';
 
 const IMAGE = 'data:image/jpeg;base64,YQ==';
