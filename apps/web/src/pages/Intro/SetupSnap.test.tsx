@@ -105,7 +105,7 @@ describe('Setup 1, Snap', () => {
 
   it('skips to Say it', async () => {
     const user = await openSnap();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(where()).toBe('/intro/say-it');
   });
 

@@ -307,7 +307,7 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
     expect(writes(calls)).toEqual(['POST /api/voice']);
 
     // Skipping from here shows no tiles: Discard left the counts alone.
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     await screen.findByText(
       "You're all set! I'll keep an eye on your kitchen.",
     );
@@ -419,12 +419,11 @@ describe('Setup 2: What Gator heard, Do these, All set', () => {
       },
     });
     const user = userEvent.setup();
-    expect(screen.getByRole('link', { name: 'Skip' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Skip' })).toBeVisible();
     await record();
     await screen.findByRole('button', {
       name: 'Gator is working: 1 being read. Open Review',
     });
-    expect(screen.queryByRole('link', { name: 'Skip' })).toBeNull();
 
     await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(
@@ -636,9 +635,9 @@ describe('Setup: counts across both steps', () => {
     await user.click(
       await screen.findByRole('button', { name: /Show me how/ }),
     );
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
     expect(screen.queryByText(/in your Pantry$/)).toBeNull();
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
     await screen.findByText(
       "You're all set! I'll keep an eye on your kitchen.",
     );
@@ -900,7 +899,7 @@ describe('Setup 2: Next and the Skip that asks first', () => {
     await openSayIt();
     const user = userEvent.setup();
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(
       await screen.findByText(
         "You're all set! I'll keep an eye on your kitchen.",
