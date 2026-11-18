@@ -11,7 +11,7 @@ describe('the All set page', () => {
     vi.restoreAllMocks();
   });
 
-  it('paints the Go button butter, not the primary green gradient', async () => {
+  it('stands on the Canopy ground with the Go button in the primary look', async () => {
     const { fetchMock } = stubApi({});
     vi.stubGlobal('fetch', fetchMock);
     renderWithProviders(
@@ -22,10 +22,9 @@ describe('the All set page', () => {
     );
 
     const go = await screen.findByRole('button', { name: 'Go to my kitchen' });
-    const style = getComputedStyle(go);
-    // A background image paints over the colour, so none may be set.
-    expect(style.backgroundImage).toBe('none');
-    // The painted colour, with the Theme variable resolved: the light butter.
-    expect(paintedColour(go, 'background-color')).toBe('#E8CB7C');
+    expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
+    // On the light sheet it is the primary button, not the butter one the olive ground needed.
+    expect(paintedColour(go, 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(go, 'color')).toBe('#FFFFFF');
   });
 });

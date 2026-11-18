@@ -625,6 +625,22 @@ describe('CookTonightWidget', () => {
     ).toHaveAttribute('href', '/recipes/explore');
   });
 
+  it('shows only the hidden-by-Allergies note, not the empty line and Explore link, when Allergies hid every card', async () => {
+    stub({
+      ...hasRecipes,
+      'GET /api/recipes/cook-tonight': () =>
+        Response.json({ cards: [], hiddenByAllergiesCount: 2 }),
+    });
+
+    renderWithProviders(<CookTonightWidget size="small" columns={2} />);
+
+    expect(
+      await screen.findByText('2 Recipes hidden by your Allergies'),
+    ).toBeVisible();
+    expect(screen.queryByText(/Nothing you can make/)).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Explore Recipes' })).toBeNull();
+  });
+
   it('asks the API for today', async () => {
     const { fetchMock, calls } = stubApi(cookTonight([]));
     vi.stubGlobal('fetch', fetchMock);
@@ -927,7 +943,7 @@ describe('CookTonightWidget for a Family with no Recipes', () => {
   }
   const POT = /My pot's empty!/;
 
-  it("shows Gator's empty-pot line and the three links to their pages", async () => {
+  it("shows Gator's empty-pot line and the four ways to a first Recipe", async () => {
     stub({ ...cookTonightRoute(), ...recipeList([], 0) });
     renderAt();
 
@@ -940,9 +956,50 @@ describe('CookTonightWidget for a Family with no Recipes', () => {
       within(region).getByRole('link', { name: 'From a link' }),
     ).toHaveAttribute('href', '/recipes/from-link');
     expect(
+      within(region).getByRole('link', { name: 'From text' }),
+    ).toHaveAttribute('href', '/recipes/from-text');
+    expect(
       within(region).getByRole('link', { name: 'New Recipe' }),
     ).toHaveAttribute('href', '/recipes/new');
     expect(screen.queryByText(/Nothing to cook from your Pantry/)).toBeNull();
+  });
+
+  it('prefetches the starters the empty Recipes page will show', async () => {
+    const { fetchMock, calls } = stubApi({
+      ...cookTonightRoute(),
+      ...recipeList([], 0),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderAt();
+
+    await screen.findByText(POT);
+    await waitFor(() => {
+      const scopes = (key: string) =>
+        calls
+          .filter((c) => c.key === key)
+          .map((c) => new URLSearchParams(c.search).get('scope'));
+      expect(scopes('GET /api/recipes')).toContain('catalog');
+      expect(scopes('GET /api/recipes/cook-tonight')).toContain('catalog');
+    });
+  });
+
+  it('does not prefetch starters for a Family that has Recipes', async () => {
+    const { fetchMock, calls } = stubApi({
+      ...cookTonightRoute(),
+      ...recipeList([{ id: 'listed' }], 0),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderAt();
+
+    // The panel shows once both the Family list and Cook Tonight have loaded.
+    expect(
+      await screen.findByText(/Nothing to cook from your Pantry/),
+    ).toBeInTheDocument();
+    expect(
+      calls.some(
+        (c) => new URLSearchParams(c.search).get('scope') === 'catalog',
+      ),
+    ).toBe(false);
   });
 
   it('shows the same on a tall Widget', async () => {
@@ -959,8 +1016,8 @@ describe('CookTonightWidget for a Family with no Recipes', () => {
 
     await screen.findByText(POT);
     const region = screen.getByRole('region', { name: 'Cook tonight' });
-    // Only the three text links; the panel itself is not one.
-    expect(within(region).getAllByRole('link')).toHaveLength(3);
+    // Only the four text links; the panel itself is not one.
+    expect(within(region).getAllByRole('link')).toHaveLength(4);
     const gator = within(region).getByRole('button', {
       name: /Gator the chef/,
     });

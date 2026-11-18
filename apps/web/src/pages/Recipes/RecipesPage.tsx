@@ -16,7 +16,12 @@ import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 import { translateApiError } from '@/i18n/translateApiError';
-import { cardFor, indexCards, useCookTonight } from '@/lib/cookTonight';
+import {
+  cardFor,
+  indexCards,
+  useCookTonight,
+  type CookTonightCard,
+} from '@/lib/cookTonight';
 import { useAddToFamily } from '@/lib/addToFamily';
 import { localIso } from '@/lib/pantry';
 import {
@@ -38,6 +43,10 @@ import {
   CookTonightHeader,
   CookTonightHeaderPlaceholder,
 } from './components/CookTonightHeader/CookTonightHeader';
+import {
+  QUICK_VIEW_TOAST_BOTTOM,
+  QuickViewSheet,
+} from './components/QuickViewSheet/QuickViewSheet';
 import { FromLinkSheet } from './components/FromLinkSheet/FromLinkSheet';
 import {
   FromTextSheet,
@@ -133,11 +142,25 @@ export function RecipesPage() {
   // Not searching: a Variant sits under its Base (a Family Recipe, or the Family's copy of its
   // Catalog Base); one without a Base in the list is its own row, labelled "Variant of {base}".
   const items = filtering ? found : groupVariants(found);
+  // The hint points at Variants, so it needs one: the API's own count (grouping recounts from the list).
+  const hasVariants = found.some(
+    (recipe) => recipe.variantCount > 0 || recipe.parentId !== null,
+  );
   // No live Recipes (archived ones aren't listed): chef Gator replaces the search, chips and list.
   const noneListed = recipes.data !== undefined && items.length === 0;
   // Recipes hidden by Allergies are still Recipes: that Family isn't empty.
   const empty = !filtering && hasNoFamilyRecipes(recipes.data);
-  const addToFamily = useAddToFamily();
+  // The starters' quick view lives here, not in the empty state: the first add replaces that
+  // state with the list, and the sheet must not vanish under the Member's thumb.
+  const [quick, setQuick] = useState<{
+    recipe: RecipeListItem;
+    card: CookTonightCard | undefined;
+  } | null>(null);
+  const [quickOpen, setQuickOpen] = useState(false);
+  const addToFamily = useAddToFamily(
+    // The quick view's buttons sit at the bottom: lift toasts clear of them.
+    quickOpen ? { toastBottom: QUICK_VIEW_TOAST_BOTTOM } : {},
+  );
   const addButton = useRef<HTMLButtonElement>(null);
   const cards = cookTonight.data?.cards ?? [];
   const index = indexCards(cards);
@@ -251,6 +274,10 @@ export function RecipesPage() {
         {empty ? (
           <EmptyFamilyRecipes
             onNewRecipe={() => addButton.current?.click()}
+            onQuickView={(recipe, card) => {
+              setQuick({ recipe, card });
+              setQuickOpen(true);
+            }}
             {...addToFamily}
           />
         ) : null}
@@ -296,7 +323,7 @@ export function RecipesPage() {
                 />
               ))}
             </Box>
-            {!filtering ? (
+            {!filtering && hasVariants ? (
               <Box
                 sx={{
                   fontSize: 13,
@@ -321,6 +348,17 @@ export function RecipesPage() {
         onClose={closeFromText}
         onExited={() => addButton.current?.focus()}
       />
+      {quick ? (
+        <QuickViewSheet
+          recipe={quick.recipe}
+          open={quickOpen}
+          onClose={() => setQuickOpen(false)}
+          card={quick.card}
+          state={addToFamily.stateOf(quick.recipe)}
+          onAdd={(recipe) => void addToFamily.add(recipe)}
+          stateOf={addToFamily.stateOf}
+        />
+      ) : null}
     </>
   );
 }

@@ -94,6 +94,100 @@ describe('SwipeRow', () => {
     expect(onEdit).toHaveBeenCalledOnce();
   });
 
+  describe('hold circle', () => {
+    const renderHoldable = () =>
+      render(
+        <ul>
+          <SwipeRow
+            name="Milk"
+            labels={labels}
+            onRemove={vi.fn()}
+            onEdit={vi.fn()}
+          >
+            <span>Milk</span>
+          </SwipeRow>
+        </ul>,
+      );
+    const circle = () => document.querySelector('[data-hold-circle]');
+    const content = () => document.querySelector('[data-swipe-row-content]')!;
+
+    it('fades for 250 ms after a hold is let go before it arms, then goes', async () => {
+      vi.useFakeTimers();
+      renderHoldable();
+      fireEvent.pointerDown(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      await act(() => vi.advanceTimersByTimeAsync(300));
+      expect(circle()).not.toBeNull();
+      fireEvent.pointerUp(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      expect(circle()).not.toBeNull();
+      await act(() => vi.advanceTimersByTimeAsync(249));
+      expect(circle()).not.toBeNull();
+      await act(() => vi.advanceTimersByTimeAsync(1));
+      expect(circle()).toBeNull();
+    });
+
+    it('fades the cancelled circle from its current size: the grow stays, paused', async () => {
+      vi.useFakeTimers();
+      renderHoldable();
+      fireEvent.pointerDown(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      await act(() => vi.advanceTimersByTimeAsync(300));
+      const growing = getComputedStyle(
+        circle()!.firstElementChild as Element,
+      ).animation;
+      expect(growing).toContain('pp-hold-grow');
+      fireEvent.pointerUp(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      const fading = getComputedStyle(
+        circle()!.firstElementChild as Element,
+      ).animation;
+      expect(fading).toMatch(/pp-hold-grow.*forwards paused/);
+      expect(fading).toContain('pp-hold-fade');
+    });
+
+    it('draws no circle under reduce-motion', async () => {
+      vi.useFakeTimers();
+      vi.stubGlobal('matchMedia', (query: string) => ({
+        matches: query.includes('reduce'),
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+      }));
+      try {
+        renderHoldable();
+        fireEvent.pointerDown(content(), {
+          pointerId: 1,
+          clientX: 50,
+          clientY: 20,
+        });
+        await act(() => vi.advanceTimersByTimeAsync(300));
+        fireEvent.pointerUp(content(), {
+          pointerId: 1,
+          clientX: 50,
+          clientY: 20,
+        });
+        expect(circle()).toBeNull();
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
+  });
+
   describe('peek', () => {
     const content = () => document.querySelector('[data-swipe-row-content]')!;
     const peeking = () => content().hasAttribute('data-peeking');

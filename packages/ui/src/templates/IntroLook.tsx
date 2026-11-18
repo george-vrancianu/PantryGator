@@ -7,7 +7,7 @@ import { useForcedThemeColor } from '../theme/useForcedThemeColor';
 
 export type IntroLookProps = {
   children: ReactNode;
-  /** The Setup step screens stand on olive; the rest of the Intro is cream. Launch is `canopy`: a dark band over a cream sheet, which it draws itself, so no top padding here. */
+  /** Every Intro screen now stands on `canopy` (`olive` and `cream` remain for the stories). The `canopy` ground is a dark band over a cream sheet, which it draws itself, so no top padding here. */
   ground?: 'cream' | 'olive' | 'canopy';
 };
 

@@ -1,6 +1,7 @@
 import {
   Alert,
   Box,
+  Button,
   Card,
   Spinner,
   displayType,
@@ -17,7 +18,7 @@ import { useRecipeDraftDiscard } from './hooks/useRecipeDraftDiscard';
 export function RecipeDraftsPage() {
   const { t } = useTranslation(['recipes', 'common']);
   const drafts = useRecipeDrafts();
-  const { hiddenIds, discard } = useRecipeDraftDiscard();
+  const { hiddenIds, discard, discardMany } = useRecipeDraftDiscard();
   const visible = drafts.data?.filter((draft) => !hiddenIds.has(draft.id));
   return (
     <>
@@ -56,6 +57,24 @@ export function RecipeDraftsPage() {
             />
           ))}
         </Card>
+      ) : null}
+      {visible && visible.length > 1 ? (
+        <Box sx={{ textAlign: 'center', mt: '12px' }}>
+          <Button
+            variant="ghost"
+            size="sm"
+            sx={{
+              color: palette('error-main'),
+              '&:hover': {
+                backgroundColor: palette('error-light'),
+                color: palette('error-main'),
+              },
+            }}
+            onClick={() => discardMany(visible.map((draft) => draft.id))}
+          >
+            {t('recipes:drafts.discardAll')}
+          </Button>
+        </Box>
       ) : null}
     </>
   );

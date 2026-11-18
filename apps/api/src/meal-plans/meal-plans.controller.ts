@@ -34,6 +34,7 @@ import {
   type FillBody,
   type MealPlanQuery,
   type MealPlanSummary,
+  type FilledMealPlanView,
   type MealPlanView,
   type MealWindowView,
   type SetSlotBody,
@@ -218,7 +219,7 @@ export class MealPlansController {
     @Query(writeQuery) { today }: MealPlanQuery,
     @Param(idParam) { id }: { id: string },
     @Body(new ZodValidationPipe(fillBody)) body: FillBody,
-  ): Promise<MealPlanView> {
+  ): Promise<FilledMealPlanView> {
     return this.plans.fill(
       member.id,
       id,

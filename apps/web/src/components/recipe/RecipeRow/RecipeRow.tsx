@@ -4,6 +4,7 @@ import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLa
 import { StatusPills } from '@/components/recipe/StatusPills/StatusPills';
 import type { CookTonightCard } from '@/lib/cookTonight';
 import { totalMinutes, type RecipeListItem } from '@/lib/recipes';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { OwnerBadge } from '@/components/recipe/OwnerBadge/OwnerBadge';
 
 type Props = {
@@ -65,7 +66,7 @@ export function RecipeRow({
           />
         ) : null
       }
-      to={onSelect ? undefined : (to ?? `/recipes/${recipe.id}`)}
+      to={onSelect ? undefined : (to ?? familyRecipeHref(recipe.id))}
       onClick={onSelect}
     />
   );

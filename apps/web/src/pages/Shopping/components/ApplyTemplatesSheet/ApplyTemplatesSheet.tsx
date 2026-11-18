@@ -447,7 +447,7 @@ function TemplateRow({
             }}
           >
             {loading ? (
-              <Spinner label="" />
+              <Spinner />
             ) : state === 'all' ? (
               <CheckIcon size={14} />
             ) : state === 'mixed' ? (

@@ -22,6 +22,7 @@ import {
   type GuidanceDraft,
 } from '@/lib/guidanceDraft';
 import { recipesQueryKey } from '@/lib/recipes';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import {
   documentOf,
@@ -134,7 +135,7 @@ export function EditFamilyRecipePage() {
     t('recipes:family.leaveConfirm'),
   );
 
-  const back = { label: t('recipes:back'), href: `/recipes/${id}` };
+  const back = { label: t('recipes:back'), href: familyRecipeHref(id) };
   // A failed delete is reported by the deferred-removal toast, not here.
   const tipError =
     tipWrites.add.error ??
@@ -229,7 +230,9 @@ export function EditFamilyRecipePage() {
       }
       stepsEnd={
         <>
-          <Link href={`/recipes/${id}`}>{t('recipes:family.viewRecipe')}</Link>
+          <Link href={familyRecipeHref(id)}>
+            {t('recipes:family.viewRecipe')}
+          </Link>
           <RecipeTipsCard
             tips={tips.filter((tip) => tip.stepId === null)}
             parentTips={recipe.parentTips ?? undefined}

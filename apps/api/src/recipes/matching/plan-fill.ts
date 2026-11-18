@@ -256,3 +256,23 @@ export function fillPlan(input: FillInput): FillChoice[] {
     };
   }
 }
+
+/**
+ * How many more empty slots Fill would fill if the Family's Allergies blocked no Recipe. Both
+ * runs break ties the same fixed way, so only `blocksFill` differs between them and the answer
+ * does not move with the random pick of the Fill that is saved. Greedy runs can still part ways
+ * (a blocked Recipe may use up stock or the variety window), so this is an estimate and never
+ * below 0.
+ */
+export function slotsEmptiedByAllergies(
+  input: Omit<FillInput, 'tieBreaker'>,
+): number {
+  const tieBreaker: TieBreaker = (tied) => tied[0];
+  const blocked = fillPlan({ ...input, tieBreaker }).length;
+  const unblocked = fillPlan({
+    ...input,
+    recipes: input.recipes.map((recipe) => ({ ...recipe, blocksFill: false })),
+    tieBreaker,
+  }).length;
+  return Math.max(0, unblocked - blocked);
+}

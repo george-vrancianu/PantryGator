@@ -64,6 +64,18 @@ export function NewRecipePage() {
   const { t } = useTranslation(['common', 'errors', 'recipes']);
   const route = useRecipeDraftRoute();
   const draftRoute = routePropsOf(route);
+  // A resumed Recipe Draft holds everything; the state a reload kept would only repeat it.
+  const fromState = route.resumed ? null : suppliedOf(location.state);
+  // The form keeps its fill after the state is cleared (see `clearState`).
+  const [kept, setKept] = useState<{
+    formKey: string;
+    value: NewRecipeState;
+  } | null>(null);
+  if (
+    fromState &&
+    (kept?.value !== fromState || kept.formKey !== route.formKey)
+  )
+    setKept({ formKey: route.formKey, value: fromState });
   if (route.error || route.loading) {
     return (
       <>
@@ -79,8 +91,8 @@ export function NewRecipePage() {
       </>
     );
   }
-  // A resumed Recipe Draft holds everything; the state a reload kept would only repeat it.
-  const supplied = route.resumed ? null : suppliedOf(location.state);
+  const supplied =
+    fromState ?? (kept?.formKey === route.formKey ? kept.value : null);
   const resuming = new URLSearchParams(location.search).has(DRAFT_PARAM);
   return (
     <RecipeDraftContinue
@@ -252,7 +264,11 @@ function NewRecipeContent({
   });
   // A read that counted against a Cap must not be lost: no waiting for an edit.
   useEffect(() => {
-    if (supplied) void autosave.flush();
+    if (supplied) {
+      void autosave.flush();
+      // The first create is on its way: a reload must not find the fill again and create a second Recipe Draft.
+      draftRoute.clearState();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

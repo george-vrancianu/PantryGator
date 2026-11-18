@@ -253,6 +253,16 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
       expect(sent(calls, POST)).toHaveLength(1);
       expect(screen.queryByText(FAILED)).toBeNull();
     });
+
+    it('links the cap notice to the Drafts list', async () => {
+      const user = typer();
+      setup({ [POST]: () => failure(409, 'recipe_drafts.limit_reached') });
+      await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
+      await elapse(1600);
+      expect(
+        await screen.findByRole('link', { name: 'See your Recipe Drafts' }),
+      ).toHaveAttribute('href', '/recipes/drafts');
+    });
   });
 
   describe('leaving the form', () => {
@@ -623,6 +633,120 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
         expect(screen.queryByText('Recipes page')).toBeNull();
       },
     );
+
+    it('offers to keep the form as a new Recipe Draft when the stored one is gone, and creates it from the form as it is', async () => {
+      const user = typer();
+      const calls = setup({
+        [POST]: () => created(),
+        [PUT]: () => failure(404, 'recipe_drafts.not_found'),
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      await user.click(
+        await screen.findByRole('button', {
+          name: 'Keep as a new Recipe Draft',
+        }),
+      );
+      await elapse(100);
+      expect(sent(calls, POST)).toHaveLength(2);
+      expect(sent(calls, POST)[1].body).toMatchObject({
+        content: { title: 'Gran stew' },
+      });
+      expect(await screen.findByText('Draft saved')).toBeVisible();
+      expect(
+        screen.queryByRole('button', { name: 'Keep as a new Recipe Draft' }),
+      ).toBeNull();
+      expect(screen.queryByText(new RegExp(NOT_FOUND))).toBeNull();
+      // Saved again: leaving asks nothing.
+      await user.click(screen.getByRole('link', { name: 'leave' }));
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it('waits for an update in flight when Keep as new is tapped, then creates one new Recipe Draft', async () => {
+      const user = typer();
+      let release: (response: Response) => void = () => {};
+      let puts = 0;
+      const calls = setup({
+        [POST]: () => created(),
+        [PUT]: () => {
+          puts += 1;
+          if (puts === 1) return failure(404, 'recipe_drafts.not_found');
+          return new Promise<Response>((resolve) => {
+            release = resolve;
+          });
+        },
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      const keep = await screen.findByRole('button', {
+        name: 'Keep as a new Recipe Draft',
+      });
+      // A later edit goes out as another update, which is still in flight at the tap.
+      await user.type(title, '!');
+      await elapse(1600);
+      expect(sent(calls, PUT)).toHaveLength(2);
+      await user.click(keep);
+      expect(sent(calls, POST)).toHaveLength(1);
+      await act(async () => release(failure(404, 'recipe_drafts.not_found')));
+      await elapse(100);
+      expect(sent(calls, POST)).toHaveLength(2);
+      expect(sent(calls, POST)[1].body).toMatchObject({
+        content: { title: 'Gran stew!' },
+      });
+    });
+
+    it('creates only one new Recipe Draft when Keep as new is tapped twice while an update is in flight', async () => {
+      const user = typer();
+      let release: (response: Response) => void = () => {};
+      let puts = 0;
+      const calls = setup({
+        [POST]: () => created(),
+        [PUT]: () => {
+          puts += 1;
+          if (puts === 1) return failure(404, 'recipe_drafts.not_found');
+          return new Promise<Response>((resolve) => {
+            release = resolve;
+          });
+        },
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      const keep = await screen.findByRole('button', {
+        name: 'Keep as a new Recipe Draft',
+      });
+      await user.type(title, '!');
+      await elapse(1600);
+      await user.click(keep);
+      await user.click(keep);
+      await act(async () => release(failure(404, 'recipe_drafts.not_found')));
+      await elapse(100);
+      expect(sent(calls, POST)).toHaveLength(2);
+    });
+
+    it('does not offer it for a refusal other than a gone Recipe Draft', async () => {
+      const user = typer();
+      setup({
+        [POST]: () => created(),
+        [PUT]: () => failure(400, 'validation_failed'),
+      });
+      const title = await screen.findByLabelText(/^Title/);
+      await user.type(title, 'Gran');
+      await elapse(1600);
+      await user.type(title, ' stew');
+      await elapse(1600);
+      expect(
+        screen.queryByRole('button', { name: 'Keep as a new Recipe Draft' }),
+      ).toBeNull();
+    });
 
     it('keeps retrying 5xx, 408 and 429', async () => {
       const user = typer();

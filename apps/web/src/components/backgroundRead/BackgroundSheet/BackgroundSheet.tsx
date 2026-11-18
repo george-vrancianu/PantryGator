@@ -1,7 +1,10 @@
 import {
   ActionMenu,
+  BangIcon,
   Box,
   Button,
+  CheckIcon,
+  HourglassIcon,
   Sheet,
   Typography,
   palette,
@@ -17,10 +20,10 @@ import {
   type BackgroundStatus,
 } from '@/lib/backgroundItem';
 
-const glyph: Record<BackgroundStatus, string> = {
-  reading: '…',
-  ready: '✓',
-  failed: '!',
+const statusIcon: Record<BackgroundStatus, ReactNode> = {
+  reading: <HourglassIcon size={18} />,
+  ready: <CheckIcon size={18} />,
+  failed: <BangIcon size={18} />,
 };
 
 /** The sheet's groups, in the order they are shown. */
@@ -116,7 +119,7 @@ export function BackgroundSheet({
           fontWeight: 700,
         }}
       >
-        {item.art ?? glyph[item.status]}
+        {item.art ?? statusIcon[item.status]}
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box

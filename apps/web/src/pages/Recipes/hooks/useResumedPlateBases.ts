@@ -2,7 +2,7 @@ import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
 import { ApiError } from '@/lib/api';
 import { usePlateMatches } from '@/lib/plateRecipe';
 import type { RecipeDraftForm } from '@/lib/recipeDraftContent';
-import { useRecipe } from '@/lib/recipes';
+import { retryUnlessGone, useRecipe } from '@/lib/recipes';
 
 /** What Plate matches are asked from: the title and the Matched Ingredients of the lines. */
 export function plateMatchInput(
@@ -56,7 +56,7 @@ export function useResumedPlateBases(
     asks && active,
   );
   const pickedId = asks ? (form?.pickedBaseId ?? '') : '';
-  const base = useRecipe(pickedId, pickedId !== '' && active);
+  const base = useRecipe(pickedId, pickedId !== '' && active, retryUnlessGone);
   const gone =
     base.data?.archived === true ||
     (base.error instanceof ApiError && base.error.status === 404);

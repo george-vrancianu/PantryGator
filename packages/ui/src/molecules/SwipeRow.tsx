@@ -326,6 +326,27 @@ export function SwipeRow({
   };
 
   const { x, zone, dragging, pressing, armed, origin } = gestures;
+  // A hold cancelled before it armed leaves its circle fading for a moment instead of vanishing.
+  const [seen, setSeen] = useState({ pressing, armed, origin });
+  // Counts presses, so each one draws a fresh circle and a fading one is never resumed.
+  const [pressCount, setPressCount] = useState(0);
+  const [fadingFrom, setFadingFrom] = useState<typeof origin>(null);
+  if (
+    seen.pressing !== pressing ||
+    seen.armed !== armed ||
+    seen.origin !== origin
+  ) {
+    setSeen({ pressing, armed, origin });
+    if (pressing && !seen.pressing) setPressCount(pressCount + 1);
+    if (seen.pressing && !pressing && !seen.armed && !reduceMotion) {
+      setFadingFrom(seen.origin);
+    }
+  }
+  useEffect(() => {
+    if (!fadingFrom) return;
+    const timer = setTimeout(() => setFadingFrom(null), HOLD_CANCEL_FADE_MS);
+    return () => clearTimeout(timer);
+  }, [fadingFrom]);
   const bind = {
     ...gestures.bind,
     onPointerDown: (event: PointerEvent<HTMLElement>) => {
@@ -449,7 +470,14 @@ export function SwipeRow({
         }}
       >
         {pressing && origin && !reduceMotion ? (
-          <HoldCircle origin={origin} armed={armed} />
+          <HoldCircle key={pressCount} origin={origin} armed={armed} />
+        ) : fadingFrom ? (
+          <HoldCircle
+            key={pressCount}
+            origin={fadingFrom}
+            armed={false}
+            cancelled
+          />
         ) : null}
         <Box
           sx={{
@@ -628,6 +656,8 @@ export function SwipeRow({
 }
 
 const HOLD_CIRCLE_PT = 48;
+/** A cancelled hold's circle fades over this long (handoff section 5). */
+const HOLD_CANCEL_FADE_MS = 250;
 
 /**
  * The hold circle (handoff section 5): grows from the touch point over the rest of the hold, under the
@@ -637,9 +667,12 @@ const HOLD_CIRCLE_PT = 48;
 function HoldCircle({
   origin,
   armed,
+  cancelled = false,
 }: {
   origin: { x: number; y: number };
   armed: boolean;
+  /** The hold was let go before it armed: the circle only fades out. */
+  cancelled?: boolean;
 }) {
   const growMs = HOLD_MS - PRESS_MS;
   const centre = {
@@ -660,9 +693,12 @@ function HoldCircle({
           bgcolor: palette('pp-accentTint'),
           opacity: 0.55,
           transform: 'scale(20)',
-          animation: armed
-            ? 'pp-hold-fade 450ms 100ms ease-out forwards'
-            : `pp-hold-grow ${growMs}ms cubic-bezier(.3,.05,.3,1) forwards, pp-hold-breathe ${growMs}ms ease-in-out`,
+          // A cancelled circle keeps its size (the grow stays in the list, paused) and fades from there.
+          animation: cancelled
+            ? `pp-hold-grow ${growMs}ms cubic-bezier(.3,.05,.3,1) forwards paused, pp-hold-fade ${HOLD_CANCEL_FADE_MS}ms ease-out forwards`
+            : armed
+              ? 'pp-hold-fade 450ms 100ms ease-out forwards'
+              : `pp-hold-grow ${growMs}ms cubic-bezier(.3,.05,.3,1) forwards, pp-hold-breathe ${growMs}ms ease-in-out`,
           '@keyframes pp-hold-grow': {
             from: { transform: 'scale(0)' },
             to: { transform: 'scale(20)' },

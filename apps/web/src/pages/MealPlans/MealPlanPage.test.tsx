@@ -112,7 +112,8 @@ function setup(view: MealPlanDetail = week(), extra = {}) {
     'PUT /api/meal-plans/p1/slots/1/dinner': () => Response.json(view),
     'DELETE /api/meal-plans/p1/slots/1/dinner': () =>
       new Response(null, { status: 204 }),
-    'POST /api/meal-plans/p1/fill': () => Response.json(view),
+    'POST /api/meal-plans/p1/fill': () =>
+      Response.json({ ...view, fill: { filled: 0, emptyForAllergies: 0 } }),
     'GET /api/shopping-list': shoppingList,
     ...extra,
   });
@@ -706,6 +707,180 @@ describe('Meal Plan page', () => {
     ).toBe(true);
   });
 
+  it('caps the Explore section and reveals the rest on Show more', async () => {
+    setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? Array.from({ length: 8 }, (_, i) =>
+                  recipe(`cat-${i}`, `Catalog dish ${i}`),
+                )
+              : [],
+        }),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    expect(await within(picker).findByText('Catalog dish 0')).toBeVisible();
+    expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(5);
+
+    await u.click(within(picker).getByRole('button', { name: /^Show 3 more/ }));
+    expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(8);
+    expect(
+      within(picker).queryByRole('button', { name: /^Show 3 more/ }),
+    ).toBeNull();
+  });
+
+  it('archives the copy a Catalog pick made when the slot write fails', async () => {
+    const api = setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? [recipe('cat-1', 'Pad thai')]
+              : [],
+        }),
+      'POST /api/recipes/cat-1/copy': () =>
+        Response.json({ id: 'copy-1', created: true }),
+      'POST /api/recipes/copy-1/archive': () => Response.json({ id: 'copy-1' }),
+      'PUT /api/meal-plans/p1/slots/1/lunch': () =>
+        Response.json(
+          { code: 'meal_plan.day_in_past', params: {} },
+          { status: 409 },
+        ),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    await u.click(await within(picker).findByText('Pad thai'));
+    expect(
+      await within(picker).findByText(
+        "That day has passed and can't be changed.",
+      ),
+    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        api.calls.some((c) => c.key === 'POST /api/recipes/copy-1/archive'),
+      ).toBe(true),
+    );
+  });
+
+  it('keeps a copy the Family already had when the slot write fails', async () => {
+    const api = setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? [recipe('cat-1', 'Pad thai')]
+              : [],
+        }),
+      'POST /api/recipes/cat-1/copy': () =>
+        Response.json({ id: 'copy-1', created: false }),
+      'POST /api/recipes/copy-1/archive': () => Response.json({ id: 'copy-1' }),
+      'PUT /api/meal-plans/p1/slots/1/lunch': () =>
+        Response.json(
+          { code: 'meal_plan.day_in_past', params: {} },
+          { status: 409 },
+        ),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    await u.click(await within(picker).findByText('Pad thai'));
+    expect(
+      await within(picker).findByText(
+        "That day has passed and can't be changed.",
+      ),
+    ).toBeVisible();
+    // The pick has settled once the post-copy refetch of the lists went out after the slot PUT.
+    await waitFor(() => {
+      const put = api.calls.findIndex(
+        (c) => c.key === 'PUT /api/meal-plans/p1/slots/1/lunch',
+      );
+      expect(put).toBeGreaterThan(-1);
+      expect(
+        api.calls.slice(put + 1).some((c) => c.key === 'GET /api/recipes'),
+      ).toBe(true);
+    });
+    expect(
+      api.calls.some((c) => c.key === 'POST /api/recipes/copy-1/archive'),
+    ).toBe(false);
+  });
+
+  it('collapses the Explore section again when the search changes', async () => {
+    setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? Array.from({ length: 8 }, (_, i) =>
+                  recipe(`cat-${i}`, `Catalog dish ${i}`),
+                )
+              : [],
+        }),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    expect(await within(picker).findByText('Catalog dish 0')).toBeVisible();
+    await u.click(within(picker).getByRole('button', { name: /^Show 3 more/ }));
+    expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(8);
+
+    await u.type(within(picker).getByRole('searchbox'), 'dish');
+    await waitFor(() =>
+      expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(5),
+    );
+  });
+
+  it('says so when archiving the copy fails after a failed slot write', async () => {
+    setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? [recipe('cat-1', 'Pad thai')]
+              : [],
+        }),
+      'POST /api/recipes/cat-1/copy': () =>
+        Response.json({ id: 'copy-1', created: true }),
+      'POST /api/recipes/copy-1/archive': () =>
+        Response.json({ code: 'internal' }, { status: 500 }),
+      'PUT /api/meal-plans/p1/slots/1/lunch': () =>
+        Response.json(
+          { code: 'meal_plan.day_in_past', params: {} },
+          { status: 409 },
+        ),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    await u.click(await within(picker).findByText('Pad thai'));
+    expect(
+      await within(picker).findByText(/Couldn't undo adding Pad thai/),
+    ).toBeVisible();
+  });
+
   it('has no Servings stepper for an unavailable Recipe', async () => {
     setup();
     const u = userEvent.setup();
@@ -716,6 +891,96 @@ describe('Meal Plan page', () => {
     expect(
       within(dialog).queryByRole('button', { name: /Servings/ }),
     ).toBeNull();
+  });
+
+  describe('the toast after Fill', () => {
+    const fillWith = async (
+      locale: 'en' | 'ro' | 'da',
+      fill: { filled: number; emptyForAllergies: number },
+      text: string,
+    ) => {
+      setup(week(), {
+        'POST /api/meal-plans/p1/fill': () =>
+          Response.json({ ...week(), fill }),
+      });
+      renderWithProviders(
+        <Routes>
+          <Route path="/meal-plans/:id" element={<MealPlanPage />} />
+        </Routes>,
+        { route: '/meal-plans/p1', locale },
+      );
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: { en: 'Fill', ro: 'Completează', da: 'Udfyld' }[locale],
+        }),
+      );
+      // The toast is a polite live region; an alert would interrupt the screen reader.
+      await waitFor(() =>
+        expect(
+          screen
+            .getAllByRole('status')
+            .map((el) => el.textContent)
+            .includes(text),
+        ).toBe(true),
+      );
+      expect(screen.queryByRole('alert')).toBeNull();
+    };
+
+    it('says how many slots were filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 3, emptyForAllergies: 0 },
+        'Filled 3 slots.',
+      );
+    });
+
+    it('uses the singular for one slot', async () => {
+      await fillWith(
+        'en',
+        { filled: 1, emptyForAllergies: 0 },
+        'Filled 1 slot.',
+      );
+    });
+
+    it('says nothing could be filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 0, emptyForAllergies: 0 },
+        'Nothing could be filled.',
+      );
+    });
+
+    it('mentions slots left empty because of Allergies', async () => {
+      await fillWith(
+        'en',
+        { filled: 2, emptyForAllergies: 1 },
+        'Filled 2 slots. 1 slot stayed empty because of Allergies.',
+      );
+    });
+
+    it('mentions Allergies when nothing could be filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 0, emptyForAllergies: 4 },
+        'Nothing could be filled. 4 slots stayed empty because of Allergies.',
+      );
+    });
+
+    it('speaks Romanian with its few form', async () => {
+      await fillWith(
+        'ro',
+        { filled: 2, emptyForAllergies: 0 },
+        'S-au completat 2 sloturi.',
+      );
+    });
+
+    it('speaks Danish', async () => {
+      await fillWith(
+        'da',
+        { filled: 2, emptyForAllergies: 1 },
+        'Udfyldte 2 pladser. 1 plads forblev tom på grund af allergier.',
+      );
+    });
   });
 
   it('disables Fill for a plan that is over', async () => {

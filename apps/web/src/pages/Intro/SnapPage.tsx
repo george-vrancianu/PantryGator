@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   ChoiceRadioGroup,
-  color,
   DOCK_HEIGHT,
   IngredientsScanIcon,
   ReceiptIcon,
@@ -14,11 +13,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AppDock } from '@/components/layout/AppDock/AppDock';
-import { creamFocus } from './hooks/creamFocus';
 import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
+import { IntroCanopyFrame } from '@/components/intro/IntroCanopy/IntroCanopy';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSnapLeave } from './hooks/useSnapLeave';
-import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
+import { SetupTopRow } from './components/SetupTopRow/SetupTopRow';
 import { INTRO_CAMERA_PATH, INTRO_REVIEW_PATH } from '@/lib/intro';
 import { pendingCount, useScanSession } from '@/lib/scanSession';
 
@@ -40,33 +39,23 @@ export function SnapPage() {
   const leave = useSnapLeave();
 
   return (
-    <IntroLook ground="olive">
-      <Box
-        component="main"
-        sx={[
-          {
-            boxSizing: 'border-box',
-            maxWidth: 520,
-            mx: 'auto',
-            px: '24px',
-            pt: '48px',
-            pb: '240px',
-            color: color.cardBg,
-          },
-          creamFocus,
-        ]}
+    <IntroLook ground="canopy">
+      <IntroCanopyFrame
+        bottom="240px"
+        top={
+          <>
+            <SetupTopRow leave={leave} />
+            <GatorSpeech live mt="24px">
+              {t(`snap.bubble.${pick}`)}
+            </GatorSpeech>
+          </>
+        }
       >
-        <SetupOliveTopRow leave={leave} />
-
-        <GatorSpeech live mt="24px">
-          {t(`snap.bubble.${pick}`)}
-        </GatorSpeech>
-
         {taken > 0 ? (
           <Box
             data-testid="snap-session"
             sx={{
-              mt: '24px',
+              mb: '24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -89,9 +78,8 @@ export function SnapPage() {
           </Box>
         ) : null}
 
-        <Box sx={{ mt: '32px' }}>
+        <Box>
           <ChoiceRadioGroup<Pick>
-            tone="olive"
             label={t('snap.question')}
             value={pick}
             onChange={setPick}
@@ -111,7 +99,7 @@ export function SnapPage() {
             ]}
           />
         </Box>
-      </Box>
+      </IntroCanopyFrame>
       <SetupCallout
         title={t('snap.callout.title')}
         body={t('snap.callout.body')}

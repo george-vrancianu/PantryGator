@@ -292,7 +292,7 @@ export function ShutterButton({
             ? `color-mix(in srgb, ${palette('text-primary')} 92%, ${palette('background-default')})`
             : palette('text-primary'),
           boxShadow: `0 1px 4px ${scrim(35)}`,
-          opacity: disabled ? 0.55 : 1,
+          opacity: disabled ? 0.5 : 1,
           transform: pressed ? 'scale(.88)' : 'none',
           transition: 'transform 120ms, background-color 120ms',
           [reducedMotion]: { transition: 'none' },

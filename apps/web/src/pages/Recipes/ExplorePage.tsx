@@ -5,7 +5,6 @@ import {
   Card,
   color,
   displayType,
-  plusBottomInset,
   radius,
   Spinner,
   Stack,
@@ -15,7 +14,10 @@ import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
-import { QuickViewSheet } from './components/QuickViewSheet/QuickViewSheet';
+import {
+  QUICK_VIEW_TOAST_BOTTOM,
+  QuickViewSheet,
+} from './components/QuickViewSheet/QuickViewSheet';
 import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 import { translateApiError } from '@/i18n/translateApiError';
 import { isPlainClick } from '@/lib/isPlainClick';
@@ -43,11 +45,6 @@ import { TagNoMatch } from './components/TagNoMatch/TagNoMatch';
 
 /** Rows a group shows before "Show n more". */
 const LIMIT = 4;
-/** Lifts a toast above the quick view's action buttons. */
-const QUICK_VIEW_TOAST_BOTTOM =
-  // Sheet bottom padding 28 + explanation line(s) ~36 + gap 10 + Make a Variant 48 + gap 8 + Add 48 + 8 slack
-  plusBottomInset(186);
-
 /**
  * Explore (`/recipes/explore`): the Catalog Base Recipes, each one tap from being added to the
  * Family. "You can make this" (Catalog Cook Tonight) comes first, then "All Recipes"; searching or

@@ -319,6 +319,7 @@ export function FamilyRecipeForm({
         >
           <>
             <RecipeLinesSection
+              editorCard
               seedKey={`${seedKey}-${rebase?.id ?? 0}`}
               lines={draft.lines}
               problems={problems}
@@ -344,7 +345,7 @@ export function FamilyRecipeForm({
               <CatalogSearch
                 emptyState={<BrowseByAisle />}
                 key={searchKey}
-                inline
+                variant="row"
                 label={t('catalog:search.addIngredient')}
                 placeholder={t('catalog:search.addIngredient')}
                 onSelect={(ingredient) => {

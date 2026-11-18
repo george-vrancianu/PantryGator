@@ -1,4 +1,4 @@
-import { Box, palette } from '@pocket-pantry/ui';
+import { Box, canopy, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import {
   linkButtonStyle,
@@ -7,17 +7,18 @@ import {
 } from '../SetupLeave/SetupLeave';
 import { SetupProgress } from '../SetupProgress/SetupProgress';
 
-const linkSx = { ...linkButtonStyle, color: palette('pp-accent') } as const;
+const linkSx = { ...linkButtonStyle, color: canopy.ink } as const;
 
 type Props = {
   /** The "‹ label" link back, when the screen has one. */
   back?: { label: string; onClick: () => void };
+  step?: 1 | 2;
   /** Next and Skip, with the Skip confirm: from `useSetupLeave`. */
   leave: SetupLeave;
 };
 
-/** The Setup Review's top row on the cream ground: an optional "‹ Back" link, the step's progress ("1 of 2"), Skip. */
-export function SetupTopRow({ back, leave }: Props) {
+/** The Setup screens' top row on the Canopy: an optional "‹ Back" link, the step's progress ("1 of 2"), Next and Skip, in its ink. */
+export function SetupTopRow({ back, step = 1, leave }: Props) {
   const { t } = useTranslation('onboarding');
   const { skipTarget, onSkip } = leave;
   return (
@@ -34,8 +35,8 @@ export function SetupTopRow({ back, leave }: Props) {
             {back.label}
           </Box>
         ) : null}
-        <SetupProgress tone="cream" />
-        <SetupNextButton leave={leave} tone="cream" />
+        <SetupProgress step={step} />
+        <SetupNextButton leave={leave} />
         <Box
           component="button"
           type="button"
@@ -46,7 +47,20 @@ export function SetupTopRow({ back, leave }: Props) {
           {t('setupStep.skip')}
         </Box>
       </Box>
-      {leave.prompt}
+      {leave.prompt ? (
+        // A card of its own: the confirm's buttons are made for the light page, not the Canopy.
+        <Box
+          sx={{
+            mt: '12px',
+            p: '12px',
+            borderRadius: radius.card,
+            backgroundColor: 'pp.cardBg',
+            color: 'text.primary',
+          }}
+        >
+          {leave.prompt}
+        </Box>
+      ) : null}
     </>
   );
 }

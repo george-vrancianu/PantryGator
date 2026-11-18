@@ -10,12 +10,11 @@ import {
   Stack,
   Typography,
   focusRingStyle,
-  palette,
-  IntroLook,
 } from '@pocket-pantry/ui';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { IntroCanopy } from '@/components/intro/IntroCanopy/IntroCanopy';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useGatorAlt } from '@/lib/useGatorAlt';
 import { useIntro } from '@/lib/useIntro';
@@ -119,21 +118,10 @@ export function SetupOrSkipPage() {
   useEffect(() => resumeSetup(), [resumeSetup]);
 
   return (
-    <IntroLook>
-      <Stack
-        component="main"
-        spacing={3}
-        sx={{ p: '24px', maxWidth: 420, mx: 'auto' }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            py: '16px',
-            borderRadius: radius.sheet,
-            backgroundColor: palette('pp-accentTint'),
-          }}
-        >
+    <IntroCanopy
+      maxWidth={420}
+      top={
+        <Box sx={{ display: 'flex', justifyContent: 'center', pt: '8px' }}>
           <Gator
             mood="shopping-buddy"
             size={220}
@@ -141,6 +129,9 @@ export function SetupOrSkipPage() {
             alt={gatorAlt('shopping-buddy')}
           />
         </Box>
+      }
+    >
+      <Stack spacing={3}>
         <Stack spacing={1}>
           <Typography variant="h1">{t('onboarding:setup.title')}</Typography>
           <Typography color="text.secondary">
@@ -210,6 +201,6 @@ export function SetupOrSkipPage() {
           </ChoiceCard>
         </Stack>
       </Stack>
-    </IntroLook>
+    </IntroCanopy>
   );
 }
