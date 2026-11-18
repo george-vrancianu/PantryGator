@@ -4,7 +4,7 @@ import { useScanSession } from '../../lib/scanSession';
 import { useVoiceNoteState } from '../../lib/voiceNote';
 import { focusVoiceButton } from '../../lib/voiceFocus';
 import { useVoiceBackgroundItems } from '../voice/useVoiceBackgroundItems';
-import { VoiceReviewAllFooter } from '../voice/VoiceReviewAllFooter';
+import { useVoiceReviewAll } from '../voice/useVoiceReviewAll';
 import { BackgroundSheet } from './BackgroundSheet';
 import { GatorBubble } from './bubble/GatorBubble';
 import { useRecipeReadBackgroundItems } from './useRecipeReadBackgroundItems';
@@ -46,6 +46,7 @@ export function BackgroundHost({
   const items = [...voiceItems, ...scanItems, ...recipeItems];
   const [wantSheet, setWantSheet] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const reviewAll = useVoiceReviewAll(() => setWantSheet(false));
   const up = state.phase === 'idle' && items.length > 0;
 
   // One short buzz when the Scan Session turns all read while the host is mounted; a host that
@@ -72,11 +73,8 @@ export function BackgroundHost({
       {mounted ? (
         <BackgroundSheet
           items={items}
-          footer={
-            state.inbox.notes.filter((n) => n.hasActions).length > 1 ? (
-              <VoiceReviewAllFooter onClose={() => setWantSheet(false)} />
-            ) : undefined
-          }
+          primary={reviewAll.primary}
+          notice={reviewAll.notice}
           open={wantSheet && items.length > 0 && state.phase === 'idle'}
           onClose={() => setWantSheet(false)}
           onExited={() => {

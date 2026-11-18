@@ -163,7 +163,7 @@ describe('the answer sheet for Pantry Questions', () => {
     ],
     ['a page with no Default List', <p key="h">home</p>, '/', 'none'],
   ])(
-    'opens from %s with a row per Ingredient instead of Review, and Done sends nothing',
+    'opens from %s with a row per Ingredient instead of Review, and closing sends nothing',
     async (_name, page, path, target) => {
       setup({ actions: [], answers });
       const dialog = within(await ask(page, path));
@@ -181,7 +181,7 @@ describe('the answer sheet for Pantry Questions', () => {
       expect(within(rows[1]).getByText('Butter')).toBeVisible();
       expect(rows[1]).toHaveTextContent('Not in your Pantry');
 
-      await userEvent.click(dialog.getByRole('button', { name: 'Done' }));
+      await userEvent.click(dialog.getByRole('button', { name: 'Close' }));
 
       expect(screen.queryByRole('dialog')).toBeNull();
       expect(calls.some((url) => url.endsWith('/voice/apply'))).toBe(false);
@@ -498,9 +498,8 @@ describe('the answer sheet for Pantry Questions', () => {
         expect(
           dialog.queryByRole('button', { name: /to the Shopping List/ }),
         ).toBeNull();
-        expect(
-          dialog.getByRole('heading', { name: 'Your Pantry' }),
-        ).toHaveFocus();
+        // The pressed button is gone: focus rests on the dialog itself.
+        expect(screen.getByRole('dialog')).toHaveFocus();
         expect(dialog.getAllByRole('listitem')).toHaveLength(6);
       },
     );
@@ -735,10 +734,10 @@ describe('the answer sheet for Pantry Questions', () => {
       calls.filter((url) => url.endsWith('/voice/apply')).length;
   });
 
-  it('puts focus back on the voice button after Done', async () => {
+  it('puts focus back on the voice button after Close', async () => {
     setup({ actions: [], answers });
     const dialog = within(await ask(<p>home</p>, '/'));
-    await userEvent.click(dialog.getByRole('button', { name: 'Done' }));
+    await userEvent.click(dialog.getByRole('button', { name: 'Close' }));
     await act(() => vi.advanceTimersByTimeAsync(10));
     expect(await talkButton()).toHaveFocus();
   });

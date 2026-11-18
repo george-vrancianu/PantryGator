@@ -335,7 +335,8 @@ describe('the Voice Inbox strip', () => {
       }),
     );
     await waitFor(() => expect(sheet.getAllByRole('listitem')).toHaveLength(1));
-    expect(sheet.getByRole('heading', { name: 'Review' })).toHaveFocus();
+    // The Cancel pressed is gone: focus rests on the dialog itself.
+    expect(screen.getByRole('dialog', { name: 'Review' })).toHaveFocus();
   });
 
   it('shows one note by its own title and detail in its row, with Review once it is ready', async () => {
