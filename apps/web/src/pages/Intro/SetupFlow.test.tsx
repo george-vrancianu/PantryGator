@@ -11,6 +11,8 @@ import { renderWithProviders } from '@/test/render';
 import { closeBubbleSheet, openBubbleSheet } from '@/test/voiceDom';
 import {
   flush,
+  languageChip,
+  pickScanLanguage,
   photoStack,
   selected,
   shutter,
@@ -673,6 +675,23 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(confirm).not.toHaveBeenCalled();
     expect(screen.getByText('2 photos taken')).toBeInTheDocument();
     confirm.mockRestore();
+  });
+
+  it('keeps the Scan Language picked on the camera while Close goes back to Snap with photos', async () => {
+    const { user } = await openSnap();
+    await user.click(screen.getByRole('link', { name: 'Camera' }));
+    await waitFor(() => expect(shutter()).toBeEnabled());
+    await pickScanLanguage('Română');
+    expect(languageChip()).toHaveTextContent('RO');
+    takeScan();
+    await waitFor(() => expect(stackCount()).toBe(1));
+
+    await user.click(screen.getByRole('button', { name: 'Close scanner' }));
+    await screen.findByTestId('snap-session');
+    await user.click(screen.getByRole('link', { name: 'Camera' }));
+    await waitFor(() => expect(shutter()).toBeInTheDocument());
+
+    expect(languageChip()).toHaveTextContent('RO');
   });
 
   it('stays on All set and says so when the Intro could not be marked done', async () => {
