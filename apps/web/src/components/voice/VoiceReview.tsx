@@ -3,6 +3,8 @@ import {
   Box,
   Gator,
   Sheet,
+  type SheetPrimary,
+  type SheetSecondary,
   Typography,
   ShoppingIcon,
   PantryIcon,
@@ -11,7 +13,6 @@ import {
   CloseIcon,
   IconButton,
   canopy,
-  displayType,
   radius,
   useToast,
   shadow,
@@ -26,7 +27,6 @@ import { focusVoiceButton } from '../../lib/voiceFocus';
 import { voiceToast } from '../../lib/voicePlacement';
 import { HeardCard, MergedHeardCard } from './HeardCard';
 import { ListPicker, RowListPicker } from './ListPicker';
-import { ReviewFooter } from './ReviewFooter';
 import { VoiceActionRow } from './VoiceActionRow';
 import {
   blockOf,
@@ -114,7 +114,6 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const body = useRef<HTMLDivElement>(null);
-  const title = useRef<HTMLHeadingElement>(null);
 
   const actions = proposal?.actions ?? [];
   // The Pantry Questions' answers: a read-only card above the rows; Apply never sends them.
@@ -217,7 +216,7 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
     focusVoiceButton();
   };
 
-  // Where focus lands as the sheet opens: the control of the row that holds Apply back, else the title.
+  // Where focus lands as the sheet opens: the control of the row that holds Apply back, else the dialog itself (Sheet's default).
   // A text field there stays unfocused on a phone (ADR 0039); the Sheet decides.
   const pickerOf = (id: string) =>
     body.current?.querySelector<HTMLElement>(`[data-voice-picker="${id}"]`) ??
@@ -234,7 +233,7 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
     () => ({
       get current() {
         const picker = blockingId ? pickerOf(blockingId) : null;
-        return picker ? pickerControl(picker) : title.current;
+        return picker ? pickerControl(picker) : null;
       },
     }),
     // pickerOf / pickerControl only read refs and the DOM; the blocking row is the one input.
@@ -248,10 +247,19 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
     pickerControl(picker).focus();
     return true;
   };
+  // The footer is Sheet's: its first button is Discard (the only one when nothing is left to apply), or Keep reviewing once asked.
+  const firstFooterButton = () =>
+    body.current
+      ?.closest('[role="dialog"]')
+      ?.querySelector<HTMLElement>('[data-sheet-footer] button') ?? null;
+  // The Discard question hands focus to Keep reviewing, the safe answer.
+  useEffect(() => {
+    if (confirming) firstFooterButton()?.focus();
+  }, [confirming]);
   // Declining the Discard question hands focus back to the Discard button.
   useEffect(() => {
     if (!keptReviewing || confirming) return;
-    document.querySelector<HTMLElement>('[data-voice-discard]')?.focus();
+    firstFooterButton()?.focus();
     // oxlint-disable-next-line react/set-state-in-effect -- one-shot focus request: focus is moved, then the request is cleared
     setKeptReviewing(false);
   }, [keptReviewing, confirming]);
@@ -326,6 +334,69 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
     />
   );
 
+  const blockedBy = blocking ? blockOf(blocking) : null;
+  const askDiscard = () => setConfirming(true);
+  // The footer's roles (ADR 0043): Discard and Apply; the Discard question's two answers once asked; or Discard alone
+  // when there is nothing to apply. A blocked Apply stays clickable (it takes the Member to the row), so it is not `disabled`.
+  const chrome: { primary: SheetPrimary; secondary?: SheetSecondary } =
+    confirming
+      ? {
+          primary: {
+            label: t('voice:review.footer.discard'),
+            tone: 'danger',
+            disabled: applying,
+            onClick: discard,
+          },
+          secondary: {
+            label: t('voice:review.footer.keep'),
+            onClick: () => {
+              if (applying) return;
+              setConfirming(false);
+              setKeptReviewing(true);
+            },
+          },
+        }
+      : applicable.length === 0 && blockedBy === null
+        ? {
+            primary: {
+              label: t('voice:review.footer.discard'),
+              onClick: askDiscard,
+            },
+          }
+        : {
+            primary: {
+              label: applying
+                ? t('voice:review.footer.applying')
+                : blockedBy === 'list'
+                  ? t('voice:review.footer.pickList')
+                  : blockedBy === 'batch'
+                    ? t('voice:review.footer.pickBatch')
+                    : blockedBy === 'place'
+                      ? t('voice:review.footer.pickPlace')
+                      : setupLook
+                        ? t('onboarding:sayIt.heard.doThese', {
+                            count: applicable.length,
+                          })
+                        : t('voice:review.footer.apply', {
+                            count: applicable.length,
+                          }),
+              pending: applying,
+              disabled: blockedBy === null && invalid.size > 0,
+              onClick: () => {
+                if (blocking === undefined || blockedBy === null) {
+                  apply.mutate();
+                  return;
+                }
+                setOpenId(blocking.id);
+                setFocusId(blocking.id);
+              },
+            },
+            secondary: {
+              label: t('voice:review.footer.discard'),
+              onClick: askDiscard,
+            },
+          };
+
   return (
     <Sheet
       open
@@ -340,103 +411,9 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
         const picker = blocking ? pickerOf(blocking.id) : null;
         picker?.scrollIntoView?.({ block: 'center' });
       }}
-      label={heading}
-      header={
-        <Box
-          sx={{
-            p: '14px 16px 0',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-          }}
-        >
-          <Box
-            sx={{
-              width: 58,
-              height: 58,
-              flex: 'none',
-              borderRadius: radius.btn,
-              background: canopy.gatorTile,
-              overflow: 'hidden',
-              display: 'grid',
-              placeItems: 'center',
-              boxShadow: canopy.gatorTileShadow,
-            }}
-          >
-            {setupLook ? (
-              <Gator mood="happy" size={58} alt={gatorAlt('happy')} />
-            ) : (
-              <Gator mood="happy" size={58} decorative />
-            )}
-          </Box>
-          <Box
-            sx={{
-              flex: 1,
-              minWidth: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '7px',
-            }}
-          >
-            <Typography
-              component="h2"
-              tabIndex={-1}
-              ref={title}
-              sx={{
-                ...displayType,
-                fontSize: 23,
-                fontWeight: 800,
-                letterSpacing: '-0.04em',
-                lineHeight: 1.05,
-                outline: 'none',
-              }}
-            >
-              {heading}
-            </Typography>
-            {setupLook ? null : (
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  lineHeight: 1.2,
-                  color: palette('text-secondary'),
-                }}
-              >
-                {subline}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      }
-      footer={
-        <ReviewFooter
-          count={applicable.length}
-          blocked={blocking ? blockOf(blocking) : null}
-          invalid={invalid.size > 0}
-          applying={applying}
-          applyLabel={
-            setupLook
-              ? t('onboarding:sayIt.heard.doThese', {
-                  count: applicable.length,
-                })
-              : undefined
-          }
-          confirming={confirming}
-          merged={merged !== undefined}
-          onAsk={() => setConfirming(true)}
-          onKeep={() => {
-            setConfirming(false);
-            setKeptReviewing(true);
-          }}
-          onDiscard={discard}
-          onApply={() => apply.mutate()}
-          onBlockedApply={() => {
-            if (!blocking) return;
-            setOpenId(blocking.id);
-            setFocusId(blocking.id);
-          }}
-        />
-      }
+      title={heading}
+      subtitle={setupLook ? undefined : subline}
+      {...chrome}
     >
       <Box
         ref={body}
@@ -452,6 +429,24 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
       >
         {apply.isError ? (
           <Alert>{translateApiError(t, apply.error)}</Alert>
+        ) : null}
+
+        {setupLook ? (
+          <Box
+            sx={{
+              width: 58,
+              height: 58,
+              flex: 'none',
+              borderRadius: radius.btn,
+              background: canopy.gatorTile,
+              overflow: 'hidden',
+              display: 'grid',
+              placeItems: 'center',
+              boxShadow: canopy.gatorTileShadow,
+            }}
+          >
+            <Gator mood="happy" size={58} alt={gatorAlt('happy')} />
+          </Box>
         ) : null}
 
         {merged ? (
@@ -477,7 +472,10 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
                 answers={answers}
                 onAdded={() => {
                   setAddedFromAnswers(true);
-                  title.current?.focus();
+                  // The button that was pressed is gone: focus the dialog itself.
+                  body.current
+                    ?.closest<HTMLElement>('[role="dialog"]')
+                    ?.focus();
                 }}
               />
             }
@@ -561,6 +559,39 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
               />
             ))}
           </Group>
+        ) : null}
+
+        {confirming ? (
+          // Pinned to the bottom of the scroller so the question stays in view over a long list; announced as it appears.
+          <Box
+            role="alert"
+            sx={{
+              position: 'sticky',
+              bottom: 0,
+              p: '12px 14px',
+              borderRadius: radius.card,
+              backgroundColor: palette('background-paper'),
+              border: `1px solid ${palette('pp-line')}`,
+              boxShadow: shadow.card,
+            }}
+          >
+            <Typography sx={{ fontSize: 14, fontWeight: 600 }}>
+              {t(
+                merged
+                  ? 'voice:review.footer.confirmAll'
+                  : 'voice:review.footer.confirm',
+              )}
+            </Typography>
+            <Typography
+              sx={{ fontSize: 12.5, color: palette('text-secondary') }}
+            >
+              {t(
+                merged
+                  ? 'voice:review.footer.confirmAllHint'
+                  : 'voice:review.footer.confirmHint',
+              )}
+            </Typography>
+          </Box>
         ) : null}
       </Box>
     </Sheet>
