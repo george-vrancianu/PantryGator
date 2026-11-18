@@ -698,6 +698,39 @@ describe('Voice Note module', () => {
     });
   });
 
+  describe('Review all limit', () => {
+    const actions = (prefix: string, count: number, status: string) =>
+      Array.from({ length: count }, (_, i) => ({
+        id: `${prefix}${i}`,
+        status,
+      }));
+    async function twoNotes(first: unknown[], second: unknown[]) {
+      const ctx = setup();
+      await record(ctx.note, options);
+      await record(ctx.note, options);
+      ctx.answer({ transcript: 'a', actions: first } as never, 0);
+      ctx.answer({ transcript: 'b', actions: second } as never, 1);
+      await settle();
+      return ctx;
+    }
+
+    it('counts only Voice Actions Apply can send toward the 50', async () => {
+      const ctx = await twoNotes(
+        [...actions('a', 30, 'ready'), ...actions('n', 10, 'notUnderstood')],
+        [...actions('b', 20, 'ready'), ...actions('f', 10, 'notFound')],
+      );
+      expect(ctx.note.openMerged()).toBe('opened');
+    });
+
+    it('refuses more than 50 sendable Voice Actions', async () => {
+      const ctx = await twoNotes(
+        actions('a', 26, 'ready'),
+        actions('b', 25, 'needsBatch'),
+      );
+      expect(ctx.note.openMerged()).toBe('tooMany');
+    });
+  });
+
   describe('automatic retry', () => {
     it('sends a network error once more by itself, and reads the note if that works', async () => {
       const ctx = setup();

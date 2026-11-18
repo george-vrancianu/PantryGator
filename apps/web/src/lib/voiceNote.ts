@@ -247,6 +247,10 @@ const nextUtcMidnight = (now: number) => {
   );
 };
 
+/** A Voice Action Apply can send once Review is done with it: not an entry that was not found or understood. */
+const canBeApplied = (a: VoiceReviewAction) =>
+  a.status !== 'notFound' && a.status !== 'notUnderstood';
+
 const pause = (ms: number) =>
   ms > 0 ? new Promise<void>((resolve) => setTimeout(resolve, ms)) : undefined;
 
@@ -1051,14 +1055,15 @@ export function createVoiceNote(
 
     /**
      * Opens one Review of every Voice Note that is waiting for one ("Review all"), in recording order. Needs
-     * two or more and nothing else on screen. Over MAX_APPLY_ACTIONS Voice Actions it is refused.
+     * two or more and nothing else on screen. Over MAX_APPLY_ACTIONS sendable Voice Actions (not the ones not found or not understood) it is refused.
      */
     openMerged(): MergeOutcome {
       if (store.live || store.merged || isSheet(openNote())) return 'refused';
       const notes = store.notes.filter(hasActions);
       if (notes.length < 2) return 'refused';
       const total = notes.reduce(
-        (sum, n) => sum + (n.proposal?.actions.length ?? 0),
+        (sum, n) =>
+          sum + (n.proposal?.actions.filter(canBeApplied).length ?? 0),
         0,
       );
       if (total > MAX_APPLY_ACTIONS) return 'tooMany';
