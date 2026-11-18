@@ -10,7 +10,7 @@ import {
   recipeReads,
 } from '../../lib/recipeReads';
 import type { RecipeFromLink } from '../../lib/linkRecipe';
-import { announcements, openBubbleSheet } from '../../test/voice';
+import { announcements, openBubbleSheet } from '../../test/voiceDom';
 import { renderWithProviders, stubApi } from '../../test/render';
 import { RecipesPage } from './RecipesPage';
 

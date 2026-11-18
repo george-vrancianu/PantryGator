@@ -106,8 +106,6 @@ export const canopy = {
   scrim: pp('scrim'),
   /** The 170px gradient under the Dock, so lists dissolve. */
   sheetFade: pp('sheet-fade'),
-  /** The working sheet's top corners. */
-  sheetRadius: pp('r-sheet'),
   /** The header buttons' fill (labelled secondary actions and Back) and its 1px line. */
   chip: pp('canopy-chip'),
   chipLine: pp('canopy-chip-line'),

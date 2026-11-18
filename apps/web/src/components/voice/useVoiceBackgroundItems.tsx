@@ -74,11 +74,7 @@ export function useVoiceBackgroundItems(): BackgroundItem[] {
         tone: 'secondary',
         label: t('voice:send.discard'),
         ariaLabel: t('voice:inbox.discardNote', { preview }),
-        // Only a kept recording is "discarded"; otherwise the row just closes.
-        onClick: () =>
-          note.canRetry
-            ? voiceNote.discardFailed(note.id)
-            : voiceNote.dismiss(note.id),
+        onClick: () => voiceNote.dismiss(note.id),
       });
       if (note.canRetry) {
         actions.push({

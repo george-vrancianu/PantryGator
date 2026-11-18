@@ -20,17 +20,11 @@ export const GATOR_GEOMETRY = {
   thinking: { drawing: [0, -30, 248, 200], view: [-8, -66, 264, 256] },
   'list-keeper': { drawing: [0, -4, 280, 244], view: [-8, -40, 296, 300] },
   worried: { drawing: [0, -30, 248, 200], view: [-8, -66, 264, 256] },
-  'health-curious': { drawing: [0, -34, 248, 204], view: [-8, -70, 264, 260] },
-  'health-dapper': {
-    drawing: [-26, -30, 274, 204],
-    view: [-34, -66, 290, 260],
-  },
-  'health-hmm': { drawing: [0, -30, 248, 200], view: [-8, -66, 264, 256] },
   chef: { drawing: [0, -6, 280, 246], view: [-8, -42, 296, 302] },
   'chef-flop': { drawing: [0, -6, 280, 252], view: [-8, -42, 296, 308] },
 } as const satisfies Record<string, { drawing: Box; view: Box }>;
 
-/** Every Gator mood. All 14 have the four motion files. */
+/** Every Gator mood. All 11 have the four motion files. */
 export type GatorMood = keyof typeof GATOR_GEOMETRY;
 /** Kept for callers that named the animated subset while chef-flop was a still. */
 export type AnimatedGatorMood = GatorMood;

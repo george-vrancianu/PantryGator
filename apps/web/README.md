@@ -30,14 +30,16 @@ Checks: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` (all wi
 
 ## Translations
 
-`react-i18next`, English (fallback) and Romanian. One JSON file per namespace per locale in
+`react-i18next`, English (fallback), Romanian and Danish. One JSON file per namespace per locale in
 `src/i18n/locales/<locale>/<namespace>.json`, loaded automatically. A namespace is a page
 (`signIn`, `pantry`, ...) or a shared component (`dock`, `screenHeader`, `languageSwitcher`).
 
-- Every string on screen goes through `t()`. Add the key to both locales: a test fails if
-  the two locales differ in namespaces or keys.
+- Every string on screen goes through `t()`. Add the key to all three locales: `src/i18n/parity.test.ts`
+  fails if `ro` or `da` differ from `en` in namespaces, keys or interpolation variables, if a locale lacks
+  the plural forms its language needs (Romanian `few`), or if the English copy uses a term `GLOSSARY.md` avoids.
 - API errors are `{ code, params }`. Codes such as `auth.invalid_email_or_password` resolve
   against the nested `errors` namespace (`translateApiError`). Unknown codes show the generic
-  message; add copy for new codes in both locales.
-- The chosen locale is stored in `localStorage` for now; it moves to Member Preferences when
-  the API has them.
+  message; add copy for new codes in all three locales.
+- The UI Language is stored on the Member (Member Preference `locale`, ADR 0022); Settings saves it with
+  `useSaveLocale`. `localStorage` (`pocket-pantry.locale`) is only a local cache that picks the language
+  before sign-in and until the Member's own has loaded.

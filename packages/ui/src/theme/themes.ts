@@ -53,7 +53,6 @@ export interface ThemeTokens {
   'toast-ink': string;
   'toast-action': string;
   'dock-bg': string;
-  bezel: string;
   bw: string;
   'bw-field': string;
   'r-card': string;
@@ -197,7 +196,6 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'toast-ink': '#F4F7F1', // derived
     'toast-action': '#E8CB7C', // derived
     'dock-bg': 'linear-gradient(180deg, #262F29 0%, #121814 100%)',
-    bezel: '#0A0E0B', // derived (prototype frames only)
     bw: '1px',
     'bw-field': '0px', // fields have no border; the edge comes from shadow-well
     'r-card': '8px',
@@ -344,7 +342,6 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     'toast-ink': '#101511', // derived
     'toast-action': '#1C6A43', // derived
     'dock-bg': 'linear-gradient(180deg, #2E3832 0%, #1C231F 100%)',
-    bezel: '#050807', // derived (prototype frames only)
     bw: '1px',
     'bw-field': '0px', // fields have no border; the edge comes from shadow-well
     'r-card': '8px',

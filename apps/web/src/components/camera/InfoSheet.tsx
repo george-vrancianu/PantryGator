@@ -9,6 +9,7 @@ import {
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CAMERA_MODES, type CameraMode } from '../../lib/cameraMode';
+import { isBarcodeMode } from '../../lib/cameraMode';
 import { glassFocusRing, shade, translucent } from './glass';
 import { insetBottom, useCameraFrame } from './CameraFrame';
 
@@ -175,7 +176,7 @@ function InfoBody({
           <Box component="li" key={mode} sx={{ mt: 0.75 }}>
             <strong>{t(`mode.${mode}`)}</strong>{' '}
             <Box component="span" sx={{ color: tokens.color.muted }}>
-              {t(mode === 'barcode' ? 'info.barcode' : `detail.${mode}`)}
+              {t(isBarcodeMode(mode) ? 'info.barcode' : `detail.${mode}`)}
             </Box>
             {mode === 'receipt'
               ? (['guide.receipt', 'guide.receiptFold'] as const).map((key) => (

@@ -58,13 +58,6 @@
     "title": "Pantry health",
     "scoreOf": "{{score}} of 100",
     "notEnough": "Not enough to judge yet",
-    "lights": {
-      "expired": "Expired",
-      "soon": "Use soon",
-      "low": "Running low",
-      "fresh": "Fresh in",
-      "nothingNew": "Nothing new"
-    },
     "a11y": {
       "name": "{{title}}: {{verdict}}, {{lights}}.",
       "expired_one": "{{count}} expired",

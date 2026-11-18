@@ -41,6 +41,7 @@ import { scanLanguagePreference } from '../../test/scan';
 import { stubMotion } from '../../test/viewport';
 import { resetRowFlash } from '../../lib/rowFlash';
 import { voiceNote } from '../../lib/voiceNote';
+import { PantryPage } from '../Pantry/PantryPage';
 import { ShoppingPage } from './ShoppingPage';
 
 /** The Voice Note's status; the refresh loader's live region is a status too, empty at rest. */
@@ -68,6 +69,8 @@ type Setup = {
   preferredScanLanguage?: 'en' | 'ro' | 'da';
   preferredSpokenLanguage?: 'en' | 'ro' | 'da';
   preferences?: () => Promise<Response>;
+  /** Extra API fakes, for a test that visits another page. */
+  routes?: Record<string, () => Response | Promise<Response>>;
 };
 
 function setup({
@@ -76,6 +79,7 @@ function setup({
   preferredScanLanguage,
   preferredSpokenLanguage,
   preferences,
+  routes,
 }: Setup = {}) {
   const { fetchMock } = stubApi({
     ...(preferredScanLanguage || preferredSpokenLanguage
@@ -97,6 +101,7 @@ function setup({
     'POST /api/voice': () =>
       note?.() ??
       Response.json({ transcript: 'got the bread and sausages', actions: [] }),
+    ...routes,
   });
   return stubVoiceFetch(fetchMock);
 }
@@ -600,12 +605,20 @@ describe('Voice Note on the Shopping List', () => {
     });
 
     it('keeps the bubble across pages, with no alert', async () => {
-      setup({ note: () => error('voice.provider_unavailable', 502) });
+      setup({
+        note: () => error('voice.provider_unavailable', 502),
+        routes: {
+          'GET /api/pantry': () =>
+            Response.json({ batches: [], runningLow: [] }),
+          'GET /api/settings/family': () =>
+            Response.json({ staleThresholdDays: 3, expiryOverrides: [] }),
+        },
+      });
       renderWithProviders(
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/shopping" element={<ShoppingPage />} />
-            <Route path="/pantry" element={<p>Pantry page</p>} />
+            <Route path="/pantry" element={<PantryPage />} />
           </Route>
         </Routes>,
         { route: '/shopping' },
@@ -614,7 +627,8 @@ describe('Voice Note on the Shopping List', () => {
       await bubbleSays('1 could not be read');
 
       fireEvent.click(screen.getByRole('link', { name: 'Pantry' }));
-      await screen.findByText('Pantry page');
+      await screen.findByRole('button', { name: 'Add batch' });
+      expect(screen.queryByText('Your list is empty')).toBeNull();
 
       expect(await bubbleSays('1 could not be read')).toBeVisible();
       expect(screen.queryByRole('alert')).toBeNull();
