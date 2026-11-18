@@ -1,7 +1,7 @@
 import {
   Alert,
   Button,
-  Dialog,
+  Sheet,
   SegmentedControl,
   Spinner,
   Stack,
@@ -208,35 +208,24 @@ export function PromoCodes() {
         </Button>
       ) : null}
 
-      <Dialog
+      <Sheet
         open={confirmOpen}
+        size="content"
         onClose={() => setConfirmOpen(false)}
         title={t('admin:promoCodes.revokeTitle', { code: revoking?.code })}
-        actions={
-          <>
-            <Button
-              variant="ghost"
-              onClick={() => setConfirmOpen(false)}
-              sx={{ height: 52 }}
-            >
-              {t('common:cancel')}
-            </Button>
-            <Button
-              disabled={revoke.isPending}
-              onClick={() =>
-                revoking &&
-                revoke.mutate(revoking.id, {
-                  onSettled: () => setConfirmOpen(false),
-                })
-              }
-            >
-              {t('admin:promoCodes.revokeConfirm')}
-            </Button>
-          </>
-        }
+        primary={{
+          label: t('admin:promoCodes.revokeConfirm'),
+          tone: 'danger',
+          pending: revoke.isPending,
+          onClick: () =>
+            revoking &&
+            revoke.mutate(revoking.id, {
+              onSettled: () => setConfirmOpen(false),
+            }),
+        }}
       >
         <Typography>{t('admin:promoCodes.revokeBody')}</Typography>
-      </Dialog>
+      </Sheet>
     </Stack>
   );
 }

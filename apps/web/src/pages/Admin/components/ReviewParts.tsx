@@ -21,7 +21,7 @@ export function useReviewSheet<T>() {
 
 /**
  * Where focus goes once a sheet has closed: the result message after a link, promote, merge or add (the
- * row is gone), else the row (the Dialog already gave it back), else the list's heading when the row is gone.
+ * row is gone), else the row (the Sheet already gave it back), else the list's heading when the row is gone.
  */
 export function useSheetFocus(rowCount: number) {
   const heading = useRef<HTMLHeadingElement>(null);

@@ -18,7 +18,8 @@ function renderScan(route = '/scan') {
   );
 }
 
-const item = (name: string) => within(slider()).getByRole('radio', { name });
+const item = (name: string) =>
+  within(slider()).getByRole('radio', { name, hidden: true });
 /** Where the strip is: it moves with a finger and comes back on release. */
 const stripAt = () => getComputedStyle(slider()).transform;
 
