@@ -13,7 +13,7 @@ import {
 import type { IsoDate } from './pantry';
 import { shoppingListQueryKey, useShoppingMutations } from './shopping';
 import { shoppingListChangeQueryKeys } from './queryKeys';
-import { useHealthToast } from './useHealthToast';
+import { useUndoToast } from './useUndoToast';
 
 /**
  * Add missing from the Meal plan Widget: one call with only the scope, the "On list" flip straight away
@@ -22,7 +22,7 @@ import { useHealthToast } from './useHealthToast';
  */
 export function useAddMissing(today: IsoDate) {
   const { t } = useTranslation('dashboard');
-  const { undoOptions } = useHealthToast();
+  const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
   const { remove } = useShoppingMutations();

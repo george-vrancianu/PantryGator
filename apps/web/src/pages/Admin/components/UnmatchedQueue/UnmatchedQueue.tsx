@@ -228,7 +228,6 @@ function UnmatchedNames({
                       entry.normalizedName,
                       entry.rawName,
                       t('admin:review.dismissed', { name: entry.rawName }),
-                      { polite: true },
                     )
                   }
                 />

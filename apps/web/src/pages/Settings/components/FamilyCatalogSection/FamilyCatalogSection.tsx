@@ -182,7 +182,6 @@ export function FamilyCatalogSection() {
                       t('settings:familyCatalog.deleted', {
                         name: ingredient.name,
                       }),
-                      { polite: true },
                     )
                   }
                 />
@@ -225,7 +224,6 @@ export function FamilyCatalogSection() {
                         t('settings:familyCatalog.synonymRemoved', {
                           name: synonym.name,
                         }),
-                        { polite: true },
                       )
                     }
                   />

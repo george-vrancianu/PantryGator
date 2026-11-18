@@ -66,6 +66,16 @@ describe('useDeferredRemoval, several rows at once', () => {
   });
   afterEach(() => vi.useRealTimers());
 
+  it('announces the Undo toast as a status, not an alert', async () => {
+    setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    await user.click(screen.getByText('remove a'));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Removed A');
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
   it('hides every row under one toast and sends one bulk delete when the window ends', async () => {
     setup();
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });

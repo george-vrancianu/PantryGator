@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { formatRowAmount } from '@/lib/amount';
 import { flashRows } from '@/lib/rowFlash';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { useUndoToast } from '@/lib/useUndoToast';
 import { useDeleteBatch, type Batch } from '@/lib/pantry';
 import { useNavigate } from 'react-router-dom';
 import type { StorageLocation } from '@/lib/catalog';
@@ -51,6 +51,7 @@ export function AddToPantrySheet({
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const toast = useToast();
+  const { showUndo } = useUndoToast();
   const searchRef = useRef<HTMLInputElement>(null);
   const deleteBatch = useDeleteBatch();
   // This visit: the Batches added (and not undone), and which form is showing (it starts over per save).
@@ -89,20 +90,16 @@ export function AddToPantrySheet({
       ...(amount ? [amount] : []),
       t(`common:locations.${batch.location}`),
     ];
-    toast.show(t('form.addedToast', { details: parts.join(' · ') }), {
-      polite: true,
-      duration: UNDO_WINDOW_MS,
-      bottom: TOAST_BOTTOM,
-      action: {
-        label: t('common:row.undo'),
-        onClick: () => {
-          setAdded((was) => was.filter((one) => one.id !== batch.id));
-          deleteBatch.mutate(batch.id, {
-            onError: (error) => toast.show(translateApiError(t, error)),
-          });
-        },
+    showUndo(
+      t('form.addedToast', { details: parts.join(' · ') }),
+      () => {
+        setAdded((was) => was.filter((one) => one.id !== batch.id));
+        deleteBatch.mutate(batch.id, {
+          onError: (error) => toast.show(translateApiError(t, error)),
+        });
       },
-    });
+      { bottom: TOAST_BOTTOM },
+    );
   };
   return (
     <Sheet

@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { withOnShoppingList, type HealthTodoKey } from '@/lib/health';
+import { useUndoToast } from '@/lib/useUndoToast';
 import { useHealthToast } from '@/lib/useHealthToast';
 import {
   shoppingListQueryKey,
@@ -23,7 +24,8 @@ export type ShoppingFix = {
  */
 export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
   const { t } = useTranslation('dashboard');
-  const { messageWithScore, undoOptions } = useHealthToast();
+  const { messageWithScore } = useHealthToast();
+  const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
   const { addMany, remove } = useShoppingMutations();

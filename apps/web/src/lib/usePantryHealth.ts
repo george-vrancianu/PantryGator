@@ -99,7 +99,6 @@ export function usePantryHealth(): PantryHealthState {
     removal.removeMany(
       ids,
       messageWithScore(withoutBatches(input, ids), message),
-      { polite: true },
     );
   };
 
