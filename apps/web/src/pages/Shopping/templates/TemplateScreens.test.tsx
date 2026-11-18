@@ -238,7 +238,7 @@ describe('Shopping Template screens', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
     await act(() => vi.advanceTimersByTimeAsync(200));
 
-    expect(screen.getByRole('dialog', { name: 'Edit Milk' })).toBeVisible();
+    expect(screen.getByRole('dialog', { name: 'Milk' })).toBeVisible();
     vi.useRealTimers();
   });
 
@@ -414,7 +414,7 @@ describe('Shopping Template screens', () => {
     gate = new Promise<void>((resolve) => (release = resolve));
     act(() => screen.getByRole('group', { name: 'Milk' }).focus());
     await user.keyboard('{Enter}');
-    const dialog = await screen.findByRole('dialog', { name: 'Edit Milk' });
+    const dialog = await screen.findByRole('dialog', { name: 'Milk' });
     const field = within(dialog).getByLabelText(/^Amount of Milk/);
     await user.clear(field);
     await user.type(field, '2');
@@ -555,7 +555,7 @@ describe('Shopping Template screens', () => {
     ) => {
       act(() => screen.getByRole('group', { name }).focus());
       await user.keyboard('{Enter}');
-      return screen.findByRole('dialog', { name: `Edit ${name}` });
+      return screen.findByRole('dialog', { name });
     };
 
     it('saves the lines with only that line changed', async () => {

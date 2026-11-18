@@ -86,9 +86,7 @@
     "save": "Gem ændringer"
   },
   "form": {
-    "close": "Luk",
     "title": "Tilføj til spisekammeret",
-    "cancel": "Annuller",
     "saving": "Gemmer",
     "location": "Placering",
     "description": "Note · valgfri",
@@ -116,7 +114,6 @@
       "sayIt": "Sig det"
     },
     "added": "Tilføjet",
-    "done": "Færdig",
     "addedToast": "Tilføjet {{details}}",
     "addedList_one": "{{count}} parti tilføjet",
     "addedList_other": "{{count}} partier tilføjet",

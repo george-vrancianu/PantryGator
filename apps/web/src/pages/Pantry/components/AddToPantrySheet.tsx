@@ -1,10 +1,6 @@
 import {
   Box,
-  Button,
   CheckIcon,
-  CloseIcon,
-  displayType,
-  IconButton,
   IngredientIcon,
   radius,
   Sheet,
@@ -39,11 +35,11 @@ type Props = {
 const TOAST_BOTTOM = 96;
 
 /**
- * The Add to Pantry sheet: a modal bottom sheet over the Pantry. The title row is the header; the
+ * The Add to Pantry sheet: a modal bottom sheet over the Pantry. The title row is the Sheet's own; the
  * body holds the add-Batch form, which focuses its search on open.
  *
- * A save keeps the sheet open: the form starts over (a new `key`, with no starting Ingredient), the
- * Added strip lists the Batch, and × becomes Done. Each save's toast offers Undo, which deletes that
+ * A save keeps the sheet open: the form starts over (a new `key`, with no starting Ingredient) and the
+ * Added strip lists the Batch; the × stays the way out. Each save's toast offers Undo, which deletes that
  * Batch alone. On close the rows created this visit flash on the list.
  */
 export function AddToPantrySheet({
@@ -69,7 +65,7 @@ export function AddToPantrySheet({
       setFormKey(0);
     }
   }
-  // The footer's submit button: the form reports its label and whether it can save.
+  // The Sheet's primary: the form reports its label and whether it can save.
   const formId = useId();
   const [submit, setSubmit] = useState<SubmitState | null>(null);
   // The camera overlay owns Escape while it is up; the sheet must not close under it.
@@ -114,63 +110,16 @@ export function AddToPantrySheet({
       onClose={close}
       onExited={onExited}
       initialFocus={searchRef}
-      label={t('form.title')}
-      header={
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            p: '12px 16px 0',
-          }}
-        >
-          <Box
-            component="h2"
-            sx={{
-              flex: 1,
-              minWidth: 0,
-              m: 0,
-              ...displayType,
-              fontSize: 25,
-              fontWeight: 800,
-              letterSpacing: '-0.04em',
-              lineHeight: 1,
-            }}
-          >
-            {t('form.title')}
-          </Box>
-          {added.length > 0 ? (
-            <Button
-              onClick={leave}
-              sx={{ height: 44, borderRadius: radius.control }}
-            >
-              {t('form.done')}
-            </Button>
-          ) : (
-            <IconButton
-              label={t('form.close')}
-              tone="well"
-              size={44}
-              onClick={leave}
-            >
-              <CloseIcon size={19} />
-            </IconButton>
-          )}
-        </Box>
-      }
-      footer={
-        submit ? (
-          <Box sx={{ p: '12px 16px' }}>
-            <Button
-              type="submit"
-              form={formId}
-              fullWidth
-              disabled={submit.disabled}
-            >
-              {submit.label}
-            </Button>
-          </Box>
-        ) : null
+      title={t('form.title')}
+      primary={
+        submit
+          ? {
+              label: submit.label,
+              disabled: submit.disabled,
+              pending: submit.pending,
+              form: formId,
+            }
+          : undefined
       }
     >
       <Box sx={{ p: '16px 16px 20px' }}>

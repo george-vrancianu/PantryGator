@@ -456,8 +456,8 @@ describe('PantryPage', () => {
       expiryDate: inDays(30),
       productDescription: 'Grana Padano 200g',
     });
-    // The sheet stays open after a save; Done goes back to the list, with focus on the Add button.
-    await user.click(await screen.findByRole('button', { name: 'Done' }));
+    // The sheet stays open after a save; the X goes back to the list, with focus on the Add button.
+    await user.click(await screen.findByRole('button', { name: 'Close' }));
     const addButton = await screen.findByRole('button', { name: 'Add batch' });
     expect(addButton).toHaveFocus();
   });
@@ -1088,10 +1088,11 @@ describe('PantryPage', () => {
       const calls = await addParmesan(user);
       const sheet = await openSheet(user);
       const noExpiry = sheetButton(sheet, 'No expiry');
-      expect(noExpiry).toHaveAttribute('aria-pressed', 'false');
+      expect(within(sheet).getByRole('status')).not.toHaveTextContent(
+        'No expiry date',
+      );
 
       await user.click(noExpiry);
-      expect(noExpiry).toHaveAttribute('aria-pressed', 'true');
       expect(within(sheet).getByRole('status')).toHaveTextContent(
         'No expiry dateNo expiry',
       );
@@ -2069,8 +2070,10 @@ describe('PantryPage', () => {
               productDescription: 'Fresh',
             }),
           );
-          // Done goes back to the Pantry with Milk still open, now with the new Batch.
-          await user.click(await screen.findByRole('button', { name: 'Done' }));
+          // The X goes back to the Pantry with Milk still open, now with the new Batch.
+          await user.click(
+            await screen.findByRole('button', { name: 'Close' }),
+          );
           await waitFor(() => expect(batchRows()).toHaveLength(2));
           expect(batchRows()[1]).toHaveTextContent(/Fresh/);
         });
@@ -3105,9 +3108,7 @@ describe('PantryPage', () => {
           screen.queryByRole('dialog', { name: 'Expires' }),
         ).not.toBeInTheDocument(),
       );
-      await user.click(
-        within(form).getByRole('button', { name: 'Save changes' }),
-      );
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
       const patch = calls.find(
         (call) => call.key === 'PATCH /api/pantry/batches/milk-2',
@@ -3152,9 +3153,7 @@ describe('PantryPage', () => {
       );
 
       await user.type(within(form).getByLabelText('Note · optional'), ' jar');
-      await user.click(
-        within(form).getByRole('button', { name: 'Save changes' }),
-      );
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
       const patch = calls.find((c) => c.key.startsWith('PATCH'));
       expect(patch?.body).toEqual({ productDescription: 'Opened jar' });
     });
@@ -3551,12 +3550,9 @@ describe('PantryPage', () => {
 
       async function saveEdit(
         user: ReturnType<typeof userEvent.setup>,
-        form: HTMLElement,
         calls: ReturnType<typeof stubManaged>,
       ) {
-        await user.click(
-          within(form).getByRole('button', { name: 'Save changes' }),
-        );
+        await user.click(screen.getByRole('button', { name: 'Save changes' }));
         await waitFor(() =>
           expect(
             calls.find((c) => c.key === 'PATCH /api/pantry/batches/milk-2'),
@@ -3603,7 +3599,7 @@ describe('PantryPage', () => {
           }),
         ).toBeInTheDocument();
 
-        expect(await saveEdit(user, form, calls)).toEqual({
+        expect(await saveEdit(user, calls)).toEqual({
           expiryDate: '2026-10-21',
         });
       });
@@ -3654,9 +3650,7 @@ describe('PantryPage', () => {
         );
 
         // Back on the date the Batch already had: nothing to send.
-        await user.click(
-          within(form).getByRole('button', { name: 'Save changes' }),
-        );
+        await user.click(screen.getByRole('button', { name: 'Save changes' }));
         await waitFor(() =>
           expect(
             screen.queryByRole('form', { name: 'Edit Milk batch' }),
@@ -3708,9 +3702,7 @@ describe('PantryPage', () => {
         );
 
         // Back on the date the Batch already had: nothing to send.
-        await user.click(
-          within(form).getByRole('button', { name: 'Save changes' }),
-        );
+        await user.click(screen.getByRole('button', { name: 'Save changes' }));
         await waitFor(() =>
           expect(
             screen.queryByRole('form', { name: 'Edit Milk batch' }),
@@ -3721,7 +3713,7 @@ describe('PantryPage', () => {
 
       it('saves a day tapped on the calendar', async () => {
         const user = userEvent.setup();
-        const { calls, form, sheet } = await openExpirySheet(user);
+        const { calls, sheet } = await openExpirySheet(user);
 
         await user.click(calendarDay(sheet, 'Thursday, December 3, 2026'));
         await user.click(sheetButton(sheet, 'Done'));
@@ -3731,7 +3723,7 @@ describe('PantryPage', () => {
           ).not.toBeInTheDocument(),
         );
 
-        expect(await saveEdit(user, form, calls)).toEqual({
+        expect(await saveEdit(user, calls)).toEqual({
           expiryDate: '2026-12-03',
         });
       });
@@ -3740,19 +3732,19 @@ describe('PantryPage', () => {
     describe('the Batch editor sheet', () => {
       afterEach(() => vi.useRealTimers());
 
-      it('opens on a phone with focus on the sheet, not the amount (no keyboard), and returns focus to the row on Cancel', async () => {
+      it('opens on a phone with focus on the sheet, not the amount (no keyboard), and returns focus to the row on the X', async () => {
         const user = userEvent.setup();
         stubManaged(stock());
         renderWithProviders(<PantryPage />);
         await user.click(await screen.findByRole('button', { name: /^Milk/ }));
         const row = batchRows()[0];
         await openEditor(user, row);
-        const dialog = screen.getByRole('dialog', { name: 'Edit Milk batch' });
+        const dialog = screen.getByRole('dialog', { name: 'Milk' });
         await waitFor(() => expect(dialog).toHaveFocus());
         expect(
           screen.getByRole('textbox', { name: /Amount of Milk/ }),
         ).not.toHaveFocus();
-        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        await user.click(screen.getByRole('button', { name: 'Close' }));
         await waitFor(() => expect(row).toHaveFocus());
       });
 
