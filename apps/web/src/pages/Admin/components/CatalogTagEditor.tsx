@@ -1,4 +1,4 @@
-import { Button, Stack, TextField } from '@pocket-pantry/ui';
+import { TextField } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -64,81 +64,81 @@ export function CatalogTagEditor({ tag, groups, onDone }: Props) {
     );
   };
 
-  const deleteSlot = !tag ? undefined : asking === null ? (
-    <Button
-      ref={triggerRef}
-      type="button"
-      variant="ghost"
-      disabled={remove.isPending}
-      onClick={() =>
-        tag.recipeCount > 0 ? deleteTag(false) : setAsking('unused')
-      }
-    >
-      {t('common.delete')}
-    </Button>
-  ) : (
-    <ConfirmPrompt
-      message={
-        asking === 'unused'
-          ? t('tag.deleteConfirmUnused')
-          : t('tag.deleteConfirm', { count: asking })
-      }
-      disabled={remove.isPending}
-      onConfirm={() => deleteTag(asking !== 'unused')}
-      onCancel={() => {
-        restoreFocus.current = true;
-        setAsking(null);
-      }}
-    />
-  );
+  const onDeleteRequest = !tag
+    ? undefined
+    : () => {
+        if (remove.isPending || asking !== null) return;
+        if (tag.recipeCount > 0) deleteTag(false);
+        else setAsking('unused');
+      };
+  const deletePrompt =
+    tag && asking !== null ? (
+      <ConfirmPrompt
+        message={
+          asking === 'unused'
+            ? t('tag.deleteConfirmUnused')
+            : t('tag.deleteConfirm', { count: asking })
+        }
+        disabled={remove.isPending}
+        onConfirm={() => deleteTag(asking !== 'unused')}
+        onCancel={() => {
+          restoreFocus.current = true;
+          setAsking(null);
+        }}
+      />
+    ) : undefined;
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          tag
-            ? t('tag.edit', { name: localName(tag, i18n.language) })
-            : t('tag.new')
-        }
-        error={save.error ?? (isInUse(remove.error) ? null : remove.error)}
-        canSave={name.trim() !== '' && groupId !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate({ name: name.trim(), groupId }, { onSuccess: onDone })
-        }
-        onCancel={onDone}
-        deleteSlot={deleteSlot}
+    <EditorForm
+      after={
+        <>
+          {tag ? (
+            <TranslationsEditor
+              entityType="tag"
+              entityId={tag.id}
+              name={tag.name}
+              translations={tag.translations}
+              synonyms={false}
+            />
+          ) : null}
+        </>
+      }
+      heading={
+        tag
+          ? t('tag.edit', { name: localName(tag, i18n.language) })
+          : t('tag.new')
+      }
+      error={save.error ?? (isInUse(remove.error) ? null : remove.error)}
+      canSave={name.trim() !== '' && groupId !== ''}
+      saving={save.isPending}
+      onSubmit={() =>
+        save.mutate({ name: name.trim(), groupId }, { onSuccess: onDone })
+      }
+      onCancel={onDone}
+      onDeleteRequest={onDeleteRequest}
+      deletePrompt={deletePrompt}
+      deleteTriggerRef={triggerRef}
+    >
+      <TextField
+        label={t('tag.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        slotProps={{ htmlInput: { maxLength: MAX_TAG_NAME_LENGTH } }}
+        required
+      />
+      <TextField
+        select
+        label={t('tag.group')}
+        value={groupId}
+        onChange={(event) => setGroupId(event.target.value)}
+        slotProps={{ select: { native: true } }}
       >
-        <TextField
-          label={t('tag.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          slotProps={{ htmlInput: { maxLength: MAX_TAG_NAME_LENGTH } }}
-          required
-        />
-        <TextField
-          select
-          label={t('tag.group')}
-          value={groupId}
-          onChange={(event) => setGroupId(event.target.value)}
-          slotProps={{ select: { native: true } }}
-        >
-          {groups.map((group) => (
-            <option key={group.id} value={group.id}>
-              {localName(group, i18n.language)}
-            </option>
-          ))}
-        </TextField>
-      </EditorForm>
-      {tag ? (
-        <TranslationsEditor
-          entityType="tag"
-          entityId={tag.id}
-          name={tag.name}
-          translations={tag.translations}
-          synonyms={false}
-        />
-      ) : null}
-    </Stack>
+        {groups.map((group) => (
+          <option key={group.id} value={group.id}>
+            {localName(group, i18n.language)}
+          </option>
+        ))}
+      </TextField>
+    </EditorForm>
   );
 }

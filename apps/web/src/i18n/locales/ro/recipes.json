@@ -229,7 +229,6 @@
     "buttonLabelCount": "Filtrează după taguri, {{count}} selectate",
     "sheetTitle": "Filtrează după taguri",
     "sheetHint": "Rețetele trebuie să aibă <b>fiecare</b> tag ales.",
-    "close": "Închide",
     "fieldPlaceholder": "Scrie ca să găsești un tag",
     "fieldLabel": "Filtrează după taguri",
     "yourTags": "Tagurile tale",
@@ -423,7 +422,6 @@
   },
   "quickView": {
     "eyebrow": "Rețetă din Catalog",
-    "close": "Închide",
     "missing": "lipsește",
     "seeWhole": "Vezi toată Rețeta",
     "add": "Adaugă la Rețetele tale",

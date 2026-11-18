@@ -165,7 +165,6 @@
       "age": "vechi de {{count}} z",
       "inLocation": "{{duration}} în {{location}}"
     },
-    "close": "Închide",
     "toast": {
       "withScore": "{{message}} · scor {{score}}",
       "expired_one": "Ai eliminat {{count}} produs expirat",

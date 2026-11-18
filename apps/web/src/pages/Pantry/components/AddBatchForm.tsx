@@ -87,7 +87,11 @@ type Props = {
 };
 
 /** What the submit button in the sheet footer says, and whether it can be pressed. */
-export type SubmitState = { label: string; disabled: boolean };
+export type SubmitState = {
+  label: string;
+  disabled: boolean;
+  pending: boolean;
+};
 
 /** The camera the form opens: a Product photo or a barcode, never the Scan page's other modes. */
 const FORM_CAMERA_MODES = ['product', 'barcode'] as const;
@@ -133,11 +137,14 @@ export function AddBatchForm({
       ? t('form.saveName', { name: picked.toLocaleLowerCase(i18n.language) })
       : null;
   const canSave = form.canSave;
+  const saving = form.saving;
   useEffect(() => {
     onSubmitChange(
-      submitLabel === null ? null : { label: submitLabel, disabled: !canSave },
+      submitLabel === null
+        ? null
+        : { label: submitLabel, disabled: !canSave, pending: saving },
     );
-  }, [submitLabel, canSave, onSubmitChange]);
+  }, [submitLabel, canSave, saving, onSubmitChange]);
   useEffect(() => () => onSubmitChange(null), [onSubmitChange]);
   useEffect(() => {
     onCameraOpenChange?.(camera.open);

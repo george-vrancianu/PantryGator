@@ -89,7 +89,7 @@ describe('AdminSectionPage Recipes section', () => {
     expect(
       screen.getByRole('heading', { name: 'Edit Tag Group Cuisine' }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     const italian = within(
       screen.getByRole('list', { name: 'Cuisine' }),
@@ -98,7 +98,7 @@ describe('AdminSectionPage Recipes section', () => {
     expect(
       screen.getByRole('heading', { name: 'Edit Catalog Tag Italian' }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
     await user.click(screen.getByRole('link', { name: 'Back' }));
 
     await user.click(
@@ -110,7 +110,7 @@ describe('AdminSectionPage Recipes section', () => {
     expect(
       screen.getByRole('heading', { name: 'Edit Eating Moment Lunch' }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
     await user.click(screen.getByRole('link', { name: 'Back' }));
 
     await user.click(

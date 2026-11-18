@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { creditsQueryKey } from '../../lib/credits';
+import { creditsQueryKey } from '@/lib/credits';
 import { useRefreshCreditsOnReads } from './useRefreshCreditsOnReads';
 
 const { settled, subscribe } = vi.hoisted(() => ({
@@ -17,13 +17,13 @@ const { settled, subscribe } = vi.hoisted(() => ({
   },
 }));
 
-vi.mock('../../lib/scanReads', () => ({
+vi.mock('@/lib/scanReads', () => ({
   onScanReadSettled: subscribe(settled.scan),
 }));
-vi.mock('../../lib/voiceNote', () => ({
+vi.mock('@/lib/voiceNote', () => ({
   voiceNote: { onReadSettled: subscribe(settled.voice) },
 }));
-vi.mock('../../lib/recipeReads', () => ({
+vi.mock('@/lib/recipeReads', () => ({
   recipeReads: { onReadSettled: subscribe(settled.link) },
 }));
 

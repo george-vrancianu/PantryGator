@@ -1,4 +1,4 @@
-import { Stack, TextField } from '@pocket-pantry/ui';
+import { TextField } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -78,97 +78,101 @@ export function CategoryEditor({ kind, category, catalog, onDone }: Props) {
       );
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={heading}
-        error={save.error ?? remove.error}
-        canSave={name.trim() !== '' && !expiryInvalid}
-        saving={save.isPending}
-        onSubmit={() => {
-          if (expiryDays === 'invalid') return;
-          save.mutate(
-            {
-              name: name.trim(),
-              ...(kind === 'parent'
-                ? { aisleId: ownerId }
-                : { parentId: ownerId }),
-              defaultExpiryDays: expiryDays,
-              defaultLocation: location === '' ? null : location,
-            },
-            { onSuccess: onDone },
-          );
-        }}
-        onCancel={onDone}
-        onDelete={
-          category && !isOther && category.id !== OTHER_PARENT_ID
-            ? () => remove.mutate(category.id, { onSuccess: onDone })
+    <EditorForm
+      after={
+        <>
+          {category ? (
+            <TranslationsEditor
+              entityType={
+                kind === 'parent' ? 'parent_category' : 'leaf_category'
+              }
+              entityId={category.id}
+              name={category.name}
+              translations={category.translations}
+            />
+          ) : null}
+        </>
+      }
+      heading={heading}
+      error={save.error ?? remove.error}
+      canSave={name.trim() !== '' && !expiryInvalid}
+      saving={save.isPending}
+      onSubmit={() => {
+        if (expiryDays === 'invalid') return;
+        save.mutate(
+          {
+            name: name.trim(),
+            ...(kind === 'parent'
+              ? { aisleId: ownerId }
+              : { parentId: ownerId }),
+            defaultExpiryDays: expiryDays,
+            defaultLocation: location === '' ? null : location,
+          },
+          { onSuccess: onDone },
+        );
+      }}
+      onCancel={onDone}
+      onDelete={
+        category && !isOther && category.id !== OTHER_PARENT_ID
+          ? () => remove.mutate(category.id, { onSuccess: onDone })
+          : undefined
+      }
+      deleting={remove.isPending}
+    >
+      <TextField
+        label={t('admin:category.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        required
+      />
+      <TextField
+        select
+        label={
+          kind === 'parent'
+            ? t('admin:category.aisle')
+            : t('admin:category.parent')
+        }
+        value={ownerId}
+        onChange={(event) => setOwnerId(event.target.value)}
+        disabled={isOther}
+        helperText={isOther ? t('admin:category.otherLeafNote') : undefined}
+        slotProps={{ select: { native: true } }}
+      >
+        {owners.map((owner) => (
+          <option key={owner.id} value={owner.id}>
+            {localName(owner, i18n.language)}
+          </option>
+        ))}
+      </TextField>
+      <TextField
+        label={t('admin:category.defaultExpiryDays')}
+        type="number"
+        value={expiry}
+        onChange={(event) => setExpiry(event.target.value)}
+        error={expiryInvalid}
+        helperText={
+          expiryInvalid
+            ? t('admin:category.expiryInvalid', { max: MAX_EXPIRY_DAYS })
             : undefined
         }
-        deleting={remove.isPending}
+        slotProps={{ htmlInput: { min: 0, max: MAX_EXPIRY_DAYS } }}
+      />
+      <TextField
+        select
+        label={t('admin:category.defaultLocation')}
+        value={location}
+        onChange={(event) =>
+          setLocation(event.target.value as StorageLocation | '')
+        }
+        slotProps={{ select: { native: true } }}
       >
-        <TextField
-          label={t('admin:category.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-        <TextField
-          select
-          label={
-            kind === 'parent'
-              ? t('admin:category.aisle')
-              : t('admin:category.parent')
-          }
-          value={ownerId}
-          onChange={(event) => setOwnerId(event.target.value)}
-          disabled={isOther}
-          helperText={isOther ? t('admin:category.otherLeafNote') : undefined}
-          slotProps={{ select: { native: true } }}
-        >
-          {owners.map((owner) => (
-            <option key={owner.id} value={owner.id}>
-              {localName(owner, i18n.language)}
-            </option>
-          ))}
-        </TextField>
-        <TextField
-          label={t('admin:category.defaultExpiryDays')}
-          type="number"
-          value={expiry}
-          onChange={(event) => setExpiry(event.target.value)}
-          error={expiryInvalid}
-          helperText={
-            expiryInvalid
-              ? t('admin:category.expiryInvalid', { max: MAX_EXPIRY_DAYS })
-              : undefined
-          }
-          slotProps={{ htmlInput: { min: 0, max: MAX_EXPIRY_DAYS } }}
-        />
-        <TextField
-          select
-          label={t('admin:category.defaultLocation')}
-          value={location}
-          onChange={(event) =>
-            setLocation(event.target.value as StorageLocation | '')
-          }
-          slotProps={{ select: { native: true } }}
-        >
-          <option value="">{t('admin:locations.none')}</option>
-          {LOCATIONS.map((value) => (
-            <option key={value} value={value}>
-              {t(`common:locations.${value}`)}
-            </option>
-          ))}
-        </TextField>
-      </EditorForm>
-      {category ? (
-        <TranslationsEditor
-          entityType={kind === 'parent' ? 'parent_category' : 'leaf_category'}
-          entityId={category.id}
-          name={category.name}
-          translations={category.translations}
-        />
-      ) : null}
-    </Stack>
+        <option value="">{t('admin:locations.none')}</option>
+        {LOCATIONS.map((value) => (
+          <option key={value} value={value}>
+            {t(`common:locations.${value}`)}
+          </option>
+        ))}
+      </TextField>
+    </EditorForm>
   );
 }

@@ -86,9 +86,7 @@
     "save": "Save changes"
   },
   "form": {
-    "close": "Close",
     "title": "Add to Pantry",
-    "cancel": "Cancel",
     "saving": "Saving",
     "location": "Location",
     "description": "Note · optional",
@@ -116,7 +114,6 @@
       "sayIt": "Say it"
     },
     "added": "Added",
-    "done": "Done",
     "addedToast": "Added {{details}}",
     "addedList_one": "{{count}} batch added",
     "addedList_other": "{{count}} batches added",

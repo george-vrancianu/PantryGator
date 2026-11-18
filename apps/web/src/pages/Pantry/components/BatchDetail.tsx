@@ -7,14 +7,14 @@ import {
   useToast,
   type SwipeRowHandle,
 } from '@pocket-pantry/ui';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExpiryTag } from '../../../components/ExpiryTag';
 import { fullDate, useExpiryTags, type Batch } from '../../../lib/pantry';
 import { formatAmount } from '../../../lib/amount';
 import { batchRowSx } from './ingredientBlock';
 import { useSwipeRowLabels } from '../../../lib/useSwipeRowLabels';
-import { EditBatchForm } from './EditBatchForm';
+import { EditBatchForm, type EditSubmitState } from './EditBatchForm';
 
 type Props = {
   batch: Batch;
@@ -55,6 +55,13 @@ export function BatchDetail({
   const tag = useExpiryTags(today).tagFor(batch.expiryDate);
   const [editing, setEditing] = useState(false);
   const row = useRef<SwipeRowHandle>(null);
+  const formId = useId();
+  // The Sheet's Save: the form reports its label and whether it can save.
+  const [submit, setSubmit] = useState<EditSubmitState>({
+    label: t('edit.save'),
+    disabled: true,
+    pending: false,
+  });
   // "Remove from Pantry" closes the sheet and asks once it has finished closing (focus is back on the row).
   const removeRequested = useRef(false);
 
@@ -164,20 +171,21 @@ export function BatchDetail({
           removeRequested.current = false;
           row.current?.askToRemove();
         }}
-        label={t('edit.title', { name: batch.name })}
-        header={
-          <Box sx={{ px: 3, pt: 2, pb: 1 }}>
-            <Typography
-              component="h2"
-              sx={{ fontSize: 20, fontWeight: 700, overflowWrap: 'anywhere' }}
-            >
-              {batch.name}
-            </Typography>
-            <Typography variant="meta" color="text.secondary">
-              {t('common:row.context.pantry')}
-            </Typography>
-          </Box>
-        }
+        title={batch.name}
+        subtitle={t('common:row.context.pantry')}
+        primary={{
+          label: submit.label,
+          disabled: submit.disabled,
+          pending: submit.pending,
+          form: formId,
+        }}
+        destructive={{
+          label: t('common:edit.removeFromPantry'),
+          onClick: () => {
+            removeRequested.current = true;
+            setEditing(false);
+          },
+        }}
       >
         <EditBatchForm
           batch={batch}
@@ -187,11 +195,8 @@ export function BatchDetail({
             // A `location` in the edit means the Batch moved out of this row.
             if (edit.location) onLeft();
           }}
-          onCancel={() => setEditing(false)}
-          onRemove={() => {
-            removeRequested.current = true;
-            setEditing(false);
-          }}
+          formId={formId}
+          onSubmitChange={setSubmit}
         />
       </Sheet>
     </>

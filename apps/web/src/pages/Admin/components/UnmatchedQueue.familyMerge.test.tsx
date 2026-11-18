@@ -194,13 +194,13 @@ describe('UnmatchedQueue: merge a Family ingredient', () => {
     expect(screen.queryByRole('button', { name: /^Kombucha/ })).toBeNull();
   });
 
-  it('goes back to the list on Cancel with focus on the row, without merging', async () => {
+  it('goes back to the list on Close with focus on the row, without merging', async () => {
     const calls = stub();
     const user = userEvent.setup();
     await open(user, 'Family');
 
     await openMerge(user);
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(
       await screen.findByRole('button', { name: /^Kombucha/ }),
@@ -330,7 +330,7 @@ describe('UnmatchedQueue: Synonym candidates', () => {
     expect(screen.queryByText('“Cilantro” → Coriander')).toBeNull();
   });
 
-  it('defaults to English and goes back on Cancel without adding anything', async () => {
+  it('defaults to English and goes back on Close without adding anything', async () => {
     const calls = stub();
     const user = userEvent.setup();
     await open(user, 'Names');
@@ -339,7 +339,7 @@ describe('UnmatchedQueue: Synonym candidates', () => {
       await screen.findByRole('button', { name: /^“Cilantro” → Coriander/ }),
     );
     expect(screen.getByLabelText('Synonym language')).toHaveValue('en');
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(
       await screen.findByRole('button', { name: /^“Cilantro” → Coriander/ }),

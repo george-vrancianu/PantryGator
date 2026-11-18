@@ -167,8 +167,6 @@
     "pickTitle": "Alege o categorie",
     "pickHint": "Expirarea ei completează loturile noi",
     "set": "Setat · {{days}} z",
-    "back": "Înapoi",
-    "close": "Închide",
     "quickPicks": "Alegeri rapide",
     "quick": {
       "3": "3 zile",
@@ -258,8 +256,6 @@
       "allergens": "Nu s-au putut salva alergenii.",
       "otherNames": "Nu s-au putut salva celelalte denumiri."
     },
-    "close": "Închide",
-    "back": "Înapoi",
     "emptyTitle": "Nimic adăugat încă",
     "empty": "Când o căutare nu găsește nimic, „Adaugă în catalogul tău” pune numele aici, pentru toată familia.",
     "synonymsHint": "Denumiri pe care familia ta le folosește pentru un ingredient, în căutare, scanări și bonuri.",
@@ -271,7 +267,6 @@
     "synonymInfo": "Familia ta vede {{name}} în căutare, scanări și bonuri, și înseamnă {{ingredient}}. Ca să-l îndrepți spre altceva, elimină-l și adaugă-l din nou din căutare.",
     "synonymRemoveLink": "Elimină această denumire",
     "inCatalog": "În catalog",
-    "done": "Gata",
     "deleteAction": "Șterge"
   },
   "familyAllergies": {

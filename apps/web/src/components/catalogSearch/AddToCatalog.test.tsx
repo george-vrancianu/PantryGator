@@ -522,7 +522,7 @@ describe('Add to your catalog', () => {
   });
 
   describe('on a phone', () => {
-    it('opens the same content in a modal Sheet and closes with Cancel', async () => {
+    it('opens the same content in a modal Sheet with a pinned Add & pick, and closes with the X', async () => {
       stubViewport(390);
       stubCatalog({ results: [] });
       renderWithProviders(<Host />);
@@ -546,7 +546,14 @@ describe('Add to your catalog', () => {
         within(dialog).getByRole('combobox', { name: 'Category' }),
       ).not.toHaveFocus();
 
-      await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+      expect(
+        within(dialog).getByRole('button', { name: /^Add & pick/ }),
+      ).toBeDisabled();
+      expect(
+        within(dialog).queryByRole('button', { name: 'Cancel' }),
+      ).toBeNull();
+
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       expect(field()).toHaveFocus();
     });

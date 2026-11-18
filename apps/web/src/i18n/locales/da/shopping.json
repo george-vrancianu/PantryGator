@@ -51,11 +51,6 @@
   "addSheet": {
     "title": "Tilføj varer"
   },
-  "sheet": {
-    "done": "Færdig",
-    "doneCount_one": "Færdig, {{count}} tilføjet",
-    "doneCount_other": "Færdig, {{count}} tilføjet"
-  },
   "search": {
     "onList": "På listen",
     "onListHint": "Allerede på din liste. Hvis du tilføjer igen, øges mængden.",
@@ -85,7 +80,6 @@
   "import": {
     "button": "Importér",
     "title": "Importér",
-    "close": "Luk",
     "hint": "Afkryds hele skabeloner, eller åbn én for at vælge linjer. Du kan blande flere.",
     "section": "Dine skabeloner · {{count}}",
     "manage": "Administrer",

@@ -13,8 +13,10 @@ const relative = (file) =>
 const isWebOrUi = (file) => /^(apps\/web|packages\/ui)\/.*\.tsx?$/.test(file);
 const isApi = (file) => /^apps\/api\/(src|test)\/.*\.ts$/.test(file);
 // Same scope as `npm run lint` (the src folders); other web/ui .ts files still get Prettier.
+// The import-rule self-test fixtures break the rules on purpose (scripts/check-lint-rules.mjs).
 const isLinted = (file) =>
-  /^(apps\/web|packages\/ui)\/src\/.*\.tsx?$/.test(file);
+  /^(apps\/web|packages\/ui)\/src\/.*\.tsx?$/.test(file) &&
+  !file.includes('/lintSelfTest/');
 const isFormatted = (file) => /\.(tsx?|mjs|json|ya?ml)$/.test(file);
 
 export default {
