@@ -1,5 +1,4 @@
-import { Box } from '@mui/material';
-import { tokens, writeAppearance } from '@pocket-pantry/ui';
+import { Box, tokens, writeAppearance } from '@pocket-pantry/ui';
 import { act, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';

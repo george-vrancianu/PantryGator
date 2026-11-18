@@ -5,23 +5,23 @@ import {
   openFirstScanCard,
   takeScan,
   fakeCamera,
-} from '../../test/scan';
+} from '@/test/scan';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine } from '../../lib/scan';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { findReviewRow } from '../../test/review';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine } from '@/lib/scan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { findReviewRow } from '@/test/review';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
 // jsdom has no camera or canvas: the camera and the resizer are the seams.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 

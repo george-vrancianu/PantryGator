@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { readBarcode, useCamera } from '../../../lib/camera';
-import { normalizeBarcode } from '../../../lib/gtin';
-import { decodePhotoBarcode, readScans } from '../../../lib/scanReads';
+import { readBarcode, useCamera } from '@/lib/camera';
+import { normalizeBarcode } from '@/lib/gtin';
+import { decodePhotoBarcode, readScans } from '@/lib/scanReads';
 import {
   sessionHeld,
   heldBy,
@@ -15,21 +15,17 @@ import {
   pendingCount,
   resetScanSession,
   useScanSession,
-} from '../../../lib/scanSession';
-import { BARCODE_THUMBNAIL_EDGE, resizeImage } from '../../../lib/image';
-import { haptic, HAPTIC_READ_MS } from '../../../lib/haptic';
-import {
-  importPhotos,
-  importRoom,
-  resizingImports,
-} from '../../../lib/importPhotos';
-import { IMAGE_PREPARATION } from '../../../lib/scanImage';
+} from '@/lib/scanSession';
+import { BARCODE_THUMBNAIL_EDGE, resizeImage } from '@/lib/image';
+import { haptic, HAPTIC_READ_MS } from '@/lib/haptic';
+import { importPhotos, importRoom, resizingImports } from '@/lib/importPhotos';
+import { IMAGE_PREPARATION } from '@/lib/scanImage';
 import {
   clearScanLanguageOverride,
   useSessionScanLanguage,
-} from '../../../lib/sessionScanLanguage';
-import type { ScanLanguage } from '../../../i18n/resources';
-import { measureShot } from './useGuideRect';
+} from '@/lib/sessionScanLanguage';
+import type { ScanLanguage } from '@/i18n/resources';
+import { measureShot } from '@/components/scan/camera/useGuideRect';
 import {
   CAMERA_MODES,
   loadScanPageMode,
@@ -37,7 +33,7 @@ import {
   SCAN_INTERVAL_MS,
   scanModeOf,
   type CameraMode,
-} from '../../../lib/cameraMode';
+} from '@/lib/cameraMode';
 
 /** A code identical to the last accepted one is taken again after this long without being seen. */
 const BARCODE_COOLDOWN_MS = 1500;

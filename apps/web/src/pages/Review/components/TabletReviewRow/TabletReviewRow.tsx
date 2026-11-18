@@ -1,4 +1,4 @@
-import { BarcodeLookupNotes } from '@/components/BarcodeLookupNotes';
+import { BarcodeLookupNotes } from '@/components/scan/BarcodeLookupNotes/BarcodeLookupNotes';
 import {
   Box,
   CalendarIcon,
