@@ -160,6 +160,8 @@
       "delete": "Slet opskriftens tip {{number}}",
       "new": "Nyt tip til opskriften",
       "cancelNew": "Annuller nyt tip til opskriften",
+      "moveUp": "Flyt tip {{number}} til opskriften op",
+      "moveDown": "Flyt tip {{number}} til opskriften ned",
       "add": "Tilføj et tip til opskriften"
     },
     "details": {

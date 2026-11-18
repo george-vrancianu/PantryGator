@@ -89,6 +89,7 @@ export function NewRecipePage() {
       kind="new_recipe"
       baseRecipeId={null}
       title={t('recipes:family.newRecipeHeading')}
+      back={{ label: t('recipes:back'), href: '/recipes' }}
     >
       <NewRecipeContent supplied={supplied} draftRoute={draftRoute} />
     </RecipeDraftContinue>
