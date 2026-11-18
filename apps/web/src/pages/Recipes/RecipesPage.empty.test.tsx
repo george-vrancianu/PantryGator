@@ -304,6 +304,22 @@ describe('RecipesPage when the Family has no Recipes', () => {
       expect(within(dialog).getByText('omelette')).toBeVisible();
     });
 
+    it('keeps the quick view open when adding from it turns the page into the list', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      setup({ catalog: [catalogBases[0]!], cards: [card('omelette')] });
+      await addButton('omelette');
+      await user.click(screen.getByRole('button', { name: /^omelette/ }));
+      const dialog = await screen.findByRole('dialog');
+
+      await user.click(
+        within(dialog).getByRole('button', { name: 'Add to your Recipes' }),
+      );
+
+      // The page behind the sheet is aria-hidden, so look for its list with `hidden`.
+      await screen.findByRole('list', { name: /^All Recipes/, hidden: true });
+      expect(screen.getByRole('dialog')).toBeVisible();
+    });
+
     it('leaves out Recipes the API hid (they are in neither list)', async () => {
       setup({
         catalog: [catalogBases[0]!],

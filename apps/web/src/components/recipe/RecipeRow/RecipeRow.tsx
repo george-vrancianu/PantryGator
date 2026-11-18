@@ -1,3 +1,4 @@
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { Box, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
@@ -65,7 +66,7 @@ export function RecipeRow({
           />
         ) : null
       }
-      to={onSelect ? undefined : (to ?? `/recipes/${recipe.id}`)}
+      to={onSelect ? undefined : (to ?? familyRecipeHref(recipe.id))}
       onClick={onSelect}
     />
   );

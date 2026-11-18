@@ -9,6 +9,7 @@ import {
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CookTonightCard } from '@/lib/cookTonight';
+import { FIRST_RECIPE_WAYS } from '@/lib/firstRecipeWays';
 import { cookTonightPanelState } from '@/lib/cookTonightPanel';
 import { useGatorAlt } from '@/lib/useGatorAlt';
 import { useGatorTapLink } from '@/lib/useGatorTapLink';
@@ -76,23 +77,18 @@ export function CookTonightPanel({
   );
 }
 
-/** The empty-pot panel, then the three ways to get a first Recipe as small text links. */
+/** The empty-pot panel, then the ways to get a first Recipe as small text links. */
 function EmptyPot() {
   const { t } = useTranslation('recipes');
-  const links = [
-    { to: '/recipes/explore', label: t('emptyFamily.explore') },
-    { to: '/recipes/from-link', label: t('emptyFamily.fromLink') },
-    { to: '/recipes/new', label: t('family.newRecipe') },
-  ];
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <EmptyPotPanel />
       <Box
         sx={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', px: '4px' }}
       >
-        {links.map(({ to, label }) => (
-          <Link key={to} href={to} underline="none" sx={{ fontSize: 14 }}>
-            {label}
+        {FIRST_RECIPE_WAYS.map(({ id, href, labelKey }) => (
+          <Link key={id} href={href} underline="none" sx={{ fontSize: 14 }}>
+            {t(labelKey)}
           </Link>
         ))}
       </Box>

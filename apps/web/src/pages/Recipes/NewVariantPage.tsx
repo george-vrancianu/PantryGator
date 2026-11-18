@@ -1,3 +1,4 @@
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { Alert, Spinner } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +39,7 @@ export function NewVariantPage() {
   const draftRoute = routePropsOf(route);
   const resuming = new URLSearchParams(location.search).has(DRAFT_PARAM);
   const title = t('recipes:family.newHeading');
-  const back = { label: t('recipes:back'), href: `/recipes/${id}` };
+  const back = { label: t('recipes:back'), href: familyRecipeHref(id) };
   if (route.error || route.loading) {
     return (
       <>
@@ -94,7 +95,7 @@ function NewVariantContent({
   draftRoute: RecipeDraftRouteProps;
 }) {
   const { t } = useTranslation(['recipes', 'common', 'errors']);
-  const back = { label: t('recipes:back'), href: `/recipes/${id}` };
+  const back = { label: t('recipes:back'), href: familyRecipeHref(id) };
   const draft = useVariantDraft(id);
   // The draft carries link ids only; the source's own view names them.
   const source = useRecipe(id);
@@ -187,7 +188,7 @@ function VariantForm({
     <FamilyRecipeForm
       header={{
         title: t('recipes:family.newHeading'),
-        back: { label: t('recipes:back'), href: `/recipes/${baseId}` },
+        back: { label: t('recipes:back'), href: familyRecipeHref(baseId) },
         subline: <RecipeDraftStatus status={autosave.status} />,
       }}
       openTab="details"

@@ -1,3 +1,4 @@
+import { familyRecipeHref } from '@/lib/recipeHref';
 import {
   Alert,
   Box,
@@ -154,7 +155,7 @@ function FromLinkBody({
               onClick: () => {
                 // Close first: closing edits the address, and the Recipe's must come last.
                 onSubmitted();
-                navigate(`/recipes/${duplicate.recipeId}`);
+                navigate(familyRecipeHref(duplicate.recipeId));
               },
             }
           : {

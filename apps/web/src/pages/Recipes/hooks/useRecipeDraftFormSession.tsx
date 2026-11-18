@@ -1,3 +1,4 @@
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { Button } from '@pocket-pantry/ui';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -92,7 +93,7 @@ export function useRecipeDraftFormSession({
         {
           onSuccess: (saved) => {
             autosave.stop();
-            navigate(`/recipes/${saved.id}`);
+            navigate(familyRecipeHref(saved.id));
           },
           onError: () => {
             setFinishing(false);

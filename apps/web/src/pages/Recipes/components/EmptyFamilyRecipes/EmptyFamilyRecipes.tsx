@@ -6,13 +6,17 @@ import {
   Stack,
   tokens,
 } from '@pocket-pantry/ui';
-import { useId, useState } from 'react';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyPotPanel } from '@/components/gator/EmptyPotPanel/EmptyPotPanel';
 import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
-import { QuickViewSheet } from '../QuickViewSheet/QuickViewSheet';
 import type { useAddToFamily } from '@/lib/addToFamily';
-import { canMakeBases, useCookTonight } from '@/lib/cookTonight';
+import { FIRST_RECIPE_WAYS } from '@/lib/firstRecipeWays';
+import {
+  canMakeBases,
+  useCookTonight,
+  type CookTonightCard,
+} from '@/lib/cookTonight';
 import { localIso } from '@/lib/pantry';
 import {
   useRecipes,
@@ -23,6 +27,12 @@ import { SectionLabel } from '../SectionLabel/SectionLabel';
 
 type AddApi = ReturnType<typeof useAddToFamily>;
 
+/** Opens a starter's quick view. The page owns the sheet: it must outlive this empty state, which goes away on the first add. */
+export type QuickViewOpen = (
+  recipe: RecipeListItem,
+  card: CookTonightCard | undefined,
+) => void;
+
 const STARTERS = 3;
 const NO_BROWSE: RecipeBrowse = {
   search: '',
@@ -30,7 +40,11 @@ const NO_BROWSE: RecipeBrowse = {
 };
 
 /** Up to three Catalog Bases the Family can make now, each one tap from being added. Hidden when there are none. */
-function Starters({ add, stateOf }: AddApi) {
+function Starters({
+  add,
+  stateOf,
+  onQuickView,
+}: AddApi & { onQuickView: QuickViewOpen }) {
   const { t } = useTranslation('recipes');
   const recipes = useRecipes(NO_BROWSE, { scope: 'catalog' });
   const cookTonight = useCookTonight(
@@ -40,8 +54,6 @@ function Starters({ add, stateOf }: AddApi) {
     'catalog',
   );
   const headingId = useId();
-  const [quick, setQuick] = useState<RecipeListItem | null>(null);
-  const [quickOpen, setQuickOpen] = useState(false);
   const cards = cookTonight.data?.cards ?? [];
   const starters = canMakeBases(cards, recipes.data?.recipes ?? [])
     // Defensive: bases only.
@@ -65,25 +77,16 @@ function Starters({ add, stateOf }: AddApi) {
               onAdd={() => add(recipe)}
               card={cards.find((card) => card.base.id === recipe.id)}
               hideCanMake
-              onOpen={() => {
-                setQuick(recipe);
-                setQuickOpen(true);
-              }}
+              onOpen={() =>
+                onQuickView(
+                  recipe,
+                  cards.find((card) => card.base.id === recipe.id),
+                )
+              }
             />
           ))}
         </Box>
       </section>
-      {quick ? (
-        <QuickViewSheet
-          recipe={quick}
-          open={quickOpen}
-          onClose={() => setQuickOpen(false)}
-          card={cards.find((card) => card.base.id === quick.id)}
-          state={stateOf(quick)}
-          onAdd={(recipe) => void add(recipe)}
-          stateOf={stateOf}
-        />
-      ) : null}
     </>
   );
 }
@@ -91,11 +94,13 @@ function Starters({ add, stateOf }: AddApi) {
 /** `/recipes` for a Family with no live Recipes: chef Gator, the three ways forward and a few starters (ADR 0029). */
 export function EmptyFamilyRecipes({
   onNewRecipe,
+  onQuickView,
   add,
   stateOf,
 }: AddApi & {
   /** Opens the header's "+" menu. */
   onNewRecipe: () => void;
+  onQuickView: QuickViewOpen;
 }) {
   const { t } = useTranslation('recipes');
   return (
@@ -126,26 +131,34 @@ export function EmptyFamilyRecipes({
         {t('emptyFamily.body')}
       </Box>
       <Stack spacing={1} useFlexGap sx={{ mt: '20px', mb: '24px' }}>
-        <Button
-          variant="primary"
-          fullWidth
-          href="/recipes/explore"
-          startIcon={<CompassIcon size={20} />}
-          sx={{ minHeight: 48 }}
-        >
-          {t('emptyFamily.explore')}
-        </Button>
-        <Button variant="secondary" fullWidth href="/recipes/from-link">
-          {t('emptyFamily.fromLink')}
-        </Button>
-        <Button variant="secondary" fullWidth href="/recipes/from-text">
-          {t('emptyFamily.fromText')}
-        </Button>
-        <Button variant="secondary" fullWidth onClick={onNewRecipe}>
-          {t('emptyFamily.newRecipe')}
-        </Button>
+        {FIRST_RECIPE_WAYS.map((way) =>
+          way.id === 'explore' ? (
+            <Button
+              key={way.id}
+              variant="primary"
+              fullWidth
+              href={way.href}
+              startIcon={<CompassIcon size={20} />}
+              sx={{ minHeight: 48 }}
+            >
+              {t(way.labelKey)}
+            </Button>
+          ) : (
+            <Button
+              key={way.id}
+              variant="secondary"
+              fullWidth
+              // New Recipe opens the header's "+" menu (it has the editor and the draft choices).
+              {...(way.id === 'newRecipe'
+                ? { onClick: onNewRecipe }
+                : { href: way.href })}
+            >
+              {t(way.labelKey)}
+            </Button>
+          ),
+        )}
       </Stack>
-      <Starters add={add} stateOf={stateOf} />
+      <Starters add={add} stateOf={stateOf} onQuickView={onQuickView} />
     </Stack>
   );
 }

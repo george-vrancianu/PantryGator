@@ -708,6 +708,111 @@ describe('Meal Plan page', () => {
     ).toBe(true);
   });
 
+  it('caps the Explore section and reveals the rest on Show more', async () => {
+    setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? Array.from({ length: 8 }, (_, i) =>
+                  recipe(`cat-${i}`, `Catalog dish ${i}`),
+                )
+              : [],
+        }),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    expect(await within(picker).findByText('Catalog dish 0')).toBeVisible();
+    expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(5);
+
+    await u.click(within(picker).getByRole('button', { name: 'Show more' }));
+    expect(within(picker).getAllByText(/^Catalog dish/)).toHaveLength(8);
+    expect(
+      within(picker).queryByRole('button', { name: 'Show more' }),
+    ).toBeNull();
+  });
+
+  it('archives the copy a Catalog pick made when the slot write fails', async () => {
+    const api = setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? [recipe('cat-1', 'Pad thai')]
+              : [],
+        }),
+      'POST /api/recipes/cat-1/copy': () =>
+        Response.json({ id: 'copy-1', created: true }),
+      'POST /api/recipes/copy-1/archive': () => Response.json({ id: 'copy-1' }),
+      'PUT /api/meal-plans/p1/slots/1/lunch': () =>
+        Response.json(
+          { code: 'meal_plan.day_in_past', params: {} },
+          { status: 409 },
+        ),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    await u.click(await within(picker).findByText('Pad thai'));
+    expect(
+      await within(picker).findByText(
+        "That day has passed and can't be changed.",
+      ),
+    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        api.calls.some((c) => c.key === 'POST /api/recipes/copy-1/archive'),
+      ).toBe(true),
+    );
+  });
+
+  it('keeps a copy the Family already had when the slot write fails', async () => {
+    const api = setup(week(), {
+      'GET /api/recipes': (url: URL) =>
+        Response.json({
+          recipes:
+            url.searchParams.get('scope') === 'catalog'
+              ? [recipe('cat-1', 'Pad thai')]
+              : [],
+        }),
+      'POST /api/recipes/cat-1/copy': () =>
+        Response.json({ id: 'copy-1', created: false }),
+      'POST /api/recipes/copy-1/archive': () => Response.json({ id: 'copy-1' }),
+      'PUT /api/meal-plans/p1/slots/1/lunch': () =>
+        Response.json(
+          { code: 'meal_plan.day_in_past', params: {} },
+          { status: 409 },
+        ),
+    });
+    const u = userEvent.setup();
+    renderPage();
+
+    await u.click(await screen.findByRole('button', { name: /^Add Lunch/ }));
+    const picker = await screen.findByRole('dialog', {
+      name: 'Choose a Recipe',
+    });
+    await u.click(await within(picker).findByText('Pad thai'));
+    expect(
+      await within(picker).findByText(
+        "That day has passed and can't be changed.",
+      ),
+    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        api.calls.some((c) => c.key === 'POST /api/recipes/copy-1/archive'),
+      ).toBe(false),
+    );
+  });
+
   it('has no Servings stepper for an unavailable Recipe', async () => {
     setup();
     const u = userEvent.setup();

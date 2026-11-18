@@ -84,6 +84,7 @@
     "emptyFamily": "Ingen opskrifter i familien endnu.",
     "exploreLoading": "Henter Udforsk",
     "explore": "Udforsk",
-    "exploreHint": "Når du vælger en, føjes den til dine opskrifter og planlægges."
+    "exploreHint": "Når du vælger en, føjes den til dine opskrifter og planlægges.",
+    "exploreShowMore": "Vis flere"
   }
 }
