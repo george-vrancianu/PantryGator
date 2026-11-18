@@ -177,10 +177,10 @@ export function RecipeStepsSection({
                 const number = index + 1;
                 const tips = tipCount(step);
                 const flagged =
-                  problems.steps[step.key] === 'text' &&
+                  problems.steps[step.key]?.text === true &&
                   touchedSteps.has(step.key);
                 const timerOpen = openTimers.has(step.key) || step.timer !== '';
-                const timerFlagged = problems.steps[step.key] === 'timer';
+                const timerFlagged = problems.steps[step.key]?.timer === true;
                 const timerErrorId = `step-${step.key}-timer-error`;
                 return (
                   <SortableItem
