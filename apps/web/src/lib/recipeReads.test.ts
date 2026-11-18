@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextBackgroundOrder } from '../components/background/backgroundItem';
+import { nextBackgroundOrder } from './backgroundItem';
 import { createRecipeReads } from './recipeReads';
 
 const requests: Array<{ url: string; force: unknown; resolve: () => void }> =

@@ -1,4 +1,4 @@
-import type { BaseRecipeOption } from '../../components/BaseRecipePicker';
+import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
 import { ApiError } from '../../lib/api';
 import { usePlateMatches } from '../../lib/plateRecipe';
 import type { RecipeDraftForm } from '../../lib/recipeDraftContent';

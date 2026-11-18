@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
-import { nextBackgroundOrder } from '../components/background/backgroundItem';
+import { nextBackgroundOrder } from './backgroundItem';
 import { MAX_RECEIPT_SECTIONS } from './receiptSections';
 import type { ProposedLine } from './scan';
 import {

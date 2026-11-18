@@ -15,7 +15,7 @@ import {
   type BackgroundAction,
   type BackgroundItem,
   type BackgroundStatus,
-} from './backgroundItem';
+} from '@/lib/backgroundItem';
 
 const glyph: Record<BackgroundStatus, string> = {
   reading: '…',

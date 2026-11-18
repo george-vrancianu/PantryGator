@@ -18,7 +18,7 @@ vi.mock('@pocket-pantry/ui', async (importOriginal) => ({
 import { renderWithProviders } from '../../../test/render';
 import { stubMatchMedia } from '../../../test/viewport';
 import { announcements } from '../../../test/voiceDom';
-import type { BackgroundItem, BackgroundStatus } from '../backgroundItem';
+import type { BackgroundItem, BackgroundStatus } from '@/lib/backgroundItem';
 import { PLACEMENT_KEY } from './bubblePlacement';
 import { GatorBubble } from './GatorBubble';
 import { LABEL_MS, resetBubbleAnnouncement } from './useBubbleAnnouncement';

@@ -70,13 +70,6 @@ export type ScanScreenModes = {
   closeTo?: string;
 };
 
-/** The camera as the app opens it at `/scan`: every mode, Import, shutter stays, the stack opens the Review overview. */
-export const IN_APP_SCAN_SETTINGS: ScanScreenModes = {
-  modes: CAMERA_MODES,
-  rememberMode: true,
-  importOffered: true,
-};
-
 /** Scan screen state: mode, camera, flash, and the photo-to-Review flow. */
 export function useScanScreen(config: ScanScreenModes = {}) {
   const modes = config.modes ?? CAMERA_MODES;

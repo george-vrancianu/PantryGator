@@ -1,8 +1,8 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
-import { introRedirect } from '../lib/intro';
-import { useMemberPreferences } from '../lib/settings';
-import { useIntro } from '../lib/useIntro';
-import { FullPageSpinner } from './FullPageSpinner';
+import { introRedirect } from '@/lib/intro';
+import { useMemberPreferences } from '@/lib/settings';
+import { useIntro } from '@/lib/useIntro';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
 
 /**
  * Sends a signed-in Member who is not done with the Intro to Set up or skip, whatever route they opened,
