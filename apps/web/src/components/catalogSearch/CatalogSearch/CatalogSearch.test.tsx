@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useState } from 'react';
+import { useState, type ReactElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import { renderWithProviders } from '@/test/render';
@@ -1288,3 +1288,106 @@ function stubControlled() {
     },
   };
 }
+
+describe('CatalogSearch row variant (editor card)', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('is a 50 pt row without the recessed well', () => {
+    stubSearch(() => []);
+    renderWithProviders(<CatalogSearch variant="row" onSelect={() => {}} />);
+    const box = screen.getByRole('combobox').parentElement!;
+    const style = getComputedStyle(box);
+    expect(style.height).toBe('50px');
+    expect(style.boxShadow).toBe('');
+  });
+
+  it('draws the search icon in the accent, unlike the default field', () => {
+    stubSearch(() => []);
+    const iconColor = (ui: ReactElement) => {
+      const { unmount } = renderWithProviders(ui);
+      const box = screen.getByRole('combobox').parentElement!;
+      const value = getComputedStyle(box.firstElementChild!).color;
+      unmount();
+      return value;
+    };
+    const row = iconColor(<CatalogSearch variant="row" onSelect={() => {}} />);
+    const field = iconColor(<CatalogSearch onSelect={() => {}} />);
+    expect(row).not.toBe('');
+    expect(row).not.toBe(field);
+  });
+
+  it('keeps the default field at 48 pt', () => {
+    stubSearch(() => []);
+    renderWithProviders(<CatalogSearch onSelect={() => {}} />);
+    expect(
+      getComputedStyle(screen.getByRole('combobox').parentElement!).height,
+    ).toBe('48px');
+  });
+
+  it('lists the results in a floating popover and picks one', async () => {
+    stubSearch((locale) => [parmesan(locale), cheddar]);
+    const onSelect = vi.fn();
+    renderWithProviders(<CatalogSearch variant="row" onSelect={onSelect} />);
+    const user = userEvent.setup();
+
+    await user.type(screen.getByRole('combobox'), 'ch');
+    const option = await screen.findByRole('option', { name: /Cheddar/ });
+    // The popover is positioned by the design system's Popper, which fixes it so a card cannot clip it.
+    expect(option.closest('[data-popper-placement]')).not.toBeNull();
+    await user.click(option);
+    expect(onSelect).toHaveBeenCalledWith(cheddar);
+  });
+
+  it('scrolls in the Popper only, with no scroller of its own inside it', async () => {
+    stubSearch((locale) => [parmesan(locale), cheddar]);
+    renderWithProviders(<CatalogSearch variant="row" onSelect={() => {}} />);
+    const user = userEvent.setup();
+
+    await user.type(screen.getByRole('combobox'), 'ch');
+    const option = await screen.findByRole('option', { name: /Cheddar/ });
+    const popper = option.closest('[data-popper-placement]')!;
+    for (
+      let node = option.parentElement;
+      node && node !== popper;
+      node = node.parentElement
+    ) {
+      expect(getComputedStyle(node).overflowY).not.toBe('auto');
+    }
+  });
+
+  it('closes the popover when focus leaves the row', async () => {
+    stubSearch((locale) => [parmesan(locale)]);
+    renderWithProviders(
+      <>
+        <CatalogSearch variant="row" onSelect={() => {}} />
+        <button type="button">Elsewhere</button>
+      </>,
+    );
+    const user = userEvent.setup();
+    await user.type(screen.getByRole('combobox'), 'parm');
+    await screen.findByRole('option');
+    await user.click(screen.getByRole('button', { name: 'Elsewhere' }));
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+  });
+
+  it('clears the text with the × and keeps focus in the field', async () => {
+    stubSearch((locale) => [parmesan(locale)]);
+    const onQueryChange = vi.fn();
+    renderWithProviders(
+      <CatalogSearch
+        variant="row"
+        onSelect={() => {}}
+        onQueryChange={onQueryChange}
+      />,
+    );
+    const user = userEvent.setup();
+    const input = screen.getByRole('combobox');
+    await user.type(input, 'parm');
+    await user.click(screen.getByRole('button', { name: /clear/i }));
+    expect(input).toHaveValue('');
+    expect(input).toHaveFocus();
+    expect(onQueryChange).toHaveBeenLastCalledWith('');
+  });
+});

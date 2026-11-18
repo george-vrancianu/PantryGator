@@ -6,7 +6,6 @@ import {
   Stack,
   TextField,
   Typography,
-  radius,
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,11 +20,6 @@ export type FromTextPrefill = { site: string | null; replaces: number };
 
 /** The character count appears from here, so a Member nears the limit knowingly. */
 export const CHARACTER_COUNT_FROM = 45_000;
-
-/** The editor's 44 pt field. */
-const fieldSx = {
-  '& .MuiOutlinedInput-root': { minHeight: 44, borderRadius: radius.control },
-};
 
 type PasteNote = 'empty' | 'refused' | 'tooLong';
 
@@ -175,7 +169,7 @@ function FromTextBody({
               setNote(null);
               setText(event.target.value);
             }}
-            sx={fieldSx}
+            density="editor"
             slotProps={{ htmlInput: { maxLength: MAX_PASTED_TEXT_LENGTH } }}
           />
           {text.length >= CHARACTER_COUNT_FROM ? (

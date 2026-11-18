@@ -1,8 +1,8 @@
 import {
   Alert,
   Box,
-  Card,
-  insetFocusRing,
+  AddRow,
+  EditorCard,
   Button,
   Chip,
   ClockIcon,
@@ -10,7 +10,6 @@ import {
   IconButton,
   Stack,
   TextField,
-  tokens,
   Typography,
   RowControls,
   StepNumber,
@@ -106,33 +105,7 @@ export function RecipeStepsSection({
     );
 
   const addRow = (label: string, index: number) => (
-    <Box
-      component="button"
-      type="button"
-      onClick={() => addAt(index)}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        px: '14px',
-        border: 0,
-        bgcolor: 'transparent',
-        font: 'inherit',
-        cursor: 'pointer',
-        ...insetFocusRing,
-        width: '100%',
-        minHeight: 48,
-        justifyContent: 'flex-start',
-        textAlign: 'start',
-        color: tokens.color.accent,
-        fontSize: 14.5,
-        fontWeight: 700,
-        '&:hover': { bgcolor: tokens.color.subtle },
-      }}
-    >
-      <StepNumber dashed>+</StepNumber>
-      {label}
-    </Box>
+    <AddRow label={label} onClick={() => addAt(index)} />
   );
 
   return (
@@ -149,16 +122,7 @@ export function RecipeStepsSection({
           {t('admin:recipe.steps.empty')}
         </Typography>
       ) : null}
-      <Card
-        variant="list"
-        sx={{
-          p: 0,
-          overflow: 'hidden',
-          '& > * + *, & > ol > li + li': {
-            borderTop: `1px solid ${tokens.color.divider}`,
-          },
-        }}
-      >
+      <EditorCard>
         {steps.length === 0
           ? addRow(t('admin:recipe.steps.addFirst'), 0)
           : addRow(t('admin:recipe.steps.addStart'), 0)}
@@ -487,7 +451,7 @@ export function RecipeStepsSection({
         {steps.length > 0
           ? addRow(t('admin:recipe.steps.add'), steps.length)
           : null}
-      </Card>
+      </EditorCard>
       {hint ? (
         <Typography variant="body2" color="text.secondary">
           {hint}

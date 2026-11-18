@@ -23,6 +23,24 @@ describe('TextField', () => {
     expect(getComputedStyle(frame).minHeight).toBe('50px');
   });
 
+  it('is 44 high in the editor density and 50 high otherwise', () => {
+    render(
+      <>
+        <TextField label="Link" density="editor" />
+        <TextField label="Plain" />
+      </>,
+    );
+    expect(getComputedStyle(field('Link')).minHeight).toBe('44px');
+    expect(getComputedStyle(field('Plain')).minHeight).toBe('50px');
+  });
+
+  it('keeps a host sx next to the editor density', () => {
+    render(<TextField label="Link" density="editor" sx={{ mt: '7px' }} />);
+    const root = field('Link').parentElement!;
+    expect(getComputedStyle(root).marginTop).toBe('7px');
+    expect(getComputedStyle(field('Link')).minHeight).toBe('44px');
+  });
+
   it('rings the focused field in the accent tint', () => {
     render(<TextField label="Name" />);
     expect(getComputedStyle(field('Name')).boxShadow).toBe('');
