@@ -28,67 +28,67 @@ export function EatingMomentEditor({ moment, onDone }: Props) {
   const [name, setName] = useState(moment?.name ?? '');
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          moment
-            ? t('admin:eatingMoment.edit', {
-                name: localName(moment, i18n.language),
-              })
-            : t('admin:eatingMoment.new')
-        }
-        error={save.error}
-        canSave={name.trim() !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate({ name: name.trim() }, { onSuccess: onDone })
-        }
-        onCancel={onDone}
-      >
-        <TextField
-          label={t('admin:eatingMoment.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-      </EditorForm>
-      {moment ? (
-        <Stack spacing={1}>
-          {moment.archived ? (
-            <Typography variant="body2" color="text.secondary">
-              {t('admin:eatingMoment.archivedNote')}
-            </Typography>
+    <EditorForm
+      after={
+        <>
+          {moment ? (
+            <Stack spacing={1}>
+              {moment.archived ? (
+                <Typography variant="body2" color="text.secondary">
+                  {t('admin:eatingMoment.archivedNote')}
+                </Typography>
+              ) : null}
+              {archive.error ? (
+                <Alert>{translateApiError(t, archive.error)}</Alert>
+              ) : null}
+              <div>
+                <Button
+                  variant="secondary"
+                  disabled={archive.isPending}
+                  onClick={() =>
+                    archive.mutate(
+                      { id: moment.id, archive: !moment.archived },
+                      { onSuccess: onDone },
+                    )
+                  }
+                >
+                  {moment.archived
+                    ? t('admin:eatingMoment.unarchive')
+                    : t('admin:eatingMoment.archive')}
+                </Button>
+              </div>
+            </Stack>
           ) : null}
-          {archive.error ? (
-            <Alert>{translateApiError(t, archive.error)}</Alert>
+          {moment ? (
+            <TranslationsEditor
+              entityType="eating_moment"
+              entityId={moment.id}
+              name={moment.name}
+              translations={moment.translations}
+              synonyms={false}
+            />
           ) : null}
-          <div>
-            <Button
-              variant="secondary"
-              disabled={archive.isPending}
-              onClick={() =>
-                archive.mutate(
-                  { id: moment.id, archive: !moment.archived },
-                  { onSuccess: onDone },
-                )
-              }
-            >
-              {moment.archived
-                ? t('admin:eatingMoment.unarchive')
-                : t('admin:eatingMoment.archive')}
-            </Button>
-          </div>
-        </Stack>
-      ) : null}
-      {moment ? (
-        <TranslationsEditor
-          entityType="eating_moment"
-          entityId={moment.id}
-          name={moment.name}
-          translations={moment.translations}
-          synonyms={false}
-        />
-      ) : null}
-    </Stack>
+        </>
+      }
+      heading={
+        moment
+          ? t('admin:eatingMoment.edit', {
+              name: localName(moment, i18n.language),
+            })
+          : t('admin:eatingMoment.new')
+      }
+      error={save.error}
+      canSave={name.trim() !== ''}
+      saving={save.isPending}
+      onSubmit={() => save.mutate({ name: name.trim() }, { onSuccess: onDone })}
+      onCancel={onDone}
+    >
+      <TextField
+        label={t('admin:eatingMoment.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        required
+      />
+    </EditorForm>
   );
 }

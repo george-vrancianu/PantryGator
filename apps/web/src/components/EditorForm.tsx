@@ -47,6 +47,11 @@ type BaseProps = {
   /** Replace Save / Saving… on the submit button. */
   saveLabel?: string;
   savingLabel?: string;
+  /**
+   * Sections that belong with the editor but are not part of its form (translations, allergens,
+   * retire). Rendered below the `<form>`, never inside it: in the sheet's body, or inline under it.
+   */
+  after?: ReactNode;
   children: ReactNode;
 };
 
@@ -85,6 +90,7 @@ export function EditorForm({
   saveLabel,
   savingLabel,
   hideActions,
+  after,
   children,
 }: Props) {
   const { t } = useTranslation(['admin', 'errors']);
@@ -197,7 +203,16 @@ export function EditorForm({
     </Stack>
   );
 
-  if (!sheet) return form;
+  if (!sheet) {
+    return after ? (
+      <Stack spacing={3}>
+        {form}
+        {after}
+      </Stack>
+    ) : (
+      form
+    );
+  }
   return (
     <Sheet
       open
@@ -217,7 +232,12 @@ export function EditorForm({
         canDelete ? { label: deleteLabel, onClick: startDelete } : undefined
       }
     >
-      <Box sx={{ px: 3, pt: 1, pb: 3 }}>{form}</Box>
+      <Box sx={{ px: 3, pt: 1, pb: 3 }}>
+        <Stack spacing={3}>
+          {form}
+          {after}
+        </Stack>
+      </Box>
     </Sheet>
   );
 }

@@ -183,6 +183,13 @@ describe('Catalog section pages', () => {
     expect(
       within(sheet).getByRole('heading', { name: 'Edit Butter' }),
     ).toBeVisible();
+    // Sections beside the form (translations, the Ingredient's allergens) stay inside the sheet.
+    expect(
+      within(sheet).getAllByRole('region', { name: /translations/i }),
+    ).not.toHaveLength(0);
+    expect(
+      within(sheet).getByRole('heading', { name: 'Contains' }),
+    ).toBeVisible();
     const save = await within(sheet).findByRole('button', { name: 'Save' });
     expect(sheet.querySelector('form')?.contains(save)).toBe(false);
     expect(save).toHaveAttribute('form', sheet.querySelector('form')?.id);
