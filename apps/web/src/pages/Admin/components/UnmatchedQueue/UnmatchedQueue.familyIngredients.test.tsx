@@ -232,7 +232,7 @@ describe('UnmatchedQueue: Family ingredients', () => {
     );
   });
 
-  it('goes back to the list on Close without promoting anything', async () => {
+  it('closes the whole sheet on the X without promoting anything', async () => {
     const calls = stub();
     const user = userEvent.setup();
     await openQueue(user);
@@ -245,6 +245,42 @@ describe('UnmatchedQueue: Family ingredients', () => {
     ).toHaveFocus();
     expect(calls.map((c) => c.key)).not.toContain(
       'POST /api/admin/family-ingredients/promote',
+    );
+  });
+
+  it('goes back to the group on Back from the promote step', async () => {
+    stub();
+    const user = userEvent.setup();
+    await openQueue(user);
+
+    await openPicker(user, 'Kombucha');
+    await user.click(screen.getByRole('button', { name: 'Back' }));
+
+    expect(
+      await screen.findByRole('button', { name: 'Promote to Catalog' }),
+    ).toBeVisible();
+  });
+
+  it('goes back to the group on Back from the merge step, and closes the whole sheet on the X', async () => {
+    const calls = stub();
+    const user = userEvent.setup();
+    await openQueue(user);
+
+    await user.click(await screen.findByRole('button', { name: /^Kombucha/ }));
+    await user.click(screen.getByRole('button', { name: 'Merge into…' }));
+    await user.click(screen.getByRole('button', { name: 'Back' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Merge into…' }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+
+    await vi.waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(calls.map((c) => c.key)).not.toContain(
+      'POST /api/admin/family-ingredients/promote',
+    );
+    // ADR 0039: closing puts focus back on the row that opened the sheet.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: /^Kombucha/ })).toHaveFocus(),
     );
   });
 

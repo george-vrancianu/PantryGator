@@ -1074,7 +1074,7 @@ describe('PantryPage', () => {
       await pick('Thursday, September 24, 2026');
       expect(readout).toHaveTextContent('Thu, Sep 2420 days agoExpired');
 
-      await user.keyboard('{Escape}');
+      await user.click(sheetButton(sheet, 'Done'));
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -1083,7 +1083,7 @@ describe('PantryPage', () => {
       expect((await save(user, calls)).expiryDate).toBe('2026-09-24');
     });
 
-    it('"No expiry" saves null, and the scrim keeps the choice', async () => {
+    it('"No expiry" saves null at once and closes the sheet', async () => {
       const user = userEvent.setup();
       const calls = await addParmesan(user);
       const sheet = await openSheet(user);
@@ -1093,13 +1093,6 @@ describe('PantryPage', () => {
       );
 
       await user.click(noExpiry);
-      expect(within(sheet).getByRole('status')).toHaveTextContent(
-        'No expiry dateNo expiry',
-      );
-
-      await user.click(
-        [...document.querySelectorAll('.MuiBackdrop-root')].at(-1) as Element,
-      );
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -1111,6 +1104,51 @@ describe('PantryPage', () => {
         'true',
       );
       expect((await save(user, calls)).expiryDate).toBeNull();
+    });
+
+    it('the X leaves the date as it was, and Done saves the picked one', async () => {
+      const user = userEvent.setup();
+      const calls = await addParmesan(user);
+      let sheet = await openSheet(user);
+
+      await user.click(calendarDay(sheet, 'Thursday, October 15, 2026'));
+      await user.click(within(sheet).getByRole('button', { name: 'Close' }));
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      expect(screen.queryByText(/Oct 15/)).not.toBeInTheDocument();
+
+      sheet = await openSheet(user);
+      expect(within(sheet).getByRole('status')).toHaveTextContent('Nov 13');
+      await user.click(calendarDay(sheet, 'Thursday, October 15, 2026'));
+      await user.click(sheetButton(sheet, 'Done'));
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      expect((await save(user, calls)).expiryDate).toBe('2026-10-15');
+    });
+
+    it('a scrim tap discards the picked date like the X', async () => {
+      const user = userEvent.setup();
+      await addParmesan(user);
+      let sheet = await openSheet(user);
+
+      await user.click(calendarDay(sheet, 'Thursday, October 15, 2026'));
+      const backdrops = document.querySelectorAll('.MuiBackdrop-root');
+      await user.click(backdrops[backdrops.length - 1]);
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      expect(screen.queryByText(/Oct 15/)).not.toBeInTheDocument();
+
+      sheet = await openSheet(user);
+      expect(within(sheet).getByRole('status')).toHaveTextContent('Nov 13');
     });
 
     /** The quick-pick tiles, as "accessible name: pressed". */
@@ -1363,7 +1401,6 @@ describe('PantryPage', () => {
       expect(monthShown(sheet)).toEqual(['December 2026', 'auto', 1]);
 
       await user.click(sheetButton(sheet, 'No expiry'));
-      await user.click(sheetButton(sheet, 'Done'));
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -1479,7 +1516,6 @@ describe('PantryPage', () => {
       );
       let sheet = await openSheet(user);
       await user.click(sheetButton(sheet, 'No expiry'));
-      await user.click(sheetButton(sheet, 'Done'));
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -1501,7 +1537,7 @@ describe('PantryPage', () => {
       let sheet = await openSheet(user);
       await focusLandsOn(quickPick(sheet, /^Usual,/));
       await user.click(quickPick(sheet, /^2 weeks,/));
-      await user.keyboard('{Escape}');
+      await user.click(sheetButton(sheet, 'Done'));
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -1603,8 +1639,14 @@ describe('PantryPage', () => {
     it('does not read the dashed "No expiry" tag after "No expiry date" in the readout', async () => {
       const user = userEvent.setup();
       await addParmesan(user);
-      const sheet = await openSheet(user);
+      let sheet = await openSheet(user);
       await user.click(sheetButton(sheet, 'No expiry'));
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      sheet = await openSheet(user);
 
       const readout = within(sheet).getByRole('status');
       expect(readout).toHaveTextContent('No expiry date');
@@ -3102,7 +3144,6 @@ describe('PantryPage', () => {
       await user.click(within(form).getByRole('button', { name: /^Expires,/ }));
       const sheet = await screen.findByRole('dialog', { name: 'Expires' });
       await user.click(sheetButton(sheet, 'No expiry'));
-      await user.click(sheetButton(sheet, 'Done'));
       await waitFor(() =>
         expect(
           screen.queryByRole('dialog', { name: 'Expires' }),
@@ -3581,7 +3622,7 @@ describe('PantryPage', () => {
         ]);
       });
 
-      it('saves a quick pick as today + n, and Escape closes only the expiry sheet', async () => {
+      it('saves a quick pick as today + n on Done, and Escape closes only the expiry sheet and discards the pick', async () => {
         const user = userEvent.setup();
         const { calls, form, sheet } = await openExpirySheet(user);
 
@@ -3593,6 +3634,19 @@ describe('PantryPage', () => {
           ).not.toBeInTheDocument(),
         );
         expect(form).toBeInTheDocument();
+        await user.click(
+          within(form).getByRole('button', {
+            name: 'Expires, Friday, October 16, in 2 days',
+          }),
+        );
+        const again = await screen.findByRole('dialog', { name: 'Expires' });
+        await user.click(quickPick(again, /^1 week/));
+        await user.click(sheetButton(again, 'Done'));
+        await waitFor(() =>
+          expect(
+            screen.queryByRole('dialog', { name: 'Expires' }),
+          ).not.toBeInTheDocument(),
+        );
         expect(
           within(form).getByRole('button', {
             name: 'Expires, Wednesday, October 21, in 7 days',

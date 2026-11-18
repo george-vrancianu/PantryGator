@@ -1,5 +1,5 @@
 import { Box, Sheet, tokens } from '@pocket-pantry/ui';
-import { useMemo, useRef, type Ref, type RefObject } from 'react';
+import { useMemo, useRef, useState, type Ref, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   dateAndRelativeDay,
@@ -18,13 +18,13 @@ import { QuickPicks } from './QuickPicks/QuickPicks';
 
 export type ExpirySheetProps = {
   open: boolean;
-  /** Done, the scrim and Escape. The value is already saved through `onChange`, so closing never discards. */
+  /** Closes the sheet. The X, the scrim and Escape discard the draft; Done and No expiry call `onChange` first. */
   onClose: () => void;
   /** After the close transition, with focus back on the opener. */
   onExited?: () => void;
   /** Null for no expiry. */
   value: IsoDate | null;
-  /** Called on every tap. */
+  /** Called with the draft when Done is tapped, or with null when No expiry is tapped. */
   onChange: (value: IsoDate | null) => void;
   /** The Default Expiry in days, for the "Usual" quick pick; null when there is none. */
   usualDays: number | null;
@@ -38,7 +38,7 @@ export type ExpirySheetProps = {
 
 /**
  * The expiry picker's bottom sheet: title and context, a readout of the chosen date and the tag it will get, the
- * calendar, and No expiry / Done. Every tap goes straight to `onChange`.
+ * calendar, and No expiry / Done. Taps change a draft; only Done (or No expiry) commits it through `onChange`.
  */
 export function ExpirySheet({
   open,
@@ -69,6 +69,13 @@ export function ExpirySheet({
   );
   const today = useToday();
   const { staleThresholdDays, tagFor } = useExpiryTags(today);
+  // The draft starts from `value` every time the sheet opens, and again if `value` changes under it.
+  const [draft, setDraft] = useState(value);
+  const [seen, setSeen] = useState({ open, value });
+  if (open !== seen.open || value !== seen.value) {
+    setSeen({ open, value });
+    if (open) setDraft(value);
+  }
   return (
     <Sheet
       open={open}
@@ -78,27 +85,39 @@ export function ExpirySheet({
       title={title}
       subtitle={context}
       size="content"
-      primary={{ label: t('picker.done'), onClick: onClose }}
+      primary={{
+        label: t('picker.done'),
+        onClick: () => {
+          onChange(draft);
+          onClose();
+        },
+      }}
       secondary={
         range
           ? undefined
-          : { label: t('picker.clear'), onClick: () => onChange(null) }
+          : {
+              label: t('picker.clear'),
+              onClick: () => {
+                onChange(null);
+                onClose();
+              },
+            }
       }
     >
       <Box sx={{ px: 3, pt: 0.5 }}>
         <Readout
           text={
-            value === null
+            draft === null
               ? null
-              : dateAndRelativeDay(value, today, i18n.language)
+              : dateAndRelativeDay(draft, today, i18n.language)
           }
-          tag={range ? null : tagFor(value)}
+          tag={range ? null : tagFor(draft)}
         />
       </Box>
       <SheetBody
         quickPicks={quickPicks}
-        value={value}
-        onChange={onChange}
+        value={draft}
+        onChange={setDraft}
         usualDays={usualDays}
         today={today}
         staleThresholdDays={staleThresholdDays}

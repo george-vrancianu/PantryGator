@@ -303,7 +303,7 @@ describe('Voice Notes on the Pantry page', () => {
     });
   });
 
-  /** Opens the open row's expiry sheet, taps `name` in it and closes it with Done. */
+  /** Opens the open row's expiry sheet, taps `name` in it and commits it with Done. */
   async function pickInExpirySheet(
     dialog: ReturnType<typeof within>,
     name: string | RegExp,
@@ -313,7 +313,10 @@ describe('Voice Notes on the Pantry page', () => {
       await screen.findByRole('dialog', { name: 'Expires' }),
     );
     await userEvent.click(sheet.getByRole('button', { name }));
-    await userEvent.click(sheet.getByRole('button', { name: 'Done' }));
+    // "No expiry" commits and closes by itself.
+    if (name !== 'No expiry') {
+      await userEvent.click(sheet.getByRole('button', { name: 'Done' }));
+    }
     await waitFor(() =>
       expect(screen.queryByRole('dialog', { name: 'Expires' })).toBeNull(),
     );

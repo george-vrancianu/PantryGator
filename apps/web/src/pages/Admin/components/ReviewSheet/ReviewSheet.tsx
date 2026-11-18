@@ -1,4 +1,10 @@
-import { Alert, Box, Sheet } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Sheet,
+  type SheetPrimary,
+  type SheetSecondary,
+} from '@pocket-pantry/ui';
 import { useId, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
@@ -10,7 +16,7 @@ export type ReviewSheetForm = {
   submitLabel: string;
   savingLabel: string;
   /** The sheet's other action, e.g. Restore, left of the submit button. */
-  secondary?: { label: string; onClick: () => void };
+  secondary?: SheetSecondary;
 };
 
 type Props = {
@@ -30,8 +36,8 @@ type Props = {
   form?: ReviewSheetForm;
   /** The primary (and secondary) when the sheet is not a form. */
   actions?: {
-    primary: { label: string; onClick: () => void };
-    secondary?: { label: string; onClick: () => void };
+    primary: Extract<SheetPrimary, { onClick: () => void }>;
+    secondary?: SheetSecondary;
   };
   children: ReactNode;
 };
