@@ -34,11 +34,44 @@ describe('Request body limits (integration)', () => {
     expect(res.status).toBe(200);
   });
 
-  it('reads a Scan image body over the default limit as an image, not a body-limit refusal', async () => {
-    const image = `data:image/jpeg;base64,${'A'.repeat(DEFAULT_REQUEST_BODY_BYTES * 2)}`;
-    const res = await client(app, cookie, '/api/scan').post('/product', {
-      productImage: image,
-    });
-    expect(res.status).not.toBe(413);
-  });
+  const scanImageRoutes = [
+    ['/product', 'productImage'],
+    ['/ingredients', 'ingredientsImage'],
+    ['/plate', 'plateImage'],
+    ['/receipt', 'receiptImage'],
+  ] as const;
+  // Just under imageDataUrlSchema's 7_000_000-character maximum.
+  const prefix = 'data:image/jpeg;base64,';
+  const nearCeiling = prefix + 'A'.repeat(6_999_000 - prefix.length);
+
+  it.each(scanImageRoutes)(
+    '%s reads an image over the default limit as an image, not a body-limit refusal',
+    async (route, field) => {
+      const over = prefix + 'A'.repeat(DEFAULT_REQUEST_BODY_BYTES * 2);
+      const res = await client(app, cookie, '/api/scan').post(route, {
+        [field]: over,
+      });
+      expect(res.status).not.toBe(413);
+    },
+  );
+
+  it.each(scanImageRoutes)(
+    '%s takes an image near the 7 MB image ceiling',
+    async (route, field) => {
+      const res = await client(app, cookie, '/api/scan').post(route, {
+        [field]: nearCeiling,
+      });
+      expect(res.status).not.toBe(413);
+    },
+  );
+
+  it.each([['/plate/recipe'], ['/receipt/confirm']])(
+    '%s stays on the default limit and refuses a larger JSON body with 413',
+    async (route) => {
+      const res = await client(app, cookie, '/api/scan').post(route, {
+        filler: 'x'.repeat(DEFAULT_REQUEST_BODY_BYTES + 1024),
+      });
+      expect(res.status).toBe(413);
+    },
+  );
 });

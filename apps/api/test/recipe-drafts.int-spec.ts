@@ -771,6 +771,14 @@ describe('Recipe Drafts (integration)', () => {
       expect(await exists(draft.id)).toBe(false);
     });
 
+    it('accepts a 64-character recipeDraftId and ignores it', async () => {
+      const res = await recipesApi.post(
+        '',
+        doc({ recipeDraftId: 'x'.repeat(64) }),
+      );
+      expect(res.status).toBe(201);
+    });
+
     it('refuses a recipeDraftId longer than 64 characters', async () => {
       const res = await recipesApi.post(
         '',

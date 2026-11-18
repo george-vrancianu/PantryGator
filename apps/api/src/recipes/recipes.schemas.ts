@@ -17,9 +17,13 @@ import {
 } from './recipe-guidance.schemas';
 
 const id = z.uuid();
-const title = z.string().trim().min(1).max(200);
-const longText = z.string().trim().min(1).max(2000);
-const note = z.string().trim().min(1).max(200);
+export const MAX_TITLE = 200;
+export const MAX_LONG_TEXT = 2000;
+export const MAX_LINE_NOTE = 200;
+export const MAX_RAW_NAME = 100;
+const title = z.string().trim().min(1).max(MAX_TITLE);
+const longText = z.string().trim().min(1).max(MAX_LONG_TEXT);
+const note = z.string().trim().min(1).max(MAX_LINE_NOTE);
 const minutes = z.number().int().min(0).max(100_000).nullable();
 
 export const MAX_LINES = 100;
@@ -94,7 +98,7 @@ export const variantCreate = z
 /** A Family line: an Ingredient or an Unmatched name, exactly one (the service checks, with a coded error). */
 export const familyLineInput = lineInput.extend({
   ingredientId: id.nullable().default(null),
-  rawName: z.string().trim().min(1).max(100).nullable().default(null),
+  rawName: z.string().trim().min(1).max(MAX_RAW_NAME).nullable().default(null),
 });
 
 /**
@@ -157,7 +161,7 @@ export const familyRecipeCreate = familyRecipeUpdate
     sourceLanguage: sourceLanguageInput.optional(),
     /**
      * Optional: the Member's Recipe Draft this save ends (ADR 0028). It is deleted in the
-     * same transaction as the create; an unknown, malformed or another Member's id is ignored.
+     * same transaction as the create; an unknown, malformed (up to 64 characters) or another Member's id is ignored.
      */
     recipeDraftId: z.string().max(64).optional(),
   })
