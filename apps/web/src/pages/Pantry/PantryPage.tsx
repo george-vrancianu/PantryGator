@@ -71,16 +71,14 @@ export function PantryPage() {
         primary={{
           label: t('pantry:add'),
           icon: <PlusIcon size={20} />,
-          onClick: screen.startAdding,
+          onClick: screen.openAddSheet,
         }}
       >
         <RowHintNote hint={rowHint.hint} />
         {/* The list stays rendered behind the sheet. */}
         <AddToPantrySheet
-          open={screen.adding}
-          start={screen.addStart}
-          location={screen.addLocation}
-          onClose={screen.stopAdding}
+          {...screen.addSheet}
+          onClose={screen.closeAddSheet}
           onExited={() => {
             if (document.activeElement === document.body) focusAdd();
           }}
@@ -96,8 +94,8 @@ export function PantryPage() {
           {screen.isLoading ? <Spinner label={t('common:loading')} /> : null}
           {screen.isEmpty ? (
             <EmptyPantry
-              onType={screen.startAdding}
-              onAddTo={screen.startAddingAt}
+              onType={screen.openAddSheet}
+              onAddTo={screen.addToLocation}
               visit={visit}
             />
           ) : null}
@@ -110,7 +108,7 @@ export function PantryPage() {
           {screen.emptyShelf ? (
             <ShelfCard
               location={screen.emptyShelf}
-              onAdd={screen.startAddingAt}
+              onAdd={screen.addToLocation}
             />
           ) : null}
           {screen.noMatches ? (
@@ -129,7 +127,7 @@ export function PantryPage() {
               onRemoveBatch={(batch) =>
                 screen.removeBatch(batch.id, batch.name)
               }
-              onAddBatch={screen.startAddingTo}
+              onAddBatch={screen.addBatchToRow}
               onEmptied={focusAdd}
               rowHint={rowHint}
             />
