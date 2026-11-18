@@ -191,6 +191,15 @@ export type MealPlanView = MealPlanSummary & {
   };
 };
 
+/**
+ * What one Fill did: the slots it filled, and the slots it left empty only because the Family's
+ * Allergies ruled out the Recipes that would have gone there.
+ */
+export type FillResult = { filled: number; emptyForAllergies: number };
+
+/** The Meal Plan after Fill, with what Fill did. */
+export type FilledMealPlanView = MealPlanView & { fill: FillResult };
+
 /** One Ingredient (or Unmatched name) the forecast says is missing, ready for Add missing. */
 export type MissingItemView = {
   ingredientId: string | null;

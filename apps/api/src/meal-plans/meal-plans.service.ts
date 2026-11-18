@@ -41,6 +41,7 @@ import {
   type CreateMealPlanBody,
   type FillBody,
   type MealPlanSummary,
+  type FilledMealPlanView,
   type MealPlanView,
   type MealWindowView,
   type PlanSlotView,
@@ -453,7 +454,7 @@ export class MealPlansService {
     body: FillBody,
     locale: CatalogLocale,
     today = utcToday(),
-  ): Promise<MealPlanView> {
+  ): Promise<FilledMealPlanView> {
     return runLocked(this.database, async (tx) => {
       const { familyId } = await lockMemberAndFamily(tx, memberId);
       const plan = await this.findPlan(tx, familyId, id);
@@ -464,13 +465,18 @@ export class MealPlansService {
         today,
         memberId,
       );
-      const choices = fillPlan({
+      const input = {
         today,
         ...loaded,
         staleThresholdDays: await this.settings.staleThresholdOf(familyId),
         onlyWhatIHave: body.onlyWhatIHave,
-        tieBreaker: randomTieBreaker,
-      });
+      };
+      const choices = fillPlan({ ...input, tieBreaker: randomTieBreaker });
+      // Slots a Recipe the Allergies block would have taken: filled when nothing is blocked,
+      // not filled now. Only asked when some Recipe is blocked.
+      const emptyForAllergies = loaded.recipes.some((r) => r.blocksFill)
+        ? this.slotsOnlyAllergiesEmptied(input, choices.length)
+        : 0;
       const rows = choices.flatMap(({ slotId, recipeId }) => {
         const at = emptySlots.get(slotId);
         return at ? [{ mealPlanId: plan.id, ...at, recipeId }] : [];
@@ -479,8 +485,38 @@ export class MealPlansService {
       if (rows.length > 0) {
         await tx.insert(mealPlanSlots).values(rows).onConflictDoNothing();
       }
-      return this.view(tx, memberId, familyId, plan.id, locale, today);
+      const view = await this.view(
+        tx,
+        memberId,
+        familyId,
+        plan.id,
+        locale,
+        today,
+      );
+      return {
+        ...view,
+        fill: { filled: rows.length, emptyForAllergies },
+      };
     });
+  }
+
+  /**
+   * How many more slots Fill would have filled had no Recipe been blocked by Allergies. Ties are
+   * broken by the first option here, so it only compares counts, never which Recipe.
+   */
+  private slotsOnlyAllergiesEmptied(
+    input: Omit<Parameters<typeof fillPlan>[0], 'tieBreaker'>,
+    filled: number,
+  ): number {
+    const unblocked = fillPlan({
+      ...input,
+      recipes: input.recipes.map((recipe) => ({
+        ...recipe,
+        blocksFill: false,
+      })),
+      tieBreaker: (tied) => tied[0],
+    });
+    return Math.max(0, unblocked.length - filled);
   }
 
   /** Empties a slot; clearing an empty one is fine. */
