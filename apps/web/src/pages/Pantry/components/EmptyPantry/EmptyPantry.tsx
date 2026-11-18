@@ -1,6 +1,5 @@
 import {
   Box,
-  Chip,
   color,
   Gator,
   MicIcon,
@@ -17,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import { useShowsDockMic } from '@/components/voice/VoiceNote/VoiceNote';
 import { useMicTeach } from '@/components/voice/VoiceHost/VoiceHost';
 import { LOCATIONS, type StorageLocation } from '@/lib/catalog';
-import { FILTERS } from '@/lib/pantry';
 import { useShoppingList } from '@/lib/shopping';
+import { LocationChips } from '../LocationChips/LocationChips';
 import { ShelfCard } from '../ShelfCard/ShelfCard';
 import { TickedBar } from '../TickedBar/TickedBar';
 
@@ -70,15 +69,7 @@ export function EmptyPantry({ onType, onAddTo, visit }: Props) {
         inert
         sx={{ display: 'flex', gap: '8px', overflowX: 'auto', opacity: 0.55 }}
       >
-        {FILTERS.map((chip) => (
-          <Chip
-            key={chip}
-            selected={chip === 'all'}
-            label={
-              chip === 'all' ? t('pantry:all') : t(`common:locations.${chip}`)
-            }
-          />
-        ))}
+        <LocationChips filter="all" onFilterChange={() => undefined} />
       </Box>
       {checked > 0 ? (
         <TickedBar
