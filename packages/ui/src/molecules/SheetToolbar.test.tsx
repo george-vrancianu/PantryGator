@@ -56,7 +56,7 @@ describe('Sheet toolbar', () => {
   it('owns the toolbar fill, padding and divider', () => {
     const { search } = renderWithToolbar();
     const css = authoredCss(search.parentElement!);
-    expect(css).toContain('background');
+    expect(css).toMatch(/background:[^;]*sheet-bg/);
     expect(css).toContain('padding-left:16px');
     expect(css).toContain('padding-right:16px');
     expect(css).toContain('border-bottom:');

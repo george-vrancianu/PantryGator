@@ -310,7 +310,7 @@ export function Sheet({
           </IconButton>
         ) : null}
       </Box>
-      {toolbar ? (
+      {toolbar != null && toolbar !== false ? (
         <Box
           data-sheet-toolbar=""
           sx={{

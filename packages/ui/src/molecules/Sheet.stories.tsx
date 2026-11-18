@@ -184,11 +184,11 @@ export const WithToolbarDark: Story = {
 
 const disabledStory = (): Story['render'] => () =>
   render({
-    title: 'Meal slot',
+    title: 'Filter by Tag',
     size: 'content',
-    primary: { label: 'Change Recipe', onClick: noop },
+    primary: { label: 'Show 12 Recipes', onClick: noop },
     secondary: { label: 'Clear', onClick: noop, disabled: true },
-    destructive: { label: 'Clear this meal', onClick: noop, disabled: true },
+    destructive: { label: 'Delete', onClick: noop, disabled: true },
     children: <Body />,
   });
 
