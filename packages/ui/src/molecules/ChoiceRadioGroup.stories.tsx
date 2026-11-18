@@ -21,7 +21,7 @@ function Group({
 }: Partial<React.ComponentProps<typeof ChoiceRadioGroup<string>>> & {
   choices: Choice<string>[];
 }) {
-  const [value, setValue] = useState(choices[0].value);
+  const [value, setValue] = useState(choices[0]?.value ?? '');
   return (
     <Box sx={{ p: 3, maxWidth: 360 }}>
       <ChoiceRadioGroup
@@ -67,4 +67,8 @@ export const LongText: StoryObj<typeof ChoiceRadioGroup> = {
       ]}
     />
   ),
+};
+
+export const Empty: StoryObj<typeof ChoiceRadioGroup> = {
+  render: () => <Group choices={[]} hint="No choices to show." />,
 };
