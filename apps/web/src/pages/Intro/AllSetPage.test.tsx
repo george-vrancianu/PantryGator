@@ -24,6 +24,7 @@ describe('the All set page', () => {
     const go = await screen.findByRole('button', { name: 'Go to my kitchen' });
     expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
     // On the light sheet it is the primary button, not the butter one the olive ground needed.
-    expect(paintedColour(go, 'background-color')).not.toBe('#E8CB7C');
+    expect(paintedColour(go, 'background-color')).toBe('#1C6A43');
+    expect(paintedColour(go, 'color')).toBe('#FFFFFF');
   });
 });
