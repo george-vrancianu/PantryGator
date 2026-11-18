@@ -400,7 +400,7 @@ describe('the answer sheet for Pantry Questions', () => {
       expect(within(card).getAllByRole('listitem')).toHaveLength(2);
       expect(
         dialog.getByRole('button', { name: 'Pick a list first' }),
-      ).toHaveAttribute('aria-disabled', 'true');
+      ).toBeEnabled();
 
       await userEvent.click(
         within(dialog.getByRole('group', { name: 'List for Eggs' })).getByRole(
@@ -670,7 +670,7 @@ describe('the answer sheet for Pantry Questions', () => {
       ).toBeNull();
       expect(
         dialog.getByRole('button', { name: 'Pick a list first' }),
-      ).toHaveAttribute('aria-disabled', 'true');
+      ).toBeEnabled();
       expect(screen.queryByText(/Discarded/)).toBeNull();
       expect(applyBodies()).toBe(1);
 

@@ -401,7 +401,7 @@ describe('Voice Notes on the Pantry page', () => {
     const apply = await dialog.findByRole('button', {
       name: 'Pick a place first',
     });
-    expect(apply).toHaveAttribute('aria-disabled', 'true');
+    expect(apply).toBeEnabled();
     expect(header(dialog, 'Quinoa crackers')).toHaveAttribute(
       'aria-expanded',
       'true',
@@ -428,7 +428,7 @@ describe('Voice Notes on the Pantry page', () => {
     await userEvent.click(dialog.getByRole('button', { name: 'Cupboard' }));
     expect(
       dialog.getByRole('button', { name: 'Apply 1 change' }),
-    ).not.toHaveAttribute('aria-disabled');
+    ).toBeEnabled();
   });
 
   it("takes the new Match's Location when an Unmatched add gets matched", async () => {
@@ -547,7 +547,7 @@ describe('Voice Notes on the Pantry page', () => {
     const apply = await dialog.findByRole('button', {
       name: 'Pick a batch first',
     });
-    expect(apply).toHaveAttribute('aria-disabled', 'true');
+    expect(apply).toBeEnabled();
     expect(header(dialog, 'Rice').textContent).toBe(
       "Use Rice5 kg doesn't fit batches counted in g · pick one",
     );
@@ -567,7 +567,7 @@ describe('Voice Notes on the Pantry page', () => {
     await userEvent.click(radios[1]);
     expect(
       dialog.getByRole('button', { name: 'Apply 1 change' }),
-    ).not.toHaveAttribute('aria-disabled');
+    ).toBeEnabled();
     await userEvent.click(
       dialog.getByRole('button', { name: 'Apply 1 change' }),
     );
