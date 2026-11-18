@@ -31,9 +31,9 @@
         "apps/web/src/App.tsx",
         // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
-        // #844 moves the cross-page pull-to-refresh test beside its module
+        // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
         "apps/web/src/components/RefreshScreen.test.tsx",
-        // #853 moves the voice tests beside what they render
+        // Already beside VoiceAnswerSheet and renders PantryPage and ShoppingPage: #853 does not change that; needs a spec decision before #854
         "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
@@ -130,9 +130,9 @@
         "apps/web/src/App.tsx",
         // #839 stops lib/ importing pages/ (this test imports pages/Recipes/familyDraft)
         "apps/web/src/lib/recipeDraftContent.test.ts",
-        // #844 moves the cross-page pull-to-refresh test beside its module
+        // Cross-page test (renders PantryPage and RecipesPage): #844 keeps it under components/, so no move ticket ends this; needs a spec decision before #854
         "apps/web/src/components/RefreshScreen.test.tsx",
-        // #853 moves the voice tests beside what they render
+        // Already beside VoiceAnswerSheet and renders PantryPage and ShoppingPage: #853 does not change that; needs a spec decision before #854
         "apps/web/src/components/voice/VoiceAnswerSheet.test.tsx",
         // #846 moves Servings into components/recipe/ and rewrites this import
         "apps/web/src/pages/MealPlans/MealPlanFormPage.tsx",
