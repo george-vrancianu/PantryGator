@@ -297,6 +297,30 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(screen.getByText('9')).toBeInTheDocument();
   });
 
+  it('says how many Shopping Items Add all could not tick off, as the app does', async () => {
+    const { user } = await openSnap({
+      routes: {
+        'POST /api/scan/receipt/confirm': () =>
+          Response.json({ batches: [], matchedShoppingItemIds: ['item-1'] }),
+        'PATCH /api/shopping-list/items/item-1': () =>
+          Response.json({ code: 'shopping.item_not_found' }, { status: 404 }),
+      },
+    });
+    await snapPhotos(user, 1, 'Receipt');
+    await openOverview(user);
+    await cards();
+    await user.click(screen.getByRole('button', { name: 'Add all' }));
+
+    expect(
+      await screen.findByText('1 Shopping Item could not be ticked off.'),
+    ).toBeVisible();
+    await waitFor(() => expect(where()).toBe('/intro/say-it'));
+    // It outlives the move to Say it.
+    expect(
+      screen.getByText('1 Shopping Item could not be ticked off.'),
+    ).toBeVisible();
+  });
+
   it('shows the photos taken and how many are being read on Snap, and keeps them when going back', async () => {
     let finish: (response: Response) => void = () => {};
     const { user } = await openSnap({

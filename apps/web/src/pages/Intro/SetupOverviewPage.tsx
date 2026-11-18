@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@pocket-pantry/ui';
 import { IntroLook } from '@/components/IntroLook';
 import { SetupReviewFrame } from './components/SetupReviewView/SetupReviewView';
 import { useSnapLeave } from './hooks/useSnapLeave';
@@ -17,6 +19,8 @@ import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
  */
 export function SetupOverviewPage() {
   const navigate = useNavigate();
+  const toast = useToast();
+  const { t: tScan } = useTranslation('scan');
   const { recordSaved, savedSteps } = useIntro();
   const { scans } = useScanSession();
   const empty = scans.length === 0;
@@ -43,7 +47,11 @@ export function SetupOverviewPage() {
           cardPath: setupReviewPath,
           importOffered: false,
           onCardSaved: (lines) => recordSaved({ batches: lines }, 'snap'),
-          afterAddAll: (added) => {
+          afterAddAll: (added, notTicked) => {
+            if (notTicked > 0)
+              toast.show(tScan('tickFailed', { count: notTicked }), {
+                polite: true,
+              });
             if (added === 0) backToSnapIfNothingSaved();
           },
           afterDiscardAll: backToSnapIfNothingSaved,
