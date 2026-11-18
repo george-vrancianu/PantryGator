@@ -2,7 +2,7 @@ import { Sheet } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
-import type { CatalogSearchResult } from '../lib/catalog';
+import type { CatalogSearchResult } from '@/lib/catalog';
 
 type Props = {
   open: boolean;

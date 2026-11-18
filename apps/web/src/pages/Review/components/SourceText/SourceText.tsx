@@ -1,6 +1,6 @@
 import { Typography, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import type { CameraMode } from '../../../lib/cameraMode';
+import type { CameraMode } from '@/lib/cameraMode';
 
 type Props = {
   /** What the Scan read for the line; renders nothing when null. */

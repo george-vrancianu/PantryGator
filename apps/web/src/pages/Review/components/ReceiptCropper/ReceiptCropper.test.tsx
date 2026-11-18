@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
-import { renderWithProviders } from '../test/render';
+import { renderWithProviders } from '@/test/render';
 import { ReceiptCropper } from './ReceiptCropper';
 
 describe('ReceiptCropper', () => {

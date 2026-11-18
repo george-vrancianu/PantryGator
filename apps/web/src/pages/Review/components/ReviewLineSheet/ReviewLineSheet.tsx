@@ -1,13 +1,9 @@
 import { Sheet } from '@pocket-pantry/ui';
 import { useState, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
-import {
-  displayName,
-  type ReviewLine,
-  type RowStatus,
-} from '../../../lib/review';
-import { RowEditPanel } from './RowEditPanel';
+import type { CatalogParent, CatalogSearchResult } from '@/lib/catalog';
+import { displayName, type ReviewLine, type RowStatus } from '@/lib/review';
+import { RowEditPanel } from '../RowEditPanel/RowEditPanel';
 
 type Props = {
   open: boolean;

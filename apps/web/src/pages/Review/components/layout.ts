@@ -1,5 +1,5 @@
 import { tokens, insetFocusRing } from '@pocket-pantry/ui';
-import type { RowStatus } from '../../../lib/review';
+import type { RowStatus } from '@/lib/review';
 
 /** The column grid shared by the header row and the item rows (handoff §4.3). */
 const COLUMNS = 'minmax(0,1fr) 56px 60px 58px';

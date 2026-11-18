@@ -1,7 +1,7 @@
 import { Box, tokens } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
+import type { CatalogParent, CatalogSearchResult } from '@/lib/catalog';
 import { NamePill } from '@/components/catalogSearch/FamilyTag/FamilyTag';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import {
@@ -10,18 +10,18 @@ import {
   matchSearchInputs,
   type ReviewLine,
   type RowStatus,
-} from '../../../lib/review';
-import { BarcodeLookupNotes } from '../../../components/BarcodeLookupNotes';
-import { AmountField } from '../../../components/AmountField';
-import { ExpiryField } from '../../../components/ExpiryPicker';
-import { LocationToggle } from '../../../components/LocationToggle';
-import { Field, FieldError, fieldLabelSx } from './Field';
+} from '@/lib/review';
+import { BarcodeLookupNotes } from '@/components/BarcodeLookupNotes';
+import { AmountField } from '@/components/AmountField';
+import { ExpiryField } from '@/components/ExpiryPicker/index';
+import { LocationToggle } from '@/components/LocationToggle';
+import { Field, FieldError, fieldLabelSx } from '../Field/Field';
 import {
   CategorySelect,
   DescriptionInput,
   useReviewLineExpiry,
-} from './RowInputs';
-import { fieldId } from './layout';
+} from '../RowInputs/RowInputs';
+import { fieldId } from '../layout';
 
 type Props = {
   line: ReviewLine;

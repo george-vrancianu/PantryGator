@@ -9,11 +9,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBreakpointUp } from '@pocket-pantry/ui';
-import { translateApiError } from '../../../i18n/translateApiError';
-import {
-  useCatalogParents,
-  type CatalogSearchResult,
-} from '../../../lib/catalog';
+import { translateApiError } from '@/i18n/translateApiError';
+import { useCatalogParents, type CatalogSearchResult } from '@/lib/catalog';
 import {
   displayName,
   statusOf,
@@ -22,27 +19,24 @@ import {
   reviewLinesOf,
   type ReviewLine,
   matchSearchInputs,
-} from '../../../lib/review';
-import { firstFocusField } from '../../../lib/reviewFocus';
+} from '@/lib/review';
+import { firstFocusField } from '@/lib/reviewFocus';
 import {
   initReviewState,
   reviewCounts,
   reviewGroups,
   reviewReducer,
-} from '../../../lib/reviewState';
+} from '@/lib/reviewState';
 import {
   dispatchScanSession,
   getScanSession,
   photoBarcodeOf,
   useScanSession,
-} from '../../../lib/scanSession';
-import { useSaveLines } from '../../../lib/saveScan';
-import type { TickFailures } from '../../../lib/receiptScan';
-import { MAX_BULK_BATCHES } from '../../../lib/scan';
-import {
-  unverifiedState,
-  type UnverifiedState,
-} from '../../../lib/unverifiedState';
+} from '@/lib/scanSession';
+import { useSaveLines } from '@/lib/saveScan';
+import type { TickFailures } from '@/lib/receiptScan';
+import { MAX_BULK_BATCHES } from '@/lib/scan';
+import { unverifiedState, type UnverifiedState } from '@/lib/unverifiedState';
 import { EXCLUDED_TOGGLE_ID, fieldId, rowId } from '../components/layout';
 
 /**

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { renderWithProviders } from '../../../test/render';
+import { renderWithProviders } from '@/test/render';
 import { SourceText } from './SourceText';
 
 describe('SourceText', () => {

@@ -1,4 +1,4 @@
-import { BarcodeLookupNotes } from '../../../components/BarcodeLookupNotes';
+import { BarcodeLookupNotes } from '@/components/BarcodeLookupNotes';
 import {
   Box,
   CalendarIcon,
@@ -11,17 +11,17 @@ import {
 } from '@pocket-pantry/ui';
 import { useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogParent } from '../../../lib/catalog';
-import { formatDate } from '../../../lib/dateFormat';
+import type { CatalogParent } from '@/lib/catalog';
+import { formatDate } from '@/lib/dateFormat';
 import {
   displayName,
   invalidFields,
   type ReviewLine,
   type RowStatus,
-} from '../../../lib/review';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { ConfidencePill } from './ConfidencePill';
-import { controlSx } from './Field';
+} from '@/lib/review';
+import type { CameraMode } from '@/lib/cameraMode';
+import { ConfidencePill } from '../ConfidencePill/ConfidencePill';
+import { controlSx } from '../Field/Field';
 import {
   CategorySelect,
   DescriptionInput,
@@ -30,9 +30,9 @@ import {
   LocationSelect,
   NameInput,
   QuantityUnitInput,
-} from './RowInputs';
-import { SourceText } from './SourceText';
-import { StatusIcon } from '../../../components/StatusIcon';
+} from '../RowInputs/RowInputs';
+import { SourceText } from '../SourceText/SourceText';
+import { StatusIcon } from '@/components/StatusIcon';
 import {
   ROW_TINT,
   fieldId,
@@ -40,7 +40,7 @@ import {
   rowId,
   tabletRowSx,
   titleId,
-} from './layout';
+} from '../layout';
 
 type Props = {
   line: ReviewLine;
