@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { IntroLook } from '@/components/IntroLook';
 import { useSnapLeave } from './hooks/useSnapLeave';
 import { SetupReviewView } from './components/SetupReviewView/SetupReviewView';
@@ -22,6 +27,7 @@ import { ReviewPage } from '@/pages/Review/ReviewPage';
 export function SetupReviewPage() {
   const { scanId = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { recordSaved } = useIntro();
   const scan = useScanSession().scans.find((s) => s.id === scanId);
   // Leaving drops cards from the Scan Session, which must not bounce this page to the overview on the way out.
@@ -32,7 +38,13 @@ export function SetupReviewPage() {
   if (!scan || scanDisplayState(scan) !== 'read')
     return leaving ? null : <Navigate to={INTRO_REVIEW_PATH} replace />;
 
-  const onBack = () => navigate(INTRO_REVIEW_PATH, { replace: true });
+  // The editor was opened from the overview, so back is a step in the history: replacing it would leave two
+  // overview entries. Opened straight (no entry before it), it goes to the overview in its place.
+  const toOverview = () =>
+    location.key === 'default'
+      ? navigate(INTRO_REVIEW_PATH, { replace: true })
+      : navigate(-1);
+  const onBack = toOverview;
   const onRetake = () => {
     const { mode } = scan;
     setLeaving(true);
@@ -58,7 +70,7 @@ export function SetupReviewPage() {
           onSaved: (saved) => {
             setLeaving(true);
             recordSaved({ batches: saved }, 'snap');
-            navigate(INTRO_REVIEW_PATH, { replace: true });
+            toOverview();
           },
           onRetake,
         }}

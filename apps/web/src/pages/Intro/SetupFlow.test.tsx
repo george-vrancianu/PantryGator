@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useNavigate } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
+import { INTRO_REVIEW_PATH } from '@/lib/intro';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import type { ProposedLine } from '@/lib/scan';
 import { preferenceSaves, stubSetupMember, Where } from '@/test/intro';
@@ -85,6 +86,14 @@ function BrowserBack() {
   return <button onClick={() => navigate(-1)}>Browser back</button>;
 }
 
+/** A way onto the Setup overview that skips the camera, as a stale history entry would. */
+function OpenOverview() {
+  const navigate = useNavigate();
+  return (
+    <button onClick={() => navigate(INTRO_REVIEW_PATH)}>Open overview</button>
+  );
+}
+
 const where = () => screen.getByLabelText('Where').textContent;
 
 /** Opens the app at Set up or skip and taps Show me how. */
@@ -98,6 +107,7 @@ async function openSnap(routes: Parameters<typeof stubSetupMember>[0] = {}) {
       <App />
       <Where />
       <BrowserBack />
+      <OpenOverview />
     </>,
     { route: '/intro/setup' },
   );
@@ -537,6 +547,30 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     );
     await user.click(within(first).getByRole('button', { name: 'Retake' }));
     await waitFor(() => expect(where()).toBe('/intro/camera?mode=ingredients'));
+  });
+
+  it('leaves one overview entry in the history after opening the editor and coming back', async () => {
+    const { user } = await openSnap();
+    await snapPhotos(user, 2);
+    await openOverview(user);
+    await openCard(user);
+    await user.click(screen.getByRole('button', { name: /Review/ }));
+    expect(await cards()).toHaveLength(2);
+
+    // One step back is the camera, not a second copy of the overview.
+    await user.click(screen.getByRole('button', { name: 'Browser back' }));
+    await waitFor(() => expect(where()).toBe('/intro/camera?mode=ingredients'));
+  });
+
+  it('sends an already-empty overview with nothing saved to Snap', async () => {
+    const { user } = await openSnap();
+    await user.click(screen.getByRole('button', { name: 'Open overview' }));
+    await waitFor(() => expect(where()).toBe('/intro/snap'));
+    expect(
+      await screen.findByRole('radiogroup', {
+        name: "What's in front of you?",
+      }),
+    ).toBeInTheDocument();
   });
 
   it('shows the card as reading while the photo is read, then it opens in the line editor', async () => {

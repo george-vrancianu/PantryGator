@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@pocket-pantry/ui';
@@ -29,8 +29,15 @@ export function SetupOverviewPage() {
   const [leaving, setLeaving] = useState(false);
 
   const leave = useSnapLeave(() => setLeaving(true));
+  // Landing on an empty overview with nothing saved (a stale history entry) has nothing to show: Snap. Only
+  // on landing: emptying it here (Retake, Remove, Discard all) is handled where it happens.
+  const [landedEmpty] = useState(empty);
+  const toSnap = landedEmpty && empty && !leaving && !savedSteps.has('snap');
+  useEffect(() => {
+    if (toSnap) navigate(INTRO_PATHS.snap, { replace: true });
+  }, [toSnap, navigate]);
 
-  if (advancing || leaving) return null;
+  if (advancing || leaving || toSnap) return null;
 
   // Adding ends by emptying the Scan Session, which `useAutoAdvance` reacts to. When the Member empties it
   // without saving anything (discarding, or removing the last card) they go back to Snap and stay there.
