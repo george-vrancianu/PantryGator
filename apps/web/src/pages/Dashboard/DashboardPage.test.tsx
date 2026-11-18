@@ -1,13 +1,9 @@
 import { act, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { stubViewport } from '../../test/viewport';
-import { makeScrollable, pull } from '../../test/scroll';
-import { MIN_BUSY_MS } from '../../lib/refresh';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
+import { makeScrollable, pull } from '@/test/scroll';
+import { MIN_BUSY_MS } from '@/lib/refresh';
 import { DashboardPage } from './DashboardPage';
 
 afterEach(() => vi.unstubAllGlobals());

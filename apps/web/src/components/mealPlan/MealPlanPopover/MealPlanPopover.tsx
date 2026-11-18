@@ -23,7 +23,7 @@ import {
   usePrefersReducedMotion,
   useBreakpointUp,
 } from '@pocket-pantry/ui';
-import { AllergenIndicator } from '../AllergenIndicator';
+import { AllergenIndicator } from '@/components/AllergenIndicator';
 import { placeVertically } from './verticalPlacement';
 import {
   useCallback,
@@ -36,7 +36,7 @@ import {
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { keyframesSx } from '../../lib/keyframesSx';
+import { keyframesSx } from '@/lib/keyframesSx';
 import {
   dayMissing,
   slotsInOrder,
@@ -44,8 +44,8 @@ import {
   type PlanIssue,
   type WindowDay,
   type WindowSlot,
-} from '../../lib/mealPlan';
-import type { IsoDate } from '../../lib/pantry';
+} from '@/lib/mealPlan';
+import type { IsoDate } from '@/lib/pantry';
 import {
   dayTitle,
   fullDate,

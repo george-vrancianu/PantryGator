@@ -7,7 +7,7 @@ import {
   visuallyHidden,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { localIso } from '../../../lib/pantry';
+import { localIso } from '@/lib/pantry';
 
 /**
  * Today as a tear-off calendar page beside the Pantry Health lights: the month on an ink band with two binding

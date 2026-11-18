@@ -1,6 +1,6 @@
 import { CheckIcon, ShoppingIcon, Tag } from '@pocket-pantry/ui';
 import type { TFunction } from 'i18next';
-import type { WindowSlot } from '../../lib/mealPlan';
+import type { WindowSlot } from '@/lib/mealPlan';
 import { statusLabel } from './mealPlanText';
 
 /** A slot's forecast status as a Tag: the Widget's marks, reused by the Meal Plan page. */

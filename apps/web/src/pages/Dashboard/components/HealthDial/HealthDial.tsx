@@ -6,7 +6,7 @@ import {
   palette,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
-import { dialAngle } from '../../lib/healthLights';
+import { dialAngle } from '@/lib/healthLights';
 
 /** How long the needle takes to turn to a new score, ms. */
 export const NEEDLE_TURN_MS = 700;

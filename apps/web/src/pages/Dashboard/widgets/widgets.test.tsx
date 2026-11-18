@@ -3,18 +3,18 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Batch } from '../../../lib/pantry';
-import type { ShoppingItem, ShoppingList } from '../../../lib/shopping';
-import { useCookTonight } from '../../../lib/cookTonight';
-import { localIso } from '../../../lib/pantry';
-import { renderWithProviders, stubApi } from '../../../test/render';
-import { stubMotion } from '../../../test/viewport';
+import type { Batch } from '@/lib/pantry';
+import type { ShoppingItem, ShoppingList } from '@/lib/shopping';
+import { useCookTonight } from '@/lib/cookTonight';
+import { localIso } from '@/lib/pantry';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubMotion } from '@/test/viewport';
 import { BudgetWidget, NutritionWidget } from './PlaceholderWidgets';
 import { PantryStockWidget } from './PantryStockWidget';
 import { ShoppingWidget } from './ShoppingWidget';
 import { CookTonightWidget } from './CookTonightWidget';
 import { UseSoonWidget } from './UseSoonWidget';
-import type { CookTonightCard } from '../../../lib/cookTonight';
+import type { CookTonightCard } from '@/lib/cookTonight';
 
 const isoIn = (days: number) => {
   const date = new Date();

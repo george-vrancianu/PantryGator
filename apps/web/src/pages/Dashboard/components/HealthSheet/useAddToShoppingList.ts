@@ -1,15 +1,15 @@
 import { useToast } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../i18n/translateApiError';
-import { withOnShoppingList, type HealthTodoKey } from '../../lib/health';
-import { useHealthToast } from '../../lib/useHealthToast';
+import { translateApiError } from '@/i18n/translateApiError';
+import { withOnShoppingList, type HealthTodoKey } from '@/lib/health';
+import { useHealthToast } from '@/lib/useHealthToast';
 import {
   shoppingListQueryKey,
   useShoppingMutations,
   type NewShoppingItem,
-} from '../../lib/shopping';
-import type { PantryHealthState } from '../../lib/usePantryHealth';
+} from '@/lib/shopping';
+import type { PantryHealthState } from '@/lib/usePantryHealth';
 
 export type ShoppingFix = {
   isPending: boolean;

@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
-import { formatAmount } from '../../lib/amount';
-import type { Unit } from '../../lib/catalog';
+import { formatAmount } from '@/lib/amount';
+import type { Unit } from '@/lib/catalog';
 import {
   type BaseUnit,
   type PlanIssue,
@@ -8,8 +8,8 @@ import {
   type SlotStatus,
   type WindowDay,
   unlistedShortCount,
-} from '../../lib/mealPlan';
-import { dateLocale, fromIso, type IsoDate } from '../../lib/pantry';
+} from '@/lib/mealPlan';
+import { dateLocale, fromIso, type IsoDate } from '@/lib/pantry';
 
 type T = TFunction<'dashboard'>;
 

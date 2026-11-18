@@ -1,5 +1,5 @@
 import { nestedRadius, radius, tokens } from '@pocket-pantry/ui';
-import type { BarStatus } from '../../lib/mealPlan';
+import type { BarStatus } from '@/lib/mealPlan';
 
 /** The "on list" fill: stripes in the star and soon colours. */
 export const HATCH = `repeating-linear-gradient(135deg, ${tokens.color.star} 0 3px, ${tokens.color.soonBg} 3px 6px)`;

@@ -8,12 +8,12 @@ import {
 } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CookTonightCard } from '../lib/cookTonight';
-import { cookTonightPanelState } from '../lib/cookTonightPanel';
-import { useGatorAlt } from '../lib/useGatorAlt';
-import { useGatorTapLink } from '../lib/useGatorTapLink';
-import { EmptyPotPanel } from './EmptyPotPanel';
-import { GatorBubblePanel } from './GatorBubblePanel';
+import type { CookTonightCard } from '@/lib/cookTonight';
+import { cookTonightPanelState } from '@/lib/cookTonightPanel';
+import { useGatorAlt } from '@/lib/useGatorAlt';
+import { useGatorTapLink } from '@/lib/useGatorTapLink';
+import { EmptyPotPanel } from '@/components/EmptyPotPanel';
+import { GatorBubblePanel } from '@/components/GatorBubblePanel';
 
 /**
  * Gator's bubble panel for Cook Tonight, in the wide/tall Dashboard Widget:
