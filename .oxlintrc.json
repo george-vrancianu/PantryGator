@@ -10,16 +10,16 @@
     // Off (10 findings): the autofocus calls are deliberate (sheets and dialogs move focus to their first field on open);
     // removing them would change Member-visible focus behaviour.
     "jsx-a11y/no-autofocus": "off",
-    // Off on purpose (ADR 0044): import/no-cycle is not enabled yet. The move PRs rewrite imports area by
-    // area and will surface cycles; revisit it after #840, once the shared groups have settled.
+    // Off on purpose: with the `import` plugin on, apps/web has one cycle (lib/pantry -> settings -> recipes -> pantry),
+    // reported 3 times. Fixing it is its own change; enable the rule once it is gone (docs/agents/codebase-map.md).
     "import/no-cycle": "off"
   },
   "overrides": [
     // Import rules, ADR 0044 (details: docs/agents/codebase-map.md). Override globs are relative to THIS
     // file, so they start at apps/web/. An override REPLACES the base rule's options, so the second
     // and third overrides repeat Rule B. oxlint matches the raw import string, so relative and `@/` imports both
-    // need a pattern (`**/` prefix). No file is excluded any more (a violator would go in `excludeFiles`, with the ticket
-    // that removes it). `npm run check:web-layout` proves both rules still fire.
+    // need a pattern (`**/` prefix). No file is excluded: a violation is fixed by moving the
+    // module, never by an `excludeFiles` entry. `npm run check:web-layout` proves both rules still fire.
     {
       "files": ["apps/web/src/**/*.ts", "apps/web/src/**/*.tsx"],
       "rules": {
