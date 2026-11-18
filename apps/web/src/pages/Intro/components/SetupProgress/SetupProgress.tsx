@@ -1,10 +1,10 @@
-import { Box, canopy, radius, tokens, Typography } from '@pocket-pantry/ui';
+import { Box, canopy, radius, Typography } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 
 /** The Setup step's progress on the Canopy: two bars (those up to `step` filled, in gold) and "1 of 2". */
 export function SetupProgress({ step = 1 }: { step?: 1 | 2 }) {
   const { t } = useTranslation('onboarding');
-  const filled = tokens.color.butter;
+  const filled = canopy.gold;
   const empty = canopy.progressTrack;
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>

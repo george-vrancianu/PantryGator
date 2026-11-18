@@ -1,4 +1,11 @@
-import { Box, canopy, IntroLook, radius, SAFE_TOP } from '@pocket-pantry/ui';
+import {
+  Box,
+  canopy,
+  canopyFocusRingStyle,
+  IntroLook,
+  radius,
+  SAFE_TOP,
+} from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { CanopyTexture } from '@/components/layout/CanopyTexture/CanopyTexture';
 
@@ -7,10 +14,10 @@ const UNDER_SHEET = 74;
 /** The Canopy's room under its own content, above the sheet's edge. */
 const CANOPY_GAP = 18;
 
-/** Keyboard rings default to the page colour, which vanishes on the Canopy: make them its ink. */
+/** Keyboard rings default to the accent green, which vanishes on the Canopy: draw the Canopy's gold ring instead. */
 const canopyFocus = {
   '&& :focus-visible, && .Mui-focusVisible, && label:has(:focus-visible), && a:focus-visible':
-    { outlineColor: canopy.ink },
+    canopyFocusRingStyle,
 } as const;
 
 type Props = {
