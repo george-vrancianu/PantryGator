@@ -29,7 +29,7 @@ describe('BackgroundSheet', () => {
       const slot = row.firstElementChild as HTMLElement;
       expect(slot).toHaveAttribute('aria-hidden', 'true');
       expect(slot.querySelector('svg')).not.toBeNull();
-      expect(slot).toHaveTextContent('');
+      expect(slot.textContent).toBe('');
       expect(within(row).queryByText(/^[…✓!]$/)).toBeNull();
     }
   });

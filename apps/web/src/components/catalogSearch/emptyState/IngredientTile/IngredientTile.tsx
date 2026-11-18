@@ -9,7 +9,7 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
-/** The line under a tile's name: a 12px decorative glyph, then text, in the reason's colour. */
+/** The line under a tile's name: a 12px decorative icon (preferred) or glyph (legacy, still used by RunningLowTiles and RecentlyStocked), then text, in the reason's colour. */
 export type TileWhy = {
   glyph?: string;
   icon?: ReactNode;

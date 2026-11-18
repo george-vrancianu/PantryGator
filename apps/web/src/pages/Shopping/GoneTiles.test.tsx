@@ -188,16 +188,22 @@ describe('Gone from your Pantry (Shopping add sheet)', () => {
       name: 'Spinach, expired 1d ago',
     });
     expect(spinach).toHaveTextContent('Spinach');
-    expect(spinach).toHaveTextContent(/◷\s?expired · 1d ago/);
+    expect(spinach).toHaveTextContent(/expired · 1d ago/);
     const eggs = within(dialog).getByRole('button', {
       name: 'Eggs, used up 2d ago',
     });
-    expect(eggs).toHaveTextContent(/→\s?used up · 2d ago/);
+    expect(eggs).toHaveTextContent(/used up · 2d ago/);
     const flour = within(dialog).getByRole('button', {
       name: 'Flour, missing staple',
     });
-    expect(flour).toHaveTextContent(/★\s?staple/);
+    expect(flour).toHaveTextContent(/staple/);
     expect(flour).not.toHaveTextContent(/·/);
+    for (const tile of [spinach, eggs, flour]) {
+      const icon = tile.querySelector('[aria-hidden="true"]');
+      expect(icon).not.toBeNull();
+      expect(icon!.querySelector('svg')).not.toBeNull();
+      expect(icon!.textContent).toBe('');
+    }
   });
 
   it('selects the Ingredient on tap, showing the token and the amount panel, and sends no dismissal', async () => {
