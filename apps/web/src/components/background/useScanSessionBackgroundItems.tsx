@@ -7,7 +7,7 @@ import {
   useScanSession,
   type SessionScan,
 } from '../../lib/scanSession';
-import type { BackgroundItem, BackgroundStatus } from './backgroundItem';
+import type { BackgroundItem, BackgroundStatus } from '@/lib/backgroundItem';
 
 /** The Review overview, which already shows the Scan Session's cards, those still reading too. */
 const REVIEW_OVERVIEW = '/scan/review';

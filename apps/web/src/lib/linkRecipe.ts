@@ -1,4 +1,4 @@
-import type { BaseRecipeOption } from '../components/BaseRecipePicker';
+import type { BaseRecipeOption } from './baseRecipeOption';
 import { apiRequest } from './api';
 import type { FamilyRecipeDraft } from './familyRecipes';
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { RecipeReadKind } from '../../lib/recipeReads';
+import type { RecipeReadKind } from './recipeReads';
 
 /**
  * What kinds of item the background holds. Voice Notes are the first kind; the Scan Session (receipt or

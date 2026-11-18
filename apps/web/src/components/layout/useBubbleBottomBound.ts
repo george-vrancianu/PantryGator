@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react';
-import { BUBBLE_BOTTOM_VAR } from '../background/bubble/GatorBubble';
+import { BUBBLE_BOTTOM_VAR } from './bubbleVars';
 
 /**
  * Keeps the Gator bubble above a page's own fixed bottom bar (Scan Review's Save, a Catalog

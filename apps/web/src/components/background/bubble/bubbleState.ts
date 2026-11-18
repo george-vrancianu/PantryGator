@@ -1,4 +1,4 @@
-import { countBackground, type BackgroundItem } from '../backgroundItem';
+import { countBackground, type BackgroundItem } from '@/lib/backgroundItem';
 
 /** The bubble's four looks (handoff section 9.1). */
 export type BubbleState = 'reading' | 'someReady' | 'allDone' | 'couldNotRead';
