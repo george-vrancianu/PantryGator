@@ -159,6 +159,7 @@ export {
   CalendarIcon,
   CalendarDaysIcon,
   CreditIcon,
+  BoxIcon,
   SubItemIcon,
   TagIcon,
   PulseIcon,

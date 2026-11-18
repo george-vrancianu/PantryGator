@@ -67,6 +67,35 @@ describe('useRowHint', () => {
     expect(localStorage.getItem(KEY)).toBeNull();
   });
 
+  it('gives the space back when a gesture skips the hint before it shows', () => {
+    const { result } = setup();
+    expect(result.current.reserve).toBe(true);
+    act(() => result.current.onLearned());
+    act(() => {
+      window.dispatchEvent(new Event('pointerup'));
+    });
+    expect(result.current.reserve).toBe(false);
+    act(() => vi.advanceTimersByTime(5000));
+    expect(result.current.visible).toBe(false);
+    expect(result.current.reserve).toBe(false);
+  });
+
+  it.each(['pointerup', 'pointercancel'])(
+    'keeps the space while the gesture that learned is still down, and gives it back on %s',
+    (end) => {
+      const { result } = setup();
+      act(() => vi.advanceTimersByTime(300));
+      act(() => result.current.onLearned());
+      expect(result.current.reserve).toBe(true);
+      act(() => vi.advanceTimersByTime(5000));
+      expect(result.current.reserve).toBe(true);
+      act(() => {
+        window.dispatchEvent(new Event(end));
+      });
+      expect(result.current.reserve).toBe(false);
+    },
+  );
+
   it('reserves the pill space while the list has rows, before the hint and after it fades', () => {
     const { result, rerender } = setup(false);
     expect(result.current.reserve).toBe(false);

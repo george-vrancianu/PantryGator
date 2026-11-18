@@ -55,7 +55,7 @@ export function SetupReviewPage() {
   };
 
   return (
-    <IntroLook>
+    <IntroLook ground="canopy">
       <ReviewPage
         key={scan.id}
         settings={{

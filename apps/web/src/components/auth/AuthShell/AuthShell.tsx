@@ -1,14 +1,14 @@
 import {
   Box,
-  CenteredLayout,
+  canopy,
   Link,
   Stack,
   Typography,
   BrandLockup,
-  IntroLook,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { IntroCanopy } from '@/components/intro/IntroCanopy/IntroCanopy';
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
 
 type Props = {
@@ -23,7 +23,7 @@ type Props = {
   children: ReactNode;
 };
 
-/** Frame shared by Log in and sign-up. Part of the Intro, so always in the light look. */
+/** Frame shared by Log in and sign-up. Part of the Intro: the Canopy with the back link, language switch and brand lockup, then the sheet with the form, always in the light look. */
 export function AuthShell({
   title,
   subtitle,
@@ -34,8 +34,9 @@ export function AuthShell({
 }: Props) {
   const { t } = useTranslation('common');
   return (
-    <IntroLook>
-      <CenteredLayout>
+    <IntroCanopy
+      maxWidth={420}
+      top={
         <Stack spacing={3}>
           {back || languageSwitcher ? (
             <Box
@@ -46,7 +47,11 @@ export function AuthShell({
                 gap: 2,
               }}
             >
-              {back ? <Link href={backHref}>{back}</Link> : null}
+              {back ? (
+                <Link href={backHref} sx={{ color: canopy.ink }}>
+                  {back}
+                </Link>
+              ) : null}
               {languageSwitcher ? (
                 <Box sx={{ ml: 'auto' }}>
                   <LanguageSwitcher />
@@ -55,15 +60,18 @@ export function AuthShell({
             </Box>
           ) : null}
           <BrandLockup name={t('appName')} />
-          <Stack spacing={0.5}>
-            <Typography variant="h1">{title}</Typography>
-            <Typography variant="meta" color="text.secondary">
-              {subtitle}
-            </Typography>
-          </Stack>
-          {children}
         </Stack>
-      </CenteredLayout>
-    </IntroLook>
+      }
+    >
+      <Stack spacing={3}>
+        <Stack spacing={0.5}>
+          <Typography variant="h1">{title}</Typography>
+          <Typography variant="meta" color="text.secondary">
+            {subtitle}
+          </Typography>
+        </Stack>
+        {children}
+      </Stack>
+    </IntroCanopy>
   );
 }

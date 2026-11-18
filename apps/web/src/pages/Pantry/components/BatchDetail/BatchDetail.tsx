@@ -31,6 +31,8 @@ type Props = {
   /** The first-use peek, for the first Batch of the first expanded roll-up. */
   peek: boolean;
   onLearned: () => void;
+  /** Another Batch of this Ingredient has the same amount: the screen-reader name adds the expiry. */
+  sameAmount?: boolean;
 };
 
 const ellipsis = {
@@ -52,6 +54,7 @@ export function BatchDetail({
   onLeft,
   peek,
   onLearned,
+  sameAmount = false,
 }: Props) {
   const { t, i18n } = useTranslation('pantry');
   const toast = useToast();
@@ -77,7 +80,9 @@ export function BatchDetail({
       ? t('batch.noDate')
       : fullDate(batch.expiryDate, today, i18n.language);
   // "500 g Greek yogurt": names this Batch, not just its Ingredient, e.g. in "Remove 500 g Greek yogurt?".
-  const name = amount ? `${amount} ${batch.name}` : batch.name;
+  const named = amount ? `${amount} ${batch.name}` : batch.name;
+  // Two Batches with the same amount and name would sound alike to a screen reader: add the expiry.
+  const name = sameAmount ? t('batch.named', { name: named, expires }) : named;
   const labels = useSwipeRowLabels(name, 'pantry', { hold: true });
 
   return (

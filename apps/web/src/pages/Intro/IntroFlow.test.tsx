@@ -162,6 +162,20 @@ describe('the Intro flow', () => {
   });
 
   describe('Languages', () => {
+    it('stands on the Canopy ground, with the title on the sheet', async () => {
+      stubFlow();
+      renderWithProviders(<App />, { route: '/intro/languages' });
+
+      const title = await screen.findByRole('heading', {
+        name: 'Your languages',
+      });
+      expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
+      expect(title.closest('main')).not.toBeNull();
+      expect(
+        document.querySelector('[data-region="canopy"]'),
+      ).toHaveTextContent('PantryGator');
+    });
+
     it('preselects the phone language and says so', async () => {
       stubFlow({ phone: ['fr-FR', 'ro-RO'] });
       renderWithProviders(<App />, { route: '/intro/languages' });

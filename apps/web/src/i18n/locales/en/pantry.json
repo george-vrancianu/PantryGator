@@ -79,6 +79,7 @@
     "removeStaple": "Remove Staple"
   },
   "batch": {
+    "named": "{{name}}, {{expires}}",
     "noDate": "no date"
   },
   "edit": {

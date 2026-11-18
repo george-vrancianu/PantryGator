@@ -109,9 +109,9 @@ describe('Setup 1, Snap', () => {
     expect(where()).toBe('/intro/say-it');
   });
 
-  it('is on the olive ground in the light look', async () => {
+  it('is on the Canopy ground in the light look', async () => {
     await openSnap();
-    expect(document.querySelector('[data-ground="olive"]')).not.toBeNull();
+    expect(document.querySelector('[data-ground="canopy"]')).not.toBeNull();
     expect(document.querySelector('[data-ground="cream"]')).toBeNull();
     expect(document.querySelector('[data-theme="light"]')).not.toBeNull();
   });

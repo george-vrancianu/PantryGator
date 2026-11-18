@@ -1,34 +1,27 @@
-import { Box, Typography, palette } from '@pocket-pantry/ui';
+import { Box, canopy, Typography } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { IntroCanopyFrame } from '@/components/intro/IntroCanopy/IntroCanopy';
 import { GatorBanner } from '@/components/gator/GatorBanner/GatorBanner';
 import { ReviewActionBar } from '@/components/review/ReviewActionBar/ReviewActionBar';
 import type { SetupLeave } from '../SetupLeave/SetupLeave';
 import { SetupTopRow } from '../SetupTopRow/SetupTopRow';
 
-/** The cream page frame of every Setup Review state (reading, failed, read): a phone-width column. */
+/** The page frame of every Setup Review state (reading, failed, read): the Canopy with the Setup top row (and the title) on it, then the sheet with the content. */
 export function SetupReviewFrame({
+  top,
   children,
   bottomRoom = false,
 }: {
+  top: ReactNode;
   children: ReactNode;
   /** Room under the content for the fixed action bar. */
   bottomRoom?: boolean;
 }) {
   return (
-    <Box
-      component="main"
-      sx={{
-        boxSizing: 'border-box',
-        maxWidth: 520,
-        mx: 'auto',
-        px: '20px',
-        pt: '40px',
-        pb: bottomRoom ? '120px' : '40px',
-      }}
-    >
+    <IntroCanopyFrame top={top} bottom={bottomRoom ? '120px' : '40px'}>
       {children}
-    </Box>
+    </IntroCanopyFrame>
   );
 }
 
@@ -74,21 +67,25 @@ export function SetupReviewView({
   // Read once: removing a line later must not rewrite what Gator said it spotted.
   const [count] = useState(spotted);
   return (
-    <SetupReviewFrame bottomRoom>
-      <SetupTopRow
-        back={{ label: tReview('title'), onClick: onBack }}
-        leave={leave}
-      />
-      <Box component="header" sx={{ pt: '20px', pb: '14px' }}>
-        <Typography variant="h2" component="h1">
-          {tReview('title')}
-        </Typography>
-        <Typography
-          sx={{ fontSize: 13, color: palette('text-secondary'), mt: '2px' }}
-        >
-          {subtitle}
-        </Typography>
-      </Box>
+    <SetupReviewFrame
+      bottomRoom
+      top={
+        <>
+          <SetupTopRow
+            back={{ label: tReview('title'), onClick: onBack }}
+            leave={leave}
+          />
+          <Box component="header" sx={{ pt: '20px' }}>
+            <Typography variant="h2" component="h1">
+              {tReview('title')}
+            </Typography>
+            <Typography sx={{ fontSize: 13, color: canopy.muted, mt: '2px' }}>
+              {subtitle}
+            </Typography>
+          </Box>
+        </>
+      }
+    >
       {count > 0 ? (
         <GatorBanner
           testId="setup-review-banner"

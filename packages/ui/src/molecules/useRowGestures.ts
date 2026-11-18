@@ -62,7 +62,7 @@ export type RemoveGestureOptions = SharedGestureOptions & {
    * has no hold: `pressing` and `armed` stay false.
    */
   onHold?: () => void;
-  /** A swipe was released in zone 1 or 2, or a hold armed: the Member has used a gesture. */
+  /** A swipe reached zone 1, or a hold armed: the Member has used a gesture. */
   onLearned?: () => void;
   /** Fraction of the row width that starts zone 2. */
   deleteFraction?: number;
@@ -147,6 +147,8 @@ type Press = {
   zone: SwipeZone;
   dx: number;
   armed: boolean;
+  /** `onLearned` already fired for this press. */
+  learned: boolean;
 };
 
 export type RowGestureBind = {
@@ -265,6 +267,7 @@ export function useRowGestures(options: RowGestureOptions): RowGestures {
         zone: 0,
         dx: 0,
         armed: false,
+        learned: false,
       };
       press.current = current;
       if (o.mode === 'toggle' || !o.onHold) return;
@@ -327,6 +330,10 @@ export function useRowGestures(options: RowGestureOptions): RowGestures {
         if (zone === 1 && current.zone === 0) vibrate(HAPTIC_REVEAL);
         if (zone === 2) vibrate(HAPTIC_DELETE_LINE);
         current.zone = zone;
+        if (zone > 0 && !toggle && !current.learned) {
+          current.learned = true;
+          o.onLearned?.();
+        }
       }
       current.dx = dx;
       const x = toggle
@@ -344,7 +351,6 @@ export function useRowGestures(options: RowGestureOptions): RowGestures {
       if (!current.dragging) return;
       swallowNextClick();
       const { options: o } = latest.current;
-      if (current.zone > 0 && o.mode !== 'toggle') o.onLearned?.();
       try {
         event.currentTarget.releasePointerCapture?.(event.pointerId);
       } catch {

@@ -2,7 +2,9 @@ import {
   Alert,
   bodyFont,
   Box,
+  BoxIcon,
   radius,
+  Spinner,
   Typography,
   useForcedThemeColor,
   visuallyHidden,
@@ -465,6 +467,7 @@ export function CameraOverlay({
               pointerEvents: 'auto',
             }}
           >
+            <BoxIcon size={16} />
             {t('addsToPantry')}
             <Box
               component="button"
@@ -522,8 +525,12 @@ export function CameraOverlay({
               fontSize: 13,
               fontWeight: 600,
               whiteSpace: 'nowrap',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
             }}
           >
+            <Spinner size={14} />
             {t('readingLabel')}
           </FeedBox>
         ) : null}
