@@ -13,9 +13,9 @@ import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
-import en from '../../i18n/locales/en/voice.json';
-import ro from '../../i18n/locales/ro/voice.json';
-import da from '../../i18n/locales/da/voice.json';
+import en from '@/i18n/locales/en/voice.json';
+import ro from '@/i18n/locales/ro/voice.json';
+import da from '@/i18n/locales/da/voice.json';
 
 const bread = voiceIngredient('ing-bread', 'Bread');
 const milk = voiceIngredient('ing-milk', 'Milk');

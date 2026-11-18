@@ -22,8 +22,8 @@ import type { CameraMode } from '@/lib/cameraMode';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { holdLongEnough, pressDown, useVoiceTimers } from '@/test/voiceHold';
 import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
-import ro from '../../i18n/locales/ro/background.json';
-import da from '../../i18n/locales/da/background.json';
+import ro from '@/i18n/locales/ro/background.json';
+import da from '@/i18n/locales/da/background.json';
 
 /** Puts a Scan in the Scan Session as the camera would: queued, started and, unless told otherwise, read. */
 const seed = (
