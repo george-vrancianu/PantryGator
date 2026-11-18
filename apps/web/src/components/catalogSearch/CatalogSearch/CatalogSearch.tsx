@@ -37,6 +37,9 @@ import { SearchResultRow } from '../SearchResultRow/SearchResultRow';
 import { SearchSkeleton } from '../SearchSkeleton/SearchSkeleton';
 import { UseTypedRow } from '../UseTypedRow/UseTypedRow';
 
+/** How tall the results popover grows before it scrolls, inline or contained. */
+const POPOVER_MAX_HEIGHT = 360;
+
 export type CatalogSearchProps = {
   onSelect: (ingredient: CatalogSearchResult) => void;
   autoFocus?: boolean;
@@ -360,6 +363,7 @@ export function CatalogSearch({
     border: `1px solid ${palette('pp-line')}`,
     backgroundColor: palette('background-paper'),
   };
+  const floatingSurface = { ...cardSurface, boxShadow: shadow.float };
   const popoverSx =
     inline && !row
       ? {
@@ -368,10 +372,9 @@ export function CatalogSearch({
           right: 0,
           top: '100%',
           zIndex: 5,
-          maxHeight: 360,
+          maxHeight: POPOVER_MAX_HEIGHT,
           overflowY: 'auto' as const,
-          ...cardSurface,
-          boxShadow: shadow.float,
+          ...floatingSurface,
         }
       : null;
   const popoverOpen = inline && (emptyShown || panelVisible);
@@ -379,8 +382,7 @@ export function CatalogSearch({
     width: anchor?.offsetWidth,
     maxWidth: '100%',
     boxSizing: 'border-box' as const,
-    ...cardSurface,
-    boxShadow: shadow.float,
+    ...floatingSurface,
   };
 
   const popoverContent = (
@@ -582,7 +584,7 @@ export function CatalogSearch({
           anchorEl={anchor}
           placement="bottom-start"
           // As tall as the inline popover was; the Popper is the only scroller.
-          contain={{ inset: viewportInset, maxHeight: 360 }}
+          contain={{ inset: viewportInset, maxHeight: POPOVER_MAX_HEIGHT }}
         >
           <Box
             sx={rowPopoverSx}

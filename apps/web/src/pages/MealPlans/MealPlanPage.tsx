@@ -48,7 +48,8 @@ function fillMessage(t: TFunction, { filled, emptyForAllergies }: FillResult) {
       ? t('mealPlans:fill.filled', { count: filled })
       : t('mealPlans:fill.nothing');
   return emptyForAllergies > 0
-    ? t('mealPlans:fill.withAllergies', {
+    ? // `withAllergies` is just "{{filled}} {{empty}}" in every locale; it is a key so a locale can reorder the two.
+      t('mealPlans:fill.withAllergies', {
         filled: first,
         empty: t('mealPlans:fill.emptyForAllergies', {
           count: emptyForAllergies,

@@ -3,6 +3,8 @@ export type FirstRecipeWay = {
   href: string;
   labelKey: string;
   linkLabelKey?: string;
+  /** The one way drawn as the filled button in the full empty state. */
+  emphasis?: 'primary';
 };
 
 /**
@@ -15,6 +17,7 @@ export const FIRST_RECIPE_WAYS: readonly FirstRecipeWay[] = [
     id: 'explore',
     href: '/recipes/explore',
     labelKey: 'emptyFamily.explore',
+    emphasis: 'primary',
   },
   {
     id: 'fromLink',

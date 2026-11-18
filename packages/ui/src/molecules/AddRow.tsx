@@ -37,6 +37,8 @@ export function AddRow({ label, onClick, glyph = '+' }: AddRowProps) {
         textAlign: 'start',
         color: palette('pp-accent'),
         typography: 'body2',
+        // Pinned: the Admin Steps add-rows used 14.5px before this was shared.
+        fontSize: 14.5,
         fontWeight: 700,
         '&:hover': { bgcolor: palette('pp-subtle') },
       }}

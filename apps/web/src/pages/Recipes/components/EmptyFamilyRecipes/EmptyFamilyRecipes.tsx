@@ -125,7 +125,7 @@ export function EmptyFamilyRecipes({
       </Box>
       <Stack spacing={1} useFlexGap sx={{ mt: '20px', mb: '24px' }}>
         {FIRST_RECIPE_WAYS.map((way) =>
-          way.id === 'explore' ? (
+          way.emphasis === 'primary' ? (
             <Button
               key={way.id}
               variant="primary"
