@@ -75,10 +75,21 @@ const GROUP_HINTS = {
     'useGuideRect',
   ],
   scan: ['BarcodeLookupNotes'],
+  // The app shell (modules used by one shell file nest under it), the Gator pieces and the Voice Note host.
+  layout: ['AppDock', 'AppLayout', 'AppUiProvider', 'FullPageSpinner'],
+  gator: ['GatorBanner', 'GatorBubblePanel', 'EmptyPotPanel'],
+  voice: ['VoiceNote'],
 };
 // Feature groups stay together (ADR 0044): every module under components/<group>/, sub-groups
 // included, is placed within its own folder, never moved down into a page or up to another group.
-const FEATURE_GROUPS = ['catalogSearch', 'recipeEditor', 'scan', 'camera'];
+const FEATURE_GROUPS = [
+  'catalogSearch',
+  'recipeEditor',
+  'scan',
+  'camera',
+  'voice',
+  'background',
+];
 // Modules that stay where they are: the importer scan sees one page area (or one shared module) but the
 // real users are wider (Customise reads the widget catalog beside the Dashboard registry).
 const STAYS = ['components/dashboard/widgetCatalog.ts'];

@@ -8,7 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EmptyPotPanel } from '@/components/EmptyPotPanel';
+import { EmptyPotPanel } from '@/components/gator/EmptyPotPanel/EmptyPotPanel';
 import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
 import { QuickViewSheet } from '../QuickViewSheet/QuickViewSheet';
 import type { useAddToFamily } from '@/lib/addToFamily';

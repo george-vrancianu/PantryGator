@@ -1,10 +1,10 @@
-import type { StorageLocation } from '../../lib/catalog';
+import type { StorageLocation } from '@/lib/catalog';
 import type {
   VoiceBatchRow,
   VoiceDefaultTarget,
   VoiceList,
   VoiceReviewAction,
-} from '../../lib/voice';
+} from '@/lib/voice';
 
 /** The verb a Voice Action shows on its row; also the key of its `review.op.*` string. */
 export type VoiceActionKind =

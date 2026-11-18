@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { VoiceReviewAction } from '../../lib/voice';
+import type { VoiceReviewAction } from '@/lib/voice';
 import { groupsOf } from './reviewModel';
 
 const act = (id: string, target: 'shopping' | 'pantry') =>

@@ -3,7 +3,7 @@ import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderWithProviders } from '@/test/render';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '../AppLayout/AppLayout';
 import { TEXTURES, type TextureName } from '../canopyTexture';
 
 /**

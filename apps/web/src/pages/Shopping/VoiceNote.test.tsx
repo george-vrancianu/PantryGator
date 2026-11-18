@@ -31,7 +31,7 @@ import {
   useVoiceTimers,
 } from '@/test/voiceHold';
 import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
 import { Route, Routes } from 'react-router-dom';
 import { scanLanguagePreference } from '@/test/scan';
 import { stubMotion } from '@/test/viewport';

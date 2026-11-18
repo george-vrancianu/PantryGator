@@ -14,8 +14,8 @@ import {
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useShowsDockMic } from '@/components/VoiceNote';
-import { useMicTeach } from '@/components/voice/VoiceHost';
+import { useShowsDockMic } from '@/components/voice/VoiceNote/VoiceNote';
+import { useMicTeach } from '@/components/voice/VoiceHost/VoiceHost';
 import { LOCATIONS, type StorageLocation } from '@/lib/catalog';
 import { FILTERS } from '@/lib/pantry';
 import { useShoppingList } from '@/lib/shopping';

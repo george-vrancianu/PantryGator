@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { LayoutKind } from '../../lib/layoutKind';
+import type { LayoutKind } from '@/lib/layoutKind';
 
 /** `leaving` is the held outgoing page, `entering` the new one while the hold lasts, `idle` otherwise. */
 export type PagePhase = 'idle' | 'entering' | 'leaving';

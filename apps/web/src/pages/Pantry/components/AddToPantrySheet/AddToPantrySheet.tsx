@@ -16,8 +16,8 @@ import { useDeleteBatch, type Batch } from '@/lib/pantry';
 import { useNavigate } from 'react-router-dom';
 import type { StorageLocation } from '@/lib/catalog';
 import type { AddBatchStart } from '../../hooks/useAddBatchForm';
-import { useShowsDockMic } from '@/components/VoiceNote';
-import { useMicTeach } from '@/components/voice/VoiceHost';
+import { useShowsDockMic } from '@/components/voice/VoiceNote/VoiceNote';
+import { useMicTeach } from '@/components/voice/VoiceHost/VoiceHost';
 import { AddBatchForm, type SubmitState } from '../AddBatchForm/AddBatchForm';
 
 type Props = {

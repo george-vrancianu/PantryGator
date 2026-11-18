@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { makeScrollable, pull, scrollSheetTo } from '@/test/scroll';
 import { stubMatchMedia } from '@/test/viewport';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '../AppLayout/AppLayout';
 import { Screen } from '../Screen/Screen';
 import { TRANSITION_MS } from '../timing';
 

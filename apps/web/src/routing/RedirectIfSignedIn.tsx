@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSession } from '@/lib/auth';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullPageSpinner } from '@/components/layout/FullPageSpinner/FullPageSpinner';
 
 /**
  * Route guard for Log in and sign-up: Members who are already signed in go home, or back to the page a

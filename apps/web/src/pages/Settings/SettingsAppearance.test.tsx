@@ -1,7 +1,7 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApplyMemberTheme } from '@/components/ApplyMemberTheme';
+import { ApplyMemberTheme } from '@/components/layout/AppLayout/ApplyMemberTheme/ApplyMemberTheme';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { stubSystemScheme } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';

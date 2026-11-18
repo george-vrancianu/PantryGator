@@ -4,7 +4,7 @@ import type {
   VoiceDefaultTarget,
   VoiceList,
   VoiceReviewAction,
-} from '../../lib/voice';
+} from '@/lib/voice';
 import { displayName, leadingList } from './reviewModel';
 
 /** The longest the result names skipped actions before counting the rest. */

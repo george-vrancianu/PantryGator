@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { CreditsSection } from './CreditsSection';
-import { useRefreshCreditsOnReads } from '@/components/background/useRefreshCreditsOnReads';
+import { useRefreshCreditsOnReads } from '@/components/backgroundRead/useRefreshCreditsOnReads';
 import { recipeReads } from '@/lib/recipeReads';
 
 /** The Credits panel with the app layout's refresh-on-read hook mounted beside it. */

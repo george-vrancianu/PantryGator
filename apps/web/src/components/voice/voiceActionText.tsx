@@ -1,10 +1,10 @@
 import { Box, palette } from '@pocket-pantry/ui';
 import { Fragment, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatAmount, formatRowAmount } from '../../lib/amount';
-import { fullDate } from '../../lib/pantry';
-import { useToday } from '../../lib/useToday';
-import type { VoiceBatchRow, VoiceReviewAction } from '../../lib/voice';
+import { formatAmount, formatRowAmount } from '@/lib/amount';
+import { fullDate } from '@/lib/pantry';
+import { useToday } from '@/lib/useToday';
+import type { VoiceBatchRow, VoiceReviewAction } from '@/lib/voice';
 import {
   displayName,
   effectiveExpiry,

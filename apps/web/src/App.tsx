@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { AppLayout } from './components/AppLayout';
+import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
 import { RedirectIfSignedIn } from '@/routing/RedirectIfSignedIn';
 import { RequireAdmin } from '@/routing/RequireAdmin';
 import { IntroGate } from '@/routing/IntroGate';

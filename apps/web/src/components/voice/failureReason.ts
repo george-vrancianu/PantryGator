@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
-import { translateErrorCode } from '../../i18n/translateApiError';
-import type { useVoiceNoteState } from '../../lib/voiceNote';
+import { translateErrorCode } from '@/i18n/translateApiError';
+import type { useVoiceNoteState } from '@/lib/voiceNote';
 
 type State = ReturnType<typeof useVoiceNoteState>;
 

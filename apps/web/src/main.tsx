@@ -1,11 +1,11 @@
-import { AppUiProvider } from './components/AppUiProvider';
+import { AppUiProvider } from '@/components/layout/AppUiProvider/AppUiProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
-import { VoiceNotices } from './components/voice/VoiceNotices';
+import { VoiceNotices } from '@/components/voice/VoiceNotices/VoiceNotices';
 import { createI18n } from './i18n';
 import { RouterLink } from './lib/RouterLink';
 

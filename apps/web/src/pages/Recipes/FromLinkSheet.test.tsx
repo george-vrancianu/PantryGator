@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
 import { useSignOut } from '@/lib/auth';
 import { linkReadsOf, recipeReads } from '@/lib/recipeReads';
 import type { FamilyRecipeEdit } from '@/lib/familyRecipes';
