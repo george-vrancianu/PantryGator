@@ -35,7 +35,7 @@ import { RecipesPage } from './RecipesPage';
  *   `button` named "Remove Tag {name}" that removes the Tag; there is no "Clear" chip.
  * - The button opens a `dialog` named "Filter by Tags": a combobox of the same name, an always-open
  *   `listbox` of `option`s grouped by Tag Group (Your Tags first) with each unpicked option's count
- *   in an element named "{n} Recipes", a "Clear" button (disabled with no Tag picked), a "Show {n}
+ *   in an element named "{n} Recipes", a "Clear" button (only while a Tag is picked), a "Show {n}
  *   Recipes" button (or "No Recipes match") and a "Close" button. Picks apply to the list at once.
  * - A visually hidden polite `status` reads "{names} selected. {n} Recipes match." while Tags are picked.
  * - With Tags picked and no Recipe left, the page says "No Recipes have all {n} Tags" and offers
@@ -757,7 +757,7 @@ describe('RecipesPage', () => {
     const option = (dialog: HTMLElement, name: string) =>
       within(dialog).getByRole('option', { name: new RegExp(`^${name}`) });
 
-    it('opens a dialog with the AND hint, the Tag field, Clear disabled and "Show n Recipes"', async () => {
+    it('opens a dialog with the AND hint, the Tag field, no Clear and "Show n Recipes"', async () => {
       setup(answer);
       await findRow('Lasagne');
       const dialog = await openTags();
@@ -769,9 +769,10 @@ describe('RecipesPage', () => {
       expect(
         within(dialog).getByPlaceholderText('Type to find a Tag'),
       ).toBeInTheDocument();
+      // Nothing to clear yet: the footer holds only "Show n Recipes".
       expect(
-        within(dialog).getByRole('button', { name: 'Clear' }),
-      ).toBeDisabled();
+        within(dialog).queryByRole('button', { name: 'Clear' }),
+      ).toBeNull();
       expect(
         within(dialog).getByRole('button', { name: 'Show 6 Recipes' }),
       ).toBeInTheDocument();
@@ -901,8 +902,8 @@ describe('RecipesPage', () => {
       await waitFor(() => expect(lastQuery(calls).has('tagIds')).toBe(false));
       expect(screen.getByRole('dialog')).toBeInTheDocument();
       expect(
-        within(dialog).getByRole('button', { name: 'Clear' }),
-      ).toBeDisabled();
+        within(dialog).queryByRole('button', { name: 'Clear' }),
+      ).toBeNull();
     });
 
     it('matches while typing ignoring case and accents', async () => {
