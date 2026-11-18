@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import { useRef, type KeyboardEvent } from 'react';
-import { tagColours } from '../atoms/Tag';
+import { tagColours, type TagTone } from '../atoms/Tag';
 import { canopyFocusRing, focusRing } from '../theme/focusRing';
 import {
   bodyFont,
@@ -19,7 +19,7 @@ export type SegmentedTab<T extends string> = {
   /** A small badge inside the tab, e.g. "2". */
   badge?: string;
   /** `accent` for a count (the default), `urgent` for a "!" that needs attention. */
-  badgeTone?: 'accent' | 'urgent';
+  badgeTone?: Extract<TagTone, 'accent' | 'urgent'>;
   /** What screen readers hear in place of the badge, e.g. "2 to buy". */
   badgeLabel?: string;
   /** The tab's whole accessible name, when label plus badge should read differently, e.g. "Ingredients, 6". */

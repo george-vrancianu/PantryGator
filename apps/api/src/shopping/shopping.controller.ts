@@ -97,7 +97,7 @@ export class ShoppingController {
   @HttpCode(200)
   @ApiOperation({
     summary:
-      "Remove several Shopping Items at once (Undo of an add); all or none. Ids that are already gone or not on the Family's list are ignored, never an error",
+      "Remove several Shopping Items in one transaction (Undo of an add). Ids already gone or not on the Family's active list are ignored.",
   })
   async removeMany(
     @CurrentUser() member: CurrentUserValue,

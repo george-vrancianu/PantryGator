@@ -35,7 +35,7 @@ export function useRunningLowToggle() {
       send(ingredientId, on);
       toast.show(
         t(on ? 'toast.low.on' : 'toast.low.off', { name }),
-        undo ? undoOptions(() => send(ingredientId, !on)) : undefined,
+        undo ? undoOptions(() => send(ingredientId, !on)) : { polite: true },
       );
     },
     isPending: save.isPending,

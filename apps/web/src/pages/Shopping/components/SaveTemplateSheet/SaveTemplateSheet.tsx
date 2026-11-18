@@ -95,6 +95,7 @@ function SaveForm({
         onClose();
         toast.show(t('templates:save.saved', { name: trimmed }), {
           duration: SHOPPING_TOAST_MS,
+          polite: true,
           action: {
             label: t('templates:save.edit'),
             onClick: () => navigate(`/shopping/templates/${created.id}`),
