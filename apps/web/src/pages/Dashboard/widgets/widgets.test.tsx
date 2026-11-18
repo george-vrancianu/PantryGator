@@ -594,7 +594,7 @@ describe('CookTonightWidget', () => {
     expect(
       await screen.findAllByRole('link', { name: /Base 2|r2/ }),
     ).not.toHaveLength(0);
-    expect(screen.queryByText(/hidden by your Allergies/)).toBeNull();
+    expect(screen.queryByText(/^\d+ Recipes? hidden/)).toBeNull();
     const lastCookTonight = calls
       .filter((call) => call.key === 'GET /api/recipes/cook-tonight')
       .at(-1)!;

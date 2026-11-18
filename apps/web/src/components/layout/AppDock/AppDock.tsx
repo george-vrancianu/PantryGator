@@ -13,7 +13,10 @@ import { useTranslation } from 'react-i18next';
 import type { DockState } from '@/lib/dockState';
 import { VOICE_LAYER } from '@/lib/voicePlacement';
 import { useShowsDockMic } from '@/components/voice/VoiceNote/VoiceNote';
-import { MicTeachCallout } from '@/components/voice/MicTeachCallout/MicTeachCallout';
+import {
+  MicTeachAnnouncement,
+  MicTeachCallout,
+} from '@/components/voice/MicTeachCallout/MicTeachCallout';
 import {
   useDockRaised,
   useMicTeach,
@@ -65,6 +68,7 @@ export function AppDock({ activeKey, teach, cameraHref = '/scan' }: Props) {
   ];
   return (
     <>
+      <MicTeachAnnouncement teaching={hint} />
       {hint ? <MicTeachCallout onDone={micTeach.stop} /> : null}
       <Dock
         label={t('label')}
