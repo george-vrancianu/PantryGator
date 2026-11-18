@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  CloseIcon,
-  Sheet,
-  Stack,
-  Typography,
-  tokens,
-} from '@pocket-pantry/ui';
+import { Box, Sheet, tokens } from '@pocket-pantry/ui';
 import { useMemo, useRef, type Ref, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -80,46 +72,26 @@ export function ExpirySheet({
       onClose={onClose}
       initialFocus={quickPick}
       onExited={onExited}
-      label={title}
+      title={title}
+      subtitle={context}
       size="content"
-      header={
-        <Box sx={{ px: 3, pt: 2, pb: 1.5 }}>
-          <Typography component="h2" variant="h3">
-            {title}
-          </Typography>
-          <Typography variant="meta" color="text.secondary" sx={{ mt: '3px' }}>
-            {context}
-          </Typography>
-          <Readout
-            text={
-              value === null
-                ? null
-                : dateAndRelativeDay(value, today, i18n.language)
-            }
-            tag={range ? null : tagFor(value)}
-          />
-        </Box>
-      }
-      footer={
-        <Stack direction="row" spacing={1.25} sx={{ px: 3, py: 1.5 }}>
-          {range ? null : (
-            <Button
-              type="button"
-              variant="ghost"
-              aria-pressed={value === null}
-              startIcon={<CloseIcon size={16} strokeWidth={2.4} />}
-              onClick={() => onChange(null)}
-              sx={{ flex: 'none', whiteSpace: 'nowrap', height: 52 }}
-            >
-              {t('picker.clear')}
-            </Button>
-          )}
-          <Button type="button" onClick={onClose} sx={{ flex: 1 }}>
-            {t('picker.done')}
-          </Button>
-        </Stack>
+      primary={{ label: t('picker.done'), onClick: onClose }}
+      secondary={
+        range
+          ? undefined
+          : { label: t('picker.clear'), onClick: () => onChange(null) }
       }
     >
+      <Box sx={{ px: 3, pt: 0.5 }}>
+        <Readout
+          text={
+            value === null
+              ? null
+              : dateAndRelativeDay(value, today, i18n.language)
+          }
+          tag={range ? null : tagFor(value)}
+        />
+      </Box>
       <SheetBody
         quickPicks={quickPicks}
         value={value}
@@ -189,7 +161,6 @@ function Readout({
     <Box
       role="status"
       sx={{
-        mt: 1.5,
         minHeight: 22,
         display: 'flex',
         alignItems: 'center',

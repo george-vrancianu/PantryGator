@@ -1,9 +1,8 @@
-import { Alert, Button, Stack, TextField } from '@pocket-pantry/ui';
-import { useId, useRef } from 'react';
+import { Alert, Stack, TextField } from '@pocket-pantry/ui';
+import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExpiryField, expiryContext } from '../../../components/ExpiryPicker';
 import { LocationToggle } from '../../../components/LocationToggle';
-import { RemoveLink } from '../../../components/RemoveLink';
 import type { Batch, BatchEdit } from '../../../lib/pantry';
 import { useEditBatchForm } from '../hooks/useEditBatchForm';
 import { BatchAmountField } from './BatchAmountField';
@@ -11,20 +10,35 @@ import { BatchAmountField } from './BatchAmountField';
 type Props = {
   batch: Batch;
   onSaved: (edit: BatchEdit) => void;
-  onCancel: () => void;
-  /** The "Remove from Pantry" link under the buttons. */
-  onRemove: () => void;
+  /** The form's id: the host Sheet's primary points at it with `form=`. */
+  formId: string;
+  /** Told what the host's Save shows and whether it can be pressed. */
+  onSubmitChange: (submit: EditSubmitState) => void;
 };
 
-export function EditBatchForm({ batch, onSaved, onCancel, onRemove }: Props) {
+/** What the Sheet's Save button says, and whether it can be pressed. */
+export type EditSubmitState = { label: string; disabled: boolean };
+
+export function EditBatchForm({
+  batch,
+  onSaved,
+  formId,
+  onSubmitChange,
+}: Props) {
   const { t, i18n } = useTranslation('pantry');
   const form = useEditBatchForm(batch, { onSaved });
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
+  const label = form.saving ? t('form.saving') : t('edit.save');
+  const disabled = !form.canSave;
+  useEffect(() => {
+    onSubmitChange({ label, disabled });
+  }, [label, disabled, onSubmitChange]);
 
   return (
     <Stack
       component="form"
+      id={formId}
       ref={formRef}
       spacing={2}
       onSubmit={form.submit}
@@ -73,22 +87,6 @@ export function EditBatchForm({ batch, onSaved, onCancel, onRemove }: Props) {
         slotProps={{ htmlInput: { maxLength: 200 } }}
       />
       {form.error ? <Alert>{form.error}</Alert> : null}
-      <Stack direction="row" spacing={1}>
-        <Button type="submit" disabled={!form.canSave}>
-          {form.saving ? t('form.saving') : t('edit.save')}
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          sx={{ height: 52 }}
-          onClick={onCancel}
-        >
-          {t('form.cancel')}
-        </Button>
-      </Stack>
-      <RemoveLink onClick={onRemove}>
-        {t('common:edit.removeFromPantry')}
-      </RemoveLink>
     </Stack>
   );
 }

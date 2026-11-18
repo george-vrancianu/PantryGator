@@ -1,15 +1,11 @@
 import {
   Box,
-  CloseIcon,
   displayType,
-  IconButton,
-  PulseIcon,
   radius,
   segOff,
   Sheet,
   tokens,
 } from '@pocket-pantry/ui';
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   MIN_BATCHES_FOR_SCORE,
@@ -28,180 +24,144 @@ type Props = {
   today: Date;
 };
 
-/** The Pantry health sheet. Its header carries the score; the Health To-dos come below. */
+/** The Pantry health sheet. The title row names it and carries the verdict; the score comes first in the body, then the Health To-dos. */
 export function HealthSheet({ open, onClose, state, today }: Props) {
   const { health, batchCount } = state;
   const { t } = useTranslation('dashboard');
-  const closeButton = useRef<HTMLButtonElement>(null);
   const missing = MIN_BATCHES_FOR_SCORE - batchCount;
 
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      initialFocus={closeButton}
-      label={t('health.title')}
-      header={
+      title={t('health.title')}
+      subtitle={
+        health.scored
+          ? t(`health.verdict.${health.verdict}`)
+          : t('health.notEnough')
+      }
+    >
+      <Box
+        sx={{
+          p: '6px 18px 14px',
+          borderBottom: `1px solid ${tokens.color.line}`,
+        }}
+      >
         <Box
           sx={{
-            p: '6px 18px 14px',
-            borderBottom: `1px solid ${tokens.color.line}`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box
+            component="span"
+            sx={{
+              flex: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <HealthDial
+              score={health.scored ? health.total : null}
+              tone="sheet"
+            />
+            {health.scored ? (
               <Box
+                component="span"
+                data-testid="health-score"
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: 700,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
                   color: tokens.color.muted,
                 }}
               >
-                <PulseIcon size={14} />
-                {t('health.title')}
+                <ScoreOf total={health.total} />
               </Box>
-              <Box
-                data-testid="health-sheet-verdict"
-                sx={{ ...displayType, fontSize: 25, lineHeight: 1.1 }}
-              >
-                {health.scored
-                  ? t(`health.verdict.${health.verdict}`)
-                  : t('health.notEnough')}
-              </Box>
-            </Box>
-            <IconButton
-              ref={closeButton}
-              label={t('health.close')}
-              tone="neutral"
-              size={34}
-              onClick={onClose}
-            >
-              <CloseIcon size={16} />
-            </IconButton>
+            ) : null}
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              mt: '14px',
-            }}
-          >
+          {health.scored ? (
             <Box
-              component="span"
+              component="div"
               sx={{
-                flex: 'none',
+                flex: 1,
+                minWidth: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
-                gap: '6px',
+                gap: '8px',
               }}
             >
-              <HealthDial
-                score={health.scored ? health.total : null}
-                tone="sheet"
-              />
-              {health.scored ? (
+              {presentFactors(health).map(([factor, value]) => (
                 <Box
-                  component="span"
-                  data-testid="health-score"
+                  component="div"
+                  key={factor}
+                  data-factor={factor}
                   sx={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: tokens.color.muted,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    height: 14,
                   }}
                 >
-                  <ScoreOf total={health.total} />
-                </Box>
-              ) : null}
-            </Box>
-            {health.scored ? (
-              <Box
-                component="div"
-                sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
-                {presentFactors(health).map(([factor, value]) => (
                   <Box
-                    component="div"
-                    key={factor}
-                    data-factor={factor}
+                    component="span"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      height: 14,
+                      width: 58,
+                      flex: 'none',
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      color: tokens.color.muted,
+                    }}
+                  >
+                    {t(`health.factor.${factor}`)}
+                  </Box>
+                  <Box
+                    component="span"
+                    aria-hidden="true"
+                    sx={{
+                      flex: 1,
+                      height: 6,
+                      borderRadius: radius.tag,
+                      background: segOff,
+                      overflow: 'hidden',
                     }}
                   >
                     <Box
                       component="span"
+                      data-testid={`factor-bar-${factor}`}
                       sx={{
-                        width: 58,
-                        flex: 'none',
-                        fontSize: 11.5,
-                        fontWeight: 600,
-                        color: tokens.color.muted,
-                      }}
-                    >
-                      {t(`health.factor.${factor}`)}
-                    </Box>
-                    <Box
-                      component="span"
-                      aria-hidden="true"
-                      sx={{
-                        flex: 1,
-                        height: 6,
+                        display: 'block',
+                        height: '100%',
+                        width: `${value}%`,
                         borderRadius: radius.tag,
-                        background: segOff,
-                        overflow: 'hidden',
+                        bgcolor: VERDICT_COLOR[verdictOf(value)],
                       }}
-                    >
-                      <Box
-                        component="span"
-                        data-testid={`factor-bar-${factor}`}
-                        sx={{
-                          display: 'block',
-                          height: '100%',
-                          width: `${value}%`,
-                          borderRadius: radius.tag,
-                          bgcolor: VERDICT_COLOR[verdictOf(value)],
-                        }}
-                      />
-                    </Box>
-                    <Box
-                      component="span"
-                      sx={{
-                        width: 26,
-                        flex: 'none',
-                        textAlign: 'right',
-                        ...displayType,
-                        fontSize: 12.5,
-                      }}
-                    >
-                      {value}
-                    </Box>
+                    />
                   </Box>
-                ))}
-              </Box>
-            ) : (
-              <Box sx={{ flex: 1, minWidth: 0, ...displayType, fontSize: 15 }}>
-                {t('health.progress', { count: missing })}
-              </Box>
-            )}
-          </Box>
+                  <Box
+                    component="span"
+                    sx={{
+                      width: 26,
+                      flex: 'none',
+                      textAlign: 'right',
+                      ...displayType,
+                      fontSize: 12.5,
+                    }}
+                  >
+                    {value}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box sx={{ flex: 1, minWidth: 0, ...displayType, fontSize: 15 }}>
+              {t('health.progress', { count: missing })}
+            </Box>
+          )}
         </Box>
-      }
-    >
+      </Box>
       <HealthTodos state={state} today={today} />
     </Sheet>
   );
