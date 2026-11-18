@@ -12,9 +12,9 @@ import {
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IntroLook } from '../../components/IntroLook';
-import { useGatorAlt } from '../../lib/useGatorAlt';
-import { useIntro } from '../../lib/useIntro';
+import { IntroLook } from '@/components/IntroLook';
+import { useGatorAlt } from '@/lib/useGatorAlt';
+import { useIntro } from '@/lib/useIntro';
 
 /** One stat: the number big, what it counts below. Hidden by the page at 0. */
 function Tile({ count, label }: { count: number; label: string }) {

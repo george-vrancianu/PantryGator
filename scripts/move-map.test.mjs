@@ -64,6 +64,21 @@ test('known shared modules get the group the move tickets decided', () => {
   );
 });
 
+test('SetupCallout, used by Intro and voice, gets the intro group', () => {
+  const { rows } = run(
+    {
+      'components/Setup/SetupCallout.tsx': comp,
+      'pages/Intro/SnapPage.tsx': `import { X } from '../../components/Setup/SetupCallout';\n`,
+      'components/voice/MicTeachCallout.tsx': `import { X } from '../Setup/SetupCallout';\n`,
+    },
+    ['intro'],
+  );
+  assert.equal(
+    rows.get('components/Setup/SetupCallout.tsx').target,
+    'components/intro/SetupCallout/SetupCallout.tsx',
+  );
+});
+
 test('a component used by one page area moves down into that area', () => {
   const { rows } = run(
     {

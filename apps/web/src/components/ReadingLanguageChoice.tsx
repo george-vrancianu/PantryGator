@@ -1,8 +1,8 @@
+import { ChoiceRadioGroup } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { languageName } from '../lib/languageName';
 import { useMemberPreferences } from '../lib/settings';
 import type { ReadingLanguage } from '../lib/linkRecipe';
-import { ChoiceRadioGroup } from './ChoiceRadioGroup';
 
 /**
  * Which language a Recipe read from the web comes out in: the Member's Catalog Language (the

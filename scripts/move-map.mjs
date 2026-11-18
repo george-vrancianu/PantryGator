@@ -55,6 +55,7 @@ const GROUP_HINTS = {
   ],
   auth: ['AuthShell', 'LanguageSwitcher'],
   mealPlan: ['MealPlanPopover'],
+  intro: ['SetupCallout'],
   // The camera overlay, the Scan components it needs and its guide-rectangle hook leave the Scan page.
   'scan/camera': [
     'CameraOverlay',

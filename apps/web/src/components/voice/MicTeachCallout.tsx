@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { aboveMic, VOICE_LAYER } from '../../lib/voicePlacement';
 import { VOICE_BUTTON_ATTRIBUTE } from '../../lib/voiceFocus';
-import { SetupCallout } from '../Setup/SetupCallout';
+import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 
 /** How long the callout stays up when nobody touches anything, ms. */
 const MIC_TEACH_MS = 4800;

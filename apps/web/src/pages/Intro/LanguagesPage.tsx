@@ -1,9 +1,16 @@
-import { Button, Link, Stack, Typography } from '@pocket-pantry/ui';
+import {
+  Button,
+  ChoiceRadioGroup,
+  type Choice,
+  Link,
+  Stack,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { BrandLockup } from '../../components/BrandLockup';
-import { IntroLook } from '../../components/IntroLook';
-import { changeLocale, LOCALES, type Locale } from '../../i18n';
+import { BrandLockup } from '@/components/BrandLockup';
+import { IntroLook } from '@/components/IntroLook';
+import { changeLocale, LOCALES, type Locale } from '@/i18n/index';
 import {
   initialLanguagePicks,
   nextStep,
@@ -12,11 +19,7 @@ import {
   readLanguagePicks,
   writeLanguagePicks,
   type LanguagePicks,
-} from '../../lib/intro';
-import {
-  ChoiceRadioGroup,
-  type Choice,
-} from '../../components/ChoiceRadioGroup';
+} from '@/lib/intro';
 
 const SAME = 'same';
 type RowKey = 'spokenLanguage' | 'scanLanguage' | 'catalogLanguage';

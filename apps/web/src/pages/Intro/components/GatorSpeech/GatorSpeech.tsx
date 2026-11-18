@@ -1,6 +1,6 @@
 import { Box, Gator, radius, Typography } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { useGatorAlt } from '../../lib/useGatorAlt';
+import { useGatorAlt } from '@/lib/useGatorAlt';
 
 type Props = {
   children: ReactNode;
@@ -11,7 +11,7 @@ type Props = {
 };
 
 /** The talking Gator with a cream speech bubble, the lead of every olive Setup screen. */
-export function GatorBubble({ children, live = false, mt = '20px' }: Props) {
+export function GatorSpeech({ children, live = false, mt = '20px' }: Props) {
   const gatorAlt = useGatorAlt();
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mt }}>

@@ -16,9 +16,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CanopyTexture } from '@/components/layout/CanopyTexture/CanopyTexture';
-import { IntroLook } from '../../components/IntroLook';
-import { INTRO_PATHS } from '../../lib/intro';
-import { useGatorAlt } from '../../lib/useGatorAlt';
+import { IntroLook } from '@/components/IntroLook';
+import { INTRO_PATHS } from '@/lib/intro';
+import { useGatorAlt } from '@/lib/useGatorAlt';
 
 /** How far the sheet's top edge overlaps the Canopy (the board draws 74 under the sheet). */
 const UNDER_SHEET = 74;

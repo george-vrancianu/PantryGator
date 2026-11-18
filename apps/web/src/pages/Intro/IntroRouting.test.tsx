@@ -1,8 +1,8 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from '../../App';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { App } from '@/App';
+import { renderWithProviders, stubApi } from '@/test/render';
 
 type Options = { signedIn?: boolean; introDone?: boolean };
 
