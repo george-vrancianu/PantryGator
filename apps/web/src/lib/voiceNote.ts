@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import type { CatalogSearchResult, StorageLocation, Unit } from './catalog';
 import type { ScanLanguage } from '../i18n/resources';
 import { ApiError } from './api';
-import { nextBackgroundOrder } from '../components/background/backgroundItem';
+import { nextBackgroundOrder } from './backgroundItem';
 import {
   MicrophoneError,
   startRecording as startMicrophone,

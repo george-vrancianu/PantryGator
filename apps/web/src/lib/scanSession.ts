@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { nextBackgroundOrder } from '../components/background/backgroundItem';
+import { nextBackgroundOrder } from './backgroundItem';
 import type { ScanLanguage } from '../i18n/resources';
 import type { DishGuess } from './plate';
 import { MAX_RECEIPT_SECTIONS } from './receiptSections';

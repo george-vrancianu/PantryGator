@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { BackgroundItem, BackgroundStatus } from '../backgroundItem';
+import type { BackgroundItem, BackgroundStatus } from '@/lib/backgroundItem';
 import {
   ringArcs,
   ringShares,

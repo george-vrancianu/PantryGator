@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BUBBLE_TOP_VAR } from '../background/bubble/GatorBubble';
+import { BUBBLE_TOP_VAR } from './bubbleVars';
 
 /**
  * Keeps the Gator bubble below the header: writes the distance from the top of the screen to the
