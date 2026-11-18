@@ -22,6 +22,20 @@ describe('ActionMenu', () => {
     );
   });
 
+  it('marks the current item with aria-current', async () => {
+    await open([{ label: 'One', current: true }, { label: 'Two' }]);
+    expect(
+      screen
+        .getByRole('menuitem', { name: 'One' })
+        .getAttribute('aria-current'),
+    ).toBe('true');
+    expect(
+      screen
+        .getByRole('menuitem', { name: 'Two' })
+        .hasAttribute('aria-current'),
+    ).toBe(false);
+  });
+
   it('sets an item with dividerBefore apart from the one above', async () => {
     await open([{ label: 'First' }, { label: 'Second', dividerBefore: true }]);
     const margin = (name: string) =>

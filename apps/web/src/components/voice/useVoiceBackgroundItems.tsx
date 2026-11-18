@@ -88,6 +88,7 @@ export function useVoiceBackgroundItems(): BackgroundItem[] {
                 language === noteLanguage
                   ? t('voice:inbox.currentLanguage', { language: name })
                   : name,
+              current: language === noteLanguage,
               onClick: () => void voiceNote.retry(note.id, language),
             };
           }),

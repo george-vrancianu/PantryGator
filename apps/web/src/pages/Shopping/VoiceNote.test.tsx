@@ -787,6 +787,10 @@ describe('Voice Note on the Shopping List', () => {
           (i) => i.textContent,
         );
         expect(items).toEqual(['English', 'Română (current)', 'Dansk']);
+        const current = (await screen.findAllByRole('menuitem')).filter((i) =>
+          i.hasAttribute('aria-current'),
+        );
+        expect(current.map((i) => i.textContent)).toEqual(['Română (current)']);
       });
 
       it('re-sends a nothing-heard note in the picked language and keeps it for the next Retry', async () => {
