@@ -452,10 +452,9 @@ export function createVoiceNote(
     };
     emit();
   };
-  /** A failed Voice Note by id, else the open one. */
-  const failedNote = (id?: number) => {
-    const note =
-      id === undefined ? openNote() : store.notes.find((n) => n.id === id);
+  /** A failed Voice Note by id. */
+  const failedNote = (id: number) => {
+    const note = store.notes.find((n) => n.id === id);
     return note?.phase === 'failed' ? note : undefined;
   };
   /** Closes the Review on screen by taking every note in it out of the list. */
@@ -912,13 +911,9 @@ export function createVoiceNote(
     if (!options.quiet) notify('recordingCancelled');
   }
 
-  /** Gives up waiting for one read (without an id: the open one, else the oldest): the late answer is ignored. */
-  function cancelRead(id?: number) {
-    const note =
-      store.notes.find((n) => n.id === id) ??
-      (id === undefined
-        ? [openNote(), ...store.notes].find((n) => n?.phase === 'reading')
-        : undefined);
+  /** Gives up waiting for the read of one Voice Note: the late answer is ignored. */
+  function cancelRead(id: number) {
+    const note = store.notes.find((n) => n.id === id);
     if (!note || note.phase !== 'reading') return;
     reads.get(note.id)?.abort();
     reads.delete(note.id);
@@ -985,12 +980,12 @@ export function createVoiceNote(
     fail,
 
     /**
-     * Sends the kept recording of a failed note again (the open one without an id): the same audio, in
+     * Sends the kept recording of a failed note again: the same audio, in
      * the language and for the page it had. Retrying a note that failed for the Voice Cap releases
      * every note that failed with it. With `spokenLanguage` the note is read in that language
      * instead, and keeps it.
      */
-    retry(id?: number, spokenLanguage?: ScanLanguage): Promise<void> {
+    retry(id: number, spokenLanguage?: ScanLanguage): Promise<void> {
       const note = failedNote(id);
       if (!note?.recording) return Promise.resolve();
       const capped = note.error === 'capReached';
@@ -1035,7 +1030,7 @@ export function createVoiceNote(
       pump();
       return Promise.resolve();
     },
-    /** Gives up waiting for the read of one Voice Note (the open one without an id). The server is not told, so the Voice Cap charge stands. */
+    /** Gives up waiting for the read of one Voice Note. The server is not told, so the Voice Cap charge stands. */
     cancelReading: cancelRead,
     /** Sign-out: forgets every Voice Note, read and recording. */
     clear,
