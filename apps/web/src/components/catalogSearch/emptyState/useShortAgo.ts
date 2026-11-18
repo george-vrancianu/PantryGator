@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { daysSince } from '../../../lib/relativeDays';
+import { daysSince } from '@/lib/relativeDays';
 
 /** Short relative time: today, 3d ago, 2w ago, 4mo ago. */
 export function useShortAgo() {

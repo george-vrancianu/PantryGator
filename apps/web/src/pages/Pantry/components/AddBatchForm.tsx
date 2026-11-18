@@ -9,9 +9,9 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useRef, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../../../components/catalogSearch/emptyState/BrowseByAisle';
-import { RecentlyStockedOrPopular } from '../../../components/catalogSearch/emptyState/RecentlyStockedOrPopular';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
+import { RecentlyStockedOrPopular } from '@/components/catalogSearch/emptyState/RecentlyStockedOrPopular/RecentlyStockedOrPopular';
 import {
   ListedAllergensNote,
   OpenFoodFactsCredit,

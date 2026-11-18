@@ -1,11 +1,11 @@
 import { Box, CloseIcon, Link, tokens, focusRing } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useEmptyStateSearch } from '../../../../components/catalogSearch/emptyState/context';
-import { IngredientTile } from '../../../../components/catalogSearch/emptyState/IngredientTile';
+import { IngredientTile } from '@/components/catalogSearch/emptyState/IngredientTile/IngredientTile';
 import {
   MAX_TILES,
   TileSection,
-} from '../../../../components/catalogSearch/emptyState/TileSection';
+} from '@/components/catalogSearch/emptyState/TileSection/TileSection';
 import { useShortAgo } from '../../../../components/catalogSearch/emptyState/useShortAgo';
 import { translateApiError } from '../../../../i18n/translateApiError';
 import {

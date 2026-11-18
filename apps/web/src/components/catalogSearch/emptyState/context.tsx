@@ -3,7 +3,7 @@ import type {
   CatalogAisle,
   CatalogScopeName,
   CatalogSearchResult,
-} from '../../../lib/catalog';
+} from '@/lib/catalog';
 
 /**
  * What the enclosing CatalogSearch offers an empty-state block, so the block

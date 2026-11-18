@@ -1,8 +1,8 @@
 import { Stack, TextField, Typography, Button } from '@pocket-pantry/ui';
 import { useId, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CatalogSearch } from '../catalogSearch/CatalogSearch';
-import { BrowseByAisle } from '../catalogSearch/emptyState/BrowseByAisle';
+import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
+import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
 import {
   MAX_EATING_MOMENTS,
   MAX_NUTRITION_NOTE,

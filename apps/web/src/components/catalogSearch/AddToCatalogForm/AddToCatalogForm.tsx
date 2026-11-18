@@ -17,7 +17,7 @@ import {
   type RefObject,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApiError } from '../../lib/api';
+import { ApiError } from '@/lib/api';
 import {
   UNITS,
   useCatalogCategories,
@@ -25,20 +25,20 @@ import {
   type CatalogCategory,
   type CatalogSearchResult,
   type Unit,
-} from '../../lib/catalog';
+} from '@/lib/catalog';
 import {
   AllergenContainsRow,
   containsToAllergenIds,
   selectionFromAllergenIds,
   type ContainsSelection,
-} from '../AllergenContainsRow';
-import { AddToCatalogAlias } from './AddToCatalogAlias';
-import { AisleSwatch } from './AisleSwatch';
+} from '@/components/AllergenContainsRow';
+import { AddToCatalogAlias } from '../AddToCatalogAlias/AddToCatalogAlias';
+import { AisleSwatch } from '../AisleSwatch/AisleSwatch';
 import {
   useReportedAction,
   type FormAction,
   type PickOutcome,
-} from './addToCatalogShared';
+} from '../addToCatalogShared';
 
 type Mode = 'new' | 'alias';
 

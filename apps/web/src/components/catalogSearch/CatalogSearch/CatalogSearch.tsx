@@ -22,18 +22,18 @@ import {
   type CatalogAisle,
   type CatalogScopeName,
   type CatalogSearchResult,
-} from '../../lib/catalog';
-import { normalizeName } from '../../lib/normalizeName';
-import { AddToCatalog } from './AddToCatalog';
-import { AddToCatalogRow } from './AddToCatalogRow';
-import { AisleViewHeader } from './AisleView';
-import { CatalogSearchEmptyStateContext } from './emptyState/context';
-import { ErrorRow } from './ErrorRow';
-import { NoMatchRow } from './NoMatchRow';
-import { SearchField } from './SearchField';
-import { SearchResultRow } from './SearchResultRow';
-import { SearchSkeleton } from './SearchSkeleton';
-import { UseTypedRow } from './UseTypedRow';
+} from '@/lib/catalog';
+import { normalizeName } from '@/lib/normalizeName';
+import { AddToCatalog } from '../AddToCatalog/AddToCatalog';
+import { AddToCatalogRow } from '../AddToCatalogRow/AddToCatalogRow';
+import { AisleViewHeader } from '../AisleView/AisleView';
+import { CatalogSearchEmptyStateContext } from '../emptyState/context';
+import { ErrorRow } from '../ErrorRow/ErrorRow';
+import { NoMatchRow } from '../NoMatchRow/NoMatchRow';
+import { SearchField } from '../SearchField/SearchField';
+import { SearchResultRow } from '../SearchResultRow/SearchResultRow';
+import { SearchSkeleton } from '../SearchSkeleton/SearchSkeleton';
+import { UseTypedRow } from '../UseTypedRow/UseTypedRow';
 
 export type CatalogSearchProps = {
   onSelect: (ingredient: CatalogSearchResult) => void;

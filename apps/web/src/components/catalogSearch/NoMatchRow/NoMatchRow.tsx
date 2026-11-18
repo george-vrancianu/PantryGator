@@ -1,6 +1,6 @@
 import { Box, tokens } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '../IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/IngredientIconSlot';
 
 /** The non-interactive "No match for “…”" row with its hint. */
 export function NoMatchRow({

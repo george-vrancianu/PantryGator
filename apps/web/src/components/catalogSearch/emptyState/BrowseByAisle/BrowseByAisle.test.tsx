@@ -2,9 +2,9 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../../lib/catalog';
-import { renderWithProviders } from '../../../test/render';
-import { CatalogSearch } from '../CatalogSearch';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { renderWithProviders } from '@/test/render';
+import { CatalogSearch } from '../../CatalogSearch/CatalogSearch';
 import { BrowseByAisle } from './BrowseByAisle';
 
 const DAIRY_AISLE = '244cde4d-f9a5-5df8-9f40-5e1f48fd4fcf';

@@ -13,9 +13,9 @@ import {
 } from '@pocket-pantry/ui';
 import type { ChangeEvent, KeyboardEvent, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { ADD_TO_CATALOG_TRIGGER } from './AddToCatalog';
-import { SelectedToken } from './SelectedToken';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { ADD_TO_CATALOG_TRIGGER } from '../AddToCatalog/AddToCatalog';
+import { SelectedToken } from '../SelectedToken/SelectedToken';
 
 export type SearchFieldProps = {
   inputRef: Ref<HTMLInputElement>;

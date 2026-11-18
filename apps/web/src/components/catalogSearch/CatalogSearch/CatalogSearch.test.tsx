@@ -2,11 +2,11 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import { renderWithProviders } from '../../test/render';
-import { stubMotion } from '../../test/viewport';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import { renderWithProviders } from '@/test/render';
+import { stubMotion } from '@/test/viewport';
 import { CatalogSearch, type CatalogSearchProps } from './CatalogSearch';
-import { useEmptyStateSearch } from './emptyState/context';
+import { useEmptyStateSearch } from '../emptyState/context';
 
 /** The seeded Dairy & eggs Aisle, so the icon tint is a real one. */
 const DAIRY_AISLE = '244cde4d-f9a5-5df8-9f40-5e1f48fd4fcf';

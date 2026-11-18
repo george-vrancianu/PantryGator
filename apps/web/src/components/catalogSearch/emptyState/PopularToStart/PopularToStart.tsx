@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { formatAmount } from '../../../lib/amount';
-import { FALLBACK_LOCATION } from '../../../lib/catalog';
-import { defaultAmount } from '../../../lib/usualAmounts';
-import { usePopularToStart } from '../../../lib/popularToStart';
-import { useEmptyStateSearch } from './context';
-import { IngredientTile } from './IngredientTile';
-import { TileSection } from './TileSection';
+import { formatAmount } from '@/lib/amount';
+import { FALLBACK_LOCATION } from '@/lib/catalog';
+import { defaultAmount } from '@/lib/usualAmounts';
+import { usePopularToStart } from '@/lib/popularToStart';
+import { useEmptyStateSearch } from '../context';
+import { IngredientTile } from '../IngredientTile/IngredientTile';
+import { TileSection } from '../TileSection/TileSection';
 
 /** The empty state of a Family with nothing Recently Stocked: a fixed starter list, each with its usual amount and Location. */
 export function PopularToStart() {
