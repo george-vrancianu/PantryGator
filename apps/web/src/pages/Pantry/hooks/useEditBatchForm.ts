@@ -1,14 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
-import type { Unit } from '../../../lib/catalog';
+import { translateApiError } from '@/i18n/translateApiError';
+import type { Unit } from '@/lib/catalog';
 import {
   parseAmountText,
   useUpdateBatch,
   type Batch,
   type BatchEdit,
   type IsoDate,
-} from '../../../lib/pantry';
+} from '@/lib/pantry';
 
 /** Only the fields that differ from the Batch as the form opened: untouched fields never overwrite another Member's edit. */
 function changesFrom(batch: Batch, next: Required<BatchEdit>): BatchEdit {

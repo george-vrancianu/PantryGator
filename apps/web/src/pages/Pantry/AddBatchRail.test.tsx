@@ -1,15 +1,15 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RAIL_WIDTH } from '../../lib/scanGuides';
-import { openOverlay, stubPantry } from '../../test/addBatch';
-import { emitBarcode, fakeCamera, selected } from '../../test/scan';
-import { stubScreen } from '../../test/screen';
+import { RAIL_WIDTH } from '@/lib/scanGuides';
+import { openOverlay, stubPantry } from '@/test/addBatch';
+import { emitBarcode, fakeCamera, selected } from '@/test/scan';
+import { stubScreen } from '@/test/screen';
 
 // The add-Batch camera reflows into a rail on a tablet or desktop window in landscape, as the Scan
 // page does (pages/Scan/CameraRail.test.tsx).
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const TABLET = { width: 820, height: 1180 };

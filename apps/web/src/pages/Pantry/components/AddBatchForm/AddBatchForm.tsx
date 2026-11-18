@@ -18,21 +18,21 @@ import {
 } from '@/components/scan/BarcodeLookupNotes/BarcodeLookupNotes';
 import { expiryContext } from '@/components/expiryPicker/expiryContext';
 import { StatusIcon } from '@/components/lists/StatusIcon/StatusIcon';
-import type { StorageLocation } from '../../../lib/catalog';
-import type { Batch } from '../../../lib/pantry';
-import type { CameraMode } from '../../../lib/cameraMode';
+import type { StorageLocation } from '@/lib/catalog';
+import type { Batch } from '@/lib/pantry';
+import type { CameraMode } from '@/lib/cameraMode';
 import { CameraOverlay } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
   useAddBatchForm,
   type AddBatchStart,
   type PrefillField,
-} from '../hooks/useAddBatchForm';
-import { BatchAmountField } from './BatchAmountField';
-import { BatchCard, CardSection } from './BatchCard';
-import { BatchNote } from './BatchNote';
-import { ExpiryChips } from './ExpiryChips';
-import { WhereItGoes } from './WhereItGoes';
-import { QuickRow } from './QuickRow';
+} from '../../hooks/useAddBatchForm';
+import { BatchAmountField } from '../BatchAmountField/BatchAmountField';
+import { BatchCard, CardSection } from '../BatchCard/BatchCard';
+import { BatchNote } from '../BatchNote/BatchNote';
+import { ExpiryChips } from '../ExpiryChips/ExpiryChips';
+import { WhereItGoes } from '../WhereItGoes/WhereItGoes';
+import { QuickRow } from '../QuickRow/QuickRow';
 
 /** "From photo" / "Scanned": a butter pill after the Ingredient name in the token. */
 function CameraSourceTag({ source }: { source: 'photo' | 'scanned' }) {

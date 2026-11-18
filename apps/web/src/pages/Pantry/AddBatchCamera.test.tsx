@@ -8,18 +8,18 @@ import {
 import userEvent from '@testing-library/user-event';
 import { useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { stubMatchMedia } from '../../test/viewport';
+import { renderWithProviders } from '@/test/render';
+import { stubMatchMedia } from '@/test/viewport';
 import { PantryPage } from './PantryPage';
-import { openOverlay, stubPantry } from '../../test/addBatch';
-import { emitBarcode, fakeCamera } from '../../test/scan';
+import { openOverlay, stubPantry } from '@/test/addBatch';
+import { emitBarcode, fakeCamera } from '@/test/scan';
 
 // The add-Batch camera's v3 chrome, opened from the Pantry's add-Batch form. Prefill itself is
 // covered in AddBatchPrefill and AddBatchBarcode; here the camera closes on a result.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,AAAA'),
 }));
 

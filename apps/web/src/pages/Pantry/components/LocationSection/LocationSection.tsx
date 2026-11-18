@@ -1,12 +1,12 @@
 import { Box, Typography } from '@pocket-pantry/ui';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { StorageLocation } from '../../../lib/catalog';
-import type { Batch } from '../../../lib/pantry';
-import type { PantryRowHint } from '../hooks/usePantryRowHint';
-import type { OpenIngredientKey, PantryRow } from '../hooks/usePantryScreen';
-import { ingredientBlockSx } from './ingredientBlock';
-import { RollUpRow } from './RollUpRow';
+import type { StorageLocation } from '@/lib/catalog';
+import type { Batch } from '@/lib/pantry';
+import type { PantryRowHint } from '../../hooks/usePantryRowHint';
+import type { OpenIngredientKey, PantryRow } from '../../hooks/usePantryScreen';
+import { ingredientBlockSx } from '../ingredientBlock';
+import { RollUpRow } from '../RollUpRow/RollUpRow';
 
 type Props = {
   location: StorageLocation;

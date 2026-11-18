@@ -6,7 +6,7 @@ import {
   type FormEvent,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import { useToast } from '@pocket-pantry/ui';
 import {
   FALLBACK_LOCATION,
@@ -15,12 +15,12 @@ import {
   type CatalogSearchResult,
   type StorageLocation,
   type Unit,
-} from '../../../lib/catalog';
-import { barcodeLine } from '../../../lib/barcode';
-import { isValidBarcode } from '../../../lib/gtin';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { type ProposedLine } from '../../../lib/scan';
-import { defaultAmount } from '../../../lib/usualAmounts';
+} from '@/lib/catalog';
+import { barcodeLine } from '@/lib/barcode';
+import { isValidBarcode } from '@/lib/gtin';
+import type { CameraMode } from '@/lib/cameraMode';
+import { type ProposedLine } from '@/lib/scan';
+import { defaultAmount } from '@/lib/usualAmounts';
 import type { CameraResult } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
   defaultExpiryDate,
@@ -28,7 +28,7 @@ import {
   useAddBatch,
   type Batch,
   type IsoDate,
-} from '../../../lib/pantry';
+} from '@/lib/pantry';
 
 /**
  * What the form starts with, from an open Ingredient card: the Ingredient (its id and name; the
