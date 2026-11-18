@@ -2,7 +2,11 @@ import type { ThemeId } from '@pocket-pantry/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { apiRequest } from './api';
-import { catalogAllergensQueryKey, catalogSearchQueryKey } from './catalog';
+import {
+  catalogAllergensQueryKey,
+  catalogSearchQueryKey,
+  type CatalogAllergen,
+} from './catalog';
 import { familyCatalogQueryKey } from './familyCatalog';
 import { recipesQueryKey } from './recipes';
 import {
@@ -286,12 +290,9 @@ export function useSaveHideRecipesWithAllergies() {
   });
 }
 
-/** An Allergen from the curated list, named in the Member's locale. */
-export type AllergenOption = { id: string; name: string };
-
 /** The Allergen list and which of them are the Member's own Allergies. */
 export type Allergies = {
-  allergens: AllergenOption[];
+  allergens: CatalogAllergen[];
   allergenIds: string[];
 };
 
@@ -326,15 +327,15 @@ export function useSaveAllergies() {
 /** An Allergy the Family records for someone without an account (mirror of the API's `FamilyAllergyView`). */
 export type FamilyAllergy = {
   id: string;
-  allergen: AllergenOption;
+  allergen: CatalogAllergen;
   label: string | null;
 };
 
 /** The Family tab's Allergies (mirror of the API's `FamilyAllergiesView`): Family Allergies and the other Members' own. */
 export type FamilyAllergies = {
-  allergens: AllergenOption[];
+  allergens: CatalogAllergen[];
   familyAllergies: FamilyAllergy[];
-  members: { id: string; name: string; allergens: AllergenOption[] }[];
+  members: { id: string; name: string; allergens: CatalogAllergen[] }[];
 };
 
 export const familyAllergiesQueryKey = [
