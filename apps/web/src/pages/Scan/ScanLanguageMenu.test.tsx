@@ -2,7 +2,7 @@ import { act, fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { renderWithProviders, stubApi } from '@/test/render';
 import {
   languageChip,
   pickScanLanguage,
@@ -10,17 +10,17 @@ import {
   scanLanguagePreference,
   selected,
   takeScan,
-} from '../../test/scan';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
+} from '@/test/scan';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 const prepared = vi.hoisted(() => ({
   hold: null as null | (() => void),
 }));
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () =>
     prepared.hold
       ? new Promise<string>((resolve) => {

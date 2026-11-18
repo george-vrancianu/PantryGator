@@ -21,7 +21,7 @@ import { isValidBarcode } from '../../../lib/gtin';
 import type { CameraMode } from '../../../lib/cameraMode';
 import { type ProposedLine } from '../../../lib/scan';
 import { defaultAmount } from '../../../lib/usualAmounts';
-import type { CameraResult } from '../../Scan/CameraOverlay';
+import type { CameraResult } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
   defaultExpiryDate,
   parseAmountText,

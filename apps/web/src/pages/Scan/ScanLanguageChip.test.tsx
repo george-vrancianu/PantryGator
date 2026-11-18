@@ -5,18 +5,18 @@ import {
   pickScanLanguage,
   queryLanguageChip,
   takeScan,
-} from '../../test/scan';
+} from '@/test/scan';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: () => Promise.resolve('data:image/jpeg;base64,Y3JvcA=='),
 }));

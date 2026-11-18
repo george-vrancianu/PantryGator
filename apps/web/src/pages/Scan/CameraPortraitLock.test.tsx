@@ -3,16 +3,16 @@ import { act, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { stubScreen } from '../../test/screen';
-import { Where } from '../../test/intro';
-import { IntroCameraPage } from '../Intro/IntroCameraPage';
+import { renderWithProviders } from '@/test/render';
+import { stubScreen } from '@/test/screen';
+import { Where } from '@/test/intro';
+import { IntroCameraPage } from '@/pages/Intro/IntroCameraPage';
 import { ScanPage } from './ScanPage';
 
 // While a camera is open on a phone in the app the screen is locked to portrait (ADR 0037). The
 // add-Batch camera is covered in pages/Pantry/AddBatchPortraitLock.test.tsx.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 vi.mock('@capacitor/screen-orientation', () => ({
   ScreenOrientation: {

@@ -2,25 +2,25 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { dispatchScanSession, resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
 import {
   expectStack,
   photoStack,
   scanOnce,
   stackCount,
   flush,
-} from '../../test/scan';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+} from '@/test/scan';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
 let prepareFails = false;
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () =>
     prepareFails
       ? Promise.reject(new Error('unreadable'))

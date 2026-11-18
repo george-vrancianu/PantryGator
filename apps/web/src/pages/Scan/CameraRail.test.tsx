@@ -10,18 +10,18 @@ import {
   onTestFinished,
   vi,
 } from 'vitest';
-import { resetScanSession } from '../../lib/scanSession';
-import { RAIL_WIDTH } from '../../lib/scanGuides';
-import { renderWithProviders } from '../../test/render';
-import { fakeCamera, resetFakeCamera, selected, slider } from '../../test/scan';
-import { stubScreen } from '../../test/screen';
-import { IntroCameraPage } from '../Intro/IntroCameraPage';
+import { resetScanSession } from '@/lib/scanSession';
+import { RAIL_WIDTH } from '@/lib/scanGuides';
+import { renderWithProviders } from '@/test/render';
+import { fakeCamera, resetFakeCamera, selected, slider } from '@/test/scan';
+import { stubScreen } from '@/test/screen';
+import { IntroCameraPage } from '@/pages/Intro/IntroCameraPage';
 import { ScanPage } from './ScanPage';
 
 // On a tablet or desktop window in landscape the controls reflow into a rail on the right. The
 // add-Batch camera is covered in pages/Pantry/AddBatchRail.test.tsx.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const TABLET = { width: 820, height: 1180 };

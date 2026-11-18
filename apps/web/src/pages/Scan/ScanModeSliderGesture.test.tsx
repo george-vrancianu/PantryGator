@@ -1,12 +1,12 @@
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { selected, slider } from '../../test/scan';
+import { renderWithProviders } from '@/test/render';
+import { selected, slider } from '@/test/scan';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 function renderScan(route = '/scan') {

@@ -1,26 +1,21 @@
 import { waitFor } from '@testing-library/react';
-import {
-  expectStack,
-  shutter,
-  openFirstScanCard,
-  takeScan,
-} from '../../test/scan';
+import { expectStack, shutter, openFirstScanCard, takeScan } from '@/test/scan';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine } from '../../lib/scan';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { findReviewRow } from '../../test/review';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine } from '@/lib/scan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { findReviewRow } from '@/test/review';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
 const IMAGE = 'data:image/jpeg;base64,YQ==';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', () => ({
+vi.mock('@/lib/image', () => ({
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 

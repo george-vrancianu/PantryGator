@@ -1,23 +1,23 @@
 import { act, screen } from '@testing-library/react';
-import { openFirstScanCard, takeScan, fakeCamera } from '../../test/scan';
+import { openFirstScanCard, takeScan, fakeCamera } from '@/test/scan';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { findReviewRow } from '../../test/review';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
-import { ReviewPage } from '../Review/ReviewPage';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { findReviewRow } from '@/test/review';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
+import { ReviewPage } from '@/pages/Review/ReviewPage';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 const cropToReceiptAreaMock = vi.hoisted(() => vi.fn());
 const cropToReceiptGuideMock = vi.hoisted(() => vi.fn());
 /** When set, image preparation waits on it, so a test can change the screen mid-preparation. */
 const gate = vi.hoisted(() => ({ current: null as Promise<void> | null }));
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: async (...args: unknown[]) => {
     cropToReceiptGuideMock(...args);

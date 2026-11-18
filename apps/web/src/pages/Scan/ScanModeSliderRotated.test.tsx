@@ -1,15 +1,15 @@
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '../../test/render';
-import { selected, slider } from '../../test/scan';
-import { stubScreen } from '../../test/screen';
+import { renderWithProviders } from '@/test/render';
+import { selected, slider } from '@/test/scan';
+import { stubScreen } from '@/test/screen';
 import { ScanPage } from './ScanPage';
 
 // With the chrome rotated back, the slider's strip runs along the screen's other axis: a swipe is
 // read in the frame's directions (ADR 0037).
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 const item = (name: string) => within(slider()).getByRole('radio', { name });
