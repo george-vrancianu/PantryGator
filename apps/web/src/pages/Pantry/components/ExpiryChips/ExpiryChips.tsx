@@ -1,10 +1,4 @@
-import {
-  Box,
-  CalendarDaysIcon,
-  color,
-  focusRing,
-  radius,
-} from '@pocket-pantry/ui';
+import { Box, CalendarDaysIcon, Chip } from '@pocket-pantry/ui';
 import { useId, useRef, useState, type ReactNode, type Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExpirySheet } from '@/components/expiryPicker/ExpirySheet/ExpirySheet';
@@ -91,38 +85,16 @@ export function ExpiryChips({
       ref?: Ref<HTMLButtonElement>;
     },
   ) => (
-    <Box
+    <Chip
       key={key}
       ref={extra?.ref}
-      component="button"
-      type="button"
-      aria-pressed={pressed}
+      selected={pressed}
       onClick={onClick}
       aria-label={extra?.['aria-label']}
       aria-haspopup={extra?.['aria-haspopup']}
-      sx={{
-        flex: 'none',
-        minHeight: 36,
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        px: '14px',
-        font: 'inherit',
-        fontSize: 13,
-        fontWeight: 600,
-        whiteSpace: 'nowrap',
-        color: pressed ? color.accentInk : 'text.primary',
-        backgroundColor: pressed ? 'pp.accent' : color.cardBg,
-        border: '1px solid',
-        borderColor: pressed ? 'transparent' : 'pp.line',
-        borderRadius: radius.chip,
-        cursor: 'pointer',
-        ...focusRing,
-      }}
-    >
-      {extra?.icon}
-      {label}
-    </Box>
+      icon={extra?.icon}
+      label={label}
+    />
   );
 
   return (
