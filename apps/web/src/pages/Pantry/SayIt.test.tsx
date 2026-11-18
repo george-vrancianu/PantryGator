@@ -52,7 +52,7 @@ describe('Say it in the Add to Pantry sheet', () => {
         screen.queryByRole('dialog', { name: 'Add to Pantry' }),
       ).not.toBeInTheDocument(),
     );
-    expect(screen.getByText(/two litres of milk/)).toBeInTheDocument();
+    expect(screen.getByText(/^Try .two litres of milk/)).toBeInTheDocument();
     expect(paintedColour(litMic()!, 'background-color').toUpperCase()).toBe(
       '#E8CB7C',
     );

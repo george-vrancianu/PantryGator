@@ -30,7 +30,7 @@ export function useVoiceBackgroundItems(): BackgroundItem[] {
   const { inbox, voiceCap } = useVoiceNoteState();
   const { spokenLanguage } = usePreferredSpokenLanguage();
 
-  /** Why a note failed, in the words the pill used. */
+  /** Why a note failed, in the Gator bubble's words. */
   const failureText = (note: Note) => {
     if (note.phase !== 'failed') return undefined;
     const reason = failureReason(
@@ -88,6 +88,7 @@ export function useVoiceBackgroundItems(): BackgroundItem[] {
                 language === noteLanguage
                   ? t('voice:inbox.currentLanguage', { language: name })
                   : name,
+              current: language === noteLanguage,
               onClick: () => void voiceNote.retry(note.id, language),
             };
           }),

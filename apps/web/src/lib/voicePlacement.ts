@@ -9,9 +9,6 @@ export const micBottom = {
   md: aboveDock(DOCK_HEIGHT.md),
 };
 
-/** Bottom padding that keeps a page's last row clear of the capsule (and its safe-area inset). */
-export const micClearance = micBottom;
-
 /** CSS `bottom` of something sitting `gap` px above the capsule (the Listening card, the tip). */
 export const aboveMic = (gap: number) => ({
   xs: `calc(${micBottom.xs} + ${gap}px)`,
@@ -21,21 +18,22 @@ export const aboveMic = (gap: number) => ({
 /** Where a toast sits so it clears the Dock's mic. */
 export const toastBottom = aboveMic(10);
 
-/** The status pill (and the Listening card) sit this far above the capsule, px. */
-export const PILL_OFFSET = 10;
-/** The status pill's height (a title line, a one-line hint and its padding), px, plus the air kept above it. */
-export const PILL_HEIGHT = 60;
-export const PILL_GAP = 8;
+/** The Listening card sits this far above the capsule, px. */
+export const CARD_OFFSET = 10;
+/** The height of the Background Read strip above the Dock (a title line, a one-line hint and its padding), px. */
+export const STRIP_HEIGHT = 60;
+/** The air kept above the strip, px. */
+export const STRIP_GAP = 8;
 
-/** CSS `bottom` of the status pill and the Listening card. */
-export const pillBottom = aboveMic(PILL_OFFSET);
+/** CSS `bottom` of the Listening card. */
+export const cardBottom = aboveMic(CARD_OFFSET);
 
-/** The spot clear above the pill. */
-export const abovePill = aboveMic(PILL_OFFSET + PILL_HEIGHT + PILL_GAP);
+/** The spot clear above the Background Read strip. */
+export const aboveStrip = aboveMic(CARD_OFFSET + STRIP_HEIGHT + STRIP_GAP);
 
 /**
- * Options for a voice toast: polite and clear of the mic. A toast clears the background strip (and
- * the status pill it replaced) on its own, through the toast floor the strip registers.
+ * Options for a voice toast: polite and clear of the mic. A toast clears the Background Read strip
+ * on its own, through the toast floor the strip registers.
  */
 export const voiceToast = () => ({
   polite: true as const,
@@ -47,6 +45,6 @@ export const VOICE_LAYER = {
   scrim: 1100,
   /** The Dock while a Voice Note is held: above the scrim, so the mic is not dimmed. */
   dock: 1150,
-  /** The Listening card, the status pill, the tip. */
+  /** The Listening card and the tip. */
   card: 1250,
 } as const;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { formatClock } from './voice';
 
 describe('formatClock', () => {
-  it('floors to whole seconds, so the Listening card and the Reading pill agree', () => {
+  it('floors to whole seconds, so the Listening card and the Gator bubble agree', () => {
     expect(formatClock(0)).toBe('0:00');
     expect(formatClock(2999)).toBe('0:02');
     expect(formatClock(3000)).toBe('0:03');

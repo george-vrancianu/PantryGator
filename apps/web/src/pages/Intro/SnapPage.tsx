@@ -19,18 +19,10 @@ import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSnapLeave } from './hooks/useSnapLeave';
 import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
-import {
-  INTRO_CAMERA_PATH,
-  INTRO_REVIEW_PATH,
-  introPath,
-  skipStep,
-} from '@/lib/intro';
+import { INTRO_CAMERA_PATH, INTRO_REVIEW_PATH } from '@/lib/intro';
 import { pendingCount, useScanSession } from '@/lib/scanSession';
 
 type Pick = 'ingredients' | 'receipt';
-
-/** Where Skip goes: the Intro module's rule, never a path written here. */
-const SKIP_TO = introPath(skipStep('snap'));
 
 /**
  * Setup 1, Snap: the olive screen that teaches where the camera lives. Gator's line follows the pick,
@@ -64,7 +56,7 @@ export function SnapPage() {
           creamFocus,
         ]}
       >
-        <SetupOliveTopRow skipTo={SKIP_TO} leave={leave} />
+        <SetupOliveTopRow leave={leave} />
 
         <GatorSpeech live mt="24px">
           {t(`snap.bubble.${pick}`)}

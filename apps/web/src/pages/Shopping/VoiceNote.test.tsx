@@ -787,6 +787,10 @@ describe('Voice Note on the Shopping List', () => {
           (i) => i.textContent,
         );
         expect(items).toEqual(['English', 'Română (current)', 'Dansk']);
+        const current = (await screen.findAllByRole('menuitem')).filter((i) =>
+          i.hasAttribute('aria-current'),
+        );
+        expect(current.map((i) => i.textContent)).toEqual(['Română (current)']);
       });
 
       it('re-sends a nothing-heard note in the picked language and keeps it for the next Retry', async () => {
@@ -1589,6 +1593,68 @@ describe('Reviewing a Voice Note on the Shopping List', () => {
         }),
       ]) as unknown,
     });
+  });
+
+  it('rewrites the kind label when the Match changes: Add, ticked off the list, Tick on it', async () => {
+    setupReview(
+      [
+        action({
+          id: 'k1',
+          op: 'check',
+          text: 'bread',
+          ingredient: catalogItem('ing-bread', 'Bread'),
+          rows: {
+            shoppingItem: {
+              id: 'row-bread',
+              name: 'Bread',
+              quantity: 1,
+              unit: 'pcs',
+              checked: false,
+            },
+          },
+        }),
+      ],
+      undefined,
+      {
+        ...emptyList,
+        groups: [
+          {
+            aisle: null,
+            items: [
+              {
+                id: 'row-eggs',
+                ingredientId: 'ing-eggs',
+                name: 'Eggs',
+                quantity: 6,
+                unit: 'pcs',
+                checked: false,
+                unmatched: false,
+              },
+            ],
+          },
+        ],
+        summary: { remaining: 1, checked: 0 },
+      },
+    );
+    const dialog = within(await openReview());
+    await dialog.findByText('Bread', { selector: 'b' });
+    expect(rowOf(dialog, 'Bread').textContent).toMatch(/^Tick Bread/);
+
+    const changeTo = async (from: string, option: RegExp) => {
+      const change = `Change Ingredient: ${from}`;
+      // The row stays open after a change, so open it only when it is closed.
+      if (!dialog.queryByRole('button', { name: change })) {
+        await userEvent.click(headerOf(rowOf(dialog, from)));
+      }
+      await userEvent.click(dialog.getByRole('button', { name: change }));
+      await userEvent.click(
+        await screen.findByRole('option', { name: option }),
+      );
+    };
+    await changeTo('Bread', /Milk/);
+    expect(rowOf(dialog, 'Milk').textContent).toMatch(/^Add, ticked Milk/);
+    await changeTo('Milk', /Eggs/);
+    expect(rowOf(dialog, 'Eggs').textContent).toMatch(/^Tick Eggs/);
   });
 
   it('opens What I heard and offers only Discard when nothing was understood', async () => {

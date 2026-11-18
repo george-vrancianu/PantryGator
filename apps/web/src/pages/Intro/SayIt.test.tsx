@@ -100,7 +100,7 @@ describe('Setup 2, Say it', () => {
   it('skips to All set', async () => {
     const { calls } = await openSayIt();
     const user = userEvent.setup();
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
     expect(
       await screen.findByText(
         "You're all set! I'll keep an eye on your kitchen.",

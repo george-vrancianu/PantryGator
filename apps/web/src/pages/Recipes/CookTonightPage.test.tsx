@@ -286,7 +286,7 @@ describe('CookTonightPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Show' }));
     const list = await section('You can make this');
     expect(await within(list).findByText(/Peanut stew/)).toBeVisible();
-    expect(screen.queryByText(/hidden by your Allergies/)).toBeNull();
+    expect(screen.queryByText(/^\d+ Recipes? hidden/)).toBeNull();
     expect(
       calls.some(
         (call) =>
@@ -294,6 +294,27 @@ describe('CookTonightPage', () => {
           new URLSearchParams(call.search).get('showHidden') === 'true',
       ),
     ).toBe(true);
+  });
+
+  it('Hide puts the Recipes hidden by Allergies away again', async () => {
+    setup(
+      (url) =>
+        url.searchParams.get('showHidden') === 'true'
+          ? [base('a', 'Pancakes'), base('p', 'Peanut stew')]
+          : [base('a', 'Pancakes')],
+      2,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Show' }));
+    const list = await section('You can make this');
+    expect(await within(list).findByText(/Peanut stew/)).toBeVisible();
+    expect(
+      screen.getByText('Showing Recipes hidden by your Allergies'),
+    ).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Hide' }));
+    expect(
+      await screen.findByText('2 Recipes hidden by your Allergies'),
+    ).toBeVisible();
+    expect(screen.queryByText(/Peanut stew/)).toBeNull();
   });
 
   it('asks for the Family scope only', async () => {

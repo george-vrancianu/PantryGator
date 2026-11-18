@@ -76,7 +76,7 @@ describe('Voice Note notices at the app root', () => {
     renderWithProviders(<Elsewhere />);
     await act(() => start());
 
-    act(() => voiceNote.cancelReading());
+    act(() => voiceNote.cancelReading(voiceNote.getState().inbox.notes[0].id));
 
     expect(
       await screen.findByText('Cancelled. Nothing was saved.'),

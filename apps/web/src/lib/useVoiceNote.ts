@@ -163,6 +163,10 @@ export function useVoiceNote(defaultTarget: VoiceDefaultTarget) {
     if (needsSheet) {
       held.current = false;
       asking.current = false;
+      tipOnArrival.current = false;
+      // A quick tap let go during the check showed the hold tip: the sheet explains it now.
+      clearTimeout(tipTimer.current);
+      setTip(null);
       if (permission === 'denied') showBlocked();
       else showIntro();
       return;

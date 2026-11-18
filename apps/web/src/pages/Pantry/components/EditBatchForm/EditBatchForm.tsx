@@ -66,13 +66,12 @@ export function EditBatchForm({
         value={form.location}
         onChange={form.setLocation}
       />
-      {/* No Usual tile: the Default Expiry counts from the purchase date, which a Batch doesn't carry. */}
       <ExpiryField
         id={`${id}-expiry`}
         label={t('picker.label')}
         value={form.expiryDate}
         onChange={form.setExpiryDate}
-        usualDays={null}
+        usualDays={batch.defaultExpiryDays}
         context={expiryContext(
           {
             name: batch.name,

@@ -126,7 +126,7 @@ describe('The Review overview takes its behaviour from the host', () => {
             element={
               <ReviewOverviewPage
                 settings={{
-                  cameraPath: '/host/camera',
+                  cameraPath: () => '/host/camera',
                   cardPath: (id) => `/host/review/${id}`,
                   renderFrame: (content) => (
                     <section aria-label="Host frame">{content}</section>

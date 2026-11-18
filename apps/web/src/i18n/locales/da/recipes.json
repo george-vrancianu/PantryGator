@@ -257,7 +257,9 @@
   "hiddenByAllergies": {
     "note_one": "{{count}} opskrift skjult på grund af dine allergier",
     "note_other": "{{count}} opskrifter skjult på grund af dine allergier",
-    "show": "Vis"
+    "show": "Vis",
+    "showing": "Viser opskrifter skjult på grund af dine allergier",
+    "hide": "Skjul"
   },
   "cookTonight": {
     "title": "Lav mad i aften",

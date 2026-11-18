@@ -1,3 +1,4 @@
+import { Box, visuallyHidden } from '@pocket-pantry/ui';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { aboveMic, VOICE_LAYER } from '@/lib/voicePlacement';
@@ -10,6 +11,21 @@ const MIC_TEACH_MS = 4800;
 /** The callout's gap above the mic, px. */
 const MIC_TEACH_GAP = 56;
 const CALLOUT_WIDTH = 260;
+
+/**
+ * The live region for the teach callout. It stays mounted while the callout comes and goes: a live
+ * region that appears with its text is often not announced, one that fills is. It is a bare
+ * `aria-live` (no `role="status"`), so the Dock does not add a permanent status to every screen, and
+ * it holds the title and line as one string so the visible callout's text is the only element with it.
+ */
+export function MicTeachAnnouncement({ teaching }: { teaching: boolean }) {
+  const { t } = useTranslation('voice');
+  return (
+    <Box aria-live="polite" data-testid="mic-teach-live" sx={visuallyHidden}>
+      {teaching ? `${t('teach.title')} ${t('teach.line')}` : null}
+    </Box>
+  );
+}
 
 /**
  * "Hold the mic, talk, let go": the callout over the lit mic. It never records by itself. It clears
@@ -34,13 +50,16 @@ export function MicTeachCallout({ onDone }: { onDone: () => void }) {
     };
   }, [onDone]);
   return (
-    <SetupCallout
-      title={t('teach.title')}
-      body={t('teach.line')}
-      bottom={aboveMic(MIC_TEACH_GAP)}
-      width={CALLOUT_WIDTH}
-      role="status"
-      zIndex={VOICE_LAYER.card}
-    />
+    // The Dock's always-mounted live region (`MicTeachAnnouncement`) speaks this text; hiding the
+    // callout keeps a screen reader from reading it twice.
+    <div aria-hidden="true">
+      <SetupCallout
+        title={t('teach.title')}
+        body={t('teach.line')}
+        bottom={aboveMic(MIC_TEACH_GAP)}
+        width={CALLOUT_WIDTH}
+        zIndex={VOICE_LAYER.card}
+      />
+    </div>
   );
 }

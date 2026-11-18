@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useNavigate } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
+import { INTRO_REVIEW_PATH } from '@/lib/intro';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import type { ProposedLine } from '@/lib/scan';
 import { preferenceSaves, stubSetupMember, Where } from '@/test/intro';
@@ -10,6 +11,8 @@ import { renderWithProviders } from '@/test/render';
 import { closeBubbleSheet, openBubbleSheet } from '@/test/voiceDom';
 import {
   flush,
+  languageChip,
+  pickScanLanguage,
   photoStack,
   selected,
   shutter,
@@ -85,6 +88,14 @@ function BrowserBack() {
   return <button onClick={() => navigate(-1)}>Browser back</button>;
 }
 
+/** A way onto the Setup overview that skips the camera, as a stale history entry would. */
+function OpenOverview() {
+  const navigate = useNavigate();
+  return (
+    <button onClick={() => navigate(INTRO_REVIEW_PATH)}>Open overview</button>
+  );
+}
+
 const where = () => screen.getByLabelText('Where').textContent;
 
 /** Opens the app at Set up or skip and taps Show me how. */
@@ -98,6 +109,7 @@ async function openSnap(routes: Parameters<typeof stubSetupMember>[0] = {}) {
       <App />
       <Where />
       <BrowserBack />
+      <OpenOverview />
     </>,
     { route: '/intro/setup' },
   );
@@ -211,7 +223,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     // It was the last card and it was saved: on to Say it, which counts what is in the Pantry now.
     expect(await screen.findByText('3 things in your Pantry')).toBeVisible();
     expect(where()).toBe('/intro/say-it');
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
 
     // All set shows what was really saved; the Shopping List tile is left out at 0.
     expect(
@@ -261,7 +273,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
     await user.click(screen.getByRole('button', { name: 'Add 2 to Pantry' }));
     expect(await screen.findByText('2 things in your Pantry')).toBeVisible();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(await screen.findByText('in your Pantry')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(
@@ -292,9 +304,33 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(await screen.findByText('9 things in your Pantry')).toBeVisible();
     expect(where()).toBe('/intro/say-it');
     expect(bulkSaves(calls)).toHaveLength(3);
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(await screen.findByText('in your Pantry')).toBeInTheDocument();
     expect(screen.getByText('9')).toBeInTheDocument();
+  });
+
+  it('says how many Shopping Items Add all could not tick off, as the app does', async () => {
+    const { user } = await openSnap({
+      routes: {
+        'POST /api/scan/receipt/confirm': () =>
+          Response.json({ batches: [], matchedShoppingItemIds: ['item-1'] }),
+        'PATCH /api/shopping-list/items/item-1': () =>
+          Response.json({ code: 'shopping.item_not_found' }, { status: 404 }),
+      },
+    });
+    await snapPhotos(user, 1, 'Receipt');
+    await openOverview(user);
+    await cards();
+    await user.click(screen.getByRole('button', { name: 'Add all' }));
+
+    expect(
+      await screen.findByText('1 Shopping Item could not be ticked off.'),
+    ).toBeVisible();
+    await waitFor(() => expect(where()).toBe('/intro/say-it'));
+    // It outlives the move to Say it.
+    expect(
+      screen.getByText('1 Shopping Item could not be ticked off.'),
+    ).toBeVisible();
   });
 
   it('shows the photos taken and how many are being read on Snap, and keeps them when going back', async () => {
@@ -425,9 +461,9 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
   it('skips from Snap, then Say it, to All set with no tiles, and Go to my kitchen still finishes the Intro', async () => {
     const { user, calls } = await openSnap();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(where()).toBe('/intro/say-it');
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
 
     expect(
       await screen.findByText(
@@ -464,7 +500,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     ).toBeInTheDocument();
     expect(where()).toBe('/intro/say-it');
     expect(screen.queryByText(/in your Pantry$/)).toBeNull();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
     expect(
       await screen.findByText(
         "You're all set! I'll keep an eye on your kitchen.",
@@ -490,6 +526,53 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     expect(selected()).toEqual(['Receipt']);
     // Only the retaken card is dropped.
     expect(stackCount()).toBe(1);
+  });
+
+  it("Retake on a card goes to the camera in that card's own Scan Mode, not the last scan's", async () => {
+    const { user } = await openSnap({
+      routes: {
+        'POST /api/scan/ingredients': () =>
+          Response.json({ code: 'internal', params: {} }, { status: 500 }),
+      },
+    });
+    await snapPhotos(user, 1);
+    await user.click(screen.getByRole('radio', { name: 'Receipt' }));
+    await waitFor(() => expect(shutter()).toBeEnabled());
+    takeScan();
+    await waitFor(() => expect(stackCount()).toBe(2));
+    await flush();
+    await openOverview(user);
+
+    const [first] = await cards();
+    await waitFor(() =>
+      expect(first).toHaveTextContent("Couldn't read, retake"),
+    );
+    await user.click(within(first).getByRole('button', { name: 'Retake' }));
+    await waitFor(() => expect(where()).toBe('/intro/camera?mode=ingredients'));
+  });
+
+  it('leaves one overview entry in the history after opening the editor and coming back', async () => {
+    const { user } = await openSnap();
+    await snapPhotos(user, 2);
+    await openOverview(user);
+    await openCard(user);
+    await user.click(screen.getByRole('button', { name: /Review/ }));
+    expect(await cards()).toHaveLength(2);
+
+    // One step back is the camera, not a second copy of the overview.
+    await user.click(screen.getByRole('button', { name: 'Browser back' }));
+    await waitFor(() => expect(where()).toBe('/intro/camera?mode=ingredients'));
+  });
+
+  it('sends an already-empty overview with nothing saved to Snap', async () => {
+    const { user } = await openSnap();
+    await user.click(screen.getByRole('button', { name: 'Open overview' }));
+    await waitFor(() => expect(where()).toBe('/intro/snap'));
+    expect(
+      await screen.findByRole('radiogroup', {
+        name: "What's in front of you?",
+      }),
+    ).toBeInTheDocument();
   });
 
   it('shows the card as reading while the photo is read, then it opens in the line editor', async () => {
@@ -594,10 +677,27 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     confirm.mockRestore();
   });
 
+  it('keeps the Scan Language picked on the camera while Close goes back to Snap with photos', async () => {
+    const { user } = await openSnap();
+    await user.click(screen.getByRole('link', { name: 'Camera' }));
+    await waitFor(() => expect(shutter()).toBeEnabled());
+    await pickScanLanguage('Română');
+    expect(languageChip()).toHaveTextContent('RO');
+    takeScan();
+    await waitFor(() => expect(stackCount()).toBe(1));
+
+    await user.click(screen.getByRole('button', { name: 'Close scanner' }));
+    await screen.findByTestId('snap-session');
+    await user.click(screen.getByRole('link', { name: 'Camera' }));
+    await waitFor(() => expect(shutter()).toBeInTheDocument());
+
+    expect(languageChip()).toHaveTextContent('RO');
+  });
+
   it('stays on All set and says so when the Intro could not be marked done', async () => {
     const { user, calls } = await openSnap({ finishFails: true });
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
     await user.click(
       await screen.findByRole('button', { name: 'Go to my kitchen' }),
     );
@@ -614,8 +714,8 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
 
   it('is the normal Scan screen again once the Intro is done', async () => {
     const { user } = await openSnap();
-    await user.click(screen.getByRole('link', { name: 'Skip' }));
-    await user.click(await screen.findByRole('link', { name: 'Skip' }));
+    await user.click(screen.getByRole('button', { name: 'Skip' }));
+    await user.click(await screen.findByRole('button', { name: 'Skip' }));
     await user.click(
       await screen.findByRole('button', { name: 'Go to my kitchen' }),
     );
@@ -649,7 +749,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
     it('shows no Next on Snap while nothing is unsaved, and Skip moves on with no confirm', async () => {
       const { user } = await openSnap();
       expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
-      await user.click(screen.getByRole('link', { name: 'Skip' }));
+      await user.click(screen.getByRole('button', { name: 'Skip' }));
       expect(where()).toBe('/intro/say-it');
       expect(screen.queryByText(/saved yet/)).toBeNull();
     });
@@ -662,7 +762,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
       // The photos wait for the app's Review: Say it's strip is Voice Notes only.
       expect(screen.queryByRole('button', { name: /Open Review/ })).toBeNull();
 
-      await user.click(screen.getByRole('link', { name: 'Skip' }));
+      await user.click(screen.getByRole('button', { name: 'Skip' }));
       await user.click(
         await screen.findByRole('button', { name: 'Go to my kitchen' }),
       );
@@ -729,7 +829,7 @@ describe('Setup 1: Snap, Setup overview, All set', () => {
       await user.click(screen.getByRole('button', { name: 'Confirm' }));
       expect(await screen.findByText(SAY_IT_CALLOUT)).toBeInTheDocument();
 
-      await user.click(screen.getByRole('link', { name: 'Skip' }));
+      await user.click(screen.getByRole('button', { name: 'Skip' }));
       await user.click(
         await screen.findByRole('button', { name: 'Go to my kitchen' }),
       );

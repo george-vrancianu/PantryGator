@@ -8,6 +8,7 @@ import {
 } from '@pocket-pantry/ui';
 import { soonBorder } from '../soonBorder';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { AmountField } from '@/components/catalog/AmountField/AmountField';
 import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
@@ -19,6 +20,7 @@ import type { CatalogSearchResult, Unit } from '@/lib/catalog';
 import { defaultExpiryDate, fullDate, useExpiryTags } from '@/lib/pantry';
 import { useToday } from '@/lib/useToday';
 import type { VoiceBatchRow, VoiceReviewAction } from '@/lib/voice';
+import { cachedShoppingRow } from '@/lib/shopping';
 import { voiceNote } from '@/lib/voiceNote';
 import {
   canChangeIngredient,
@@ -277,6 +279,7 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
   const { t } = useTranslation(['voice', 'common']);
   const [searching, setSearching] = useState(false);
   const today = useToday();
+  const queryClient = useQueryClient();
   const refocus = useRef(false);
   const name = displayName(action);
 
@@ -316,6 +319,11 @@ function IngredientEditor({ action }: { action: VoiceReviewAction }) {
             voiceNote.edit(action.id, {
               ingredient,
               name: null,
+              ...(action.target === 'shopping'
+                ? {
+                    shoppingItem: cachedShoppingRow(queryClient, ingredient.id),
+                  }
+                : {}),
               // A Pantry add's Location and Default Expiry follow the new Match.
               ...(action.target === 'pantry'
                 ? { defaults: defaultsOf(ingredient, today) }
