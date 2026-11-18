@@ -11,7 +11,7 @@ function open(initialFocus: React.RefObject<HTMLElement | null> | undefined) {
     <Sheet
       open
       onClose={() => undefined}
-      label="Add items"
+      title="Add items"
       initialFocus={initialFocus}
     >
       <button type="button">First</button>
@@ -49,7 +49,7 @@ describe('Sheet opening focus', () => {
       <Sheet
         open
         onClose={() => undefined}
-        label="Add items"
+        title="Add items"
         initialFocus={ref}
       >
         {kind === 'input' ? (
@@ -104,7 +104,7 @@ describe('Sheet opening focus', () => {
       <Sheet
         open
         onClose={() => undefined}
-        label="Add items"
+        title="Add items"
         initialFocus={ref}
       >
         <input aria-label="Other" autoFocus />
@@ -124,7 +124,7 @@ describe('Sheet opening focus', () => {
       <Sheet
         open
         onClose={() => undefined}
-        label="Add items"
+        title="Add items"
         initialFocus={ref}
       >
         <button type="button" ref={ref as React.Ref<HTMLButtonElement>}>
@@ -158,7 +158,7 @@ describe('Sheet opening focus', () => {
     expect(document.activeElement).toBe(sheet);
   });
 
-  it('Tab from the sheet reaches the first control', async () => {
+  it('Tab from the sheet reaches the first control (the X)', async () => {
     // user-event awaits real timers; the sheet is waited for with waitFor.
     vi.useRealTimers();
     stubScreen(false);
@@ -166,8 +166,9 @@ describe('Sheet opening focus', () => {
     const sheet = screen.getByRole('dialog', { name: 'Add items' });
     await waitFor(() => expect(document.activeElement).toBe(sheet));
     await userEvent.tab();
+    // The X is the first control in the sheet.
     expect(document.activeElement).toBe(
-      screen.getByRole('button', { name: 'First' }),
+      screen.getByRole('button', { name: 'Close' }),
     );
   });
 });

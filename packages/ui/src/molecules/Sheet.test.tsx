@@ -14,7 +14,7 @@ describe('Sheet', () => {
   it('is the working sheet look (Canopy 8.1): sheet gradient, upward shadow, top radius', () => {
     stubScreen(false, false);
     render(
-      <Sheet open onClose={() => undefined} label="Add items">
+      <Sheet open onClose={() => undefined} title="Add items">
         Body
       </Sheet>,
     );
@@ -30,7 +30,7 @@ describe('Sheet', () => {
   it('caps a phone sheet below the top inset so the grab handle stays reachable', () => {
     stubScreen(false, false);
     render(
-      <Sheet open onClose={() => undefined} label="Add items">
+      <Sheet open onClose={() => undefined} title="Add items">
         Body
       </Sheet>,
     );
@@ -45,7 +45,7 @@ describe('Sheet', () => {
     const slideTransition = (reduce: boolean) => {
       stubScreen(false, reduce);
       render(
-        <Sheet open onClose={() => undefined} label="Add items">
+        <Sheet open onClose={() => undefined} title="Add items">
           Body
         </Sheet>,
       );
@@ -74,7 +74,7 @@ describe('Sheet', () => {
     it('closes on a scrim tap and on Escape by default', () => {
       const onClose = vi.fn();
       render(
-        <Sheet open onClose={onClose} label="Add items">
+        <Sheet open onClose={onClose} title="Add items">
           Body
         </Sheet>,
       );
@@ -87,7 +87,7 @@ describe('Sheet', () => {
     it('ignores scrim taps and Escape when not dismissable', () => {
       const onClose = vi.fn();
       render(
-        <Sheet open onClose={onClose} dismissable={false} label="Review">
+        <Sheet open onClose={onClose} dismissable={false} title="Review">
           Body
         </Sheet>,
       );
@@ -105,7 +105,7 @@ describe('Sheet', () => {
           onClose={() => undefined}
           dismissable={false}
           onEscape={onEscape}
-          label="Review"
+          title="Review"
         >
           Body
         </Sheet>,

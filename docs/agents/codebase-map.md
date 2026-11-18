@@ -39,7 +39,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
 
 ## UI package (`packages/ui/src`)
 
-Atomic layout: `atoms/`, `molecules/` (includes `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Public exports go through `src/index.ts`. Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
+Atomic layout: `atoms/`, `molecules/` (includes `Sheet.tsx`, which also exports `SheetContainerProvider`, and `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Public exports go through `src/index.ts`. Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
 
 ## Commands
 

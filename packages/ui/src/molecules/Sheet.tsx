@@ -101,31 +101,12 @@ type SheetRoleProps = {
   /** Draws Back at the left of the title row. */
   onBack?: () => void;
   destructive?: SheetDestructive;
-  label?: never;
-  header?: never;
-  footer?: never;
 } & (
   | { primary?: undefined; secondary?: never }
   | { primary: SheetPrimary; secondary?: SheetSecondary }
 );
 
-/** The old chrome slots, kept until every caller has moved to the roles (spec 821). */
-type SheetSlotProps = {
-  /** Accessible name of the dialog. */
-  label: string;
-  /** Pinned above the body, e.g. a title row and tabs. */
-  header?: ReactNode;
-  /** Pinned below the body; omit for none. */
-  footer?: ReactNode;
-  title?: never;
-  subtitle?: never;
-  onBack?: never;
-  primary?: never;
-  secondary?: never;
-  destructive?: never;
-};
-
-export type SheetProps = SheetBaseProps & (SheetRoleProps | SheetSlotProps);
+export type SheetProps = SheetBaseProps & SheetRoleProps;
 
 /** A long label wraps inside its share of the grid instead of pushing the other button out. */
 const footerButtonSx = {
@@ -170,9 +151,6 @@ export function Sheet({
   onEntered,
   initialFocus,
   onExited,
-  label,
-  header,
-  footer,
   title,
   subtitle,
   onBack,
@@ -186,7 +164,6 @@ export function Sheet({
 }: SheetProps) {
   const titleId = useId();
   const container = useContext(SheetContainerContext);
-  const usesRoles = title !== undefined;
   const labels = useUiLabels();
   const centred = useBreakpointUp('md');
   const reduceMotion = usePrefersReducedMotion();
@@ -227,9 +204,7 @@ export function Sheet({
         },
         paper: {
           ref: setPaper,
-          ...(usesRoles
-            ? { 'aria-labelledby': titleId }
-            : { 'aria-label': label }),
+          'aria-labelledby': titleId,
           sx: {
             display: 'flex',
             flexDirection: 'column',
@@ -268,67 +243,64 @@ export function Sheet({
           }}
         />
       )}
-      {usesRoles ? (
-        <Box
-          sx={{
-            flexShrink: 0,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            px: '16px',
-            pt: '8px',
-            pb: '8px',
-          }}
-        >
-          {onBack ? (
-            <IconButton label={labels.sheetBack} tone="plain" onClick={onBack}>
-              <BackIcon size={22} />
-            </IconButton>
-          ) : null}
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Box
+        sx={{
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          px: '16px',
+          pt: '8px',
+          pb: '8px',
+        }}
+      >
+        {onBack ? (
+          <IconButton label={labels.sheetBack} tone="plain" onClick={onBack}>
+            <BackIcon size={22} />
+          </IconButton>
+        ) : null}
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box
+            component="h2"
+            id={titleId}
+            sx={{
+              m: 0,
+              ...displayType,
+              fontSize: '25px',
+              lineHeight: 1.15,
+              color: palette('text-primary'),
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {title}
+          </Box>
+          {subtitle ? (
             <Box
-              component="h2"
-              id={titleId}
               sx={{
-                m: 0,
-                ...displayType,
-                fontSize: '25px',
-                lineHeight: 1.15,
-                color: palette('text-primary'),
+                mt: '2px',
+                fontFamily: bodyFont,
+                fontSize: '14px',
+                color: themeColor.ink2,
                 overflowWrap: 'anywhere',
               }}
             >
-              {title}
+              {subtitle}
             </Box>
-            {subtitle ? (
-              <Box
-                sx={{
-                  mt: '2px',
-                  fontFamily: bodyFont,
-                  fontSize: '14px',
-                  color: themeColor.ink2,
-                  overflowWrap: 'anywhere',
-                }}
-              >
-                {subtitle}
-              </Box>
-            ) : null}
-          </Box>
-          {dismissable ? (
-            <IconButton label={labels.sheetClose} tone="well" onClick={onClose}>
-              <CloseIcon size={20} />
-            </IconButton>
           ) : null}
         </Box>
-      ) : null}
-      {header ? <Box sx={{ flexShrink: 0 }}>{header}</Box> : null}
+        {dismissable ? (
+          <IconButton label={labels.sheetClose} tone="well" onClick={onClose}>
+            <CloseIcon size={20} />
+          </IconButton>
+        ) : null}
+      </Box>
       <Box
         sx={{
           flex: 1,
           minHeight: 0,
           overflowY: 'auto',
           // With no pinned footer, nothing else clears the home indicator (ADR 0040).
-          ...(usesRoles && !primary ? { pb: plusBottomInset(0) } : {}),
+          ...(!primary ? { pb: plusBottomInset(0) } : {}),
         }}
       >
         {children}
@@ -352,16 +324,6 @@ export function Sheet({
           </Box>
         ) : null}
       </Box>
-      {footer ? (
-        <Box
-          sx={{
-            flexShrink: 0,
-            borderTop: `${border.width} solid ${palette('pp-line')}`,
-          }}
-        >
-          {footer}
-        </Box>
-      ) : null}
       {primary ? (
         <Box
           data-sheet-footer=""
