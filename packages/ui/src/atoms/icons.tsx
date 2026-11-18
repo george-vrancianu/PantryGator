@@ -44,6 +44,7 @@ import {
   CalendarDays,
   Coins,
   Link2,
+  Package,
   type LucideProps,
 } from 'lucide-react';
 
@@ -433,3 +434,5 @@ export const SpicesIcon = lucide(LeafyGreen);
 export const CalendarDaysIcon = lucide(CalendarDays);
 /** A Credit Price: the icon stands in for the word "Credits" beside the number. */
 export const CreditIcon = lucide(Coins);
+/** A box: what a Scan adds to the Pantry (the camera's "Adds to your Pantry" pill). */
+export const BoxIcon = lucide(Package);
