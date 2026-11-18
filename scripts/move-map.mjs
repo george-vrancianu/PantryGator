@@ -69,15 +69,22 @@ const files = [];
 (function walk(dir) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
-    if (statSync(full).isDirectory()) walk(full);
-    else if (/\.(ts|tsx)$/.test(name) && !name.endsWith('.d.ts'))
+    if (statSync(full).isDirectory()) {
+      // Lint self-test fixtures (scripts/check-lint-rules.mjs) are not real importers.
+      if (name !== 'lintSelfTest') walk(full);
+    } else if (/\.(ts|tsx)$/.test(name) && !name.endsWith('.d.ts'))
       files.push(relative(src, full).split('\\').join('/'));
   }
 })(src);
 const fileSet = new Set(files);
 
+// One pass over strings and comments: strings are kept (a `/*` inside one is not a comment),
+// block and line comments (also trailing ones) are dropped.
 const stripComments = (s) =>
-  s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  s.replace(
+    /('(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g,
+    (m, str) => str ?? '',
+  );
 const SPEC_RES = [
   /\b(?:import|export)\b[^'"`;]*?\bfrom\s*['"]([^'"]+)['"]/g,
   /\bimport\s*['"]([^'"]+)['"]/g,
@@ -263,7 +270,14 @@ const shown = (showAll ? scoped : moves).sort((a, b) =>
 );
 console.log('current\ttarget\timporters');
 for (const r of shown) console.log(`${r.current}\t${r.target}\t${r.importers}`);
+// "Into its own folder" = same folder, just wrapped as Foo/Foo.tsx; the spec counts the rest.
+const ownFolder = moves.filter(
+  (r) =>
+    basename(r.target) === basename(r.current) &&
+    dirname(dirname(r.target)) === dirname(r.current) &&
+    basename(dirname(r.target)) === stemOf(r.current),
+).length;
 console.error(
-  `${moves.length} to move, ${scoped.length - moves.length} staying, for ${selector}` +
+  `${moves.length} to move (${moves.length - ownFolder} to another folder, ${ownFolder} into their own folder), ${scoped.length - moves.length} staying, for ${selector}` +
     (moves.length === 0 ? ' (nothing left to move)' : ''),
 );

@@ -171,3 +171,47 @@ test('a test moves beside the module it is named after; a page test stays', () =
   );
   assert.equal(rows.has('pages/Pantry/PantryPage.test.tsx'), false);
 });
+
+test('a string holding /* does not swallow the imports after it', () => {
+  const { rows } = run(
+    {
+      'pages/Recipes/components/Widget.tsx': comp,
+      'pages/Recipes/RecipesPage.tsx':
+        `const glob = 'src/*';\nimport { X } from './components/Widget';\n` +
+        `/* a real comment */\n`,
+      'pages/MealPlans/MealPlanPage.tsx': `import { X } from '../Recipes/components/Widget';\n`,
+    },
+    ['Recipes'],
+  );
+  assert.equal(
+    rows.get('pages/Recipes/components/Widget.tsx').importers,
+    'MealPlans, Recipes',
+  );
+});
+
+test('a trailing line comment is stripped, so a commented-out import is not counted', () => {
+  const { rows } = run(
+    {
+      'pages/Recipes/components/Widget.tsx': comp,
+      'pages/Recipes/RecipesPage.tsx': `const a = 1; // import { X } from './components/Widget';\n`,
+      'pages/MealPlans/MealPlanPage.tsx': `import { X } from '../Recipes/components/Widget';\n`,
+    },
+    ['Recipes'],
+  );
+  assert.equal(
+    rows.get('pages/Recipes/components/Widget.tsx').importers,
+    'MealPlans',
+  );
+});
+
+test('modules in a lintSelfTest folder are not part of the graph', () => {
+  const { rows } = run(
+    {
+      'pages/Recipes/components/Widget.tsx': comp,
+      'pages/Pantry/lintSelfTest/Fixture.ts': `import { X } from '@/pages/Recipes/components/Widget';\n`,
+    },
+    ['Recipes', '--all'],
+  );
+  assert.equal(rows.get('pages/Recipes/components/Widget.tsx').importers, '-');
+  assert.equal(rows.has('pages/Pantry/lintSelfTest/Fixture.ts'), false);
+});
