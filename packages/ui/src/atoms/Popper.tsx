@@ -9,11 +9,13 @@ export type PopperProps = {
   placement?: MuiPopperProps['placement'];
   children: ReactNode;
   /**
-   * Keeps a tall popup on screen: it opens on the side with more room (see `pickSide`) and its height is capped to the room on that side, so it scrolls
-   * inside instead of running off the viewport. `inset` is the gap kept to the viewport edge, in
-   * px (default 8); pass a larger bottom gap to clear the Dock. Off by default.
+   * Keeps a tall popup on screen: it opens on the side with more room (see `pickSide`) and its
+   * height is capped to the room on that side, so it scrolls inside instead of running off the
+   * viewport. `inset` is the gap kept to the viewport edge, in px (default 8); pass a larger bottom
+   * gap to clear the Dock. `maxHeight` is an upper cap in px, so the popper is the only scroller.
+   * Off by default.
    */
-  contain?: boolean | { inset?: number };
+  contain?: boolean | { inset?: number; maxHeight?: number };
   /** The popper's own element, for outside-tap checks. */
   ref?: Ref<HTMLDivElement>;
 };
@@ -58,6 +60,21 @@ export function pickSide(
 }
 
 /**
+ * The placement that puts a popup on `side`, keeping the alignment (`bottom-start` becomes
+ * `top-start`); `null` when it is already there.
+ */
+export function placementOnSide(placement: string, side: 'top' | 'bottom') {
+  const [base, align] = placement.split('-');
+  if (base === side) return null;
+  return align ? `${side}-${align}` : side;
+}
+
+/** The height cap of a contained popup: the room on its side, at least the minimum, at most `maxHeight`. */
+export function containedHeight(room: number, maxHeight = Infinity) {
+  return Math.min(maxHeight, Math.max(room, MIN_POPUP_HEIGHT));
+}
+
+/**
  * Floats its children by an anchor with `position: fixed`, so a scroll container or an
  * `overflow: hidden` ancestor (a Sheet's content) cannot clip it. It stays in the anchor's DOM
  * subtree rather than a body portal: a modal's focus trap would pull focus back out of a portal.
@@ -72,6 +89,7 @@ export function Popper({
   ref,
 }: PopperProps) {
   const inset = typeof contain === 'object' ? (contain.inset ?? 8) : 8;
+  const maxHeight = typeof contain === 'object' ? contain.maxHeight : undefined;
   const modifiers: NonNullable<MuiPopperProps['modifiers']> = [
     // A contained popper picks its side itself (see `pickSide`), so `flip` is off.
     { name: 'flip', enabled: !contain },
@@ -85,7 +103,6 @@ export function Popper({
         phase: 'main',
         requires: ['popperOffsets'],
         fn: ({ state }) => {
-          const [base, align] = state.placement.split('-');
           const side = pickSide(
             {
               top: state.rects.reference.y,
@@ -95,10 +112,9 @@ export function Popper({
             state.elements.popper.scrollHeight,
             inset,
           );
-          if (base === side) return;
-          state.placement = (
-            align ? `${side}-${align}` : side
-          ) as typeof state.placement;
+          const next = placementOnSide(state.placement, side);
+          if (next === null) return;
+          state.placement = next as typeof state.placement;
           // The offsets were computed for the old side; run the cycle again for the new one.
           state.reset = true;
         },
@@ -119,7 +135,7 @@ export function Popper({
           );
           state.styles.popper = {
             ...state.styles.popper,
-            maxHeight: `${Math.max(room, MIN_POPUP_HEIGHT)}px`,
+            maxHeight: `${containedHeight(room, maxHeight)}px`,
             overflowY: 'auto',
           };
         },

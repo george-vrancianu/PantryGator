@@ -1,6 +1,12 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Popper, pickSide, roomOnSide } from './Popper';
+import {
+  Popper,
+  containedHeight,
+  pickSide,
+  placementOnSide,
+  roomOnSide,
+} from './Popper';
 
 describe('roomOnSide', () => {
   const anchor = { top: 500, bottom: 550 };
@@ -44,10 +50,38 @@ describe('pickSide', () => {
   });
 });
 
+describe('placementOnSide', () => {
+  it('moves to the other side and keeps the alignment', () => {
+    expect(placementOnSide('bottom-start', 'top')).toBe('top-start');
+    expect(placementOnSide('top-end', 'bottom')).toBe('bottom-end');
+    expect(placementOnSide('bottom', 'top')).toBe('top');
+  });
+
+  it('is null when already on that side', () => {
+    expect(placementOnSide('bottom-start', 'bottom')).toBeNull();
+  });
+});
+
+describe('containedHeight', () => {
+  it('is the room, but never under the minimum', () => {
+    expect(containedHeight(300)).toBe(300);
+    expect(containedHeight(10)).toBe(120);
+  });
+
+  it('is capped by an explicit maxHeight', () => {
+    expect(containedHeight(500, 360)).toBe(360);
+    expect(containedHeight(200, 360)).toBe(200);
+  });
+});
+
 describe('Popper', () => {
   afterEach(cleanup);
 
-  function Host({ contain }: { contain?: boolean | { inset?: number } }) {
+  function Host({
+    contain,
+  }: {
+    contain?: boolean | { inset?: number; maxHeight?: number };
+  }) {
     return (
       <>
         <button type="button" id="anchor">
@@ -78,5 +112,14 @@ describe('Popper', () => {
       expect(popup.parentElement!.style.maxHeight).toMatch(/^\d+px$/);
     });
     expect(popup.parentElement!.style.overflowY).toBe('auto');
+  });
+
+  it('respects an explicit maxHeight below the room on its side', async () => {
+    const { rerender } = render(<Host contain={{ maxHeight: 90 }} />);
+    rerender(<Host contain={{ maxHeight: 90 }} />);
+    const popup = await screen.findByText('popup');
+    await waitFor(() => {
+      expect(popup.parentElement!.style.maxHeight).toBe('90px');
+    });
   });
 });

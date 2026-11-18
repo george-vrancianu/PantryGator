@@ -378,9 +378,6 @@ export function CatalogSearch({
   const rowPopoverSx = {
     width: anchor?.offsetWidth,
     maxWidth: '100%',
-    // As tall as the inline popover was; the Popper caps it further to the room on its side.
-    maxHeight: 360,
-    overflowY: 'auto' as const,
     boxSizing: 'border-box' as const,
     ...cardSurface,
     boxShadow: shadow.float,
@@ -584,7 +581,8 @@ export function CatalogSearch({
           open={popoverOpen}
           anchorEl={anchor}
           placement="bottom-start"
-          contain={{ inset: viewportInset }}
+          // As tall as the inline popover was; the Popper is the only scroller.
+          contain={{ inset: viewportInset, maxHeight: 360 }}
         >
           <Box
             sx={rowPopoverSx}

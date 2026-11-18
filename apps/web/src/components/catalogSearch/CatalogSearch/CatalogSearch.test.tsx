@@ -1340,6 +1340,23 @@ describe('CatalogSearch row variant (editor card)', () => {
     expect(onSelect).toHaveBeenCalledWith(cheddar);
   });
 
+  it('scrolls in the Popper only, with no scroller of its own inside it', async () => {
+    stubSearch((locale) => [parmesan(locale), cheddar]);
+    renderWithProviders(<CatalogSearch variant="row" onSelect={() => {}} />);
+    const user = userEvent.setup();
+
+    await user.type(screen.getByRole('combobox'), 'ch');
+    const option = await screen.findByRole('option', { name: /Cheddar/ });
+    const popper = option.closest('[data-popper-placement]')!;
+    for (
+      let node = option.parentElement;
+      node && node !== popper;
+      node = node.parentElement
+    ) {
+      expect(getComputedStyle(node).overflowY).not.toBe('auto');
+    }
+  });
+
   it('closes the popover when focus leaves the row', async () => {
     stubSearch((locale) => [parmesan(locale)]);
     renderWithProviders(
