@@ -2,8 +2,8 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { iso, plan, slot, useFixedToday } from '../../test/mealPlans';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { iso, plan, slot, useFixedToday } from '@/test/mealPlans';
 import { EditMealPlanPage, NewMealPlanPage } from './MealPlanFormPage';
 
 const family = {

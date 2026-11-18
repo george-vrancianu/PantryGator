@@ -14,10 +14,10 @@ import {
   readableAmount,
   reasonText,
 } from '@/components/mealPlan/MealPlanPopover/mealPlanText';
-import { ingredientKey, type PlanIssue } from '../../../lib/mealPlan';
-import type { AddMissingScope } from '../../../lib/mealPlan';
-import type { PlanSlot } from '../../../lib/mealPlanPage';
-import type { PantryLine } from '../../../lib/recipes';
+import { ingredientKey, type PlanIssue } from '@/lib/mealPlan';
+import type { AddMissingScope } from '@/lib/mealPlan';
+import type { PlanSlot } from '@/lib/mealPlanPage';
+import type { PantryLine } from '@/lib/recipes';
 import { LineStatusPill } from '@/components/recipe/PantryStatus/PantryStatus';
 import { ServingsStepper } from '@/components/recipe/Servings/Servings';
 

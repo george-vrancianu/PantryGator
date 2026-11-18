@@ -18,7 +18,7 @@ import {
   dayLabel,
   shortWeekday,
 } from '@/components/mealPlan/MealPlanPopover/mealPlanText';
-import { localIso, type IsoDate } from '../../lib/pantry';
+import { localIso, type IsoDate } from '@/lib/pantry';
 import {
   dateRange,
   missingFor,
@@ -31,12 +31,12 @@ import {
   useMealPlanMutations,
   type MealPlanDetail,
   type SlotKey,
-} from '../../lib/mealPlanPage';
-import { useAddMissing } from '../../lib/useAddMissing';
-import { useToday } from '../../lib/useToday';
-import { DayCard } from './components/DayCard';
-import { RecipePickerSheet } from './components/RecipePickerSheet';
-import { SlotSheet } from './components/SlotSheet';
+} from '@/lib/mealPlanPage';
+import { useAddMissing } from '@/lib/useAddMissing';
+import { useToday } from '@/lib/useToday';
+import { DayCard } from './components/DayCard/DayCard';
+import { RecipePickerSheet } from './components/RecipePickerSheet/RecipePickerSheet';
+import { SlotSheet } from './components/SlotSheet/SlotSheet';
 
 /** One Meal Plan: the forecast summary, Fill, Add missing, and a card per day with its three Mealtimes. `?day=` opens on a day. */
 export function MealPlanPage() {

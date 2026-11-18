@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { ConfirmPrompt } from '../../components/ConfirmAction';
-import { EditorForm } from '../../components/EditorForm';
+import { ConfirmPrompt } from '@/components/ConfirmAction';
+import { EditorForm } from '@/components/EditorForm';
 import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
-import { useFamily } from '../../lib/family';
-import { localIso, type IsoDate } from '../../lib/pantry';
+import { useFamily } from '@/lib/family';
+import { localIso, type IsoDate } from '@/lib/pantry';
 import {
   addDaysIso,
   MAX_NAME_LENGTH,
@@ -18,8 +18,8 @@ import {
   useMealPlanMutations,
   type MealPlanDetail,
   type PlanInput,
-} from '../../lib/mealPlanPage';
-import { useToday } from '../../lib/useToday';
+} from '@/lib/mealPlanPage';
+import { useToday } from '@/lib/useToday';
 import {
   ServingsStepper,
   StepperPill,
