@@ -1,4 +1,4 @@
-import { Stack, TextField } from '@pocket-pantry/ui';
+import { TextField } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,42 +24,40 @@ export function AisleEditor({ aisle, onDone }: Props) {
   const [name, setName] = useState(aisle?.name ?? '');
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          aisle
-            ? t('aisle.edit', { name: localName(aisle, i18n.language) })
-            : t('aisle.new')
-        }
-        error={save.error ?? remove.error}
-        canSave={name.trim() !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate({ name: name.trim() }, { onSuccess: onDone })
-        }
-        onCancel={onDone}
-        onDelete={
-          aisle
-            ? () => remove.mutate(aisle.id, { onSuccess: onDone })
-            : undefined
-        }
-        deleting={remove.isPending}
-      >
-        <TextField
-          label={t('aisle.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-      </EditorForm>
-      {aisle ? (
-        <TranslationsEditor
-          entityType="aisle"
-          entityId={aisle.id}
-          name={aisle.name}
-          translations={aisle.translations}
-        />
-      ) : null}
-    </Stack>
+    <EditorForm
+      after={
+        <>
+          {aisle ? (
+            <TranslationsEditor
+              entityType="aisle"
+              entityId={aisle.id}
+              name={aisle.name}
+              translations={aisle.translations}
+            />
+          ) : null}
+        </>
+      }
+      heading={
+        aisle
+          ? t('aisle.edit', { name: localName(aisle, i18n.language) })
+          : t('aisle.new')
+      }
+      error={save.error ?? remove.error}
+      canSave={name.trim() !== ''}
+      saving={save.isPending}
+      onSubmit={() => save.mutate({ name: name.trim() }, { onSuccess: onDone })}
+      onCancel={onDone}
+      onDelete={
+        aisle ? () => remove.mutate(aisle.id, { onSuccess: onDone }) : undefined
+      }
+      deleting={remove.isPending}
+    >
+      <TextField
+        label={t('aisle.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        required
+      />
+    </EditorForm>
   );
 }

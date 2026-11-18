@@ -1,4 +1,3 @@
-import { Stack } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -35,65 +34,67 @@ export function IngredientEditor({ ingredient, catalog, onDone }: Props) {
   });
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          ingredient
-            ? t('admin:ingredient.edit', {
-                name: localName(ingredient, i18n.language),
-              })
-            : t('admin:ingredient.new')
+    <EditorForm
+      after={
+        <>
+          {ingredient ? (
+            <IngredientAllergens
+              ingredient={ingredient}
+              allergens={catalog.allergens}
+            />
+          ) : null}
+          {ingredient ? (
+            <TranslationsEditor
+              entityType="ingredient"
+              entityId={ingredient.id}
+              name={ingredient.name}
+              translations={ingredient.translations}
+              part="synonyms"
+            />
+          ) : null}
+        </>
+      }
+      heading={
+        ingredient
+          ? t('admin:ingredient.edit', {
+              name: localName(ingredient, i18n.language),
+            })
+          : t('admin:ingredient.new')
+      }
+      error={save.error ?? remove.error}
+      canSave={fields.name.trim() !== ''}
+      saving={save.isPending}
+      onSubmit={() =>
+        save.mutate(
+          { ...fields, name: fields.name.trim() },
+          { onSuccess: onDone },
+        )
+      }
+      onCancel={onDone}
+      onDelete={
+        ingredient
+          ? () => remove.mutate(ingredient.id, { onSuccess: onDone })
+          : undefined
+      }
+      deleting={remove.isPending}
+    >
+      <IngredientFields
+        catalog={catalog}
+        value={fields}
+        onChange={setFields}
+        controls="chips"
+        afterName={
+          ingredient ? (
+            <TranslationsEditor
+              entityType="ingredient"
+              entityId={ingredient.id}
+              name={ingredient.name}
+              translations={ingredient.translations}
+              part="names"
+            />
+          ) : null
         }
-        error={save.error ?? remove.error}
-        canSave={fields.name.trim() !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate(
-            { ...fields, name: fields.name.trim() },
-            { onSuccess: onDone },
-          )
-        }
-        onCancel={onDone}
-        onDelete={
-          ingredient
-            ? () => remove.mutate(ingredient.id, { onSuccess: onDone })
-            : undefined
-        }
-        deleting={remove.isPending}
-      >
-        <IngredientFields
-          catalog={catalog}
-          value={fields}
-          onChange={setFields}
-          controls="chips"
-          afterName={
-            ingredient ? (
-              <TranslationsEditor
-                entityType="ingredient"
-                entityId={ingredient.id}
-                name={ingredient.name}
-                translations={ingredient.translations}
-                part="names"
-              />
-            ) : null
-          }
-        />
-      </EditorForm>
-      {ingredient ? (
-        <IngredientAllergens
-          ingredient={ingredient}
-          allergens={catalog.allergens}
-        />
-      ) : null}
-      {ingredient ? (
-        <TranslationsEditor
-          entityType="ingredient"
-          entityId={ingredient.id}
-          name={ingredient.name}
-          translations={ingredient.translations}
-          part="synonyms"
-        />
-      ) : null}
-    </Stack>
+      />
+    </EditorForm>
   );
 }

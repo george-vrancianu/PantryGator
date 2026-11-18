@@ -15,7 +15,6 @@
     "da": "Danish"
   },
   "common": {
-    "close": "Close",
     "save": "Save",
     "saving": "Saving…",
     "delete": "Delete",
@@ -506,7 +505,6 @@
     "otherFamilies_one": "+{{count}} family",
     "otherFamilies_other": "+{{count}} families",
     "synonymTitle": "“{{name}}” → {{ingredient}}",
-    "back": "Back",
     "promoteAction": "Promote to Catalog",
     "mergeAction": "Merge into…",
     "emptyDismissed": "No names set aside."

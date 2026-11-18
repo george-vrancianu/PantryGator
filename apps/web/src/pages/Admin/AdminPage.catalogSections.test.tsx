@@ -74,18 +74,22 @@ const catalog = {
   ],
 };
 
-function renderSection(section: string) {
-  vi.stubGlobal(
-    'fetch',
-    stubApi({ 'GET /api/admin/catalog': () => Response.json(catalog) })
-      .fetchMock,
-  );
+function renderSection(
+  section: string,
+  routes: Record<string, () => Response> = {},
+) {
+  const api = stubApi({
+    'GET /api/admin/catalog': () => Response.json(catalog),
+    ...routes,
+  });
+  vi.stubGlobal('fetch', api.fetchMock);
   renderWithProviders(
     <Routes>
       <Route path="admin/:section" element={<AdminSectionPage />} />
     </Routes>,
     { route: `/admin/${section}` },
   );
+  return api;
 }
 
 describe('Catalog section pages', () => {
@@ -133,7 +137,7 @@ describe('Catalog section pages', () => {
     expect(milks).toHaveTextContent('Uses Dairy & eggs’s defaults');
   });
 
-  it('opens an editor as a sheet and returns focus to the row on Cancel', async () => {
+  it('opens an editor as a sheet and returns focus to the row on Close', async () => {
     renderSection('aisles');
     const user = userEvent.setup();
     const row = await screen.findByRole('button', { name: 'Edit Aisle Dairy' });
@@ -144,7 +148,7 @@ describe('Catalog section pages', () => {
     expect(
       within(sheet).getByRole('textbox', { name: 'Name (English)' }),
     ).toBeVisible();
-    await user.click(within(sheet).getByRole('button', { name: 'Cancel' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Close' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     await waitFor(() =>
       expect(
@@ -169,7 +173,7 @@ describe('Catalog section pages', () => {
     expect(anchor.contains(leaf)).toBe(false);
   });
 
-  it('pins Save and Cancel in the sheet footer, under a header with the title and a close button', async () => {
+  it('pins Save in the sheet footer, under a title row with the X', async () => {
     renderSection('ingredients');
     const user = userEvent.setup();
     await user.click(
@@ -179,6 +183,13 @@ describe('Catalog section pages', () => {
     expect(
       within(sheet).getByRole('heading', { name: 'Edit Butter' }),
     ).toBeVisible();
+    // Sections beside the form (translations, the Ingredient's allergens) stay inside the sheet.
+    expect(
+      within(sheet).getAllByRole('region', { name: /translations/i }),
+    ).not.toHaveLength(0);
+    expect(
+      within(sheet).getByRole('heading', { name: 'Contains' }),
+    ).toBeVisible();
     const save = await within(sheet).findByRole('button', { name: 'Save' });
     expect(sheet.querySelector('form')?.contains(save)).toBe(false);
     expect(save).toHaveAttribute('form', sheet.querySelector('form')?.id);
@@ -187,5 +198,50 @@ describe('Catalog section pages', () => {
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Edit Butter' })).toHaveFocus(),
     );
+  });
+
+  it('saves from the sheet with the pinned Save', async () => {
+    const api = renderSection('aisles', {
+      'PATCH /api/admin/catalog/aisles/a1': () =>
+        Response.json({ id: 'a1', name: 'Dairy products' }),
+    });
+    const user = userEvent.setup();
+    await user.click(
+      await screen.findByRole('button', { name: 'Edit Aisle Dairy' }),
+    );
+    const sheet = await screen.findByRole('dialog', {
+      name: 'Edit Aisle Dairy',
+    });
+    expect(within(sheet).queryByRole('button', { name: 'Cancel' })).toBeNull();
+    const name = within(sheet).getByRole('textbox', { name: 'Name (English)' });
+    await user.clear(name);
+    await user.type(name, 'Dairy products');
+    await user.click(within(sheet).getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(api.calls.find((c) => c.key.startsWith('PATCH'))).toMatchObject({
+      key: 'PATCH /api/admin/catalog/aisles/a1',
+      body: { name: 'Dairy products' },
+    });
+  });
+
+  it('deletes from the sheet with the destructive link and a confirm step', async () => {
+    const api = renderSection('aisles', {
+      'DELETE /api/admin/catalog/aisles/a1': () =>
+        new Response(null, { status: 204 }),
+    });
+    const user = userEvent.setup();
+    await user.click(
+      await screen.findByRole('button', { name: 'Edit Aisle Dairy' }),
+    );
+    const sheet = await screen.findByRole('dialog', {
+      name: 'Edit Aisle Dairy',
+    });
+    await user.click(within(sheet).getByRole('button', { name: 'Delete' }));
+    expect(api.calls.some((c) => c.key.startsWith('DELETE'))).toBe(false);
+    await user.click(within(sheet).getByRole('button', { name: 'Confirm' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(api.calls.some((c) => c.key.startsWith('DELETE'))).toBe(true);
   });
 });

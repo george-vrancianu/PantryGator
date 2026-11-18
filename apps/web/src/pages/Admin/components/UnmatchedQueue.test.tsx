@@ -340,7 +340,7 @@ describe('UnmatchedQueue', () => {
     );
   });
 
-  it('returns focus to the Resolve button when the resolver is cancelled', async () => {
+  it('returns focus to the Resolve button when the resolver is closed', async () => {
     stub();
     renderWithProviders(<UnmatchedQueue catalog={catalog} />);
     const user = userEvent.setup();
@@ -348,7 +348,7 @@ describe('UnmatchedQueue', () => {
     await user.click(
       await screen.findByRole('button', { name: 'Resolve Brânză ciudată' }),
     );
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(
       await screen.findByRole('button', { name: 'Resolve Brânză ciudată' }),
@@ -650,9 +650,7 @@ describe('UnmatchedQueue', () => {
       name: 'Resolve Brânză ciudată',
     });
     await user.click(within(dialog).getByRole('button', { name: 'Restore' }));
-    expect(
-      within(dialog).getByRole('button', { name: 'Restore' }),
-    ).toBeDisabled();
+    // A secondary has no disabled state: the second click is ignored while the request is pending.
     fireEvent.click(within(dialog).getByRole('button', { name: 'Restore' }));
     release();
 
@@ -660,9 +658,6 @@ describe('UnmatchedQueue', () => {
     expect(
       calls.filter((c) => c.key === 'POST /api/admin/unmatched/undismiss'),
     ).toHaveLength(1);
-    expect(
-      within(dialog).getByRole('button', { name: 'Restore' }),
-    ).toBeEnabled();
   });
 
   it('does not show an old Restore error in the resolver of an Open row', async () => {
@@ -688,7 +683,7 @@ describe('UnmatchedQueue', () => {
     });
     await user.click(within(dialog).getByRole('button', { name: 'Restore' }));
     expect(await within(dialog).findByRole('alert')).toBeVisible();
-    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
     await user.click(await screen.findByRole('button', { name: /^Open/ }));
     await user.click(
       await screen.findByRole('button', { name: 'Resolve Brânză ciudată' }),
@@ -767,7 +762,7 @@ describe('UnmatchedQueue', () => {
     expect(screen.getAllByRole('alert')).toHaveLength(1);
   });
 
-  it('returns focus to a swipe row opened from the keyboard when the resolver is cancelled', async () => {
+  it('returns focus to a swipe row opened from the keyboard when the resolver is closed', async () => {
     stub();
     renderWithProviders(<UnmatchedQueue catalog={catalog} />);
     const user = userEvent.setup();
@@ -775,12 +770,12 @@ describe('UnmatchedQueue', () => {
     const row = await screen.findByRole('group', { name: 'Brânză ciudată' });
     act(() => row.focus());
     fireEvent.keyDown(row, { key: 'Enter' });
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }));
+    await user.click(await screen.findByRole('button', { name: 'Close' }));
 
     await vi.waitFor(() => expect(row).toHaveFocus());
   });
 
-  it('moves focus to the queue heading when Cancel finds the row gone', async () => {
+  it('moves focus to the queue heading when Close finds the row gone', async () => {
     let reads = 0;
     const calls = stub({
       'GET /api/admin/unmatched': () =>
@@ -805,7 +800,7 @@ describe('UnmatchedQueue', () => {
         calls.filter((c) => c.key === 'GET /api/admin/unmatched'),
       ).toHaveLength(2),
     );
-    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(
       await screen.findByRole('heading', { name: 'Unmatched names' }),

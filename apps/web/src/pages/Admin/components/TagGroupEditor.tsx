@@ -1,4 +1,4 @@
-import { Stack, TextField } from '@pocket-pantry/ui';
+import { TextField } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,43 +24,41 @@ export function TagGroupEditor({ group, onDone }: Props) {
   const [name, setName] = useState(group?.name ?? '');
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          group
-            ? t('tagGroup.edit', { name: localName(group, i18n.language) })
-            : t('tagGroup.new')
-        }
-        error={save.error ?? remove.error}
-        canSave={name.trim() !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate({ name: name.trim() }, { onSuccess: onDone })
-        }
-        onCancel={onDone}
-        onDelete={
-          group
-            ? () => remove.mutate(group.id, { onSuccess: onDone })
-            : undefined
-        }
-        deleting={remove.isPending}
-      >
-        <TextField
-          label={t('tagGroup.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-      </EditorForm>
-      {group ? (
-        <TranslationsEditor
-          entityType="tag_group"
-          entityId={group.id}
-          name={group.name}
-          translations={group.translations}
-          synonyms={false}
-        />
-      ) : null}
-    </Stack>
+    <EditorForm
+      after={
+        <>
+          {group ? (
+            <TranslationsEditor
+              entityType="tag_group"
+              entityId={group.id}
+              name={group.name}
+              translations={group.translations}
+              synonyms={false}
+            />
+          ) : null}
+        </>
+      }
+      heading={
+        group
+          ? t('tagGroup.edit', { name: localName(group, i18n.language) })
+          : t('tagGroup.new')
+      }
+      error={save.error ?? remove.error}
+      canSave={name.trim() !== ''}
+      saving={save.isPending}
+      onSubmit={() => save.mutate({ name: name.trim() }, { onSuccess: onDone })}
+      onCancel={onDone}
+      onDelete={
+        group ? () => remove.mutate(group.id, { onSuccess: onDone }) : undefined
+      }
+      deleting={remove.isPending}
+    >
+      <TextField
+        label={t('tagGroup.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        required
+      />
+    </EditorForm>
   );
 }

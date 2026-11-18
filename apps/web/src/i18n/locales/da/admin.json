@@ -15,7 +15,6 @@
     "da": "Dansk"
   },
   "common": {
-    "close": "Luk",
     "save": "Gem",
     "saving": "Gemmer…",
     "delete": "Slet",
@@ -506,7 +505,6 @@
     "otherFamilies_one": "+{{count}} familie",
     "otherFamilies_other": "+{{count}} familier",
     "synonymTitle": "„{{name}}“ → {{ingredient}}",
-    "back": "Tilbage",
     "promoteAction": "Forfrem til katalog",
     "mergeAction": "Flet med…",
     "emptyDismissed": "Ingen navne lagt til side."

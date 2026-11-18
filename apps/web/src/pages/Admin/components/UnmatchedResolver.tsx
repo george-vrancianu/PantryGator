@@ -1,5 +1,4 @@
 import {
-  Button,
   Checkbox,
   SegmentedControl,
   Stack,
@@ -18,7 +17,7 @@ import {
 } from '../../../lib/unmatched';
 import { IngredientFields } from './IngredientFields';
 import { ReviewSheet } from './ReviewSheet';
-import { UnmatchedMeta } from './UnmatchedMeta';
+import { UnmatchedPrinted, useUnmatchedMetaLine } from './UnmatchedMeta';
 
 type Props = {
   entry: UnmatchedEntry;
@@ -55,6 +54,7 @@ export function UnmatchedResolver({
   onDone,
 }: Props) {
   const { t } = useTranslation('admin');
+  const metaLine = useUnmatchedMetaLine(entry);
   const resolve = useResolveUnmatched();
   const [mode, setMode] = useState<Mode>('existing');
   const [picked, setPicked] = useState<{ id: string; name: string } | null>(
@@ -132,7 +132,7 @@ export function UnmatchedResolver({
       onClose={onClose}
       onExited={onExited}
       title={t('admin:unmatched.resolveName', { name: entry.rawName })}
-      subtitle={<UnmatchedMeta entry={entry} />}
+      subtitle={metaLine}
       error={resolve.error ?? restoreError}
       form={{
         onSubmit: submit,
@@ -140,18 +140,21 @@ export function UnmatchedResolver({
         saving: resolve.isPending,
         submitLabel: t('admin:review.link', { count: entry.count }),
         savingLabel: t('admin:unmatched.resolving'),
-        extra: onRestore ? (
-          <Button
-            variant="ghost"
-            sx={{ height: 52 }}
-            onClick={onRestore}
-            disabled={restoring}
-          >
-            {t('admin:unmatched.restore')}
-          </Button>
-        ) : undefined,
+        secondary: onRestore
+          ? {
+              label: t('admin:unmatched.restore'),
+              onClick: () => {
+                if (!restoring) onRestore();
+              },
+            }
+          : undefined,
       }}
     >
+      {entry.sourceText ? (
+        <Typography variant="body2" color="text.secondary">
+          <UnmatchedPrinted entry={entry} />
+        </Typography>
+      ) : null}
       <SegmentedControl
         label={t('admin:unmatched.modeLabel')}
         value={mode}

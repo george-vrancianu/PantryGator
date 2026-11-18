@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Stack,
-  Typography,
-  radius,
-  tokens,
-} from '@pocket-pantry/ui';
+import { Box, Stack, Typography, radius, tokens } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '../../../components/catalogSearch/CatalogSearch';
@@ -169,20 +162,16 @@ export function FamilyIngredientSheet({
       size="content"
       title={group.name}
       subtitle={subtitle}
-      actions={
-        <>
-          <Button onClick={() => setStep('promote')}>
-            {t('review.promoteAction')}
-          </Button>
-          <Button
-            variant="secondary"
-            sx={{ height: 52 }}
-            onClick={() => setStep('merge')}
-          >
-            {t('review.mergeAction')}
-          </Button>
-        </>
-      }
+      actions={{
+        primary: {
+          label: t('review.promoteAction'),
+          onClick: () => setStep('promote'),
+        },
+        secondary: {
+          label: t('review.mergeAction'),
+          onClick: () => setStep('merge'),
+        },
+      }}
     >
       <Box
         sx={{
