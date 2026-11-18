@@ -61,7 +61,13 @@
   "fill": {
     "button": "Udfyld",
     "onlyWhatIHave": "Kun det jeg har",
-    "filling": "Udfylder…"
+    "filling": "Udfylder…",
+    "filled_one": "Udfyldte {{count}} plads.",
+    "filled_other": "Udfyldte {{count}} pladser.",
+    "nothing": "Intet kunne udfyldes.",
+    "emptyForAllergies_one": "{{count}} plads forblev tom på grund af allergier.",
+    "emptyForAllergies_other": "{{count}} pladser forblev tomme på grund af allergier.",
+    "withAllergies": "{{filled}} {{empty}}"
   },
   "addMissing": {
     "plan_one": "Tilføj {{count}} manglende",

@@ -112,7 +112,8 @@ function setup(view: MealPlanDetail = week(), extra = {}) {
     'PUT /api/meal-plans/p1/slots/1/dinner': () => Response.json(view),
     'DELETE /api/meal-plans/p1/slots/1/dinner': () =>
       new Response(null, { status: 204 }),
-    'POST /api/meal-plans/p1/fill': () => Response.json(view),
+    'POST /api/meal-plans/p1/fill': () =>
+      Response.json({ ...view, fill: { filled: 0, emptyForAllergies: 0 } }),
     'GET /api/shopping-list': shoppingList,
     ...extra,
   });
@@ -892,6 +893,96 @@ describe('Meal Plan page', () => {
     expect(
       within(dialog).queryByRole('button', { name: /Servings/ }),
     ).toBeNull();
+  });
+
+  describe('the toast after Fill', () => {
+    const fillWith = async (
+      locale: 'en' | 'ro' | 'da',
+      fill: { filled: number; emptyForAllergies: number },
+      text: string,
+    ) => {
+      setup(week(), {
+        'POST /api/meal-plans/p1/fill': () =>
+          Response.json({ ...week(), fill }),
+      });
+      renderWithProviders(
+        <Routes>
+          <Route path="/meal-plans/:id" element={<MealPlanPage />} />
+        </Routes>,
+        { route: '/meal-plans/p1', locale },
+      );
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: { en: 'Fill', ro: 'Completează', da: 'Udfyld' }[locale],
+        }),
+      );
+      // The toast is a polite live region; an alert would interrupt the screen reader.
+      await waitFor(() =>
+        expect(
+          screen
+            .getAllByRole('status')
+            .map((el) => el.textContent)
+            .includes(text),
+        ).toBe(true),
+      );
+      expect(screen.queryByRole('alert')).toBeNull();
+    };
+
+    it('says how many slots were filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 3, emptyForAllergies: 0 },
+        'Filled 3 slots.',
+      );
+    });
+
+    it('uses the singular for one slot', async () => {
+      await fillWith(
+        'en',
+        { filled: 1, emptyForAllergies: 0 },
+        'Filled 1 slot.',
+      );
+    });
+
+    it('says nothing could be filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 0, emptyForAllergies: 0 },
+        'Nothing could be filled.',
+      );
+    });
+
+    it('mentions slots left empty because of Allergies', async () => {
+      await fillWith(
+        'en',
+        { filled: 2, emptyForAllergies: 1 },
+        'Filled 2 slots. 1 slot stayed empty because of Allergies.',
+      );
+    });
+
+    it('mentions Allergies when nothing could be filled', async () => {
+      await fillWith(
+        'en',
+        { filled: 0, emptyForAllergies: 4 },
+        'Nothing could be filled. 4 slots stayed empty because of Allergies.',
+      );
+    });
+
+    it('speaks Romanian with its few form', async () => {
+      await fillWith(
+        'ro',
+        { filled: 2, emptyForAllergies: 0 },
+        'S-au completat 2 sloturi.',
+      );
+    });
+
+    it('speaks Danish', async () => {
+      await fillWith(
+        'da',
+        { filled: 2, emptyForAllergies: 1 },
+        'Udfyldte 2 pladser. 1 plads forblev tom på grund af allergier.',
+      );
+    });
   });
 
   it('disables Fill for a plan that is over', async () => {

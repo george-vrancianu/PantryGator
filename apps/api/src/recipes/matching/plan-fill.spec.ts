@@ -1,6 +1,7 @@
 import { seedId } from '../../catalog/seed/seed-ids';
 import {
   fillPlan,
+  slotsEmptiedByAllergies,
   type FillInput,
   type FillRecipe,
   type FillSlot,
@@ -554,5 +555,61 @@ describe('fillPlan: only what I have', () => {
       recipes: [recipe('m'), recipe('a', { groupId: 'other' })],
     });
     expect(placed(choices)).toEqual(['0-dinner=a']);
+  });
+});
+
+describe('slotsEmptiedByAllergies', () => {
+  const base = {
+    today: TODAY,
+    eatingMomentIds: ALL_MOMENTS,
+    shoppingList: [],
+    staleThresholdDays: 3,
+    onlyWhatIHave: true,
+  };
+
+  it('counts the slot a blocked Recipe would have filled', () => {
+    expect(
+      slotsEmptiedByAllergies({
+        ...base,
+        slots: [empty(0, 'dinner')],
+        batches: [eggs(100)],
+        recipes: [recipe('a', { blocksFill: true })],
+      }),
+    ).toBe(1);
+  });
+
+  it('is 0 when a safe Recipe fills the slot', () => {
+    expect(
+      slotsEmptiedByAllergies({
+        ...base,
+        slots: [empty(0, 'dinner')],
+        batches: [eggs(100)],
+        recipes: [recipe('a', { blocksFill: true }), recipe('b')],
+      }),
+    ).toBe(0);
+  });
+
+  it('is 0 when the blocked Recipe is no use anyway and tied safe Recipes could be picked in an order that fills fewer slots', () => {
+    // 4 eggs: a and b take 2 each and fill both days, z takes all 4 and fills one. Picking
+    // a or z first changes the count, so the answer must not depend on a tie-break.
+    const two = (id: string) => recipe(id, { lines: [line({ quantity: 2 })] });
+    const input = {
+      ...base,
+      slots: [empty(0, 'dinner'), empty(1, 'dinner')],
+      batches: [eggs(4)],
+      recipes: [
+        two('a'),
+        two('b'),
+        recipe('z'),
+        // Milk is not in the Pantry, so this Recipe could not be placed under the switch.
+        recipe('m', {
+          blocksFill: true,
+          lines: [line({ ingredientId: MILK })],
+        }),
+      ],
+    };
+    expect(fillPlan({ ...input, tieBreaker: first })).toHaveLength(2);
+    expect(fillPlan({ ...input, tieBreaker: last })).toHaveLength(1);
+    expect(slotsEmptiedByAllergies(input)).toBe(0);
   });
 });

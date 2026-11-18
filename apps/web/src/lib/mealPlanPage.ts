@@ -50,6 +50,12 @@ export type MealPlanDetail = MealPlanSummary & {
   forecast: { tag: PlanTag; days: { date: IsoDate; status: DayStatus }[] };
 };
 
+/** What one Fill did: slots filled, and slots left empty because Allergies ruled the Recipes out. */
+export type FillResult = { filled: number; emptyForAllergies: number };
+
+/** The Meal Plan as Fill returns it. */
+export type FilledMealPlanDetail = MealPlanDetail & { fill: FillResult };
+
 export type PlanInput = {
   name?: string | null;
   startDate?: IsoDate;
@@ -201,7 +207,7 @@ export function useMealPlanMutations(today: IsoDate) {
         id: string;
         onlyWhatIHave: boolean;
       }) =>
-        apiRequest<MealPlanDetail>(`/meal-plans/${id}/fill${q}`, {
+        apiRequest<FilledMealPlanDetail>(`/meal-plans/${id}/fill${q}`, {
           method: 'POST',
           body: { onlyWhatIHave },
         }),
