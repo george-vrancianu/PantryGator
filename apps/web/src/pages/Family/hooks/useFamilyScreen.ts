@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { translateApiError } from '../../../i18n/translateApiError';
+import { translateApiError } from '@/i18n/translateApiError';
 import {
   useDeleteFamily,
   useFamily,
@@ -7,7 +7,7 @@ import {
   useRegenerateInviteCode,
   useRemoveMember,
   useTransferOwnership,
-} from '../../../lib/family';
+} from '@/lib/family';
 
 export function useFamilyScreen() {
   const { t, i18n } = useTranslation();

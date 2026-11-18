@@ -1,16 +1,16 @@
 import { Alert, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { Screen } from '../../components/layout/Screen';
-import { AdminEditor } from './components/AdminEditor';
-import { AisleList } from './components/AisleList';
-import { AllergenList } from './components/AllergenList';
-import { CatalogTagList } from './components/CatalogTagList';
-import { CategoryTree } from './components/CategoryTree';
-import { EatingMomentList } from './components/EatingMomentList';
-import { IngredientList } from './components/IngredientList';
-import { RecipeList } from './components/RecipeList';
-import { TagGroupList } from './components/TagGroupList';
+import { Screen } from '@/components/layout/Screen';
+import { AdminEditor } from './components/AdminEditor/AdminEditor';
+import { AisleList } from './components/AisleList/AisleList';
+import { AllergenList } from './components/AllergenList/AllergenList';
+import { CatalogTagList } from './components/CatalogTagList/CatalogTagList';
+import { CategoryTree } from './components/CategoryTree/CategoryTree';
+import { EatingMomentList } from './components/EatingMomentList/EatingMomentList';
+import { IngredientList } from './components/IngredientList/IngredientList';
+import { RecipeList } from './components/RecipeList/RecipeList';
+import { TagGroupList } from './components/TagGroupList/TagGroupList';
 import { asAdminSection, CATALOG_TAB_URL } from './adminSections';
 import { useAdminScreen } from './hooks/useAdminScreen';
 

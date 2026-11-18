@@ -9,8 +9,8 @@ import {
   Typography,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { INTRO_PATHS } from '../../lib/intro';
-import { AuthShell } from '../../components/AuthShell';
+import { INTRO_PATHS } from '@/lib/intro';
+import { AuthShell } from '@/components/auth/AuthShell/AuthShell';
 import { useSignUpForm } from './hooks/useSignUpForm';
 
 export function SignUpPage() {

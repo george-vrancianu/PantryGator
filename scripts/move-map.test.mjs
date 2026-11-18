@@ -240,3 +240,17 @@ test('a feature group keeps its parts together: sub-groups stay inside, not move
     undefined,
   );
 });
+
+test('the recipeEditor feature group keeps its parts at the group level', () => {
+  const { rows } = run(
+    {
+      'components/recipeEditor/RecipeMetaFields.tsx': comp,
+      'pages/Admin/components/RecipeForm/RecipeForm.tsx': `import { X } from '@/components/recipeEditor/RecipeMetaFields';\n`,
+    },
+    ['recipeEditor'],
+  );
+  assert.equal(
+    rows.get('components/recipeEditor/RecipeMetaFields.tsx').target,
+    'components/recipeEditor/RecipeMetaFields/RecipeMetaFields.tsx',
+  );
+});
