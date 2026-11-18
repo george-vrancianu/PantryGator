@@ -29,8 +29,8 @@ import {
   containsToAllergenIds,
   selectionFromAllergenIds,
   type ContainsSelection,
-} from '@/components/AllergenContainsRow';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+} from '@/components/allergy/AllergenContainsRow/AllergenContainsRow';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import { translateApiError } from '@/i18n/translateApiError';
 import { ApiError } from '@/lib/api';
 import {

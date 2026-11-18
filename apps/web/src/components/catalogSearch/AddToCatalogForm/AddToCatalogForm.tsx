@@ -31,7 +31,7 @@ import {
   containsToAllergenIds,
   selectionFromAllergenIds,
   type ContainsSelection,
-} from '@/components/AllergenContainsRow';
+} from '@/components/allergy/AllergenContainsRow/AllergenContainsRow';
 import { AddToCatalogAlias } from '../AddToCatalogAlias/AddToCatalogAlias';
 import { AisleSwatch } from '../AisleSwatch/AisleSwatch';
 import {

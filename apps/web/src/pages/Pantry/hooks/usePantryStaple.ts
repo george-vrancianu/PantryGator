@@ -1,6 +1,6 @@
 import { useToast } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useStapleToggle } from '../../../components/useStapleToggle';
+import { useStapleToggle } from '@/components/lists/useStapleToggle';
 
 /**
  * An Ingredient row's Staple state and toggle, for its chip and its `S` key. The change shows at

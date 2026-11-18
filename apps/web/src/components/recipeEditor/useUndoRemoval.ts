@@ -1,7 +1,7 @@
 import { useToast, type ToastHandle } from '@pocket-pantry/ui';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UNDO_WINDOW_MS } from '../../lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
 
 /**
  * Removing a row of a draft list shows an Undo toast that puts it back at its old index.

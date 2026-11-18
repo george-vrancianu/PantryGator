@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { translateApiError } from '@/i18n/translateApiError';
 import { GatorBanner } from '@/components/GatorBanner';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { PlateChoice, cardId } from './components/PlateChoice/PlateChoice';
 import {
   ReceiptCropper,

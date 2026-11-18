@@ -19,9 +19,9 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '../../../components/IngredientIconSlot';
-import { RunningLowChip } from '../../../components/RunningLowChip';
-import { ExpiryTag } from '../../../components/ExpiryTag';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
+import { RunningLowChip } from '@/components/pantry/RunningLowChip/RunningLowChip';
+import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { useExpiryTags, type Batch } from '../../../lib/pantry';
 import type { PantryRowHint } from '../hooks/usePantryRowHint';
 import type { PantryRow } from '../hooks/usePantryScreen';
@@ -31,7 +31,7 @@ import { BatchDetail } from './BatchDetail';
 import { IngredientActions } from './IngredientActions';
 import { useRunningLowToggle } from '../hooks/useRunningLowToggle';
 import { usePantryStaple } from '../hooks/usePantryStaple';
-import { RowFlash, flashHost } from '../../../components/RowFlash';
+import { RowFlash, flashHost } from '@/components/lists/RowFlash/RowFlash';
 import { rowKeyHintIds } from './RowKeyHints';
 
 /** The row springs back before the flag flips (Pantry batches handoff, section 6). */

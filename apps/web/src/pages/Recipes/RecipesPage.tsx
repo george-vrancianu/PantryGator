@@ -12,8 +12,8 @@ import {
 import { useId, useRef, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
-import { HiddenByAllergiesNote } from '../../components/HiddenByAllergiesNote';
+import { Screen } from '@/components/layout/Screen/Screen';
+import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 import { translateApiError } from '../../i18n/translateApiError';
 import { cardFor, indexCards, useCookTonight } from '../../lib/cookTonight';
 import { useAddToFamily } from '../../lib/addToFamily';

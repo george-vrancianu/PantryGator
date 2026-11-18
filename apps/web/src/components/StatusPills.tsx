@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CookTonightCard } from '../lib/cookTonight';
 import type { CompactAllergyWarning } from '../lib/recipes';
-import { AllergenIndicator } from './AllergenIndicator';
+import { AllergenIndicator } from '@/components/allergy/AllergenIndicator/AllergenIndicator';
 
 export function StatusPills({
   recipeId,

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
-import { isTabRoot } from '../../lib/layoutKind';
-import { scrollElementTo } from '../../lib/scroller';
+import { isTabRoot } from '@/lib/layoutKind';
+import { scrollElementTo } from '@/lib/scroller';
 
 /** Gives up waiting for a restored page to grow tall enough after this long. */
 const RESTORE_WAIT_MS = 1500;

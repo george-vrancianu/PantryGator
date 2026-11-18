@@ -9,7 +9,7 @@ import {
 import { useCallback, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { MatchDialog } from './components/MatchDialog/MatchDialog';
 import { ReviewActionBar } from '@/components/ReviewActionBar';
 import { ReviewCounters } from './components/ReviewCounters/ReviewCounters';

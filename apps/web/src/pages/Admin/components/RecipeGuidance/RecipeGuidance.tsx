@@ -14,7 +14,7 @@ import {
   suggestionRecipeOf,
   type RecipeDraft,
 } from '@/lib/recipeDraft';
-import { useGuidanceSuggestion } from '@/components/recipeEditor/SuggestGuidance';
+import { useGuidanceSuggestion } from '@/components/recipeEditor/SuggestGuidance/SuggestGuidance';
 import {
   guidanceProblems,
   toGuidanceDraft,
@@ -24,7 +24,7 @@ import {
 import {
   GuidanceFields,
   type RecipePickerProps,
-} from '@/components/recipeEditor/GuidanceFields';
+} from '@/components/recipeEditor/GuidanceFields/GuidanceFields';
 
 type Props = {
   recipe: AdminRecipe;

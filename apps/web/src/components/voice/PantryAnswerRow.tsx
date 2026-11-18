@@ -10,8 +10,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { formatAmount } from '../../lib/amount';
 import type { VoiceAnswer, VoiceAnswerKind } from '../../lib/voice';
-import { IngredientIconSlot } from '../IngredientIconSlot';
-import { RunningLowChip } from '../RunningLowChip';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
+import { RunningLowChip } from '@/components/pantry/RunningLowChip/RunningLowChip';
 
 /**
  * How each kind of answer looks: its mark and its words (voice namespace). The one place to add a

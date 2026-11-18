@@ -1,7 +1,7 @@
 import { Alert, Spinner, Stack } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { AdminEditor } from './components/AdminEditor/AdminEditor';
 import { AisleList } from './components/AisleList/AisleList';
 import { AllergenList } from './components/AllergenList/AllergenList';

@@ -1,6 +1,7 @@
 import { Box, tokens, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { ExpirySheet, expiryContext } from '@/components/ExpiryPicker/index';
+import { expiryContext } from '@/components/expiryPicker/expiryContext';
+import { ExpirySheet } from '@/components/expiryPicker/ExpirySheet/ExpirySheet';
 import { LOCATIONS, UNITS, type CatalogParent } from '@/lib/catalog';
 import type { IsoDate } from '@/lib/pantry';
 import {

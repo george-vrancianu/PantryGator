@@ -1,8 +1,9 @@
 import { Alert, Stack, TextField } from '@pocket-pantry/ui';
 import { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExpiryField, expiryContext } from '../../../components/ExpiryPicker';
-import { LocationToggle } from '../../../components/LocationToggle';
+import { expiryContext } from '@/components/expiryPicker/expiryContext';
+import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
+import { LocationToggle } from '@/components/pantry/LocationToggle/LocationToggle';
 import type { Batch, BatchEdit } from '../../../lib/pantry';
 import { useEditBatchForm } from '../hooks/useEditBatchForm';
 import { BatchAmountField } from './BatchAmountField';

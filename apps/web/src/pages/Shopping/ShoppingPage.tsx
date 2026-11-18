@@ -12,15 +12,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useTemplates } from '@/lib/shoppingTemplates';
-import { Screen } from '@/components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import {
   RowToggleErrorProvider,
   useRowToggleErrors,
-} from '@/components/RowToggleErrors';
-import { RowHintNote } from '@/components/RowHintNote';
+} from '@/components/lists/RowToggleErrors/RowToggleErrors';
+import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 import { useRowHint } from '@/lib/useRowHint';
 import { itemCount } from '@/lib/shopping';
-import { UnverifiedToast } from '@/components/UnverifiedToast';
+import { UnverifiedToast } from '@/components/lists/UnverifiedToast/UnverifiedToast';
 import { AddSheet } from './components/addSheet/AddSheet/AddSheet';
 import { FinishShoppingReview } from './components/FinishShoppingReview/FinishShoppingReview';
 import { ShoppingGroups } from './components/ShoppingGroups/ShoppingGroups';

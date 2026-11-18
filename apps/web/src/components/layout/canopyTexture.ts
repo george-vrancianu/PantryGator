@@ -1,8 +1,8 @@
-import home from '../../assets/textures/tex-home.svg?url';
-import pantry from '../../assets/textures/tex-pantry.svg?url';
-import recipesLines from '../../assets/textures/tex-recipes-lines.svg?url';
-import recipes from '../../assets/textures/tex-recipes.svg?url';
-import shopping from '../../assets/textures/tex-shopping.svg?url';
+import home from '@/assets/textures/tex-home.svg?url';
+import pantry from '@/assets/textures/tex-pantry.svg?url';
+import recipesLines from '@/assets/textures/tex-recipes-lines.svg?url';
+import recipes from '@/assets/textures/tex-recipes.svg?url';
+import shopping from '@/assets/textures/tex-shopping.svg?url';
 
 export type TextureName = 'home' | 'shopping' | 'pantry' | 'recipes';
 

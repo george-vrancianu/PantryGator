@@ -14,8 +14,8 @@ import { useTranslation } from 'react-i18next';
 import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
 import { recipeHref } from '../lib/recipeHref';
 import { useRecipes, type CompactAllergyWarning } from '../lib/recipes';
-import { AllergenIndicator } from './AllergenIndicator';
-import { HiddenByAllergiesNote } from './HiddenByAllergiesNote';
+import { AllergenIndicator } from '@/components/allergy/AllergenIndicator/AllergenIndicator';
+import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
 
 /** The `chosen` value of "standalone". */
 export const STANDALONE = 'standalone';

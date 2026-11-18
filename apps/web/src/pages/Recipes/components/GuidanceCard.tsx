@@ -14,18 +14,18 @@ import {
   tokens,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
-import { CreditPrice } from '../../../components/CreditPrice';
+import { CreditPrice } from '@/components/credits/CreditPrice/CreditPrice';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   PairingRow,
   type MomentOption,
   type RecipePickerProps,
-} from '../../../components/recipeEditor/GuidanceFields';
+} from '@/components/recipeEditor/GuidanceFields/GuidanceFields';
 import {
   SuggestedMark,
   useGuidanceSuggestion,
-} from '../../../components/recipeEditor/SuggestGuidance';
+} from '@/components/recipeEditor/SuggestGuidance/SuggestGuidance';
 import {
   MAX_EATING_MOMENTS,
   MAX_NUTRITION_NOTE,

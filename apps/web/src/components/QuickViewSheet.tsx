@@ -10,8 +10,8 @@ import {
   useToast,
   visuallyHidden,
 } from '@pocket-pantry/ui';
-import { RowTags } from './RowTags';
-import { TagChips } from './TagChips';
+import { RowTags } from '@/components/recipe/RowTags/RowTags';
+import { TagChips } from '@/components/recipe/TagChips/TagChips';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

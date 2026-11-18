@@ -18,8 +18,8 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
-import { RowHintNote } from '@/components/RowHintNote';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
+import { RowHintNote } from '@/components/lists/RowHintNote/RowHintNote';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   familyCatalogQueryKey,

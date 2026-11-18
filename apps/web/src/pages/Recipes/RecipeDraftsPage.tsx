@@ -7,7 +7,7 @@ import {
   displayType,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { Screen } from '../../components/layout/Screen';
+import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '../../i18n/translateApiError';
 import { useRecipeDrafts } from '../../lib/recipeDrafts';
 import { RecipeDraftRow } from './components/RecipeDraftRow';

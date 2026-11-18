@@ -1,7 +1,7 @@
 import { Box, ChevronRightIcon, ListRow, ListRowItem } from '@pocket-pantry/ui';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IngredientIconSlot } from '@/components/IngredientIconSlot';
+import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
 import {
   localName,
   type AdminCatalog,

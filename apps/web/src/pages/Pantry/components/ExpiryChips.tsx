@@ -7,7 +7,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, useRef, useState, type ReactNode, type Ref } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExpirySheet } from '../../../components/ExpiryPicker';
+import { ExpirySheet } from '@/components/expiryPicker/ExpirySheet/ExpirySheet';
 import {
   dateAndRelativeDay,
   defaultExpiryDate,

@@ -1,6 +1,6 @@
 import { useToast } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { useRowToggleOutcome } from '../../../components/RowToggleErrors';
+import { useRowToggleOutcome } from '@/components/lists/RowToggleErrors/RowToggleErrors';
 import { useSetRunningLow } from '../../../lib/pantry';
 import { UNDO_WINDOW_MS } from '../../../lib/useDeferredRemoval';
 

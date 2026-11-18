@@ -32,7 +32,7 @@ import {
   QuantityUnitInput,
 } from '../RowInputs/RowInputs';
 import { SourceText } from '../SourceText/SourceText';
-import { StatusIcon } from '@/components/StatusIcon';
+import { StatusIcon } from '@/components/lists/StatusIcon/StatusIcon';
 import {
   ROW_TINT,
   fieldId,

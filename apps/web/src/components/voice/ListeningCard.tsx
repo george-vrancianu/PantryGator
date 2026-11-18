@@ -20,7 +20,7 @@ import {
   MAX_VOICE_NOTE_MS,
   type VoiceDefaultTarget,
 } from '../../lib/voice';
-import { CreditPrice } from '../CreditPrice';
+import { CreditPrice } from '@/components/credits/CreditPrice/CreditPrice';
 import { enter } from './enter';
 import { useElapsedMs } from './useElapsed';
 

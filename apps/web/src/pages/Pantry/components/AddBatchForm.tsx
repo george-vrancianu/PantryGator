@@ -16,8 +16,8 @@ import {
   ListedAllergensNote,
   OpenFoodFactsCredit,
 } from '../../../components/BarcodeLookupNotes';
-import { expiryContext } from '../../../components/ExpiryPicker';
-import { StatusIcon } from '../../../components/StatusIcon';
+import { expiryContext } from '@/components/expiryPicker/expiryContext';
+import { StatusIcon } from '@/components/lists/StatusIcon/StatusIcon';
 import type { StorageLocation } from '../../../lib/catalog';
 import type { Batch } from '../../../lib/pantry';
 import type { CameraMode } from '../../../lib/cameraMode';

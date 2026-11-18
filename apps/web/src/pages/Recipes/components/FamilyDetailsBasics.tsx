@@ -11,7 +11,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useId, type ChangeEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RecipeTagsField } from '../../../components/recipeEditor/RecipeTagsField';
+import { RecipeTagsField } from '@/components/recipeEditor/RecipeTagsField/RecipeTagsField';
 import type { DraftProblems, RecipeDraft } from '../../../lib/recipeDraft';
 import { DIFFICULTIES, type Difficulty } from '../../../lib/recipeVocabulary';
 

@@ -10,7 +10,7 @@ import type { CameraMode } from '@/lib/cameraMode';
 import { formatShortDate } from '@/lib/dateFormat';
 import { displayName, type ReviewLine, type RowStatus } from '@/lib/review';
 import { SourceText } from '../SourceText/SourceText';
-import { StatusIcon } from '@/components/StatusIcon';
+import { StatusIcon } from '@/components/lists/StatusIcon/StatusIcon';
 import { ROW_TINT, rowGridSx, rowId, titleId } from '../layout';
 
 type Props = {
