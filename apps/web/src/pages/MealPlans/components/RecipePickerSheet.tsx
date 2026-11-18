@@ -1,10 +1,10 @@
 import {
   Alert,
   Box,
+  canopy,
   Sheet,
   Spinner,
   Typography,
-  tokens,
 } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -104,7 +104,8 @@ export function RecipePickerSheet({
             position: 'sticky',
             top: 0,
             zIndex: 1,
-            bgcolor: tokens.color.surface,
+            bgcolor: canopy.sheetTop,
+            overflowX: 'clip',
           }}
         >
           <RecipeFilters value={browse} onChange={setBrowse} />
