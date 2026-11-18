@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { and, eq, inArray, isNull, lt, or } from 'drizzle-orm';
 import { DATABASE } from '../database/database.constants';
 import type { Database } from '../database/database.types';
 import { ingredientAllergens, openFoodFactsCache } from '../database/schema';
@@ -31,6 +31,9 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** How long the shared cache keeps a product, and a "not found". */
 const HIT_TTL_MS = 30 * DAY_MS;
 const NOT_FOUND_TTL_MS = DAY_MS;
+/** Lazy sweep of expired cache rows: at most one per interval, at most this many rows each. */
+const SWEEP_INTERVAL_MS = 60 * 1000;
+const SWEEP_BATCH = 100;
 /** The Batch's Product Description limit (pantry.schemas). */
 const DESCRIPTION_MAX = 200;
 
@@ -41,6 +44,11 @@ const DESCRIPTION_MAX = 200;
  */
 @Injectable()
 export class BarcodeLookupService {
+  private readonly logger = new Logger(BarcodeLookupService.name);
+  private lastSweepAt = 0;
+  /** The sweep in flight, so overlapping lookups start only one. */
+  private sweeping: Promise<void> | null = null;
+
   /** Open Food Facts calls in flight, by barcode (single-flight). */
   private readonly fetching = new Map<
     string,
@@ -63,6 +71,7 @@ export class BarcodeLookupService {
     // The resolution order of ADR 0013 starts here. The Family's Known Barcode
     // is checked first and returns before this; the shared cache of
     // Open Food Facts results (#347) wraps `product` so a hit skips the client.
+    this.sweepExpiredInBackground();
     const familyId = await this.settings.familyIdOf(memberId);
     const scope = catalogScope(familyId);
     const known = await this.knownBarcode(familyId, barcode, locale, scope);
@@ -85,6 +94,47 @@ export class BarcodeLookupService {
       productDescription: names[0].slice(0, DESCRIPTION_MAX),
       ...parseNetQuantity(product.quantity),
     };
+  }
+
+  /**
+   * Expiry is lazy (no scheduler, like Recipe Drafts): a lookup starts a bounded delete of
+   * expired cache rows without waiting for it. At most one runs at a time and one per
+   * interval; a failure is logged and never reaches the lookup.
+   */
+  private sweepExpiredInBackground(): void {
+    const now = Date.now();
+    if (this.sweeping || now - this.lastSweepAt < SWEEP_INTERVAL_MS) return;
+    this.lastSweepAt = now;
+    this.sweeping = this.deleteExpired(now)
+      .catch((error: unknown) => {
+        this.logger.warn(
+          `Open Food Facts cache sweep failed: ${String(error)}`,
+        );
+      })
+      .finally(() => {
+        this.sweeping = null;
+      });
+  }
+
+  /** Deletes up to SWEEP_BATCH rows past their TTL (a hit 30 days, a "not found" 1 day). */
+  private async deleteExpired(now: number): Promise<void> {
+    const expired = and(
+      or(
+        and(
+          isNull(openFoodFactsCache.product),
+          lt(openFoodFactsCache.fetchedAt, new Date(now - NOT_FOUND_TTL_MS)),
+        ),
+        lt(openFoodFactsCache.fetchedAt, new Date(now - HIT_TTL_MS)),
+      ),
+    );
+    const batch = this.database
+      .select({ barcode: openFoodFactsCache.barcode })
+      .from(openFoodFactsCache)
+      .where(expired)
+      .limit(SWEEP_BATCH);
+    await this.database
+      .delete(openFoodFactsCache)
+      .where(and(expired, inArray(openFoodFactsCache.barcode, batch)));
   }
 
   /** What the Family last saved this barcode as, exactly, or null. No Open Food Facts credit. */

@@ -1,4 +1,6 @@
 import { jest } from '@jest/globals';
+import { eq } from 'drizzle-orm';
+import { openFoodFactsCache } from '../src/database/schema';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ApiException } from '../src/common/api-exception';
 import { seedCatalog, seedId } from '../src/catalog/seed/seed-catalog';
@@ -163,5 +165,59 @@ describe('Barcode Lookup cache (integration)', () => {
     });
     expect(((await lookup(a)).body as Json).match).toBeNull();
     expect(asked).toEqual([code]);
+  });
+
+  describe('lazy sweep of expired rows (#899)', () => {
+    const cacheRow = async (barcode: string) => {
+      const rows = await app
+        .get<Database>(DATABASE)
+        .select()
+        .from(openFoodFactsCache)
+        .where(eq(openFoodFactsCache.barcode, barcode));
+      return rows[0];
+    };
+    const seed = (
+      barcode: string,
+      product: OpenFoodFactsProduct | null,
+      ageMs: number,
+    ) =>
+      app
+        .get<Database>(DATABASE)
+        .insert(openFoodFactsCache)
+        .values({ barcode, product, fetchedAt: new Date(now - ageMs) });
+    const settle = async (barcode: string, gone: boolean) => {
+      for (let i = 0; i < 50; i++) {
+        if (!(await cacheRow(barcode)) === gone) return;
+        await new Promise((r) => setTimeout(r, 20));
+      }
+    };
+
+    it('deletes expired hits and not-founds on a lookup, keeping fresh ones', async () => {
+      now += 1000 * DAY; // past any earlier test's sweep
+      const expiredHit = freshBarcode();
+      const expiredMiss = freshBarcode();
+      const freshHit = freshBarcode();
+      const freshMiss = freshBarcode();
+      await seed(expiredHit, parmesan, 31 * DAY);
+      await seed(expiredMiss, null, 2 * DAY);
+      await seed(freshHit, parmesan, 29 * DAY);
+      await seed(freshMiss, null, DAY / 2);
+      await lookup(a);
+      await settle(expiredHit, true);
+      await settle(expiredMiss, true);
+      expect(await cacheRow(expiredHit)).toBeUndefined();
+      expect(await cacheRow(expiredMiss)).toBeUndefined();
+      expect(await cacheRow(freshHit)).toBeDefined();
+      expect(await cacheRow(freshMiss)).toBeDefined();
+    });
+
+    it('does not fail the lookup when the sweep throws', async () => {
+      now += 1000 * DAY; // past any earlier test's sweep
+      const db = app.get<Database>(DATABASE);
+      jest.spyOn(db, 'delete').mockImplementation(() => {
+        throw new Error('boom');
+      });
+      await lookup(a);
+    });
   });
 });
