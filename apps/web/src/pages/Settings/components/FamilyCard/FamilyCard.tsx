@@ -9,8 +9,8 @@ import {
   Stack,
   Typography,
   radius,
-  tokens,
   useToast,
+  palette,
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,9 +24,9 @@ import { useToday } from '@/lib/useToday';
 const AVATAR_LIMIT = 4;
 /** Fills cycle through the Settings palette, as in the handoff. */
 const AVATAR_FILLS = [
-  tokens.color.accentTint,
-  tokens.color.butter,
-  tokens.color.chipNeutral,
+  palette('pp-accentTint'),
+  palette('secondary-main'),
+  palette('pp-chip'),
 ];
 
 /** The invite code in groups of four, for reading aloud: `K7M2 PQ9X`. */
@@ -42,7 +42,7 @@ function SkeletonRows() {
             height: 20,
             width: '50%',
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
+            bgcolor: palette('pp-subtle'),
           }}
         />
         <Box
@@ -50,14 +50,14 @@ function SkeletonRows() {
             height: 14,
             width: '70%',
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
+            bgcolor: palette('pp-subtle'),
           }}
         />
         <Box
           sx={{
             height: 44,
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
+            bgcolor: palette('pp-subtle'),
           }}
         />
       </Stack>
@@ -87,7 +87,7 @@ function Avatars({ family }: { family: Family }) {
             border: 2,
             borderColor: 'background.paper',
             bgcolor: AVATAR_FILLS[index % AVATAR_FILLS.length],
-            color: tokens.color.ink,
+            color: palette('text-primary'),
             display: 'grid',
             placeItems: 'center',
             fontSize: 12,
@@ -107,7 +107,7 @@ function Avatars({ family }: { family: Family }) {
             borderRadius: radius.chip,
             border: 2,
             borderColor: 'background.paper',
-            bgcolor: tokens.color.chipNeutral,
+            bgcolor: palette('pp-chip'),
             display: 'grid',
             placeItems: 'center',
             fontSize: 11,
@@ -199,7 +199,7 @@ export function FamilyCard() {
           sx={{
             p: '8px 8px 8px 14px',
             borderRadius: radius.control,
-            bgcolor: tokens.color.subtle,
+            bgcolor: palette('pp-subtle'),
             alignItems: 'center',
             justifyContent: 'space-between',
           }}

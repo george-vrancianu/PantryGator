@@ -8,9 +8,9 @@ import {
   Stack,
   Typography,
   radius,
-  tokens,
   useToast,
   SectionHeading,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ const stepperButton = {
   width: 38,
   minWidth: 38,
   px: 0,
-  bgcolor: tokens.color.chipNeutral,
+  bgcolor: palette('pp-chip'),
 } as const;
 
 /**
@@ -135,7 +135,7 @@ export function ExpiringSoonSection() {
               sx={{
                 height: 44,
                 borderRadius: radius.control,
-                bgcolor: tokens.color.subtle,
+                bgcolor: palette('pp-subtle'),
               }}
             />
           ) : null}
@@ -232,7 +232,7 @@ export function ExpiringSoonSection() {
                       sx={{
                         p: 1,
                         borderRadius: radius.control,
-                        bgcolor: tokens.color.subtle,
+                        bgcolor: palette('pp-subtle'),
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         minWidth: 0,

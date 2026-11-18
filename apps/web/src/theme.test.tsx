@@ -1,4 +1,4 @@
-import { Box, tokens, writeAppearance } from '@pocket-pantry/ui';
+import { Box, writeAppearance, palette } from '@pocket-pantry/ui';
 import { act, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { paintedColour } from '@pocket-pantry/ui/test/colour';
@@ -124,9 +124,15 @@ describe('Themes', () => {
   it('paints a subtree forced into Dark with dark colours under a light root', () => {
     renderWithProviders(
       <>
-        <Box data-testid="page" sx={{ bgcolor: tokens.color.bg }} />
+        <Box
+          data-testid="page"
+          sx={{ bgcolor: palette('background-default') }}
+        />
         <Box data-theme="dark">
-          <Box data-testid="forced" sx={{ bgcolor: tokens.color.bg }} />
+          <Box
+            data-testid="forced"
+            sx={{ bgcolor: palette('background-default') }}
+          />
         </Box>
       </>,
     );

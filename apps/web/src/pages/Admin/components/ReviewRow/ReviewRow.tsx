@@ -4,8 +4,8 @@ import {
   ListRow,
   ListRowItem,
   insetFocusRingStyle,
-  tokens,
   type ListRowProps,
+  palette,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { RowTile } from '../CatalogRowParts/CatalogRowParts';
@@ -20,8 +20,14 @@ export function ReviewTile({
 }) {
   return (
     <RowTile
-      background={tone === 'soon' ? tokens.color.soonBg : tokens.color.butter}
-      color={tone === 'soon' ? tokens.color.soonFg : tokens.color.butterInk}
+      background={
+        tone === 'soon' ? palette('warning-light') : palette('secondary-main')
+      }
+      color={
+        tone === 'soon'
+          ? palette('warning-main')
+          : palette('secondary-contrastText')
+      }
     >
       {children}
     </RowTile>

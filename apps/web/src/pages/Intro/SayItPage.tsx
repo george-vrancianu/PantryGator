@@ -4,9 +4,9 @@ import {
   CheckIcon,
   color,
   radius,
-  tokens,
   Typography,
   IntroLook,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -180,8 +180,8 @@ function SayItScreen() {
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                backgroundColor: tokens.color.butter,
-                color: tokens.color.butterInk,
+                backgroundColor: palette('secondary-main'),
+                color: palette('secondary-contrastText'),
               }}
             >
               <CheckIcon size={13} />
