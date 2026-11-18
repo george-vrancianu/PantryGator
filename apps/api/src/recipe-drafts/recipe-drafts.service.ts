@@ -18,6 +18,7 @@ import {
   MAX_RECIPE_DRAFTS,
   RECIPE_DRAFT_TTL_DAYS,
   type RecipeDraftContent,
+  type RecipeDraftReadContent,
   type RecipeDraftCreate,
   type RecipeDraftOrigin,
   type RecipeDraftSummary,
@@ -34,34 +35,39 @@ const expiresAtOf = (updatedAt: Date) =>
 
 /**
  * A line whose Ingredient was deleted since it was typed comes back with no
- * Ingredient (an Unmatched name); its typed name stays.
+ * Ingredient (an Unmatched name); its typed name stays. A line that keeps its Ingredient
+ * gets `ingredientOwner` (read-only, never stored) for the Family pill.
  */
 async function withoutMissingIngredients(
   executor: Executor,
   familyId: string,
   content: RecipeDraftContent,
-): Promise<RecipeDraftContent> {
+): Promise<RecipeDraftReadContent> {
   const ids = [
     ...new Set(
       content.lines.flatMap((l) => (l.ingredientId ? [l.ingredientId] : [])),
     ),
   ].filter((id) => z.uuid().safeParse(id).success);
-  const found = new Set<string>();
+  const found = new Map<string, 'catalog' | 'family'>();
   if (ids.length > 0) {
     const table = catalogScope(familyId).ingredients(executor);
     const rows = await executor
-      .select({ id: table.id })
+      .select({ id: table.id, ownerFamilyId: table.ownerFamilyId })
       .from(table)
       .where(inArray(table.id, ids));
-    for (const row of rows) found.add(row.id);
+    for (const row of rows) {
+      found.set(row.id, row.ownerFamilyId === null ? 'catalog' : 'family');
+    }
   }
   return {
     ...content,
-    lines: content.lines.map((line) =>
-      line.ingredientId && !found.has(line.ingredientId)
-        ? { ...line, ingredientId: '' }
-        : line,
-    ),
+    lines: content.lines.map((line) => {
+      if (!line.ingredientId) return line;
+      const ingredientOwner = found.get(line.ingredientId);
+      return ingredientOwner
+        ? { ...line, ingredientOwner }
+        : { ...line, ingredientId: '' };
+    }),
   };
 }
 

@@ -118,7 +118,7 @@ async function loadParts(executor: Executor, recipeId: string) {
 }
 
 /** Who owns each Ingredient: a Family Ingredient has an owner Family, a Catalog one has none. */
-async function ingredientOwners(
+export async function ingredientOwners(
   executor: Executor,
   ids: string[],
 ): Promise<Map<string, RecipeOwner>> {

@@ -657,11 +657,13 @@ export type FamilyRecipeDraft = {
   difficulty: AdminRecipeDetail['difficulty'];
   /** Every Tag of the source: a new Variant starts with its Base's Tags. */
   tagIds: string[];
-  /** `ingredientName` is for display only; drop it when posting. */
+  /** `ingredientName` and `ingredientOwner` are for display only; drop them when posting. */
   lines: {
     ingredientId: string | null;
     rawName: string | null;
     ingredientName: string;
+    /** Whose Ingredient the line uses (for the Family pill); null on an Unmatched line. */
+    ingredientOwner: RecipeOwner | null;
     quantity: number | null;
     unit: RecipeLineView['unit'];
     optional: boolean;

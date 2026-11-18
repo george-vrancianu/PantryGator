@@ -99,6 +99,9 @@ export function formOfContent(content: RecipeDraftContent): RecipeDraftForm {
         key: newKey(),
         ...(line.id ? { id: line.id } : {}),
         ingredientId: line.ingredientId,
+        ...(line.ingredientOwner
+          ? { ingredientOwner: line.ingredientOwner }
+          : {}),
         name: line.name,
         quantity: line.quantity,
         unit: line.unit as LineDraft['unit'],

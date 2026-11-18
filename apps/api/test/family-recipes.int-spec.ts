@@ -360,6 +360,37 @@ describe('Family Recipes (integration)', () => {
       ]);
     });
 
+    it('keeps the line owner in the variant draft of a Family Recipe', async () => {
+      const [{ leafCategoryId }] = await database
+        .select({ leafCategoryId: ingredients.leafCategoryId })
+        .from(ingredients)
+        .where(eq(ingredients.id, ing[0]));
+      const mine = (
+        await client(app, cookieOf.a1, '/api/catalog')
+          .post('/family-ingredients?locale=en', {
+            name: title('Draft spice'),
+            leafCategoryId,
+            defaultUnit: 'g',
+          })
+          .expect(201)
+      ).body as { id: string };
+      const base = await catalogBase();
+      const fv = await familyRecipe(a1, base.id, {
+        lines: [
+          line(0),
+          { ingredientId: mine.id, quantity: 5, unit: 'g' },
+          { rawName: 'Moon dust', quantity: null, unit: null },
+        ],
+      });
+      const draft = (await a1.get(`/${fv.id}/variant-draft`).expect(200))
+        .body as FamilyRecipeDraft;
+      expect(draft.lines.map((l) => l.ingredientOwner)).toEqual([
+        'catalog',
+        'family',
+        null,
+      ]);
+    });
+
     it("gives a Variant its base's title in the stored language, null on a Base Recipe", async () => {
       const base = await catalogBase();
       await admin
@@ -1462,7 +1493,11 @@ describe('Family Recipes (integration)', () => {
         const posted = {
           ...draft,
           locale: 'en',
-          lines: draft.lines.map((l) => ({ ...l, ingredientName: undefined })),
+          lines: draft.lines.map((l) => ({
+            ...l,
+            ingredientName: undefined,
+            ingredientOwner: undefined,
+          })),
         };
         const made = (await a1.post('', posted).expect(201))
           .body as FamilyRecipeEdit;

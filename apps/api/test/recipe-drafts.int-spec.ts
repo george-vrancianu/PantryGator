@@ -213,6 +213,26 @@ describe('Recipe Drafts (integration)', () => {
       await database.delete(ingredients).where(eq(ingredients.id, mine));
     });
 
+    it("names the owner of each kept line's Ingredient on read, without storing it", async () => {
+      const mine = await familyIngredient(a1Cookie, 'Owned spice');
+      const created = await create(a1, {
+        content: content({
+          lines: [line(ingredientId, 'Catalog one'), line(mine, 'Mine')],
+        }),
+      });
+      const got = await a1.get(`/${created.id}`).expect(200);
+      expect(linesOf(got)).toMatchObject([
+        { ingredientId, ingredientOwner: 'catalog' },
+        { ingredientId: mine, ingredientOwner: 'family' },
+      ]);
+      const [row] = await database
+        .select({ content: recipeDrafts.content })
+        .from(recipeDrafts)
+        .where(eq(recipeDrafts.id, created.id));
+      expect(JSON.stringify(row.content)).not.toContain('ingredientOwner');
+      await database.delete(ingredients).where(eq(ingredients.id, mine));
+    });
+
     it("does not show another Family's Ingredient: it comes back as an Unmatched name", async () => {
       const theirs = await familyIngredient(bCookie, 'Their spice');
       const created = await create(a1, {

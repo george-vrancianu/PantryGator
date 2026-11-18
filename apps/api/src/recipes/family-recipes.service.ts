@@ -123,6 +123,7 @@ export class FamilyRecipesService {
         ingredientId: line.ingredientId,
         rawName: line.ingredientId ? null : line.ingredientName,
         ingredientName: line.ingredientName,
+        ingredientOwner: line.ingredientOwner,
         quantity: line.quantity,
         unit: line.unit,
         optional: line.optional,
