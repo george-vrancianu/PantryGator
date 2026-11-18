@@ -1,14 +1,16 @@
-import { Box, displayType, tokens } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
+import { displayType } from '../theme/themeVars';
+import { tokens } from '../theme/tokens';
+import { Box } from './Layout';
 
-type Props = {
+export type StepNumberProps = {
   children: ReactNode;
   /** The dashed accent outline of an "add" row, instead of the filled ink disc. */
   dashed?: boolean;
 };
 
 /** The round Step number glyph shared by the Recipe detail page and the Steps editor. */
-export function StepNumber({ children, dashed = false }: Props) {
+export function StepNumber({ children, dashed = false }: StepNumberProps) {
   return (
     <Box
       aria-hidden="true"

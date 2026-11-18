@@ -1,9 +1,9 @@
-import { palette, writeAppearance } from '@pocket-pantry/ui';
-import { paintedColour } from '@pocket-pantry/ui/test/colour';
-import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
-import { screen } from '@testing-library/react';
+import { palette, writeAppearance } from '../index';
+import { paintedColour } from '../test/colour';
+import { authoredCss } from '../test/authoredCss';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { renderWithProviders } from '../test/render';
+import { renderWithTheme as renderWithProviders } from '../test/render';
 import { IntroLook } from './IntroLook';
 
 const LIGHT_INK = '#141A16';
@@ -27,6 +27,7 @@ function ownColour(element: Element) {
 }
 
 afterEach(() => {
+  cleanup();
   localStorage.clear();
   document.documentElement.removeAttribute('data-theme');
 });

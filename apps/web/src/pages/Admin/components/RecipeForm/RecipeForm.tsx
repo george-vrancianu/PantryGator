@@ -18,7 +18,7 @@ import {
   problemsOf,
   type RecipeDraft,
 } from '@/lib/recipeDraft';
-import { EditorForm } from '@/components/EditorForm';
+import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { RecipeLinesSection } from '@/components/recipeEditor/RecipeLinesSection/RecipeLinesSection';
 import { RecipeMetaFields } from '@/components/recipeEditor/RecipeMetaFields/RecipeMetaFields';
 import { RecipeStepsSection } from '@/components/recipeEditor/RecipeStepsSection/RecipeStepsSection';

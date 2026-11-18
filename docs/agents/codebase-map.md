@@ -40,7 +40,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `expiryPicker/`: the Expiry field, sheet and calendar helpers.
   - `gator/`: Gator banner, bubble panel and the empty-pot panel.
   - `intro/`: the setup callout.
-  - `layout/`: the app frame, dock and providers (below).
+  - `layout/`: the app frame, dock and providers (below), and `ReviewActionBar` (the `packages/ui` bar plus the Gator-bubble bound).
   - `lists/`: shared list-row parts (flash, hint note, toggle errors, status icon, Staple toggle).
   - `mealPlan/`: the Meal Plan popover.
   - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip, usual amount).
@@ -48,7 +48,9 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `recipeEditor/`: the Recipe editor's sections and fields.
   - `scan/`: Scan camera and barcode lookup notes.
   - `voice/`: Voice Note cards, sheets, answers and action editing.
-  - Components at the `components/` root (`BrandLockup`, `ConfirmAction`, `EditorForm`, `IntroLook`, `ReviewActionBar`, `RowControls`, `SectionHeading`, `StepNumber`, `editorSheetContext.ts`) have no group yet: shared UI that awaits a home in `packages/ui` or a group.
+  - `confirm/`: the app's `ConfirmAction` / `ConfirmPrompt`, the `packages/ui` ones with the Confirm and Cancel words filled in.
+  - `editor/`: the app's `EditorForm`, the `packages/ui` one with the editors' words and the translated API error filled in.
+  - Nothing sits loose at the `components/` root: it holds only group folders. Domain-free shared UI goes to `packages/ui` (BrandLockup, IntroLook, RowControls, SectionHeading, StepNumber, and the `EditorForm`, `ConfirmAction`, `ReviewActionBar` it wraps). `packages/ui` has no i18n, so such components take their words as props, and an app-side wrapper in a group supplies them when several callers share the strings.
 - `components/layout/` is the shared layout: `LayoutFrame` (top bar, header and the one scrolling sheet, page transitions, pull-to-refresh) and `Screen`, which every in-layout page renders to fill those regions. The window never scrolls: use `useScroller()` (`lib/scroller.tsx`) instead of `window.scrollTo/scrollBy/scrollY`. `lib/layoutKind.ts` says which route is a camera, editor or page, and which are Dock tab roots (`isRecipeEditor` is shared with `lib/dockState.ts`).
 - Cross-page tests: a `*.test.*` file under `components/` or `lib/` may import pages (ADR 0044 amendment), so a test of behaviour across several pages sits beside the shared module it checks (`components/layout/LayoutFrame/RefreshScreen.test.tsx`). Non-test shared files still never import pages.
 - Import alias and rules (ADR 0044): `@/` maps to `apps/web/src` (tsconfig `paths`, no `baseUrl`; Vite 8 reads it, so tests and `vi.mock('@/lib/...')` resolve it too). Imports inside a page area stay relative; everything else uses `@/`. oxlint `no-restricted-imports` (error, in `.oxlintrc.json`, no file excluded) enforces two rules: **Rule A**, `components/` and `lib/` never import `pages/` (except the test carve-out above); **Rule B**, nothing imports another area's `components` or `hooks` (a whole-page import across areas is allowed). Rule B lists every page area by name (oxlint globs have no braces), so a new `pages/Foo/` needs its `components`/`hooks` pattern pair added to all three overrides; the self-test cannot notice a missing area or a mistyped area pattern. `vi.mock` and `vi.importActual` strings are not checked by the rules; reviewers check them. The globs start with `apps/web/` because they are relative to the root config, an override replaces the base rule's options (so the second and third overrides repeat Rule B), and the rule matches the raw import string (relative and `@/` need patterns). The self-test fixtures import made-up modules (oxlint only reads the raw string), so moving a module cannot break them; `lintSelfTest/` folders are excluded from tsc (`apps/web/tsconfig.json`).
@@ -60,7 +62,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
 
 ## UI package (`packages/ui/src`)
 
-Atomic layout: `atoms/`, `molecules/` (includes `Sheet.tsx`, which also exports `SheetContainerProvider`, and `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Public exports go through `src/index.ts`. Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
+Atomic layout: `atoms/`, `molecules/` (includes `Sheet.tsx`, which also exports `SheetContainerProvider`, and `ToastProvider.tsx`), `organisms/`, `templates/`, `theme/`. Tiers are flat files (`atoms/Foo.tsx`, with `Foo.stories.tsx` and `Foo.test.tsx` beside it), not folders per component; the folder-per-component rule of ADR 0044 is for `apps/web`. Public exports go through `src/index.ts`. The package has no i18n: components take every word as a prop (`EditorForm` takes `labels`, `ConfirmAction` takes `confirmLabels`). Stories sit beside components as `*.stories.tsx`; config in `packages/ui/.storybook/`. Test helpers: `packages/ui/src/test/`.
 
 ## Commands
 

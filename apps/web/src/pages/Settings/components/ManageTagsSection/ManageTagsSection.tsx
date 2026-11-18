@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
   useToast,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import { useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,6 @@ import {
 } from '@/lib/familyTags';
 import { MAX_TAG_NAME_LENGTH } from '@/lib/tags';
 import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
-import { SectionHeading } from '@/components/SectionHeading';
 
 type Editing = { id: string; value: string };
 type Merging = { id: string; from: string; name: string };

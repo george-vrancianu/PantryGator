@@ -1,7 +1,7 @@
 import { Alert, Button, Stack, TextField, Typography } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ConfirmAction } from '@/components/ConfirmAction';
+import { ConfirmAction } from '@/components/confirm/ConfirmAction/ConfirmAction';
 import { translateApiError } from '@/i18n/translateApiError';
 import {
   useArchiveRecipe,

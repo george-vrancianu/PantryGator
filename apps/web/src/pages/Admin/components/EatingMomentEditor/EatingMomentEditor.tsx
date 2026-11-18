@@ -8,7 +8,7 @@ import {
   useSaveEatingMoment,
   type AdminEatingMoment,
 } from '@/lib/admin';
-import { EditorForm } from '@/components/EditorForm';
+import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { TranslationsEditor } from '../TranslationsEditor/TranslationsEditor';
 
 type Props = {

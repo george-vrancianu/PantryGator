@@ -12,6 +12,8 @@ import {
   TextField,
   tokens,
   Typography,
+  RowControls,
+  StepNumber,
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,9 +24,7 @@ import {
   type DraftProblems,
   type StepDraft,
 } from '@/lib/recipeDraft';
-import { RowControls } from '@/components/RowControls';
 import { GripGlyph, SortableItem, SortableList } from '../sortable';
-import { StepNumber } from '@/components/StepNumber';
 import type { RecipeTip } from '@/lib/adminRecipes';
 import { useUndoRemoval } from '../useUndoRemoval';
 import { NewTipRow, TipRow, type TipActions } from '../TipRows/TipRows';

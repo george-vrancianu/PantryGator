@@ -4,10 +4,11 @@ import {
   Link,
   Stack,
   Typography,
+  BrandLockup,
+  IntroLook,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { BrandLockup } from '@/components/BrandLockup';
-import { IntroLook } from '@/components/IntroLook';
+import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
 
 type Props = {
@@ -31,6 +32,7 @@ export function AuthShell({
   languageSwitcher = true,
   children,
 }: Props) {
+  const { t } = useTranslation('common');
   return (
     <IntroLook>
       <CenteredLayout>
@@ -52,7 +54,7 @@ export function AuthShell({
               ) : null}
             </Box>
           ) : null}
-          <BrandLockup />
+          <BrandLockup name={t('appName')} />
           <Stack spacing={0.5}>
             <Typography variant="h1">{title}</Typography>
             <Typography variant="meta" color="text.secondary">

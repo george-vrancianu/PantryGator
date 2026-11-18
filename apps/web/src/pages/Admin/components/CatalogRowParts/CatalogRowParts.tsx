@@ -7,9 +7,9 @@ import {
   tokens,
   insetFocusRingStyle,
   Typography,
+  SectionHeading,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
-import { SectionHeading } from '@/components/SectionHeading';
 
 /** A Catalog section page block: label row with a count, an optional hint, then the content. */
 export function CatalogSection({

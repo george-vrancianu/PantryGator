@@ -8,8 +8,8 @@ import {
   type AdminCatalogTag,
   type AdminTagGroup,
 } from '@/lib/admin';
-import { ConfirmPrompt } from '@/components/ConfirmAction';
-import { EditorForm } from '@/components/EditorForm';
+import { ConfirmPrompt } from '@/components/confirm/ConfirmAction/ConfirmAction';
+import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { ApiError } from '@/lib/api';
 import { MAX_TAG_NAME_LENGTH } from '@/lib/tags';
 import { TranslationsEditor } from '../TranslationsEditor/TranslationsEditor';

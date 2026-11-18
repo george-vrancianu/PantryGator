@@ -1,12 +1,4 @@
 import {
-  Alert,
-  Box,
-  Button,
-  Sheet,
-  Stack,
-  Typography,
-} from '@pocket-pantry/ui';
-import {
   useContext,
   useEffect,
   useId,
@@ -16,19 +8,33 @@ import {
   type ReactNode,
   type Ref,
 } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ConfirmAction, ConfirmPrompt } from './ConfirmAction';
-import { translateApiError } from '../i18n/translateApiError';
+import { Alert } from '../atoms/Alert';
+import { Button } from '../atoms/Button';
+import { Box, Stack } from '../atoms/Layout';
+import { Typography } from '../atoms/Typography';
+import { ConfirmAction, ConfirmPrompt } from '../molecules/ConfirmAction';
+import { Sheet } from '../molecules/Sheet';
 import { EditorSheetContext } from './editorSheetContext';
+
+/** The words of the form's own buttons and delete step, worded by the app (this package has no i18n). */
+export type EditorFormLabels = {
+  save: string;
+  saving: string;
+  cancel: string;
+  delete: string;
+  deleteConfirm: string;
+  /** The Confirm and Cancel buttons of the two-step delete. */
+  confirm: string;
+  cancelConfirm: string;
+};
 
 type BaseProps = {
   heading: string;
   /** A line under the heading. */
   description?: string;
-  /** The last API error of any write in the form, if any. */
-  error: unknown;
-  /** The words for `error` when the caller words it itself (say, with params to format). */
-  errorText?: string;
+  /** The words for the last API error of any write in the form; none when there is no error. */
+  errorMessage?: string | null;
+  labels: EditorFormLabels;
   canSave: boolean;
   saving: boolean;
   onSubmit: () => void;
@@ -55,7 +61,7 @@ type BaseProps = {
   children: ReactNode;
 };
 
-type Props = BaseProps &
+export type EditorFormProps = BaseProps &
   (
     | {
         /** The page's top bar carries Save, so the form draws no Save / Cancel row (an editor page, ADR 0042). */
@@ -76,8 +82,8 @@ type Props = BaseProps &
 export function EditorForm({
   heading,
   description,
-  error,
-  errorText,
+  errorMessage,
+  labels,
   canSave,
   saving,
   onSubmit,
@@ -92,8 +98,7 @@ export function EditorForm({
   hideActions,
   after,
   children,
-}: Props) {
-  const { t } = useTranslation(['admin', 'errors']);
+}: EditorFormProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const formId = useId();
   // In a sheet the title names the editor and Save / Delete are the Sheet's roles.
@@ -105,9 +110,9 @@ export function EditorForm({
   }, []);
 
   const saveText = saving
-    ? (savingLabel ?? t('admin:common.saving'))
-    : (saveLabel ?? t('admin:common.save'));
-  const deleteLabel = t('admin:common.delete');
+    ? (savingLabel ?? labels.saving)
+    : (saveLabel ?? labels.save);
+  const deleteLabel = labels.delete;
   const canDelete = Boolean(onDelete ?? onDeleteRequest);
   const startDelete = () => {
     if (confirmingDelete) return;
@@ -125,7 +130,7 @@ export function EditorForm({
         {saveText}
       </Button>
       <Button variant="ghost" sx={{ height: 52 }} onClick={onCancel}>
-        {t('admin:common.cancel')}
+        {labels.cancel}
       </Button>
     </Stack>
   );
@@ -135,7 +140,8 @@ export function EditorForm({
       if (onDelete && confirmingDelete) {
         return (
           <ConfirmPrompt
-            message={t('admin:common.deleteConfirm')}
+            message={labels.deleteConfirm}
+            labels={{ confirm: labels.confirm, cancel: labels.cancelConfirm }}
             disabled={deleting}
             onConfirm={() => {
               setConfirmingDelete(false);
@@ -152,7 +158,11 @@ export function EditorForm({
         <ConfirmAction
           variant="ghost"
           label={deleteLabel}
-          message={t('admin:common.deleteConfirm')}
+          message={labels.deleteConfirm}
+          confirmLabels={{
+            confirm: labels.confirm,
+            cancel: labels.cancelConfirm,
+          }}
           disabled={deleting}
           onConfirm={onDelete}
         />
@@ -196,7 +206,7 @@ export function EditorForm({
           {description}
         </Typography>
       ) : null}
-      {error ? <Alert>{errorText ?? translateApiError(t, error)}</Alert> : null}
+      {errorMessage != null ? <Alert>{errorMessage}</Alert> : null}
       {children}
       {sheet || hideActions ? null : actions}
       {renderDelete()}
