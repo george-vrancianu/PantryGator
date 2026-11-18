@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
 import { SafeAreaBand } from '../atoms/SafeAreaBand';
 import { SAFE_TOP } from '../theme/safeArea';
-import { tokens } from '../theme/tokens';
 import { bodyFont, canopy, palette } from '../theme/themeVars';
 import { useForcedThemeColor } from '../theme/useForcedThemeColor';
 
@@ -37,7 +36,7 @@ export function IntroLook({ children, ground = 'cream' }: IntroLookProps) {
         pt: ground === 'canopy' ? 0 : SAFE_TOP,
         backgroundColor: groundColour,
         // Resolved under this subtree's Theme: inherited text would keep the root's colour (light on cream in Dark).
-        color: tokens.color.ink,
+        color: palette('text-primary'),
         fontFamily: bodyFont,
       }}
     >

@@ -2,7 +2,7 @@ import type { Ref } from 'react';
 import { Button } from '../atoms/Button';
 import { Box } from '../atoms/Layout';
 import { gutterLeft, gutterRight, plusBottomInset } from '../theme/safeArea';
-import { tokens } from '../theme/tokens';
+import { palette } from '../theme/themeVars';
 
 export type ReviewActionBarProps = {
   saveLabel: string;
@@ -33,8 +33,8 @@ export function ReviewActionBar({
         right: 0,
         bottom: 0,
         zIndex: 10,
-        bgcolor: tokens.color.surface,
-        borderTop: `1px solid ${tokens.color.line}`,
+        bgcolor: palette('background-paper'),
+        borderTop: `1px solid ${palette('pp-line')}`,
         pt: '12px',
         pl: gutterLeft(16),
         pr: gutterRight(16),
@@ -47,9 +47,9 @@ export function ReviewActionBar({
           onClick={onDiscard}
           sx={{
             height: 52,
-            bgcolor: tokens.color.surface,
-            border: `1px solid ${tokens.color.line}`,
-            color: tokens.color.ink,
+            bgcolor: palette('background-paper'),
+            border: `1px solid ${palette('pp-line')}`,
+            color: palette('text-primary'),
             fontSize: 15,
             fontWeight: 700,
           }}

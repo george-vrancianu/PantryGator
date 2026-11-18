@@ -139,7 +139,7 @@ export function ChoiceRadioGroup<T extends string>({
                     }),
                 fontWeight: selected ? 700 : 600,
                 cursor: disabled ? 'not-allowed' : 'pointer',
-                opacity: disabled ? 0.5 : 1,
+                opacity: disabled ? 0.45 : 1,
                 '&:has(input:focus-visible)': focusRingStyle,
               }}
             >

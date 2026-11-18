@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
-import { displayType } from '../theme/themeVars';
-import { tokens } from '../theme/tokens';
+import { displayType, palette } from '../theme/themeVars';
 import { Box } from './Layout';
 
 export type StepNumberProps = {
@@ -18,9 +17,9 @@ export function StepNumber({ children, dashed = false }: StepNumberProps) {
         flex: '0 0 28px',
         height: 28,
         borderRadius: '50%',
-        bgcolor: dashed ? 'transparent' : tokens.color.ink,
-        color: dashed ? tokens.color.accent : tokens.color.surface,
-        border: dashed ? `1.5px dashed ${tokens.color.accent}` : 0,
+        bgcolor: dashed ? 'transparent' : palette('text-primary'),
+        color: dashed ? palette('pp-accent') : palette('background-paper'),
+        border: dashed ? `1.5px dashed ${palette('pp-accent')}` : 0,
         boxSizing: 'border-box',
         display: 'grid',
         placeItems: 'center',
