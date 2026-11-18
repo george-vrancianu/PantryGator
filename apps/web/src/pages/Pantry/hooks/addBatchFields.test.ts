@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FALLBACK_LOCATION } from '@/lib/catalog';
-import { defaultExpiryDate } from '@/lib/pantry';
 import { expiryFrom, locationFor, unmark } from './addBatchFields';
 
 afterEach(() => vi.useRealTimers());
@@ -27,7 +26,7 @@ describe('expiryFrom', () => {
 
   it('counts the days from today', () => {
     vi.useFakeTimers({ now: new Date(2026, 10, 18, 12) });
-    expect(expiryFrom(7)).toBe(defaultExpiryDate(7, new Date()));
+    expect(expiryFrom(7)).toBe('2026-11-25');
   });
 });
 

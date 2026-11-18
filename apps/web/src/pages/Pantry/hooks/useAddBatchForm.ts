@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useToast } from '@pocket-pantry/ui';
 import {
-  FALLBACK_LOCATION,
   useCatalogSearch,
   type CatalogAllergen,
   type CatalogSearchResult,
@@ -20,7 +19,6 @@ import { barcodeLine } from '@/lib/barcode';
 import { isValidBarcode } from '@/lib/gtin';
 import type { CameraMode } from '@/lib/cameraMode';
 import { type ProposedLine } from '@/lib/scan';
-import { expiryFrom, locationFor, unmark } from './addBatchFields';
 import { defaultAmount } from '@/lib/usualAmounts';
 import type { CameraResult } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
@@ -29,6 +27,7 @@ import {
   type Batch,
   type IsoDate,
 } from '@/lib/pantry';
+import { expiryFrom, locationFor, unmark } from './addBatchFields';
 
 /**
  * What the form starts with, from an open Ingredient card: the Ingredient (its id and name; the
@@ -85,7 +84,7 @@ export function useAddBatchForm({
   const [frozenUnit, setFrozenUnit] = useState<Unit | null>(null);
   const unit: Unit = chosenUnit ?? frozenUnit ?? ingredient?.defaultUnit ?? 'g';
   const [location, setLocation] = useState<StorageLocation>(
-    presetLocation ?? FALLBACK_LOCATION,
+    locationFor(presetLocation, null),
   );
   const [expiryDate, setExpiryDate] = useState<IsoDate | null>(null);
   const [description, setDescription] = useState('');
@@ -215,8 +214,8 @@ export function useAddBatchForm({
     const marks = new Set<PrefillField>();
     const matched = ingredientTouched ? null : read.match;
     if (!ingredientTouched) {
-      if (read.match) {
-        setIngredient(read.match);
+      if (matched) {
+        setIngredient(matched);
         setUnmatchedName(null);
         setFrozenUnit(null);
         setCheckIngredient(read.lowConfidence);
@@ -242,7 +241,6 @@ export function useAddBatchForm({
         setExpiryDate(read.expiryDate as IsoDate);
         marks.add('expiry');
       } else if (!ingredientTouched) {
-        // `matched` is the read's match here (an untouched Ingredient), or none.
         setExpiryDate(expiryFrom(matched?.defaults.expiryDays ?? null));
       }
     }

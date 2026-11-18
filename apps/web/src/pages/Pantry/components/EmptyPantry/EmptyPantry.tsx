@@ -64,11 +64,7 @@ export function EmptyPantry({ onType, onAddTo, visit }: Props) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       {/* A preview of the page's shape: not a control while there is nothing to filter. */}
-      <Box
-        aria-hidden="true"
-        inert
-        sx={{ display: 'flex', gap: '8px', overflowX: 'auto', opacity: 0.55 }}
-      >
+      <Box aria-hidden="true" inert sx={{ opacity: 0.55 }}>
         <LocationChips filter="all" onFilterChange={() => undefined} />
       </Box>
       {checked > 0 ? (
