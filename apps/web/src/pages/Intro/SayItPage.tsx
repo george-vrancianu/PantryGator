@@ -9,19 +9,22 @@ import {
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AppDock } from '@/components/AppDock';
+import { AppDock } from '@/components/layout/AppDock/AppDock';
 import { IntroLook } from '@/components/IntroLook';
 import { creamFocus } from './components/creamFocus';
 import { GatorSpeech } from './components/GatorSpeech/GatorSpeech';
 import { SetupCallout } from '@/components/intro/SetupCallout/SetupCallout';
 import { useSetupLeave } from './components/SetupLeave/SetupLeave';
 import { SetupOliveTopRow } from './components/SetupOliveTopRow/SetupOliveTopRow';
-import { VoiceNote, type VoiceNoteSettings } from '@/components/VoiceNote';
+import {
+  VoiceNote,
+  type VoiceNoteSettings,
+} from '@/components/voice/VoiceNote/VoiceNote';
 import {
   useDockRaised,
   VoiceHostProvider,
   VoiceHostSlot,
-} from '@/components/voice/VoiceHost';
+} from '@/components/voice/VoiceHost/VoiceHost';
 import { introPath, nextStep, savedByVoice, skipStep } from '@/lib/intro';
 import { useAutoAdvance, useIntro } from '@/lib/useIntro';
 import {

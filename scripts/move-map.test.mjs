@@ -383,3 +383,42 @@ test('the camera joins scan/camera: the overlay and its Scan parts come up from 
   // Already in place: nothing to move.
   assert.equal(rows.has('components/scan/camera/ModeList/ModeList.tsx'), false);
 });
+
+test('the app shell, the Gator pieces and the Voice Note host get their groups, and background keeps its parts together', () => {
+  const imp = (n) => `import { X } from './${n}';\n`;
+  const { rows } = run(
+    {
+      'components/AppLayout.tsx': imp('ApplyMemberTheme'),
+      'components/ApplyMemberTheme.tsx': comp,
+      'components/GatorBanner.tsx': comp,
+      'components/VoiceNote.tsx': comp,
+      'components/background/BackgroundSheet.tsx': comp,
+      'components/background/BackgroundHost.tsx': imp('BackgroundSheet'),
+      'pages/Intro/IntroPage.tsx': `import { X } from '../../components/GatorBanner';\n`,
+      'pages/Pantry/PantryPage.tsx': `import { X } from '../../components/VoiceNote';\n`,
+      'App.tsx': `import { X } from './components/AppLayout';\nimport { X as H } from './components/background/BackgroundHost';\n`,
+    },
+    ['all'],
+  );
+  const target = (f) => rows.get(f).target;
+  assert.equal(
+    target('components/AppLayout.tsx'),
+    'components/layout/AppLayout/AppLayout.tsx',
+  );
+  assert.equal(
+    target('components/ApplyMemberTheme.tsx'),
+    'components/layout/AppLayout/ApplyMemberTheme/ApplyMemberTheme.tsx',
+  );
+  assert.equal(
+    target('components/GatorBanner.tsx'),
+    'components/gator/GatorBanner/GatorBanner.tsx',
+  );
+  assert.equal(
+    target('components/VoiceNote.tsx'),
+    'components/voice/VoiceNote/VoiceNote.tsx',
+  );
+  assert.equal(
+    target('components/background/BackgroundSheet.tsx'),
+    'components/backgroundRead/BackgroundSheet/BackgroundSheet.tsx',
+  );
+});

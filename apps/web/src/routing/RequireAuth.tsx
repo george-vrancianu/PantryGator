@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useSession } from '@/lib/auth';
 import { LaunchPage } from '@/pages/Intro/LaunchPage';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullPageSpinner } from '@/components/layout/FullPageSpinner/FullPageSpinner';
 
 /** Route guard: a signed-out visitor sees Launch on whatever route they opened, and comes back to it after Log in. */
 export function RequireAuth() {

@@ -6,7 +6,7 @@ import {
 import { useLayoutEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { AppScreenHeader } from '@/components/AppScreenHeader';
+import { AppScreenHeader } from './AppScreenHeader/AppScreenHeader';
 import {
   usePageInstance,
   useLayoutSlots,

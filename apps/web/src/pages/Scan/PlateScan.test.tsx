@@ -9,7 +9,7 @@ import { renderWithProviders, stubApi } from '@/test/render';
 import { takeScan } from '@/test/scan';
 import { openBubbleSheet } from '@/test/voiceDom';
 import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
-import { BackgroundHost } from '@/components/background/BackgroundHost';
+import { BackgroundHost } from '@/components/backgroundRead/BackgroundHost/BackgroundHost';
 import { NewRecipePage } from '@/pages/Recipes/NewRecipePage';
 import { ScanPage } from './ScanPage';
 

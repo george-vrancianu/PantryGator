@@ -1,7 +1,7 @@
 import type { TFunction } from 'i18next';
-import type { ScanLanguage } from '../../i18n/resources';
-import { formatClock } from '../../lib/voice';
-import type { VoiceDefaultTarget } from '../../lib/voice';
+import type { ScanLanguage } from '@/i18n/resources';
+import { formatClock } from '@/lib/voice';
+import type { VoiceDefaultTarget } from '@/lib/voice';
 
 function listName(t: TFunction, defaultTarget: VoiceDefaultTarget): string {
   return defaultTarget === 'none'

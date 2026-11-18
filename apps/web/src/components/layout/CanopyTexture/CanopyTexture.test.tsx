@@ -4,7 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { stubMatchMedia } from '@/test/viewport';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '../AppLayout/AppLayout';
 import { TEXTURES, type TextureName } from '../canopyTexture';
 import { Screen } from '../Screen/Screen';
 import { TRANSITION_MS } from '../timing';

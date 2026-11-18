@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetVoiceEnvironment, stubVoiceFetch } from '@/test/voice';
 import { holdLongEnough, useVoiceTimers } from '@/test/voiceHold';
 import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
 import { PantryPage } from './PantryPage';
 
 function setup(voiceConfigured = true) {

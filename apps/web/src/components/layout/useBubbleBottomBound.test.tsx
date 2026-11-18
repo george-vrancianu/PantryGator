@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { PreviewBar } from '../PreviewBar';
-import { ReviewActionBar } from '../ReviewActionBar';
+import { PreviewBar } from '@/components/PreviewBar';
+import { ReviewActionBar } from '@/components/ReviewActionBar';
 import { BUBBLE_BOTTOM_VAR } from './bubbleVars';
 import { renderWithProviders } from '@/test/render';
 

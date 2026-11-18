@@ -4,7 +4,7 @@ import { afterEach } from 'vitest';
 import { recipeReads } from '../lib/recipeReads';
 import { resetReads } from '../lib/scanReads';
 import { resetScanSession } from '../lib/scanSession';
-import { resetBubbleAnnouncement } from '../components/background/bubble/useBubbleAnnouncement';
+import { resetBubbleAnnouncement } from '@/components/backgroundRead/useBubbleAnnouncement';
 
 configure({ asyncUtilTimeout: 3000 });
 

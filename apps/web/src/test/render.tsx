@@ -1,4 +1,4 @@
-import { AppUiProvider } from '../components/AppUiProvider';
+import { AppUiProvider } from '@/components/layout/AppUiProvider/AppUiProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
@@ -9,8 +9,8 @@ import {
   Routes,
   type InitialEntry,
 } from 'react-router-dom';
-import { AppLayout } from '../components/AppLayout';
-import { VoiceNotices } from '../components/voice/VoiceNotices';
+import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
+import { VoiceNotices } from '@/components/voice/VoiceNotices/VoiceNotices';
 import { createI18n, type Locale } from '../i18n';
 import { RouterLink } from '../lib/RouterLink';
 

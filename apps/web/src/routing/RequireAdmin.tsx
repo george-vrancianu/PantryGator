@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useSession } from '@/lib/auth';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullPageSpinner } from '@/components/layout/FullPageSpinner/FullPageSpinner';
 
 /**
  * Route guard for the admin area, nested inside `RequireAuth`. Non-Admins are

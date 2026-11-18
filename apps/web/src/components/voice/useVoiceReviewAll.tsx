@@ -5,7 +5,7 @@ import {
   MAX_APPLY_ACTIONS,
   useVoiceNoteState,
   voiceNote,
-} from '../../lib/voiceNote';
+} from '@/lib/voiceNote';
 
 /**
  * The background sheet's group action for Voice Notes: "Review all (N)", offered for two or more
