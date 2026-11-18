@@ -63,13 +63,6 @@
     "title": "Starea cămării",
     "scoreOf": "{{score}} din 100",
     "notEnough": "Prea puțin ca să judecăm încă",
-    "lights": {
-      "expired": "Expirate",
-      "soon": "De folosit curând",
-      "low": "Pe terminate",
-      "fresh": "Proaspăt aduse",
-      "nothingNew": "Nimic nou"
-    },
     "a11y": {
       "name": "{{title}}: {{verdict}}, {{lights}}.",
       "expired_one": "{{count}} expirat",

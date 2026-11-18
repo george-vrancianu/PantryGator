@@ -7,6 +7,8 @@ import { decodePhotoBarcode, readScans } from '../../../lib/scanReads';
 import {
   sessionHeld,
   heldBy,
+  isBarcodeCard,
+  isBarcodeMode,
   MAX_SESSION_SCANS,
   dispatchScanSession,
   getScanSession,
@@ -14,7 +16,8 @@ import {
   resetScanSession,
   useScanSession,
 } from '../../../lib/scanSession';
-import { resizeImage } from '../../../lib/image';
+import { BARCODE_THUMBNAIL_EDGE, resizeImage } from '../../../lib/image';
+import { haptic, HAPTIC_READ_MS } from '../../../lib/haptic';
 import {
   importPhotos,
   importRoom,
@@ -38,7 +41,6 @@ import {
 
 /** A code identical to the last accepted one is taken again after this long without being seen. */
 const BARCODE_COOLDOWN_MS = 1500;
-const BARCODE_HAPTIC_MS = 12;
 
 /**
  * What opens the camera decides how it behaves: which modes it offers and starts in, whether Import is
@@ -203,7 +205,7 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     let image: string;
     try {
       // Barcode sends no photo: it never gets here.
-      if (mode === 'barcode')
+      if (isBarcodeMode(mode))
         throw new Error('Barcode has no photo to prepare');
       image = await IMAGE_PREPARATION[mode](
         frame,
@@ -250,7 +252,7 @@ export function useScanScreen(config: ScanScreenModes = {}) {
   // Two quick presses must not send the same photo twice.
   const shooting = useRef(false);
   const shoot = async () => {
-    if (shooting.current || capped || mode === 'barcode') return;
+    if (shooting.current || capped || isBarcodeMode(mode)) return;
     shooting.current = true;
     try {
       // The guide and the turn as they are when the shutter fires, not when the frame arrives.
@@ -263,7 +265,7 @@ export function useScanScreen(config: ScanScreenModes = {}) {
   };
 
   const importFiles = (picked: File[]) => {
-    if (picked.length === 0 || mode === 'barcode') return;
+    if (picked.length === 0 || isBarcodeMode(mode)) return;
     setLocalError(null);
     setNotAdded(false);
     // Files that do not fit are left out and the limit toast replaces this one (see `onFull`).
@@ -309,7 +311,14 @@ export function useScanScreen(config: ScanScreenModes = {}) {
     const epoch = scanEpoch.current;
     // The card's thumbnail is the frame the code was read from, frozen now.
     const frame = await camera.capture();
-    const thumbnail = frame ? await resizeImage(frame).catch(() => '') : '';
+    // The stored thumbnail is small; the flight to the stack draws the frame at the guide's size, so
+    // it keeps the full-size image.
+    const [thumbnail, flightImage] = frame
+      ? await Promise.all([
+          resizeImage(frame, 0, BARCODE_THUMBNAIL_EDGE).catch(() => ''),
+          resizeImage(frame).catch(() => ''),
+        ])
+      : ['', ''];
     if (epoch !== scanEpoch.current) {
       lastCode.current = null;
       return;
@@ -325,9 +334,9 @@ export function useScanScreen(config: ScanScreenModes = {}) {
       type: 'enqueue',
       scan: { id: crypto.randomUUID(), mode: 'barcode', code, thumbnail },
     });
-    navigator.vibrate?.(BARCODE_HAPTIC_MS);
+    haptic(HAPTIC_READ_MS);
     setBarcodesRead((n) => n + 1);
-    cardAdded.current?.(thumbnail, 'barcode');
+    cardAdded.current?.(flightImage, 'barcode');
     // The lookup starts at once, outside the read slots.
     readScans();
   };
@@ -337,7 +346,7 @@ export function useScanScreen(config: ScanScreenModes = {}) {
   });
   const { watchBarcodes } = camera;
   useEffect(() => {
-    if (mode !== 'barcode' || camera.status !== 'ready') return;
+    if (!isBarcodeMode(mode) || camera.status !== 'ready') return;
     let stopped = false;
     let stop = () => {};
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -380,15 +389,13 @@ export function useScanScreen(config: ScanScreenModes = {}) {
       });
     },
     /** Plate Scan has no Scan Language. */
-    scanLanguageShown: mode !== 'plate' && mode !== 'barcode',
+    scanLanguageShown: mode !== 'plate' && !isBarcodeMode(mode),
     scanLanguageLocked: reading,
     camera,
     scans: session.scans,
     /** The Session's Barcode card count once a read happened on this screen, else 0: what the live region announces. */
     barcodesAnnounced:
-      barcodesRead > 0
-        ? session.scans.filter((scan) => scan.mode === 'barcode').length
-        : 0,
+      barcodesRead > 0 ? session.scans.filter(isBarcodeCard).length : 0,
     pending: pendingCount(session),
     /** The photo stack: Review opens even while reads run. */
     openReview: () => {

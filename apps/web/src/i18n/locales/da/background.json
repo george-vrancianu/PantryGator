@@ -7,8 +7,6 @@
   "review": "Gennemse",
   "scan": {
     "reviewSession": "Gennemse {{title}}",
-    "failedAlert_one": "{{count}} scanning mislykkedes",
-    "failedAlert_other": "{{count}} scanninger mislykkedes",
     "read_one": "{{count}} læst",
     "read_other": "{{count}} læst",
     "receipt_one": "{{count}} kvittering",
@@ -34,9 +32,7 @@
     "outOfCredits": "Ikke flere kreditter",
     "retry": "Prøv igen",
     "retryRead": "Prøv at læse {{what}} igen",
-    "pasteInstead": "Indsæt teksten fra {{what}} i stedet",
-    "failedAlert_one": "{{count}} opskriftslink mislykkedes",
-    "failedAlert_other": "{{count}} opskriftslinks mislykkedes"
+    "pasteInstead": "Indsæt teksten fra {{what}} i stedet"
   },
   "plate": {
     "waiting": "Venter på at skrive {{dish}}",
@@ -51,9 +47,7 @@
     "discardRead": "Kassér {{dish}}",
     "retryRead": "Prøv at skrive {{dish}} igen",
     "readAgain": "Læs fotoet igen",
-    "readAgainRead": "Læs fotoet af {{dish}} igen",
-    "failedAlert_one": "{{count}} retsopskrift mislykkedes",
-    "failedAlert_other": "{{count}} retsopskrifter mislykkedes"
+    "readAgainRead": "Læs fotoet af {{dish}} igen"
   },
   "bubble": {
     "reading_one": "Gator arbejder: {{count}} læses",

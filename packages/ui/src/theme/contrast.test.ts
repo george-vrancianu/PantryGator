@@ -27,6 +27,8 @@ const PAIRS: ReadonlyArray<[text: Key, fill: Key]> = [
   ['muted', 'chip'],
   ['primary-ink', 'primary'],
   ['accent-ink', 'accent'],
+  // The danger fill (`error-main`) with its text (`error-light`), e.g. Sheet's danger primary.
+  ['urgent-bg', 'urgent-fg'],
   // Accent text: ghost buttons and links.
   ['accent', 'bg'],
   ['accent', 'surface'],

@@ -24,7 +24,7 @@ import {
 } from './voice';
 
 /** Where the Voice Note is: the hold-to-talk button, the status pill and Review all read this. */
-export type VoicePhase =
+type VoicePhase =
   | 'idle'
   | 'recording'
   | 'reading'
@@ -36,7 +36,7 @@ export type VoicePhase =
   | 'applying';
 
 /** Why the last Voice Note did not reach Review. */
-export type VoiceErrorCode =
+type VoiceErrorCode =
   | 'unavailable'
   | 'nothingHeard'
   /** The send failed (no signal, provider down): the recording is kept for Retry. */
@@ -60,7 +60,7 @@ export type MergedNote = {
   transcript: string;
 };
 
-export type VoiceNoteState = {
+type VoiceNoteState = {
   phase: VoicePhase;
   /** The page that recorded: the default target of the Voice Note. */
   defaultTarget: VoiceDefaultTarget;
@@ -135,7 +135,7 @@ export type VoiceNotice =
   /** A sixth Voice Note was refused: Review the others first. */
   | 'inboxFull';
 
-/** The outside world of the Voice Note. */
+/** The outside world of the Voice Note. Exported with `VoiceNoteEdit` as the module interface: they type `createVoiceNote` and `edit`. */
 export type VoiceNoteAdapters = {
   /** Sends a recording to be read. */
   send: (request: VoiceNoteRequest) => Promise<VoiceNoteResult>;
@@ -160,10 +160,10 @@ export type VoiceNoteEdit = Partial<{
 }>;
 
 /** What stopped the recording came to: sent to be read, too short to read, or nothing was recording. */
-export type StopOutcome = 'sent' | 'tooShort' | 'notStarted';
+type StopOutcome = 'sent' | 'tooShort' | 'notStarted';
 
 /** What a start came to. Only `denied` is the Member's to act on (the microphone sheets). */
-export type StartOutcome =
+type StartOutcome =
   | 'started'
   /** Refused by the start guard (or a note is already under way). */
   | 'refused'
@@ -175,7 +175,7 @@ export type StartOutcome =
   | 'cancelled';
 
 /** Why a start would be refused: the hook shows the matching tip before asking for permission. */
-export type StartBlocker =
+type StartBlocker =
   | 'active'
   /** A Review or answer sheet is open. */
   | 'review'
@@ -188,14 +188,14 @@ export type StartBlocker =
 const MAX_TIMEOUT = 2 ** 31 - 1;
 
 /** How many Voice Notes are read at once; the rest wait in recording order. */
-export const MAX_READS = 2;
+const MAX_READS = 2;
 /** How many Voice Notes the Voice Inbox holds. */
-export const MAX_NOTES = 5;
+const MAX_NOTES = 5;
 /** The most Voice Actions one Apply takes (the API's limit); a merged Review over it is refused. */
 export const MAX_APPLY_ACTIONS = 50;
 
 /** What `openMerged` came to. */
-export type MergeOutcome = 'opened' | 'tooMany' | 'refused';
+type MergeOutcome = 'opened' | 'tooMany' | 'refused';
 
 /** One Voice Note in the list: its own phase, audio, Default List, Spoken Language, proposal and error. */
 type VoiceNoteEntry = {
@@ -875,8 +875,15 @@ export function createVoiceNote(
   /**
    * Throws the recording away. Says so unless `quiet` (the page was left). With nothing
    * recording or starting it does nothing: reads in flight and their wake lock are left alone.
+   * `beforeStart` is a cancel while the page still reads the microphone permission (the module was
+   * not asked to start yet): there is nothing to drop, but it says so (`quiet` is
+   * ignored here).
    */
-  function cancel(options: { quiet?: boolean } = {}) {
+  function cancel(options: { quiet?: boolean; beforeStart?: boolean } = {}) {
+    if (options.beforeStart) {
+      notify('recordingCancelled');
+      return;
+    }
     if (!starting && !session) return;
     dropMicrophone();
     letSleep('mic');
@@ -903,12 +910,8 @@ export function createVoiceNote(
     pump();
   }
 
-  /** How many failed notes the strip has announced as an alert. Outlives the strip, which remounts. */
-  let announcedFailed = 0;
-
   /** Sign-out: everything goes, the recording, every read and the Voice Cap. */
   function clear() {
-    announcedFailed = 0;
     epoch++;
     dropMicrophone();
     for (const request of reads.values()) request.abort();
@@ -1018,28 +1021,18 @@ export function createVoiceNote(
     cancelReading: cancelRead,
     /** Sign-out: forgets every Voice Note, read and recording. */
     clear,
-    /** How many failed notes have been announced as an alert (a drop lowers it, so a later failure alerts again). */
-    announcedFailed: () => announcedFailed,
-    announceFailed(failed: number) {
-      announcedFailed = failed;
-    },
     /** Opens the oldest Voice Note that is ready: its Review, or its answer sheet. Nothing is open already. */
     openReady() {
       const next = store.notes.find(isReady);
       if (next) openOne(next.id);
     },
     open: openOne,
-    /** Drops a failure and its kept recording. */
+    /** Drops a failure and its kept recording. Says "discarded" only when a recording was kept; otherwise the row just closes. */
     dismiss(id: number) {
-      const note = failedNote(id);
-      if (note) removeNote(note.id);
-    },
-    /** Drops a failure and its kept recording, and says so. */
-    discardFailed(id: number) {
       const note = failedNote(id);
       if (!note) return;
       removeNote(note.id);
-      notify('discarded');
+      if (note.recording !== undefined) notify('discarded');
     },
     isCapReached,
 

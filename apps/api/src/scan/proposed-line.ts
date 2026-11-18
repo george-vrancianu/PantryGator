@@ -2,7 +2,7 @@ import type { CatalogSearchResult } from '../catalog/catalog.schemas';
 import type { ingredientUnit } from '../database/schema';
 import type { ProductScanResult } from './product-scan.schemas';
 import { confidentMatch } from './catalog-matching';
-import { toPantryQuantityFromText } from './receipt-quantity';
+import { toPantryQuantityFromText } from './scan-quantity';
 
 /**
  * One line a Scan proposes to the Review screen. Every Scan Mode returns lines

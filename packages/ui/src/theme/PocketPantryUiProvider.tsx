@@ -1,6 +1,7 @@
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { ThemeProvider, useColorScheme } from '@mui/material/styles';
 import { useEffect, useMemo, type ElementType, type ReactNode } from 'react';
+import { DEFAULT_UI_LABELS, UiLabelsContext, type UiLabels } from './uiLabels';
 import { ToastProvider } from '../molecules/ToastProvider';
 import { appearanceStorageManager } from './appearanceStorageManager';
 import { createPocketPantryTheme, ppCssVariables } from './theme';
@@ -10,10 +11,12 @@ import { focusRingStyle } from './focusRing';
 import { bodyFont, palette } from './themeVars';
 import './fonts.css';
 
-type Props = {
+export type PocketPantryUiProviderProps = {
   children: ReactNode;
   /** Router link component so `href` props navigate client-side. */
   linkComponent?: ElementType;
+  /** Translated text for words the design system draws itself (a Sheet's X). Defaults to English. */
+  labels?: Partial<UiLabels>;
 };
 
 const colourTransition = 'background-color 200ms, color 200ms';
@@ -57,17 +60,27 @@ function ThemeColorMeta() {
   return null;
 }
 
-export function PocketPantryUiProvider({ children, linkComponent }: Props) {
+export function PocketPantryUiProvider({
+  children,
+  linkComponent,
+  labels,
+}: PocketPantryUiProviderProps) {
   const theme = useMemo(
     () => createPocketPantryTheme({ linkComponent }),
     [linkComponent],
+  );
+  const uiLabels = useMemo(
+    () => ({ ...DEFAULT_UI_LABELS, ...labels }),
+    [labels],
   );
   return (
     <ThemeProvider theme={theme} storageManager={appearanceStorageManager}>
       <CssBaseline />
       <GlobalStyles styles={globalStyles} />
       <ThemeColorMeta />
-      <ToastProvider>{children}</ToastProvider>
+      <UiLabelsContext.Provider value={uiLabels}>
+        <ToastProvider>{children}</ToastProvider>
+      </UiLabelsContext.Provider>
     </ThemeProvider>
   );
 }

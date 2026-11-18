@@ -1,4 +1,4 @@
-import type { SessionScan } from './scanSession';
+import { isBarcodeCard, type SessionScan } from './scanSession';
 
 /** What the photo stack's badge shows, first match wins (handoff 5.2). */
 export type StackState = 'reading' | 'needsCrop' | 'failed' | 'read';
@@ -21,7 +21,7 @@ export type StackSummary = {
 
 /** The photo stack's badge number and state, and its layers, from the Scan Session's cards. */
 export function summariseStack(scans: SessionScan[]): StackSummary {
-  const barcodes = scans.filter((scan) => scan.mode === 'barcode').length;
+  const barcodes = scans.filter(isBarcodeCard).length;
   const reading = scans.filter(
     (scan) => scan.status === 'queued' || scan.status === 'reading',
   ).length;

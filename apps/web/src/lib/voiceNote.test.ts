@@ -530,29 +530,30 @@ describe('Voice Note module', () => {
     });
   });
 
-  describe('Dismiss and Discard', () => {
-    it('dismisses a failure without a notice', async () => {
+  describe('Dismiss', () => {
+    it('closes a failure that kept no recording without a notice', async () => {
       const { note, notices } = await failedWith(
-        new ApiError('network_error', 0),
+        new ApiError('voice.too_long', 400),
       );
+      expect(failure(note)?.canRetry).toBe(false);
       note.dismiss(failure(note)?.id ?? -1);
       expect(note.getState().inbox.total).toBe(0);
       expect(notices).toEqual([]);
     });
 
-    it('discards a failure with a notice', async () => {
+    it('discards a failure that kept its recording, with a notice', async () => {
       const { note, notices } = await failedWith(
         new ApiError('network_error', 0),
       );
-      note.discardFailed(failure(note)?.id ?? -1);
+      expect(failure(note)?.canRetry).toBe(true);
+      note.dismiss(failure(note)?.id ?? -1);
       expect(note.getState().inbox.total).toBe(0);
       expect(notices).toEqual(['discarded']);
     });
 
-    it('ignores both outside a failure', async () => {
+    it('ignores a note that is not a failure', async () => {
       const { note, notices } = await inReview('a');
       note.dismiss(1);
-      note.discardFailed(1);
       expect(note.getState().phase).toBe('review');
       expect(notices).toEqual(['noteReady']);
     });
@@ -1109,6 +1110,13 @@ describe('Voice Note module', () => {
       expect(live.cancel).toHaveBeenCalledOnce();
       expect(notices).toEqual(['recordingCancelled']);
       expect(released()).toEqual([1]);
+    });
+
+    it('says so for a cancel before the module was asked to start, and starts nothing', () => {
+      const { note, notices, startMicrophone } = slowMicrophone();
+      note.cancel({ beforeStart: true });
+      expect(notices).toEqual(['recordingCancelled']);
+      expect(startMicrophone).not.toHaveBeenCalled();
     });
 
     it('lets the screen sleep at once, not when the stream arrives', async () => {

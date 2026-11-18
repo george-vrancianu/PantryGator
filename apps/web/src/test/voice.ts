@@ -1,6 +1,5 @@
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { expect, vi } from 'vitest';
+import { screen, within } from '@testing-library/react';
+import { vi } from 'vitest';
 import type { Recording } from '../lib/microphone';
 import { voiceNote } from '../lib/voiceNote';
 import { holdLongEnough, pressDown } from './voiceHold';
@@ -18,7 +17,14 @@ import { holdLongEnough, pressDown } from './voiceHold';
  * - Send-Voice-Note request: `stubVoiceFetch` wraps the stubbed API and returns what is sent; `holdReads()` keeps reads pending.
  *
  * Call `resetVoiceEnvironment()` in `beforeEach` to put all of it back to its defaults.
+ *
+ * A test that only needs the Gator bubble helpers imports `./voiceDom` (mock-free) instead; they
+ * are re-exported here. This module throws if the real lib/voiceNote was already loaded when it
+ * registered its mocks. Not detected: a real lib/microphone loaded first by another importer
+ * (useMicPermission, or a direct import) without lib/voiceNote; keep this import first.
  */
+export * from './voiceDom';
+
 const fakes = vi.hoisted(() => ({
   MicrophoneError: class MicrophoneError extends Error {
     constructor(readonly reason: string) {
@@ -69,6 +75,23 @@ vi.mock('../lib/voiceNote', async (importOriginal) => {
       useSyncExternalStore(subscribe, voiceNote.getState, voiceNote.getState),
   };
 });
+
+// vi.mock does nothing to a module that is already loaded: a Voice Note module evaluated before this
+// file keeps the real microphone. Probe it: starting must reach the mock, not the real thing.
+// Relies on `start` calling the microphone before its first await; if that changes, this misreports.
+// Only a real lib/voiceNote is caught, not a real lib/microphone loaded by another importer.
+{
+  const probe = voiceNote.start({ defaultTarget: 'shopping' });
+  const reached = fakes.mic.start.mock.calls.length > 0;
+  probe.catch(() => {});
+  fakes.voice.replace();
+  fakes.mic.start.mockReset();
+  if (!reached) {
+    throw new Error(
+      'test/voice was imported after the real lib/voiceNote was already loaded, so its mocks cannot apply. Import test/voice first, or import the DOM helpers from test/voiceDom.',
+    );
+  }
+}
 
 /** The microphone module's error, as the page sees it (the page checks `instanceof`). */
 export const MicrophoneError = fakes.MicrophoneError;
@@ -247,58 +270,3 @@ export const voiceAction = (overrides: Record<string, unknown> = {}) => ({
   defaults: {},
   ...overrides,
 });
-
-/** The Gator bubble's accessible name, in each locale the tests use ("...Open Review"). */
-const BUBBLE_NAME = /Open Review|Deschide Verificarea|Åbn Gennemsyn/;
-/** The Review sheet's name in each locale. */
-const SHEET_NAME = /^(Review|Verificare|Gennemsyn)$/;
-
-/** The Gator bubble, by its accessible name ("...Open Review"). */
-export const bubbleButton = () =>
-  screen.getByRole('button', { name: BUBBLE_NAME });
-
-/** Waits for the Gator bubble to say `sentence` ("All read: 1 ready to review"), and returns it. */
-export const bubbleSays = (sentence: string) =>
-  screen.findByRole('button', { name: `${sentence}. Open Review` });
-
-/** Taps the Gator bubble and returns the Review sheet it opens (or the one already open). */
-export async function openBubbleSheet() {
-  // Already open: the bubble is hidden under it.
-  const open = screen.queryByRole('dialog', { name: SHEET_NAME });
-  if (open) return open;
-  fireEvent.click(await screen.findByRole('button', { name: BUBBLE_NAME }));
-  return screen.findByRole('dialog', { name: SHEET_NAME });
-}
-
-/** Closes the Review sheet with Escape and waits for it to go, so the page can be used again. */
-export async function closeBubbleSheet() {
-  const open = screen.queryByRole('dialog', { name: SHEET_NAME });
-  if (!open) return;
-  fireEvent.keyDown(open, { key: 'Escape' });
-  await waitFor(() => expect(open).not.toBeInTheDocument());
-}
-
-/**
- * Opens the Voice Note that is ready from the Review sheet (tap the Gator bubble, then the Review
- * or See button of the first ready row) and returns the Review sheet of that note, or the answer
- * sheet for a note of only Pantry Questions.
- */
-export async function openReady(name?: { name: string | RegExp }) {
-  const background = await openBubbleSheet();
-  // A real click, which focuses the button as a Member's would.
-  await userEvent.setup().click(
-    within(background).getAllByRole('button', {
-      name: /^(Review|See): /,
-    })[0]!,
-  );
-  // The background sheet closes as the note opens; wait it out so only the note's sheet is left.
-  await waitFor(() => expect(background).not.toBeInTheDocument());
-  return screen.findByRole('dialog', name);
-}
-
-/** What the toast live region (a polite status) says now, one string per message. */
-export const announcements = () =>
-  screen
-    .queryAllByRole('status')
-    .map((el) => el.textContent ?? '')
-    .filter((text) => text !== '');

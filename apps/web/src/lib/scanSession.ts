@@ -4,7 +4,7 @@ import type { ScanLanguage } from '../i18n/resources';
 import type { DishGuess } from './plate';
 import { MAX_RECEIPT_SECTIONS } from './receiptSections';
 import { reviewLinesOf, type ReviewLine } from './review';
-import type { CameraMode } from './cameraMode';
+import { isBarcodeMode, type CameraMode } from './cameraMode';
 import type { ProposedLine } from './scan';
 import { clearScanLanguageOverride } from './sessionScanLanguage';
 
@@ -127,11 +127,10 @@ const waiting = (state: SessionState) => {
     : ({ status: 'queued' } as const);
 };
 
-/** Barcode cards are looked up at once and never wait for, or count against, the Scan Cap. */
-export const isBarcodeMode = (mode: CameraMode): mode is 'barcode' =>
-  mode === 'barcode';
-export const isBarcodeCard = (scan: Pick<SessionScan, 'mode'>) =>
-  isBarcodeMode(scan.mode);
+export { isBarcodeMode };
+export const isBarcodeCard = <T extends Pick<SessionScan, 'mode'>>(
+  scan: T,
+): scan is T & { mode: 'barcode' } => isBarcodeMode(scan.mode);
 
 /** The copy key (`failed` or `lookupFailed`) that says a card failed: a Barcode card did a lookup, not a read. */
 export const failedCopyKey = (scan: Pick<SessionScan, 'mode'>) =>
@@ -398,8 +397,6 @@ export const sessionHeld = (state: SessionState) => heldBy(state) !== undefined;
 let session = emptySession;
 /** `nextBackgroundOrder` when the first Scan joined the Session: orders its strip row against other background items. */
 let sessionOrder = 0;
-/** How many failed Scans the strip has announced as an alert; ends with the Session. */
-let announcedFailed = 0;
 const listeners = new Set<() => void>();
 
 function setSession(next: SessionState) {
@@ -431,15 +428,9 @@ export const getScanSession = () => session;
 export const dispatchScanSession = (action: SessionAction) =>
   setSession(sessionReducer(session, action));
 export const getScanSessionOrder = () => sessionOrder;
-/** The failed-Scan count the strip has announced, and the way to advance it. */
-export const announcedScanFailed = () => announcedFailed;
-export const announceScanFailed = (failed: number) => {
-  announcedFailed = failed;
-};
-/** Ends the Scan Session: its cards, its Scan Language pick and its announced failures go. */
+/** Ends the Scan Session: its cards and its Scan Language pick go. */
 export const resetScanSession = () => {
   clearScanLanguageOverride();
-  announcedFailed = 0;
   setSession(emptySession);
 };
 

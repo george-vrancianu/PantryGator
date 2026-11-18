@@ -163,9 +163,6 @@ function MealPlanForm({
         saving={saving}
         hideActions
         onSubmit={submit}
-        onCancel={() =>
-          navigate(plan ? `/meal-plans/${plan.id}` : '/meal-plans')
-        }
         onDelete={
           plan
             ? () =>
