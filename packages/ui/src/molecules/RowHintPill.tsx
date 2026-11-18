@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
 import { ArrowLeftIcon } from '../atoms/icons';
-import { radius } from '../theme/themeVars';
-import { tokens } from '../theme/tokens';
+import { palette, radius } from '../theme/themeVars';
 import { usePrefersReducedMotion } from '../theme/usePrefersReducedMotion';
 
 const FADE_MS = 250;
@@ -47,8 +46,8 @@ export function RowHintPill({ visible, children }: RowHintPillProps) {
           px: '12px',
           py: '7px',
           borderRadius: radius.chip,
-          bgcolor: tokens.color.accentTint,
-          color: tokens.color.accentOnTint,
+          bgcolor: palette('pp-accentTint'),
+          color: palette('pp-accentOnTint'),
           fontSize: 12.5,
           fontWeight: 600,
         }}

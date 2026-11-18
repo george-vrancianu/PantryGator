@@ -10,7 +10,7 @@ import {
   IconButton,
   Stack,
   TextField,
-  tokens,
+  palette,
   Typography,
   RowControls,
   StepNumber,
@@ -124,10 +124,10 @@ export function RecipeStepsSection({
         minHeight: 48,
         justifyContent: 'flex-start',
         textAlign: 'start',
-        color: tokens.color.accent,
+        color: palette('pp-accent'),
         fontSize: 14.5,
         fontWeight: 700,
-        '&:hover': { bgcolor: tokens.color.subtle },
+        '&:hover': { bgcolor: palette('pp-subtle') },
       }}
     >
       <StepNumber dashed>+</StepNumber>
@@ -155,7 +155,7 @@ export function RecipeStepsSection({
           p: 0,
           overflow: 'hidden',
           '& > * + *, & > ol > li + li': {
-            borderTop: `1px solid ${tokens.color.divider}`,
+            borderTop: `1px solid ${palette('divider')}`,
           },
         }}
       >

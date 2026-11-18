@@ -3,7 +3,7 @@ import {
   Button,
   Stack,
   Typography,
-  tokens,
+  palette,
   radius,
 } from '@pocket-pantry/ui';
 import { useToast } from '@pocket-pantry/ui';
@@ -151,8 +151,8 @@ export function SuggestedMark() {
         px: '10px',
         py: '2px',
         borderRadius: radius.tag,
-        bgcolor: tokens.color.okBg,
-        color: tokens.color.okFg,
+        bgcolor: palette('success-light'),
+        color: palette('success-main'),
       }}
     >
       {t('recipe.guidance.suggest.mark')}

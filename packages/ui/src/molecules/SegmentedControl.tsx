@@ -2,10 +2,10 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
 import { focusRing } from '../theme/focusRing';
-import { tokens } from '../theme/tokens';
 import {
   bodyFont,
   nestedRadius,
+  palette,
   radius,
   shadow,
   themePalette,
@@ -182,8 +182,8 @@ export function SegmentedControl<T extends string>({
                   px: '5px',
                   ml: '6px',
                   borderRadius: radius.chip,
-                  backgroundColor: tokens.color.butter,
-                  color: tokens.color.butterInk,
+                  backgroundColor: palette('secondary-main'),
+                  color: palette('secondary-contrastText'),
                   fontSize: 11,
                   fontWeight: 700,
                   fontVariantNumeric: 'tabular-nums',

@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -32,7 +32,7 @@ export function SectionLabel({ id, children, count, end }: Props) {
           fontWeight: 700,
           letterSpacing: '0.06em',
           textTransform: 'uppercase',
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {children}

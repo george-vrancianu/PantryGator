@@ -1,4 +1,4 @@
-import { Box, tokens, visuallyHidden } from '@pocket-pantry/ui';
+import { Box, visuallyHidden, palette } from '@pocket-pantry/ui';
 import { useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CameraMode } from '@/lib/cameraMode';
@@ -83,7 +83,9 @@ export function ModeList<Mode extends CameraMode>({
                 textTransform: 'uppercase',
                 cursor: 'pointer',
                 userSelect: 'none',
-                color: active ? tokens.color.accent : tokens.color.muted,
+                color: active
+                  ? palette('pp-accent')
+                  : palette('text-secondary'),
                 transition: 'color 200ms',
                 '&:disabled': { cursor: 'default' },
                 '&:focus-visible': glassFocusRing,

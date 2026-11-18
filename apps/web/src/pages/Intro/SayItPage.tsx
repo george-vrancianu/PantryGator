@@ -5,9 +5,9 @@ import {
   CheckIcon,
   color,
   radius,
-  palette,
   Typography,
   IntroLook,
+  palette,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { Box, RecipesIcon, tokens, radius } from '@pocket-pantry/ui';
+import { Box, RecipesIcon, radius, palette } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -99,7 +99,7 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
               sx={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: tokens.color.accent,
+                color: palette('pp-accent'),
                 textDecoration: 'none',
               }}
             >
@@ -108,14 +108,20 @@ export function CookTonightWidget({ size, columns }: WidgetProps) {
           </Box>
           {note}
           {cards.length === 0 ? (
-            <Box sx={{ fontSize: 14, color: tokens.color.muted, py: '10px' }}>
+            <Box
+              sx={{
+                fontSize: 14,
+                color: palette('text-secondary'),
+                py: '10px',
+              }}
+            >
               {t('widgets.cookTonight.empty')}{' '}
               <Box
                 component={Link}
                 to="/recipes/explore"
                 sx={{
                   fontWeight: 700,
-                  color: tokens.color.accent,
+                  color: palette('pp-accent'),
                   textDecoration: 'none',
                 }}
               >
@@ -217,8 +223,8 @@ function CookCard({ card }: { card: CookTonightCard }) {
         display: 'block',
         p: '8px 10px',
         borderRadius: radius.control,
-        border: `1px solid ${tokens.color.line}`,
-        color: tokens.color.ink,
+        border: `1px solid ${palette('pp-line')}`,
+        color: palette('text-primary'),
         textDecoration: 'none',
       }}
     >
@@ -241,7 +247,7 @@ function CookCard({ card }: { card: CookTonightCard }) {
       {missing && (
         <Box
           component="span"
-          sx={{ ...line, color: tokens.color.ink, fontWeight: 600 }}
+          sx={{ ...line, color: palette('text-primary'), fontWeight: 600 }}
         >
           {missing}
         </Box>
@@ -264,5 +270,5 @@ function CookCard({ card }: { card: CookTonightCard }) {
 const line = {
   display: 'block',
   fontSize: 12,
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
 } as const;

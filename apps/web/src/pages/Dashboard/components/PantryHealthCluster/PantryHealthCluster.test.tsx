@@ -1185,7 +1185,7 @@ describe('PantryHealthCluster', () => {
         ],
         summary: { remaining: lines.length, checked: 0 },
       });
-      const deleted: string[] = [];
+      const deleted: string[][] = [];
       let gate: Promise<void> = Promise.resolve();
       const routes: Record<string, () => Response> = {
         'GET /api/shopping-list': () => Response.json(view()),
@@ -1221,10 +1221,12 @@ describe('PantryHealthCluster', () => {
           });
           return Response.json({ ...view(), createdIds, insertedIds });
         },
-        remove: (id: string) => {
-          const at = lines.findIndex((line) => line.id === id);
-          if (at >= 0) lines.splice(at, 1);
-          deleted.push(id);
+        remove: (ids: string[]) => {
+          for (const id of ids) {
+            const at = lines.findIndex((line) => line.id === id);
+            if (at >= 0) lines.splice(at, 1);
+          }
+          deleted.push(ids);
           return Response.json(view());
         },
       };
@@ -1245,9 +1247,15 @@ describe('PantryHealthCluster', () => {
             .at(-1) as { body: { items: Array<Omit<Line, 'id'>> } };
           return shopping.add(body.items);
         },
-        'DELETE /api/shopping-list/items/sh1': () => shopping.remove('sh1'),
-        'DELETE /api/shopping-list/items/sh2': () => shopping.remove('sh2'),
-        'DELETE /api/shopping-list/items/sh3': () => shopping.remove('sh3'),
+        'POST /api/shopping-list/items/bulk-delete': () => {
+          const { body } = calls
+            .filter(
+              (call) =>
+                call.key === 'POST /api/shopping-list/items/bulk-delete',
+            )
+            .at(-1) as { body: { ids: string[] } };
+          return shopping.remove(body.ids);
+        },
       });
       stubMotion(true);
       const user = userEvent.setup();
@@ -1372,7 +1380,7 @@ describe('PantryHealthCluster', () => {
 
       await user.click(screen.getByRole('button', { name: 'Undo' }));
 
-      await waitFor(() => expect(shopping.deleted).toEqual(['sh1', 'sh2']));
+      await waitFor(() => expect(shopping.deleted).toEqual([['sh1', 'sh2']]));
       expect(shopping.lines.map((line) => line.id)).toEqual(['sh0']);
       expect(
         await within(sheet).findByRole('button', { name: 'Add 2 Staples' }),
@@ -1392,7 +1400,7 @@ describe('PantryHealthCluster', () => {
 
       await user.click(screen.getByRole('button', { name: 'Undo' }));
 
-      await waitFor(() => expect(shopping.deleted).toEqual(['sh1']));
+      await waitFor(() => expect(shopping.deleted).toEqual([['sh1']]));
       expect(shopping.lines.map((line) => line.id)).toEqual(['sh0']);
     });
 

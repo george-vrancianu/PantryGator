@@ -181,77 +181,12 @@
     "nextPlanStarts": "Next plan starts {{date}}",
     "nothingThisWeek": "Nothing planned this week.",
     "planWeek": "Plan your week",
-    "nothingOn": "Nothing planned for {{day}}.",
     "nothingYet": "Nothing yet",
-    "today": "Today",
-    "tomorrow": "Tomorrow",
-    "editDay": "Edit day",
     "missingForPlan": "Missing for the plan:",
     "moreMissing": "+{{count}}",
     "addN": "Add {{count}}",
-    "addNMissing_one": "Add {{count}} missing",
-    "addNMissing_other": "Add {{count}} missing",
-    "addLine": "Add {{name}} to the Shopping List",
-    "toast": {
-      "added_one": "{{count}} added to the Shopping List",
-      "added_other": "{{count}} added to the Shopping List"
-    },
-    "planMeal": "Plan a meal",
-    "startPlan": "Start a plan",
-    "slot": {
-      "breakfast": "Breakfast",
-      "lunch": "Lunch",
-      "dinner": "Dinner"
-    },
     "legend": {
-      "covered": "Covered",
-      "onList": "On list",
-      "short": "Short",
       "bars": "Bars: B · L · D"
-    },
-    "status": {
-      "covered": "Covered",
-      "onList": "On list",
-      "short_one": "{{count}} short",
-      "short_other": "{{count}} short",
-      "unavailable": "No longer available"
-    },
-    "meta": "{{servings}} Servings · {{minutes}} min",
-    "metaNoTime": "{{servings}} Servings",
-    "line": {
-      "short": "short {{amount}}",
-      "need": "need {{amount}}",
-      "unknown": "amount unknown, your Pantry has no quantity"
-    },
-    "reason": {
-      "usesLast": "{{who}} uses the last",
-      "useLast": "{{who}} use the last",
-      "earlierMeals_one": "{{count}} earlier meal",
-      "earlierMeals_other": "{{count}} earlier meals",
-      "mealOf": "{{day}}'s {{name}}",
-      "and": "{{first}} and {{second}}",
-      "expires": "Yours expires {{day}}",
-      "notInPantry": "Not in your Pantry",
-      "onlyLeftAfter": "Only {{amount}} left after {{who}}",
-      "onlyInPantry": "Only {{amount}} in your Pantry"
-    },
-    "prevDay": "Previous day",
-    "nextDay": "Next day",
-    "close": "Close",
-    "aria": {
-      "column": "{{date}}: {{summary}}",
-      "meals_one": "{{count}} meal, {{status}}",
-      "meals_other": "{{count}} meals, {{status}}",
-      "allUnavailable_one": "{{count}} meal unavailable",
-      "allUnavailable_other": "{{count}} meals unavailable",
-      "alsoUnavailable_one": "{{count}} unavailable",
-      "alsoUnavailable_other": "{{count}} unavailable",
-      "nothing": "nothing planned",
-      "status": {
-        "covered": "covered",
-        "onList": "on list",
-        "short": "short"
-      }
     }
   }
 }

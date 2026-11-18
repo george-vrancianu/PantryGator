@@ -5,7 +5,7 @@ import {
   Sheet,
   radius,
   shadow,
-  tokens,
+  palette,
   useBreakpointUp,
   useToast,
 } from '@pocket-pantry/ui';
@@ -108,7 +108,7 @@ export function AddToCatalog({
         <Box component="h2" sx={{ m: 0, fontSize: 18, fontWeight: 700 }}>
           {title}
         </Box>
-        <Box sx={{ fontSize: 12.5, color: tokens.color.muted }}>
+        <Box sx={{ fontSize: 12.5, color: palette('text-secondary') }}>
           {t('catalogAdd.subtitle')}
         </Box>
       </Box>
@@ -180,8 +180,8 @@ export function AddToCatalog({
         right: 0,
         zIndex: 10,
         borderRadius: radius.card,
-        border: `1px solid ${tokens.color.line}`,
-        backgroundColor: tokens.color.surface,
+        border: `1px solid ${palette('pp-line')}`,
+        backgroundColor: palette('background-paper'),
         boxShadow: shadow.float,
       }}
     >

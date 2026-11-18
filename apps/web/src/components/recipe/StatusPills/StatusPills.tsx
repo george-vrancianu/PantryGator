@@ -3,7 +3,7 @@ import {
   CheckIcon,
   IngredientsScanIcon,
   WarningIcon,
-  tokens,
+  palette,
   radius,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
@@ -32,8 +32,8 @@ export function StatusPills({
         hideCanMake ? null : (
           <Pill
             icon={<CheckIcon size={13} />}
-            fg={tokens.color.accentOnTint}
-            bg={tokens.color.accentTint}
+            fg={palette('pp-accentOnTint')}
+            bg={palette('pp-accentTint')}
           >
             {card.recipe.id === recipeId
               ? t('canMake')
@@ -43,8 +43,8 @@ export function StatusPills({
       ) : card.missing ? (
         <Pill
           icon={<WarningIcon size={13} />}
-          fg={tokens.color.soonFg}
-          bg={tokens.color.soonBg}
+          fg={palette('warning-main')}
+          bg={palette('warning-light')}
         >
           {card.recipe.id === recipeId
             ? t('missingOne', { name: card.missing.name })
@@ -57,8 +57,8 @@ export function StatusPills({
       {card && card.expiringCount > 0 ? (
         <Pill
           icon={<IngredientsScanIcon size={13} />}
-          fg={tokens.color.urgentFg}
-          bg={tokens.color.urgentBg}
+          fg={palette('error-main')}
+          bg={palette('error-light')}
         >
           {t('expiring', { count: card.expiringCount })}
         </Pill>

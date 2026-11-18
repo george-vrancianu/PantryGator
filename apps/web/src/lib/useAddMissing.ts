@@ -13,7 +13,7 @@ import {
 import type { IsoDate } from './pantry';
 import { shoppingListQueryKey, useShoppingMutations } from './shopping';
 import { shoppingListChangeQueryKeys } from './queryKeys';
-import { useHealthToast } from './useHealthToast';
+import { useUndoToast } from './useUndoToast';
 
 /**
  * Add missing from the Meal plan Widget: one call with only the scope, the "On list" flip straight away
@@ -21,11 +21,11 @@ import { useHealthToast } from './useHealthToast';
  * Shopping Items the add created, and a refetch of the Shopping List and the Widget.
  */
 export function useAddMissing(today: IsoDate) {
-  const { t } = useTranslation('dashboard');
-  const { undoOptions } = useHealthToast();
+  const { t } = useTranslation('mealPlans');
+  const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { remove } = useShoppingMutations();
+  const { removeMany } = useShoppingMutations();
   const windowKey = [...mealWindowQueryKey, today];
 
   const refetch = () =>
@@ -36,17 +36,11 @@ export function useAddMissing(today: IsoDate) {
     );
 
   const undo = async (createdIds: string[]) => {
-    let failure: unknown;
-    // One at a time: each delete answers with the whole list, and parallel answers could cache a stale one.
-    // A failed delete (say the item was already removed) does not stop the rest.
-    for (const id of new Set(createdIds)) {
-      try {
-        await remove.mutateAsync(id);
-      } catch (error) {
-        failure ??= error;
-      }
+    try {
+      await removeMany.mutateAsync(createdIds);
+    } catch (error) {
+      toast.show(translateApiError(t, error));
     }
-    if (failure !== undefined) toast.show(translateApiError(t, failure));
     await refetch();
   };
 
@@ -72,7 +66,7 @@ export function useAddMissing(today: IsoDate) {
     },
     onSuccess: ({ createdIds, count }) => {
       if (count === 0) return;
-      const message = t('mealPlan.toast.added', { count });
+      const message = t('forecast.toast.added', { count });
       // Everything merged into lines already on the list: nothing was created, so nothing to undo.
       if (createdIds.length === 0) toast.show(message, { polite: true });
       else

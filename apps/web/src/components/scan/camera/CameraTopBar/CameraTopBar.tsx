@@ -4,8 +4,8 @@ import {
   FlashIcon,
   InfoIcon,
   Typography,
-  tokens,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,9 +23,9 @@ const iconButton = {
   borderRadius: '50%',
   border: 0,
   backgroundColor: 'transparent',
-  color: tokens.color.ink,
+  color: palette('text-primary'),
   cursor: 'pointer',
-  '&:active': { backgroundColor: translucent(tokens.color.ink, 12) },
+  '&:active': { backgroundColor: translucent(palette('text-primary'), 12) },
   '&:focus-visible': glassFocusRing,
 };
 
@@ -63,7 +63,7 @@ export function CameraTopBar({
         top: 0,
         left: 0,
         right: 0,
-        borderBottom: `1px solid ${translucent(tokens.color.ink, 6)}`,
+        borderBottom: `1px solid ${translucent(palette('text-primary'), 6)}`,
         pt: insetTop,
         pl: insetLeft,
         pr: insetRight,
@@ -102,7 +102,7 @@ export function CameraTopBar({
               onClick={torch.onToggle}
               sx={{
                 ...iconButton,
-                ...(torch.on && { color: tokens.color.soonFg }),
+                ...(torch.on && { color: palette('warning-main') }),
               }}
             >
               <FlashIcon

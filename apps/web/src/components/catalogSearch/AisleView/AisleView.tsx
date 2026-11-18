@@ -1,4 +1,4 @@
-import { Box, CloseIcon, tokens, focusRing, radius } from '@pocket-pantry/ui';
+import { Box, CloseIcon, palette, focusRing, radius } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import type { CatalogAisle } from '@/lib/catalog';
 import { AisleSwatch } from '../AisleSwatch/AisleSwatch';
@@ -27,7 +27,6 @@ export function AisleViewHeader({
   onLeave,
   failed = false,
 }: AisleViewHeaderProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   let status = failed ? '' : t('search.aisleLoading');
   if (count !== null) {
@@ -38,7 +37,7 @@ export function AisleViewHeader({
   return (
     <Box
       onMouseDown={(event) => event.preventDefault()}
-      sx={{ backgroundColor: color.subtle }}
+      sx={{ backgroundColor: palette('pp-subtle') }}
     >
       <Box
         sx={{
@@ -55,7 +54,7 @@ export function AisleViewHeader({
             sx={{
               fontSize: 12,
               fontWeight: 500,
-              color: color.muted,
+              color: palette('text-secondary'),
               mt: '2px',
             }}
           >
@@ -73,7 +72,7 @@ export function AisleViewHeader({
             borderRadius: '50%',
             border: 0,
             backgroundColor: 'transparent',
-            color: color.muted,
+            color: palette('text-secondary'),
             display: 'grid',
             placeItems: 'center',
             cursor: 'pointer',
@@ -100,9 +99,13 @@ export function AisleViewHeader({
                   minHeight: 30,
                   p: '0 12px',
                   borderRadius: radius.chip,
-                  border: `1px solid ${on ? color.accent : color.line}`,
-                  backgroundColor: on ? color.accentTint : color.surface,
-                  color: on ? color.accentOnTint : color.ink,
+                  border: `1px solid ${on ? palette('pp-accent') : palette('pp-line')}`,
+                  backgroundColor: on
+                    ? palette('pp-accentTint')
+                    : palette('background-paper'),
+                  color: on
+                    ? palette('pp-accentOnTint')
+                    : palette('text-primary'),
                   font: 'inherit',
                   fontSize: 13,
                   fontWeight: 600,

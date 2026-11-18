@@ -6,7 +6,8 @@ import { translateApiError } from '@/i18n/translateApiError';
 import { usualExpiryDate, withExpiryDates } from '@/lib/health';
 import { useUpdateBatch, type Batch, type IsoDate } from '@/lib/pantry';
 import type { PantryHealthState } from '@/lib/usePantryHealth';
-import { useHealthToast } from '@/lib/useHealthToast';
+import { useUndoToast } from '@/lib/useUndoToast';
+import { useHealthScoreMessage } from '@/lib/useHealthScoreMessage';
 
 export type DateFix = {
   isPending: boolean;
@@ -24,7 +25,8 @@ type Change = { id: string; expiryDate: IsoDate | null };
  */
 export function useDateBatches(state: PantryHealthState): DateFix {
   const { t } = useTranslation('dashboard');
-  const { messageWithScore, undoOptions } = useHealthToast();
+  const { messageWithScore } = useHealthScoreMessage();
+  const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
   const update = useUpdateBatch();

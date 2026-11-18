@@ -10,7 +10,7 @@ describe('Tag', () => {
   it("paints each tone with the Theme's pair", () => {
     render(
       <div data-theme="dark">
-        <Tag tone="accent">On list</Tag>
+        <Tag tone="accent">Covered</Tag>
         <Tag tone="ok">In Pantry</Tag>
         <Tag tone="soon">2 days</Tag>
         <Tag tone="urgent">Expired</Tag>
@@ -21,7 +21,7 @@ describe('Tag', () => {
       paintedColour(screen.getByText(name), 'background-color'),
       paintedColour(screen.getByText(name), 'color'),
     ];
-    expect(pair('On list')).toEqual(['#1C3327', '#A8E6C0']);
+    expect(pair('Covered')).toEqual(['#1C3327', '#A8E6C0']);
     expect(pair('In Pantry')).toEqual(['#1C3327', '#A8E6C0']);
     expect(pair('2 days')).toEqual(['#352C13', '#EDD084']);
     expect(pair('Expired')).toEqual(['#3A2118', '#FFAB8E']);

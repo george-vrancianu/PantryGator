@@ -3,9 +3,9 @@ import {
   Link,
   Stack,
   Typography,
-  tokens,
   Card,
   Tag,
+  palette,
 } from '@pocket-pantry/ui';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ function PairingItem({ pairing }: { pairing: DetailPairing }) {
       component="li"
       sx={{
         py: '10px',
-        borderTop: `1px solid ${tokens.color.divider}`,
+        borderTop: `1px solid ${palette('divider')}`,
         '&:first-of-type': { borderTop: 0 },
       }}
     >
@@ -37,7 +37,7 @@ function PairingItem({ pairing }: { pairing: DetailPairing }) {
             href={recipeHref(link)}
             title={link.title}
             underline="none"
-            sx={{ color: tokens.color.accent, fontWeight: 700 }}
+            sx={{ color: palette('pp-accent'), fontWeight: 700 }}
           >
             {pairing.label}
           </Link>
@@ -59,7 +59,7 @@ function PairingItem({ pairing }: { pairing: DetailPairing }) {
             fontWeight: 700,
             letterSpacing: '.03em',
             textTransform: 'uppercase',
-            color: tokens.color.accent,
+            color: palette('pp-accent'),
           }}
         >
           {t(`principles.${pairing.principle}`)}
@@ -70,7 +70,7 @@ function PairingItem({ pairing }: { pairing: DetailPairing }) {
           mt: '2px',
           fontSize: 13.5,
           lineHeight: 1.4,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {pairing.reason}
@@ -96,7 +96,7 @@ function PairingsSection({ pairings }: { pairings: DetailPairing[] }) {
                 sx={{
                   fontSize: 13,
                   fontWeight: 700,
-                  color: tokens.color.muted,
+                  color: palette('text-secondary'),
                   mt: index === 0 ? '8px' : '12px',
                 }}
               >
@@ -159,7 +159,7 @@ function WhenToEatSection({ moments }: { moments: DetailEatingMoment[] }) {
                     m: 0,
                     fontSize: 13.5,
                     lineHeight: 1.4,
-                    color: tokens.color.muted,
+                    color: palette('text-secondary'),
                   }}
                 >
                   {moment.reason}

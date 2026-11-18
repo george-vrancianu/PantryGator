@@ -9,14 +9,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../i18n/translateApiError';
-
-/** How long a removal can be undone, ms. */
-export const UNDO_WINDOW_MS = 5000;
-
-export type RemovalOptions = {
-  /** Announce the Undo toast as a status (polite live region) instead of an alert. */
-  polite?: boolean;
-};
+import { useUndoToast } from './useUndoToast';
 
 /** The delete calls: one for a single record, one for several, and at least one of the two. */
 type SendArgs<Id> =
@@ -62,6 +55,7 @@ export function useDeferredRemoval<Id extends string | number>(
   const [mutateAsync, mutateManyAsync] = sends;
   const { t } = useTranslation('common');
   const toast = useToast();
+  const { showUndo } = useUndoToast();
   const queryClient = useQueryClient();
   // Held by key value, so a new array each render does not change `send`.
   const keyRef = useRef(queryKey);
@@ -134,44 +128,30 @@ export function useDeferredRemoval<Id extends string | number>(
     };
   }, []);
 
-  const start = (
-    ids: Id[],
-    many: boolean,
-    message: string,
-    options?: RemovalOptions,
-  ) => {
+  const start = (ids: Id[], many: boolean, message: string) => {
     // Each removal has its own token, so passing the same array twice is still two removals.
     const token = Symbol('removal');
     setHiddenIds((prev) => new Set([...prev, ...ids]));
     // Showing a toast sends the previous removal; this one takes its place.
-    const handle = toast.show(message, {
-      polite: options?.polite,
-      duration: UNDO_WINDOW_MS,
-      action: {
-        label: t('row.undo'),
-        onClick: () => {
-          // Too late once the delete has been sent.
-          if (waiting.current?.token !== token) return;
-          waiting.current = null;
-          unhide(ids);
-        },
+    const handle = showUndo(
+      message,
+      () => {
+        // Too late once the delete has been sent.
+        if (waiting.current?.token !== token) return;
+        waiting.current = null;
+        unhide(ids);
       },
-      onClose: () => flush(token),
-    });
+      { onClose: () => flush(token) },
+    );
     waiting.current = { token, ids, many, toast: handle };
   };
 
   /** `message` replaces the default "Removed {name}" toast text, already translated. */
-  const remove = (
-    id: Id,
-    name: string,
-    message?: string,
-    options?: RemovalOptions,
-  ) => start([id], false, message ?? t('row.removed', { name }), options);
+  const remove = (id: Id, name: string, message?: string) =>
+    start([id], false, message ?? t('row.removed', { name }));
 
   /** Several records as one removal; `message` is the toast text, already translated. Sends one `mutateManyAsync` call, or one `mutateAsync` per record without it. */
-  const removeMany = (ids: Id[], message: string, options?: RemovalOptions) =>
-    start(ids, true, message, options);
+  const removeMany = (ids: Id[], message: string) => start(ids, true, message);
 
   /**
    * Drop the removal that holds `id` and is still waiting on its Undo, without sending it: its toast closes and

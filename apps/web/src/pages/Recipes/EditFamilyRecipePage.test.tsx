@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FamilyRecipeEdit } from '@/lib/familyRecipes';
-import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { UNDO_WINDOW_MS } from '@/lib/useUndoToast';
 import { stubRowLayout } from '@/test/layout';
 import { stubViewport } from '@/test/viewport';
 import { Link, Route, Routes } from 'react-router-dom';

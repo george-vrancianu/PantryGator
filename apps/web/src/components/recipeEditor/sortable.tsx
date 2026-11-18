@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import {
   GripIcon,
   shadow,
-  tokens,
+  palette,
   usePrefersReducedMotion,
 } from '@pocket-pantry/ui';
 import { createPortal } from 'react-dom';
@@ -267,7 +267,9 @@ export function useSortableRow(key: number, gripLabel: string) {
       position: 'relative' as const,
       zIndex: isDragging ? 1 : 0,
       bgcolor:
-        isDragging || holding ? tokens.color.accentTint : tokens.color.surface,
+        isDragging || holding
+          ? palette('pp-accentTint')
+          : palette('background-paper'),
       userSelect: 'none' as const,
       WebkitUserSelect: 'none' as const,
       WebkitTouchCallout: 'none' as const,
@@ -299,7 +301,7 @@ export function useSortableRow(key: number, gripLabel: string) {
       bgcolor: 'transparent',
       cursor: isDragging ? 'grabbing' : 'grab',
       touchAction: 'none',
-      color: isDragging ? tokens.color.accent : 'inherit',
+      color: isDragging ? palette('pp-accent') : 'inherit',
       opacity: isDragging ? 1 : 0.55,
     },
   };

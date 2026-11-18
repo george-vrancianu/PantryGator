@@ -11,7 +11,7 @@ import {
 } from '@/lib/mealPlan';
 import { dateLocale, fromIso, type IsoDate } from '@/lib/pantry';
 
-type T = TFunction<'dashboard'>;
+type T = TFunction<'mealPlans'>;
 
 const format = (
   language: string,
@@ -40,10 +40,10 @@ export const statusLabel = (
   slot: { status: SlotStatus; issues: PlanIssue[] },
 ): string =>
   slot.status === 'short'
-    ? t('mealPlan.status.short', {
+    ? t('forecast.status.short', {
         count: Math.max(1, unlistedShortCount(slot)),
       })
-    : t(`mealPlan.status.${slot.status}`);
+    : t(`forecast.status.${slot.status}`);
 
 const dayNumber = (iso: IsoDate) => {
   const [y, m, d] = iso.split('-').map(Number);
@@ -58,8 +58,8 @@ export function relativeDay(
   today: IsoDate,
 ): string {
   const offset = dayNumber(iso) - dayNumber(today);
-  if (offset === 0) return t('mealPlan.today');
-  if (offset === 1) return t('mealPlan.tomorrow');
+  if (offset === 0) return t('forecast.today');
+  if (offset === 1) return t('forecast.tomorrow');
   return shortWeekday(language, iso);
 }
 
@@ -71,8 +71,8 @@ export function dayTitle(
   today: IsoDate,
 ): string {
   const offset = dayNumber(iso) - dayNumber(today);
-  if (offset === 0) return t('mealPlan.today');
-  if (offset === 1) return t('mealPlan.tomorrow');
+  if (offset === 0) return t('forecast.today');
+  if (offset === 1) return t('forecast.tomorrow');
   return longWeekday(language, iso);
 }
 
@@ -110,10 +110,10 @@ export function issueDetail(
   language: string,
   issue: PlanIssue,
 ): string | null {
-  if (issue.kind === 'uncertain') return t('mealPlan.line.unknown');
+  if (issue.kind === 'uncertain') return t('forecast.line.unknown');
   if (issue.quantity === null) return null;
   return t(
-    issue.kind === 'missing' ? 'mealPlan.line.need' : 'mealPlan.line.short',
+    issue.kind === 'missing' ? 'forecast.line.need' : 'forecast.line.short',
     { amount: baseAmount(t, language, issue.quantity, issue.unit) },
   );
 }
@@ -123,19 +123,19 @@ export function columnName(t: T, language: string, day: WindowDay): string {
   const unavailable = day.slots.filter((slot) => slot.unavailable).length;
   let summary: string;
   if (day.slots.length === 0) {
-    summary = t('mealPlan.aria.nothing');
+    summary = t('forecast.aria.nothing');
   } else if (day.status === 'unavailable') {
-    summary = t('mealPlan.aria.allUnavailable', { count: day.slots.length });
+    summary = t('forecast.aria.allUnavailable', { count: day.slots.length });
   } else {
-    summary = t('mealPlan.aria.meals', {
+    summary = t('forecast.aria.meals', {
       count: day.slots.length - unavailable,
-      status: t(`mealPlan.aria.status.${day.status as 'covered'}`),
+      status: t(`forecast.aria.status.${day.status as 'covered'}`),
     });
     if (unavailable > 0) {
-      summary += `, ${t('mealPlan.aria.alsoUnavailable', { count: unavailable })}`;
+      summary += `, ${t('forecast.aria.alsoUnavailable', { count: unavailable })}`;
     }
   }
-  return t('mealPlan.aria.column', {
+  return t('forecast.aria.column', {
     date: fullDate(language, day.date),
     summary,
   });
@@ -149,24 +149,24 @@ function mealsText(
   today: IsoDate,
 ): string {
   const mealOf = (name: string, meal: ReasonMeal) =>
-    t('mealPlan.reason.mealOf', {
+    t('forecast.reason.mealOf', {
       day: relativeDay(t, language, meal.date, today),
       name,
     });
   if (meals.length === 1) return mealOf(meals[0].recipeTitle, meals[0]);
   if (meals.length === 2) {
-    return t('mealPlan.reason.and', {
+    return t('forecast.reason.and', {
       first: mealOf(
-        t(`mealPlan.slot.${meals[0].mealtime}`).toLocaleLowerCase(language),
+        t(`forecast.slot.${meals[0].mealtime}`).toLocaleLowerCase(language),
         meals[0],
       ),
       second: mealOf(
-        t(`mealPlan.slot.${meals[1].mealtime}`).toLocaleLowerCase(language),
+        t(`forecast.slot.${meals[1].mealtime}`).toLocaleLowerCase(language),
         meals[1],
       ),
     });
   }
-  return t('mealPlan.reason.earlierMeals', { count: meals.length });
+  return t('forecast.reason.earlierMeals', { count: meals.length });
 }
 
 /** The line under a short ingredient saying why; null when there is nothing to say. */
@@ -181,23 +181,23 @@ export function reasonText(
     case 'usesLast':
       return t(
         reason.meals.length === 1
-          ? 'mealPlan.reason.usesLast'
-          : 'mealPlan.reason.useLast',
+          ? 'forecast.reason.usesLast'
+          : 'forecast.reason.useLast',
         { who: mealsText(t, language, reason.meals, today) },
       );
     case 'expires':
-      return t('mealPlan.reason.expires', {
+      return t('forecast.reason.expires', {
         day: relativeDay(t, language, reason.date, today),
       });
     case 'notInPantry':
-      return t('mealPlan.reason.notInPantry');
+      return t('forecast.reason.notInPantry');
     case 'onlyLeftAfter':
-      return t('mealPlan.reason.onlyLeftAfter', {
+      return t('forecast.reason.onlyLeftAfter', {
         amount: baseAmount(t, language, reason.amount, reason.unit),
         who: mealsText(t, language, reason.meals, today),
       });
     case 'onlyInPantry':
-      return t('mealPlan.reason.onlyInPantry', {
+      return t('forecast.reason.onlyInPantry', {
         amount: baseAmount(t, language, reason.amount, reason.unit),
       });
     case 'noQuantity':

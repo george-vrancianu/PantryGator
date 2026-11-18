@@ -244,5 +244,20 @@ export const color = {
   fieldBg: palette('pp-fieldBg'),
 } as const;
 
+const mix = (a: string, percent: number, b: string) =>
+  `color-mix(in srgb, ${a} ${percent}%, ${b})`;
+
+/** Mixes of two Theme colours, for shades the Themes don't define (hover, row tints, borders). */
+export const shade = {
+  accentHover: mix(palette('pp-accent'), 82, palette('text-primary')),
+  accentMid: mix(palette('pp-accent'), 55, palette('background-paper')),
+  urgentHover: mix(palette('error-light'), 85, palette('error-main')),
+  urgentRow: mix(palette('error-light'), 45, palette('background-paper')),
+  urgentBorder: mix(palette('error-light'), 75, palette('error-main')),
+  soonHover: mix(palette('warning-light'), 85, palette('warning-main')),
+  soonRow: mix(palette('warning-light'), 45, palette('background-paper')),
+  soonBorder: mix(palette('warning-light'), 60, palette('warning-main')),
+} as const;
+
 /** A theme's palette as CSS variable references where MUI provides them (`theme.vars`), else as values. */
 export const themePalette = (theme: Theme) => (theme.vars ?? theme).palette;

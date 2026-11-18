@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import {
   useEffect,
   useLayoutEffect,
@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { FocusPass } from '@/lib/camera';
 import { BARCODE_GLYPH } from '../barcodeGlyph';
-import { glassFocusRing, shade } from '../glass';
+import { glassFocusRing, scrim } from '../glass';
 import { haptic, HAPTIC_TICK_MS } from '@/lib/haptic';
 
 /** How long the pointer rests on the shutter before it counts as a hold. */
@@ -230,8 +230,8 @@ export function ShutterButton({
           display: 'grid',
           placeItems: 'center',
           borderRadius: '50%',
-          border: `4px solid ${tokens.color.ink}`,
-          color: tokens.color.ink,
+          border: `4px solid ${palette('text-primary')}`,
+          color: palette('text-primary'),
           pointerEvents: 'none',
           ...fadeIn,
         }}
@@ -270,7 +270,7 @@ export function ShutterButton({
         placeItems: 'center',
         p: 0,
         borderRadius: '50%',
-        border: `4px solid ${tokens.color.ink}`,
+        border: `4px solid ${palette('text-primary')}`,
         backgroundColor: 'transparent',
         cursor: disabled ? 'default' : 'pointer',
         touchAction: 'manipulation',
@@ -289,9 +289,9 @@ export function ShutterButton({
           height: 62,
           borderRadius: '50%',
           backgroundColor: pressed
-            ? `color-mix(in srgb, ${tokens.color.ink} 92%, ${tokens.color.bg})`
-            : tokens.color.ink,
-          boxShadow: `0 1px 4px ${shade(35)}`,
+            ? `color-mix(in srgb, ${palette('text-primary')} 92%, ${palette('background-default')})`
+            : palette('text-primary'),
+          boxShadow: `0 1px 4px ${scrim(35)}`,
           opacity: disabled ? 0.5 : 1,
           transform: pressed ? 'scale(.88)' : 'none',
           transition: 'transform 120ms, background-color 120ms',

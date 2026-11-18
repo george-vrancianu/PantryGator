@@ -4,7 +4,7 @@ import {
   CompassIcon,
   displayType,
   Stack,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -116,7 +116,7 @@ export function EmptyFamilyRecipes({
       <Box
         sx={{
           fontSize: 14,
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
           textAlign: 'center',
           maxWidth: '31ch',
           mx: 'auto',

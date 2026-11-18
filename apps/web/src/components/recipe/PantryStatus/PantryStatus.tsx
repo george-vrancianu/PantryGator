@@ -5,13 +5,14 @@ import {
   Stack,
   Typography,
   WarningIcon,
-  tokens,
+  tagColours,
   visuallyHidden,
   radius,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { formatAmount } from '@/lib/amount';
 import type { PantryLine, PantryMatch } from '@/lib/recipes';
+import { pantryBasicTone, pantryLineTone } from '@/lib/statusTone';
 
 /** Required, non-Basic lines the server would add (short or missing). */
 const addable = (line: PantryLine) =>
@@ -22,16 +23,10 @@ export function linesToAdd(match: PantryMatch | undefined): PantryLine[] {
   return (match?.lines ?? []).filter(addable);
 }
 
-const { color } = tokens;
-
-/** The pill's colours: a Pantry Basic first, whatever its status. */
+/** The pill's tone: a Pantry Basic first, whatever its status. `ok` marks a line the Member can cook with. */
 function pillTone(line: PantryLine) {
-  if (line.pantryBasic) return { bg: color.okBg, fg: color.okFg, ok: true };
-  if (line.status === 'covered')
-    return { bg: color.accentTint, fg: color.accentOnTint, ok: true };
-  if (line.status === 'short')
-    return { bg: color.soonBg, fg: color.soonFg, ok: false };
-  return { bg: color.urgentBg, fg: color.urgentFg, ok: false };
+  if (line.pantryBasic) return { tone: pantryBasicTone, ok: true };
+  return { tone: pantryLineTone[line.status], ok: line.status === 'covered' };
 }
 
 /** A line's Pantry status as a pill: icon and words, so colour is never the only cue. */
@@ -69,13 +64,10 @@ export function LineStatusPill({
         aria-label={
           onList ? `${label}, ${t('recipes:pantry.onListShort')}` : label
         }
-        sx={{
-          display: 'inline-flex',
-          p: '4px',
-          borderRadius: radius.tag,
-          bgcolor: tone.bg,
-          color: tone.fg,
-        }}
+        sx={[
+          { display: 'inline-flex', p: '4px', borderRadius: radius.tag },
+          tagColours(tone.tone),
+        ]}
       >
         {tone.ok ? (
           <CheckCircleIcon size={14} aria-hidden />
@@ -88,19 +80,20 @@ export function LineStatusPill({
   return (
     <Box
       component="span"
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        px: '9px',
-        py: '4px',
-        borderRadius: radius.tag,
-        bgcolor: tone.bg,
-        color: tone.fg,
-        fontSize: 12,
-        fontWeight: 700,
-        whiteSpace: 'nowrap',
-      }}
+      sx={[
+        {
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          px: '9px',
+          py: '4px',
+          borderRadius: radius.tag,
+          fontSize: 12,
+          fontWeight: 700,
+          whiteSpace: 'nowrap',
+        },
+        tagColours(tone.tone),
+      ]}
     >
       {tone.ok ? (
         <CheckCircleIcon size={14} aria-hidden />

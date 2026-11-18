@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 import { StatusPills } from '@/components/recipe/StatusPills/StatusPills';
@@ -46,7 +46,7 @@ export function RecipeRow({
       above={
         filtering && recipe.base ? (
           <Box
-            sx={{ fontSize: 13, fontWeight: 600, color: tokens.color.accent }}
+            sx={{ fontSize: 13, fontWeight: 600, color: palette('pp-accent') }}
           >
             {t('variantOf', { base: recipe.base.title })}
           </Box>

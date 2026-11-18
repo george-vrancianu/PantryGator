@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, radius, tokens } from '@pocket-pantry/ui';
+import { Box, Stack, Typography, radius, palette } from '@pocket-pantry/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
@@ -177,7 +177,7 @@ export function FamilyIngredientSheet({
         sx={{
           p: 1.5,
           borderRadius: radius.control,
-          bgcolor: tokens.color.subtle,
+          bgcolor: palette('pp-subtle'),
         }}
       >
         <Typography variant="meta">

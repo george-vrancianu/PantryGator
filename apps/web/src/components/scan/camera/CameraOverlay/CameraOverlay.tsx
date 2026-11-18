@@ -5,10 +5,10 @@ import {
   BoxIcon,
   radius,
   Spinner,
-  tokens,
   Typography,
   useForcedThemeColor,
   visuallyHidden,
+  palette,
 } from '@pocket-pantry/ui';
 import {
   type KeyboardEvent as ReactKeyboardEvent,
@@ -42,7 +42,7 @@ import { CameraControls } from '../CameraControls/CameraControls';
 import { CameraTopBar } from '../CameraTopBar/CameraTopBar';
 import { Fading } from '../Fading/Fading';
 import { InfoSheet } from '../InfoSheet/InfoSheet';
-import { glassFocusRing, shade, translucent } from '../glass';
+import { glassFocusRing, scrim, translucent } from '../glass';
 import { ModePicker } from '../ModePicker/ModePicker';
 import { ScanLanguageChip } from '../ScanLanguageChip/ScanLanguageChip';
 import { ShutterButton } from '../ShutterButton/ShutterButton';
@@ -332,8 +332,8 @@ export function CameraOverlay({
         inset: 0,
         zIndex: 20,
         overflow: 'hidden',
-        backgroundColor: tokens.color.bg,
-        color: tokens.color.ink,
+        backgroundColor: palette('background-default'),
+        color: palette('text-primary'),
         fontFamily: bodyFont,
       }}
     >
@@ -366,7 +366,7 @@ export function CameraOverlay({
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${shade(45)} 100%)`,
+            backgroundImage: `radial-gradient(ellipse at 50% 45%, transparent 55%, ${scrim(45)} 100%)`,
           }}
         />
       </Box>
@@ -460,8 +460,8 @@ export function CameraOverlay({
               py: 0.75,
               px: 1.375,
               borderRadius: radius.chip,
-              backgroundColor: translucent(tokens.color.accent, 16),
-              color: tokens.color.accent,
+              backgroundColor: translucent(palette('pp-accent'), 16),
+              color: palette('pp-accent'),
               fontSize: 12,
               fontWeight: 700,
               pointerEvents: 'auto',
@@ -476,7 +476,7 @@ export function CameraOverlay({
               sx={{
                 border: 0,
                 background: 'none',
-                color: tokens.color.ink,
+                color: palette('text-primary'),
                 font: 'inherit',
                 textDecoration: 'underline',
                 cursor: 'pointer',
@@ -521,7 +521,7 @@ export function CameraOverlay({
               px: 1.75,
               py: 1.125,
               borderRadius: radius.chip,
-              backgroundColor: shade(80),
+              backgroundColor: scrim(80),
               fontSize: 13,
               fontWeight: 600,
               whiteSpace: 'nowrap',

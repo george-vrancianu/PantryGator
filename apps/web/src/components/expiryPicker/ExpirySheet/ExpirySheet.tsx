@@ -1,4 +1,4 @@
-import { Box, Sheet, tokens } from '@pocket-pantry/ui';
+import { Box, Sheet, palette } from '@pocket-pantry/ui';
 import { useMemo, useRef, useState, type Ref, type RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -194,7 +194,11 @@ function Readout({
       {text === null ? (
         <Box
           component="span"
-          sx={{ fontSize: 14, fontWeight: 500, color: tokens.color.muted }}
+          sx={{
+            fontSize: 14,
+            fontWeight: 500,
+            color: palette('text-secondary'),
+          }}
         >
           {t('picker.none')}
         </Box>
@@ -214,7 +218,7 @@ function Readout({
               ml: '6px',
               fontSize: 13,
               fontWeight: 500,
-              color: tokens.color.muted,
+              color: palette('text-secondary'),
             }}
           >
             {text.relative}

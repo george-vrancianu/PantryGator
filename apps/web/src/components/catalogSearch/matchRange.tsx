@@ -1,4 +1,4 @@
-import { Box, tokens } from '@pocket-pantry/ui';
+import { Box, palette } from '@pocket-pantry/ui';
 import { fold } from '@/lib/fold';
 
 /** Where the first case- and accent-insensitive match of `query` sits in `text`, as [start, end) of `text`. */
@@ -37,7 +37,7 @@ export function Highlighted({ text, query }: { text: string; query: string }) {
         component="mark"
         sx={{
           background: 'none',
-          color: tokens.color.accent,
+          color: palette('pp-accent'),
           fontWeight: 700,
           textDecoration: 'underline',
           textDecorationThickness: 2,

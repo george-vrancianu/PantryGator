@@ -5,7 +5,7 @@ import {
   LinkIcon,
   Stack,
   Typography,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -112,7 +112,7 @@ export function RemovableSourceLink({
       <Box
         component="span"
         aria-hidden
-        sx={{ display: 'inline-flex', color: tokens.color.muted }}
+        sx={{ display: 'inline-flex', color: palette('text-secondary') }}
       >
         <LinkIcon size={16} />
       </Box>

@@ -5,7 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createI18n } from '../i18n';
-import { UNDO_WINDOW_MS, useDeferredRemoval } from './useDeferredRemoval';
+import { useDeferredRemoval } from './useDeferredRemoval';
+import { UNDO_WINDOW_MS } from './useUndoToast';
 
 const sendOne = vi.fn((_id: string) => Promise.resolve());
 const sendMany = vi.fn((_ids: string[]) => Promise.resolve());
@@ -65,6 +66,16 @@ describe('useDeferredRemoval, several rows at once', () => {
     sendMany.mockClear();
   });
   afterEach(() => vi.useRealTimers());
+
+  it('announces the Undo toast as a status, not an alert', async () => {
+    setup();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    await user.click(screen.getByText('remove a'));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Removed A');
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
 
   it('hides every row under one toast and sends one bulk delete when the window ends', async () => {
     setup();

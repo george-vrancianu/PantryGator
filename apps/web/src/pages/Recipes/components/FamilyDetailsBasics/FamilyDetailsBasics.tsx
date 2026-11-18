@@ -7,7 +7,7 @@ import {
   color,
   displayType,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useId, type ChangeEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,11 +38,11 @@ const cellSx = (invalid: boolean) => ({
   py: '8px',
   textAlign: 'center',
   backgroundColor: color.fieldBg,
-  border: `${border.field} solid ${invalid ? tokens.color.urgentFg : tokens.color.line}`,
+  border: `${border.field} solid ${invalid ? palette('error-main') : palette('pp-line')}`,
   borderRadius: radius.control,
   '&:focus-within': {
-    borderColor: invalid ? tokens.color.urgentFg : tokens.color.accent,
-    boxShadow: `0 0 0 3px ${tokens.color.accentTint}`,
+    borderColor: invalid ? palette('error-main') : palette('pp-accent'),
+    boxShadow: `0 0 0 3px ${palette('pp-accentTint')}`,
   },
 });
 
@@ -51,7 +51,7 @@ const cellLabelSx = {
   fontWeight: 700,
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
 } as const;
 
 const cellUnitSx = { ...cellLabelSx, textTransform: 'none' } as const;
@@ -68,7 +68,7 @@ const cellValueSx = {
   fontWeight: 600,
   fontVariantNumeric: 'tabular-nums',
   textAlign: 'center',
-  color: tokens.color.ink,
+  color: palette('text-primary'),
 } as const;
 
 /** Details basics of a Family Recipe draft: the title, the facts strip (Serves, Prep, Cook, Level) and Tags. */
@@ -173,22 +173,25 @@ export function FamilyDetailsBasics({
             p: 0,
             pb: '6px',
             border: 0,
-            borderBottom: `${border.width} solid ${tokens.color.line}`,
+            borderBottom: `${border.width} solid ${palette('pp-line')}`,
             borderRadius: 0,
             outline: 0,
             background: 'transparent',
             fontSize: 28,
             fontWeight: 600,
-            color: tokens.color.ink,
-            '&:focus': { borderBottomColor: tokens.color.accent },
-            '&::placeholder': { color: tokens.color.muted, opacity: 0.7 },
+            color: palette('text-primary'),
+            '&:focus': { borderBottomColor: palette('pp-accent') },
+            '&::placeholder': {
+              color: palette('text-secondary'),
+              opacity: 0.7,
+            },
           }}
         />
         {showTitleError ? (
           <Typography
             id={titleMsgId}
             variant="caption"
-            sx={{ display: 'block', mt: '6px', color: tokens.color.urgentFg }}
+            sx={{ display: 'block', mt: '6px', color: palette('error-main') }}
           >
             {t('admin:recipe.invalid.title')}
           </Typography>
@@ -196,7 +199,11 @@ export function FamilyDetailsBasics({
           <Typography
             id={titleMsgId}
             variant="caption"
-            sx={{ display: 'block', mt: '6px', color: tokens.color.muted }}
+            sx={{
+              display: 'block',
+              mt: '6px',
+              color: palette('text-secondary'),
+            }}
           >
             {hint}
           </Typography>
@@ -236,7 +243,7 @@ export function FamilyDetailsBasics({
               justifyContent: 'center',
               font: 'inherit',
               fontFamily: bodyFont,
-              color: tokens.color.ink,
+              color: palette('text-primary'),
               cursor: 'pointer',
             }}
           >
@@ -248,7 +255,9 @@ export function FamilyDetailsBasics({
               sx={{
                 fontSize: 19,
                 fontWeight: 600,
-                color: draft.difficulty ? tokens.color.ink : tokens.color.muted,
+                color: draft.difficulty
+                  ? palette('text-primary')
+                  : palette('text-secondary'),
                 opacity: draft.difficulty ? 1 : 0.6,
               }}
             >
@@ -263,7 +272,7 @@ export function FamilyDetailsBasics({
           <Typography
             id={messageId}
             variant="caption"
-            sx={{ display: 'block', mt: '6px', color: tokens.color.urgentFg }}
+            sx={{ display: 'block', mt: '6px', color: palette('error-main') }}
           >
             {factsMessage.text}
           </Typography>

@@ -5,7 +5,7 @@ import {
   CloseIcon,
   TextField,
   radius,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import {
   useEffect,
@@ -62,7 +62,6 @@ export function AddToCatalogAlias({
   onCancel,
   onAction,
 }: AddToCatalogAliasProps) {
-  const { color } = tokens;
   const { t } = useTranslation('catalog');
   const id = useId();
   const [query, setQuery] = useState('');
@@ -127,7 +126,11 @@ export function AddToCatalogAlias({
 
   const listId = `${id}-aliases`;
   const hint = (text: string) => (
-    <Box sx={{ fontSize: 12.5, color: color.muted, p: '8px 4px' }}>{text}</Box>
+    <Box
+      sx={{ fontSize: 12.5, color: palette('text-secondary'), p: '8px 4px' }}
+    >
+      {text}
+    </Box>
   );
 
   return (
@@ -143,8 +146,8 @@ export function AddToCatalogAlias({
             gap: 1.5,
             p: '8px 8px 8px 12px',
             borderRadius: radius.control,
-            backgroundColor: color.accentTint,
-            color: color.accentOnTint,
+            backgroundColor: palette('pp-accentTint'),
+            color: palette('pp-accentOnTint'),
           }}
         >
           <IngredientIconSlot
@@ -206,7 +209,7 @@ export function AddToCatalogAlias({
               p: 0,
               overflow: 'hidden',
               borderRadius: radius.control,
-              border: rows.length > 0 ? `1px solid ${color.line}` : 0,
+              border: rows.length > 0 ? `1px solid ${palette('pp-line')}` : 0,
             }}
           >
             {rows.map((row, index) => (
@@ -223,7 +226,7 @@ export function AddToCatalogAlias({
                 />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Box sx={{ fontSize: 15, fontWeight: 600 }}>{row.name}</Box>
-                  <Box sx={{ fontSize: 13, color: color.muted }}>
+                  <Box sx={{ fontSize: 13, color: palette('text-secondary') }}>
                     {resultMeta(row)}
                   </Box>
                 </Box>
@@ -239,12 +242,15 @@ export function AddToCatalogAlias({
         </Box>
       )}
       {failed ? (
-        <Box role="alert" sx={{ fontSize: 13, color: color.urgentFg }}>
+        <Box role="alert" sx={{ fontSize: 13, color: palette('error-main') }}>
           {t('catalogAdd.failed')}
         </Box>
       ) : null}
       {existing ? (
-        <Box role="alert" sx={{ fontSize: 13, color: color.muted }}>
+        <Box
+          role="alert"
+          sx={{ fontSize: 13, color: palette('text-secondary') }}
+        >
           {t('catalogAdd.aliasExists', { name, ingredient: existing.name })}
         </Box>
       ) : null}
@@ -275,7 +281,11 @@ export function AddToCatalogAlias({
               {target ? null : (
                 <Box
                   component="span"
-                  sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
+                  sx={{
+                    ml: '6px',
+                    color: palette('error-main'),
+                    fontWeight: 600,
+                  }}
                 >
                   · {t('catalogAdd.pickOne')}
                 </Box>

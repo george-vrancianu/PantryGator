@@ -7,19 +7,15 @@ import {
   ingredientKey,
   dayMissing,
   type DayStatus,
+  addDaysIso,
+  planEnd,
   type MealPlanSummary,
   type Mealtime,
   type PlanIssue,
   type PlanTag,
   type SlotStatus,
 } from './mealPlan';
-import {
-  dateLocale,
-  fromIso,
-  localDate,
-  localIso,
-  type IsoDate,
-} from './pantry';
+import { dateLocale, fromIso, type IsoDate } from './pantry';
 import { mealPlanQueryKey } from './queryKeys';
 import { translateApiError } from '../i18n/translateApiError';
 
@@ -58,16 +54,6 @@ export type PlanInput = {
 };
 
 export type SlotKey = { dayIndex: number; mealtime: Mealtime };
-
-export const addDaysIso = (iso: IsoDate, days: number): IsoDate => {
-  const date = fromIso(iso);
-  return localIso(
-    localDate(date.getFullYear(), date.getMonth(), date.getDate() + days),
-  );
-};
-
-export const planEnd = (plan: Pick<MealPlanSummary, 'startDate' | 'days'>) =>
-  addDaysIso(plan.startDate, plan.days - 1);
 
 export type PlanPhase = 'past' | 'current' | 'upcoming';
 

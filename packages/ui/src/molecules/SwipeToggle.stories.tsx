@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, type ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
-import { radius } from '../theme/themeVars';
-import { tokens } from '../theme/tokens';
+import { Tag } from '../atoms/Tag';
+import { palette, radius } from '../theme/themeVars';
 import { SwipeToggle, type SwipeSweep } from './SwipeToggle';
 
 const meta: Meta<typeof SwipeToggle> = {
@@ -22,8 +22,8 @@ function ExpiryTag({ urgent }: { urgent?: boolean }) {
         borderRadius: radius.tag,
         fontSize: 12,
         fontWeight: 600,
-        bgcolor: urgent ? tokens.color.urgentBg : tokens.color.soonBg,
-        color: urgent ? tokens.color.urgentFg : tokens.color.soonFg,
+        bgcolor: urgent ? palette('error-light') : palette('warning-light'),
+        color: urgent ? palette('error-main') : palette('warning-main'),
       }}
     >
       {urgent ? 'Expires today' : 'Expires in 2 days'}
@@ -73,11 +73,7 @@ function Row({
         >
           <Box>
             <Box sx={{ fontWeight: 600 }}>{name}</Box>
-            {on ? (
-              <Box sx={{ fontSize: 12, color: tokens.color.butterInk }}>
-                Running low
-              </Box>
-            ) : null}
+            {on ? <Tag tone="soon">Running low</Tag> : null}
           </Box>
           <ExpiryTag urgent={urgent} />
         </Box>

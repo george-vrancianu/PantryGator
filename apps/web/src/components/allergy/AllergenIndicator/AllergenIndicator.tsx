@@ -1,4 +1,4 @@
-import { Box, WarningIcon, radius, tokens } from '@pocket-pantry/ui';
+import { Box, WarningIcon, radius, palette } from '@pocket-pantry/ui';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { CompactAllergyOwner, CompactAllergyWarning } from '@/lib/recipes';
@@ -100,8 +100,8 @@ export function AllergenIndicator({
         px: '8px',
         py: '3px',
         borderRadius: radius.tag,
-        bgcolor: strong ? tokens.color.urgentBg : tokens.color.soonBg,
-        color: strong ? tokens.color.urgentFg : tokens.color.soonFg,
+        bgcolor: strong ? palette('error-light') : palette('warning-light'),
+        color: strong ? palette('error-main') : palette('warning-main'),
         fontSize: 12,
         fontWeight: 700,
         lineHeight: 1.2,

@@ -1,4 +1,4 @@
-import { Box, radius, shadow, tokens } from '@pocket-pantry/ui';
+import { Box, radius, shadow, palette } from '@pocket-pantry/ui';
 import type { MouseEventHandler, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -41,8 +41,8 @@ export function GatorBubblePanel({
         display: 'block',
         height: 206,
         borderRadius: radius.card,
-        bgcolor: tokens.color.accentTint,
-        color: tokens.color.accentOnTint,
+        bgcolor: palette('pp-accentTint'),
+        color: palette('pp-accentOnTint'),
         textDecoration: 'none',
         overflow: 'hidden',
       }}
@@ -67,9 +67,9 @@ export function GatorBubblePanel({
           boxSizing: 'border-box',
           p: '11px 13px',
           borderRadius: radius.card,
-          bgcolor: tokens.color.surface,
+          bgcolor: palette('background-paper'),
           boxShadow: shadow.card,
-          color: tokens.color.ink,
+          color: palette('text-primary'),
           fontSize: 13.5,
           fontWeight: 600,
           lineHeight: 1.35,
@@ -90,7 +90,7 @@ export function GatorBubblePanel({
             top: 58,
             width: 16,
             height: 16,
-            bgcolor: tokens.color.surface,
+            bgcolor: palette('background-paper'),
             transform: 'rotate(45deg)',
           }}
         />

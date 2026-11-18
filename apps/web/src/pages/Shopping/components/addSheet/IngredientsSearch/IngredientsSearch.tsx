@@ -1,4 +1,4 @@
-import { Alert, Box, Typography, radius, tokens } from '@pocket-pantry/ui';
+import { Alert, Box, Typography, radius, palette } from '@pocket-pantry/ui';
 import {
   useRef,
   type Dispatch,
@@ -217,7 +217,7 @@ export function IngredientsSearch({
       {open ? (
         <Box
           sx={{
-            backgroundColor: tokens.color.subtle,
+            backgroundColor: palette('pp-subtle'),
             borderRadius: radius.card,
             p: '12px 14px',
             display: 'flex',
@@ -251,7 +251,9 @@ export function IngredientsSearch({
             }}
           />
           {hint ? (
-            <Typography sx={{ fontSize: 12.5, color: tokens.color.muted }}>
+            <Typography
+              sx={{ fontSize: 12.5, color: palette('text-secondary') }}
+            >
               {hint}
             </Typography>
           ) : null}

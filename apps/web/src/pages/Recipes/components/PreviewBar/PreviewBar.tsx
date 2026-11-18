@@ -7,7 +7,7 @@ import {
   gutterRight,
   plusBottomInset,
   PlusIcon,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -56,8 +56,8 @@ export function PreviewBar({
         right: 0,
         bottom: 0,
         zIndex: 5,
-        bgcolor: tokens.color.bg,
-        borderTop: `1px solid ${tokens.color.line}`,
+        bgcolor: palette('background-default'),
+        borderTop: `1px solid ${palette('pp-line')}`,
         pl: gutterLeft(16),
         pr: gutterRight(16),
         pt: '12px',

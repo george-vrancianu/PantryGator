@@ -2485,6 +2485,11 @@ describe('PantryPage', () => {
             await screen.findByText('Milk marked running low'),
           ).toBeVisible();
           expect(
+            screen
+              .getByText('Milk marked running low')
+              .closest('[role="status"]'),
+          ).not.toBeNull();
+          expect(
             screen.queryByRole('button', { name: 'Undo' }),
           ).not.toBeInTheDocument();
           release();

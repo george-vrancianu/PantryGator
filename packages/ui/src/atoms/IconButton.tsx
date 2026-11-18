@@ -2,11 +2,12 @@ import MuiIconButton from '@mui/material/IconButton';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { canopyChipStyle, canopyKeyStyle } from '../theme/canopyStyles';
 import { canopyFocusRingStyle } from '../theme/focusRing';
-import { tokens } from '../theme/tokens';
 import {
   canopy,
   color as themeColor,
+  palette,
   radius,
+  shade,
   shadow,
 } from '../theme/themeVars';
 
@@ -59,54 +60,53 @@ export function IconButton({
   ref,
   ...rest
 }: IconButtonProps) {
-  const { color } = tokens;
   const toneStyles = {
     accent: {
-      backgroundColor: color.accent,
+      backgroundColor: palette('pp-accent'),
       color: 'pp.accentInk',
-      '&:hover': { backgroundColor: color.accentHover },
+      '&:hover': { backgroundColor: shade.accentHover },
     },
     surface: {
-      backgroundColor: color.surface,
-      color: color.ink,
-      border: `1px solid ${color.line}`,
-      '&:hover': { backgroundColor: color.accentTint },
+      backgroundColor: palette('background-paper'),
+      color: palette('text-primary'),
+      border: `1px solid ${palette('pp-line')}`,
+      '&:hover': { backgroundColor: palette('pp-accentTint') },
     },
     plain: {
       backgroundColor: 'transparent',
-      color: color.muted,
-      '&:hover': { backgroundColor: color.accentTint },
+      color: palette('text-secondary'),
+      '&:hover': { backgroundColor: palette('pp-accentTint') },
     },
     urgent: {
-      backgroundColor: color.urgentBg,
-      color: color.urgentFg,
-      '&:hover': { backgroundColor: color.urgentHover },
+      backgroundColor: palette('error-light'),
+      color: palette('error-main'),
+      '&:hover': { backgroundColor: shade.urgentHover },
     },
     accentOutline: {
       '&:hover': {
-        backgroundColor: color.accentTint,
-        color: color.accentOnTint,
+        backgroundColor: palette('pp-accentTint'),
+        color: palette('pp-accentOnTint'),
       },
-      backgroundColor: color.surface,
-      border: `1px solid ${color.accent}`,
-      color: color.accent,
+      backgroundColor: palette('background-paper'),
+      border: `1px solid ${palette('pp-accent')}`,
+      color: palette('pp-accent'),
     },
     neutral: {
-      backgroundColor: color.chipNeutral,
-      color: color.ink,
-      '&:hover': { backgroundColor: color.accentTint },
+      backgroundColor: palette('pp-chip'),
+      color: palette('text-primary'),
+      '&:hover': { backgroundColor: palette('pp-accentTint') },
     },
     soon: {
-      backgroundColor: color.soonBg,
-      color: color.soonFg,
-      border: `1px solid ${color.soonBorder}`,
-      '&:hover': { backgroundColor: color.soonHover },
+      backgroundColor: palette('warning-light'),
+      color: palette('warning-main'),
+      border: `1px solid ${shade.soonBorder}`,
+      '&:hover': { backgroundColor: shade.soonHover },
     },
     urgentOutline: {
-      backgroundColor: color.surface,
-      color: color.urgentFg,
-      border: `1px solid ${color.urgentBorder}`,
-      '&:hover': { backgroundColor: color.urgentRow },
+      backgroundColor: palette('background-paper'),
+      color: palette('error-main'),
+      border: `1px solid ${shade.urgentBorder}`,
+      '&:hover': { backgroundColor: shade.urgentRow },
     },
     well: {
       backgroundColor: themeColor.fieldBg,
@@ -147,7 +147,7 @@ export function IconButton({
           tone === 'canopyChip' || tone === 'key'
             ? canopyFocusRingStyle
             : {
-                outline: `3px solid ${color.accent}`,
+                outline: `3px solid ${palette('pp-accent')}`,
                 outlineOffset: 2,
               },
       }}

@@ -8,10 +8,11 @@ import {
   ImagePlusIcon,
   HeaderButton,
   Typography,
-  tokens,
   nestedRadius,
   radius,
   useToast,
+  palette,
+  shade,
 } from '@pocket-pantry/ui';
 import {
   useEffect,
@@ -69,7 +70,7 @@ const linkButton = {
   p: 0,
   border: 0,
   background: 'none',
-  color: tokens.color.accent,
+  color: palette('pp-accent'),
   font: 'inherit',
   fontSize: 13,
   fontWeight: 700,
@@ -81,7 +82,7 @@ const dashedButton = {
   minHeight: 56,
   height: 'auto',
   borderRadius: radius.card,
-  border: `1.5px dashed ${tokens.color.line}`,
+  border: `1.5px dashed ${palette('pp-line')}`,
   fontSize: 14,
   fontWeight: 800,
   gap: '9px',
@@ -286,7 +287,7 @@ export function ReviewOverviewPage({
         tabIndex={-1}
         sx={{
           '&:focus-visible': {
-            outline: `2px solid ${tokens.color.accentMid}`,
+            outline: `2px solid ${shade.accentMid}`,
             outlineOffset: 2,
           },
           position: 'relative',
@@ -294,8 +295,8 @@ export function ReviewOverviewPage({
           gap: 1.5,
           p: 1.5,
           borderRadius: radius.card,
-          border: `1px solid ${tokens.color.line}`,
-          backgroundColor: tokens.color.surface,
+          border: `1px solid ${palette('pp-line')}`,
+          backgroundColor: palette('background-paper'),
         }}
       >
         <Box
@@ -317,7 +318,7 @@ export function ReviewOverviewPage({
               fontWeight: 800,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: tokens.color.accent,
+              color: palette('pp-accent'),
             }}
           >
             {tScan(`mode.${scan.mode}`)}
@@ -410,7 +411,7 @@ export function ReviewOverviewPage({
                   mt: 0.5,
                   border: 0,
                   background: 'none',
-                  color: tokens.color.accent,
+                  color: palette('pp-accent'),
                   font: 'inherit',
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -469,8 +470,8 @@ export function ReviewOverviewPage({
                       py: '2px',
                       borderRadius: radius.chip,
                       fontSize: 12,
-                      backgroundColor: tokens.color.accentTint,
-                      color: tokens.color.accentOnTint,
+                      backgroundColor: palette('pp-accentTint'),
+                      color: palette('pp-accentOnTint'),
                     }}
                   >
                     {displayName(line)}
@@ -520,7 +521,7 @@ export function ReviewOverviewPage({
                     mt: 0.75,
                     fontSize: 13,
                     fontWeight: 700,
-                    color: tokens.color.urgentFg,
+                    color: palette('error-main'),
                   }}
                 >
                   {t('overview.check', { count: check })}

@@ -1,4 +1,4 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, radius, palette } from '@pocket-pantry/ui';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '@/lib/catalog';
@@ -83,8 +83,8 @@ export function ReviewTable({
     <Box
       sx={{
         mt: '14px',
-        bgcolor: tokens.color.surface,
-        border: `1px solid ${tokens.color.line}`,
+        bgcolor: palette('background-paper'),
+        border: `1px solid ${palette('pp-line')}`,
         borderRadius: radius.card,
         overflow: 'hidden',
       }}
@@ -99,7 +99,7 @@ export function ReviewTable({
           fontWeight: 700,
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
-          color: tokens.color.muted,
+          color: palette('text-secondary'),
         }}
       >
         {columns.map((column, index) => (

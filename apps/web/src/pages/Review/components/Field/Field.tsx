@@ -1,4 +1,4 @@
-import { Box, tokens, radius } from '@pocket-pantry/ui';
+import { Box, radius, palette } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 
 /** The 40 px, 12 px-radius control look shared by every input in the edit panel. */
@@ -8,13 +8,13 @@ export const controlSx = {
   height: 40,
   px: '12px',
   borderRadius: radius.control,
-  border: `1px solid ${tokens.color.line}`,
-  bgcolor: tokens.color.surface,
-  color: tokens.color.ink,
+  border: `1px solid ${palette('pp-line')}`,
+  bgcolor: palette('background-paper'),
+  color: palette('text-primary'),
   fontFamily: 'inherit',
   fontSize: 14,
   '&:focus-visible': {
-    outline: `3px solid ${tokens.color.accent}`,
+    outline: `3px solid ${palette('pp-accent')}`,
     outlineOffset: 1,
   },
 } as const;
@@ -25,7 +25,7 @@ export const fieldLabelSx = {
   mb: '4px',
   fontSize: 11,
   fontWeight: 600,
-  color: tokens.color.muted,
+  color: palette('text-secondary'),
 } as const;
 
 type Props = {
@@ -47,7 +47,7 @@ export function FieldError({
   children: string;
 }) {
   return (
-    <Box id={id} sx={{ mt: '4px', fontSize: 12, color: tokens.color.urgentFg }}>
+    <Box id={id} sx={{ mt: '4px', fontSize: 12, color: palette('error-main') }}>
       {children}
     </Box>
   );

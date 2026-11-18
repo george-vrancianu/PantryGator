@@ -1,4 +1,11 @@
-import { Alert, Box, Typography, tokens, radius } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Typography,
+  radius,
+  palette,
+  shade,
+} from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,15 +32,15 @@ const buttonSx = {
   minHeight: 44,
   px: 1.5,
   borderRadius: radius.control,
-  border: `1px solid ${tokens.color.line}`,
-  backgroundColor: tokens.color.surface,
+  border: `1px solid ${palette('pp-line')}`,
+  backgroundColor: palette('background-paper'),
   color: 'inherit',
   font: 'inherit',
   fontWeight: 600,
   textAlign: 'left',
   cursor: 'pointer',
   '&:focus-visible': {
-    outline: `2px solid ${tokens.color.accentMid}`,
+    outline: `2px solid ${shade.accentMid}`,
     outlineOffset: 2,
   },
 } as const;

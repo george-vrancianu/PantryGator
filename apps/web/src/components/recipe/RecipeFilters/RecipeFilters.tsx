@@ -11,7 +11,7 @@ import {
   TagChip,
   TagIcon,
   TextField,
-  tokens,
+  palette,
 } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -165,9 +165,12 @@ function TagFilter({
                 pl: '12px',
                 pr: '14px',
                 borderRadius: radius.control,
-                border: `${count > 0 ? '1.5px' : '1px'} solid ${count > 0 ? tokens.color.accent : tokens.color.line}`,
-                bgcolor: count > 0 ? tokens.color.accentTint : color.fieldBg,
-                color: count > 0 ? tokens.color.accentOnTint : tokens.color.ink,
+                border: `${count > 0 ? '1.5px' : '1px'} solid ${count > 0 ? palette('pp-accent') : palette('pp-line')}`,
+                bgcolor: count > 0 ? palette('pp-accentTint') : color.fieldBg,
+                color:
+                  count > 0
+                    ? palette('pp-accentOnTint')
+                    : palette('text-primary'),
               }),
         }}
       >
@@ -176,7 +179,7 @@ function TagFilter({
           aria-hidden
           sx={{
             display: 'flex',
-            color: onCanopy ? canopy.ink : tokens.color.accent,
+            color: onCanopy ? canopy.ink : palette('pp-accent'),
           }}
         >
           <TagIcon size={18} />
