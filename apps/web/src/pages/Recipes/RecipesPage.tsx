@@ -32,7 +32,7 @@ import {
   FROM_TEXT_PARAM,
   FROM_TEXT_PREFILL_STATE,
 } from '../../lib/recipeRoutes';
-import { useRecipeDraftDiscard } from './useRecipeDraftDiscard';
+import { useRecipeDraftDiscard } from './hooks/useRecipeDraftDiscard';
 import { EmptyFamilyRecipes } from './components/EmptyFamilyRecipes';
 import {
   CookTonightHeader,

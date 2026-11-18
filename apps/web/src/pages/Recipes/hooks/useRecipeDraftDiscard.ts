@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  recipeDraftsListKey,
-  useDeleteRecipeDraft,
-} from '../../lib/recipeDrafts';
-import { useDeferredRemoval } from '../../lib/useDeferredRemoval';
+import { recipeDraftsListKey, useDeleteRecipeDraft } from '@/lib/recipeDrafts';
+import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
 
 /** What the form hands to the Recipes page (router state) when its "Discard draft" is tapped. */
 export type DiscardedDraftState = { discardRecipeDraft: { id: string } };

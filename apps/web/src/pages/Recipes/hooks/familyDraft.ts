@@ -3,7 +3,7 @@ import type {
   FamilyRecipeDraft,
   FamilyRecipeEdit,
   SuggestFamilyGuidanceRequest,
-} from '../../lib/familyRecipes';
+} from '@/lib/familyRecipes';
 import {
   decimal,
   minutesText,
@@ -12,7 +12,7 @@ import {
   type LineDraft,
   type RecipeDraft,
   type StepDraft,
-} from '../../lib/recipeDraft';
+} from '@/lib/recipeDraft';
 
 /**
  * The form state is the Admin's `RecipeDraft`. A line with an `ingredientId` is
