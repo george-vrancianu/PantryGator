@@ -32,7 +32,7 @@ export function InfoSheet({
   );
 }
 
-/** What the Info sheet and the Info dialog say: the intro, one line per mode, the stack tip. */
+/** What the Info sheet says: the intro, one line per mode, the stack tip. */
 function InfoBody({
   modes,
   stackTip,

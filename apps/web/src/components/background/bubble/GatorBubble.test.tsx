@@ -62,7 +62,7 @@ function Harness({
   return (
     <>
       <GatorBubble items={items} dock={dock} openSheet={openSheet} />
-      <Sheet open={sheet} onClose={() => setSheet(false)} label="Other">
+      <Sheet open={sheet} onClose={() => setSheet(false)} title="Other">
         x
       </Sheet>
     </>

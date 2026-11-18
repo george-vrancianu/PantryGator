@@ -75,7 +75,7 @@ export function ReceiptCropper({
 
   const rotation = quarterTurns * 90 + fine;
 
-  // Dialog a11y: focus moves in on open and goes back to where it was on close.
+  // A hand-built dialog, not a Sheet, so it does its own a11y: focus moves in on open and goes back to where it was on close.
   const dialog = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const opener = document.activeElement;

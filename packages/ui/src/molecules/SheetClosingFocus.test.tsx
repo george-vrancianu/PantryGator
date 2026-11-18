@@ -19,7 +19,7 @@ function Page() {
       <button type="button" onClick={() => setOpen(true)}>
         Pick expiry
       </button>
-      <Sheet open={open} onClose={() => setOpen(false)} label="Expiry">
+      <Sheet open={open} onClose={() => setOpen(false)} title="Expiry">
         <button type="button" onClick={() => setOpen(false)}>
           Done
         </button>

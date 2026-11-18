@@ -15,7 +15,7 @@ function Probe() {
   return (
     <>
       <span data-testid="any">{String(any)}</span>
-      <Sheet open={open} onClose={() => set(false)} label="Add items">
+      <Sheet open={open} onClose={() => set(false)} title="Add items">
         Body
       </Sheet>
     </>
