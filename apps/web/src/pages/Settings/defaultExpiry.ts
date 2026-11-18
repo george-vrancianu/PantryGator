@@ -1,5 +1,5 @@
-import { normalizeName } from '../../lib/normalizeName';
-import type { CategoryOption, CategoryOptions } from '../../lib/settings';
+import { normalizeName } from '@/lib/normalizeName';
+import type { CategoryOption, CategoryOptions } from '@/lib/settings';
 
 /** Used when neither an override nor a Catalog default exists. */
 export const DEFAULT_START_DAYS = 7;
