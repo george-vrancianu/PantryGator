@@ -1,6 +1,6 @@
 import { Tag, type TagTone } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import type { RowStatus } from '../../../lib/review';
+import type { RowStatus } from '@/lib/review';
 
 const TONE: Record<RowStatus, TagTone> = {
   low: 'urgent',

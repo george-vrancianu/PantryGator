@@ -6,16 +6,12 @@ import {
   insetFocusRing,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import type { CameraMode } from '../../../lib/cameraMode';
-import { formatShortDate } from '../../../lib/dateFormat';
-import {
-  displayName,
-  type ReviewLine,
-  type RowStatus,
-} from '../../../lib/review';
-import { SourceText } from './SourceText';
-import { StatusIcon } from '../../../components/StatusIcon';
-import { ROW_TINT, rowGridSx, rowId, titleId } from './layout';
+import type { CameraMode } from '@/lib/cameraMode';
+import { formatShortDate } from '@/lib/dateFormat';
+import { displayName, type ReviewLine, type RowStatus } from '@/lib/review';
+import { SourceText } from '../SourceText/SourceText';
+import { StatusIcon } from '@/components/StatusIcon';
+import { ROW_TINT, rowGridSx, rowId, titleId } from '../layout';
 
 type Props = {
   line: ReviewLine;

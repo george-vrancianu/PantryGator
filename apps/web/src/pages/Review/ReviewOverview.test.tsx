@@ -8,23 +8,23 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine, ScanMode } from '../../lib/scan';
-import { resetReads } from '../../lib/scanReads';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
-import { saveScanPageMode, type CameraMode } from '../../lib/cameraMode';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { preferencesQueryKey } from '../../lib/settings';
-import { scanLanguagePreference } from '../../test/scan';
-import { ScanPage } from '../Scan/ScanPage';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine, ScanMode } from '@/lib/scan';
+import { resetReads } from '@/lib/scanReads';
+import { dispatchScanSession, resetScanSession } from '@/lib/scanSession';
+import { saveScanPageMode, type CameraMode } from '@/lib/cameraMode';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { preferencesQueryKey } from '@/lib/settings';
+import { scanLanguagePreference } from '@/test/scan';
+import { ScanPage } from '@/pages/Scan/ScanPage';
 import { ReviewOverviewPage } from './ReviewOverviewPage';
 import { ReviewPage } from './ReviewPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 

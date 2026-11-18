@@ -2,10 +2,10 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ProposedLine } from '../../lib/scan';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { REVIEW_ROUTE, startReview } from '../../test/review';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ProposedLine } from '@/lib/scan';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { REVIEW_ROUTE, startReview } from '@/test/review';
 import { ReviewPage } from './ReviewPage';
 
 const milk: CatalogSearchResult = {
