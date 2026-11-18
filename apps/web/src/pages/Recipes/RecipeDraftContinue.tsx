@@ -3,14 +3,14 @@ import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { formatDate } from '../../lib/dateFormat';
-import { localIso } from '../../lib/pantry';
+import { formatDate } from '@/lib/dateFormat';
+import { localIso } from '@/lib/pantry';
 import {
   useRecipeDrafts,
   type RecipeDraftKind,
   type RecipeDraftSummary,
-} from '../../lib/recipeDrafts';
-import { recipeDraftPath } from './components/RecipeDraftRow';
+} from '@/lib/recipeDrafts';
+import { recipeDraftPath } from './components/RecipeDraftRow/RecipeDraftRow';
 
 /**
  * "Continue your draft?" (ADR 0028): before a blank New Recipe or New Variant form,

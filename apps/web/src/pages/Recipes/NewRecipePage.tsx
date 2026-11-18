@@ -2,7 +2,7 @@ import { Alert, Spinner } from '@pocket-pantry/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { RecipeDraftStatus } from '@/components/RecipeDraftStatus';
+import { RecipeDraftStatus } from './components/RecipeDraftStatus/RecipeDraftStatus';
 import {
   useRecipeDraftFormSession,
   type RecipeDraftRouteProps,
@@ -20,18 +20,24 @@ import {
   useResumedPlateBases,
 } from './hooks/useResumedPlateBases';
 import { useRecipeDraftAutosave } from '@/lib/recipeDraftAutosave';
-import { STANDALONE, noBasePick } from '@/components/BaseRecipePicker';
+import {
+  STANDALONE,
+  noBasePick,
+} from './components/BaseRecipePicker/BaseRecipePicker';
 import type { BaseRecipeOption } from '@/lib/baseRecipeOption';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { RemovableSourceLink, isSourceLink } from '@/components/SourceLink';
+import {
+  RemovableSourceLink,
+  isSourceLink,
+} from './components/SourceLink/SourceLink';
 import { translateApiError } from '@/i18n/translateApiError';
 import { emptyDraft } from '@/lib/recipeDraft';
 import { toGuidanceDraft } from '@/lib/guidanceDraft';
 import { usePlateMatches } from '@/lib/plateRecipe';
-import { useMomentOptions } from './components/FamilyGuidance';
+import { useMomentOptions } from './components/FamilyGuidance/FamilyGuidance';
 import { draftOfVariantDraft, type NewRecipeDraft } from './hooks/familyDraft';
-import { BaseRecipeCard } from './components/BaseRecipeCard';
-import { FamilyRecipeForm } from './components/FamilyRecipeForm';
+import { BaseRecipeCard } from './components/BaseRecipeCard/BaseRecipeCard';
+import { FamilyRecipeForm } from './components/FamilyRecipeForm/FamilyRecipeForm';
 import { namedGuidance, routePropsOf } from './hooks/familyRecipeShared';
 
 /**

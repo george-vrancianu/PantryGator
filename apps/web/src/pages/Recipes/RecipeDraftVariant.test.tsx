@@ -7,9 +7,9 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { FamilyRecipeDraft } from '../../lib/familyRecipes';
-import type { RecipeDraftContent } from '../../lib/recipeDrafts';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { FamilyRecipeDraft } from '@/lib/familyRecipes';
+import type { RecipeDraftContent } from '@/lib/recipeDrafts';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { NewRecipePage } from './NewRecipePage';
 import { NewVariantPage } from './NewVariantPage';
 

@@ -5,14 +5,14 @@ import {
   linkReadsOf,
   recipeReads,
   MAX_HELD_RECIPE_READS,
-} from '../../lib/recipeReads';
-import { MAX_PASTED_TEXT_LENGTH } from '../../lib/linkRecipe';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubViewport } from '../../test/viewport';
+} from '@/lib/recipeReads';
+import { MAX_PASTED_TEXT_LENGTH } from '@/lib/linkRecipe';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubViewport } from '@/test/viewport';
 import {
   FromTextSheet,
   type FromTextPrefill,
-} from './components/FromTextSheet';
+} from './components/FromTextSheet/FromTextSheet';
 
 const pending = new Promise<Response>(() => {});
 

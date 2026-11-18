@@ -45,6 +45,14 @@ const GROUP_HINTS = {
     'PantryStatus',
     'RowTags',
     'TagChips',
+    // The rows' own parts: the Recipe row, Meal Plans' Explore row and the Catalog Recipe picker use them.
+    'RecipeRowLayout',
+    'StatusPills',
+    'ExploreRow',
+    'AddToFamilyButton',
+    'OwnerBadge',
+    'CountBadge',
+    'bleed',
   ],
   pantry: [
     'ExpiryTag',
@@ -254,7 +262,9 @@ function computeTarget(m, visiting) {
   const areas = effective(m);
   if (areas.size === 1 && !areas.has('app')) {
     const [area] = areas;
-    const hook = stem.startsWith('use');
+    // Non-visual modules already in an area's hooks/ (familyDraft.ts) stay there, never under components/.
+    const hook =
+      stem.startsWith('use') || /^pages\/[^/]+\/hooks\/[^/]+\.ts$/.test(m);
     const base = `pages/${area}/${hook ? 'hooks' : 'components'}`;
     return hook ? posix.join(base, basename(m)) : placed(m, base);
   }

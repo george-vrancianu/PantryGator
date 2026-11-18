@@ -12,9 +12,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   RecipeDraftContent,
   RecipeDraftSummary,
-} from '../../lib/recipeDrafts';
-import { UNDO_WINDOW_MS } from '../../lib/useDeferredRemoval';
-import { renderWithProviders, stubApi } from '../../test/render';
+} from '@/lib/recipeDrafts';
+import { UNDO_WINDOW_MS } from '@/lib/useDeferredRemoval';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { NewRecipePage } from './NewRecipePage';
 import { RecipeDraftsPage } from './RecipeDraftsPage';
 import { RecipesPage } from './RecipesPage';

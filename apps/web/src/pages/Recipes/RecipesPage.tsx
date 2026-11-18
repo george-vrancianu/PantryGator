@@ -15,39 +15,39 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
-import { translateApiError } from '../../i18n/translateApiError';
-import { cardFor, indexCards, useCookTonight } from '../../lib/cookTonight';
-import { useAddToFamily } from '../../lib/addToFamily';
-import { localIso } from '../../lib/pantry';
+import { translateApiError } from '@/i18n/translateApiError';
+import { cardFor, indexCards, useCookTonight } from '@/lib/cookTonight';
+import { useAddToFamily } from '@/lib/addToFamily';
+import { localIso } from '@/lib/pantry';
 import {
   hasNoFamilyRecipes,
   isFiltering,
   useRecipes,
   type RecipeBrowse,
   type RecipeListItem,
-} from '../../lib/recipes';
-import { useRecipeDrafts } from '../../lib/recipeDrafts';
+} from '@/lib/recipes';
+import { useRecipeDrafts } from '@/lib/recipeDrafts';
 import {
   FROM_LINK_PARAM,
   FROM_TEXT_PARAM,
   FROM_TEXT_PREFILL_STATE,
-} from '../../lib/recipeRoutes';
+} from '@/lib/recipeRoutes';
 import { useRecipeDraftDiscard } from './hooks/useRecipeDraftDiscard';
-import { EmptyFamilyRecipes } from './components/EmptyFamilyRecipes';
+import { EmptyFamilyRecipes } from './components/EmptyFamilyRecipes/EmptyFamilyRecipes';
 import {
   CookTonightHeader,
   CookTonightHeaderPlaceholder,
-} from './components/CookTonightHeader';
-import { FromLinkSheet } from './components/FromLinkSheet';
+} from './components/CookTonightHeader/CookTonightHeader';
+import { FromLinkSheet } from './components/FromLinkSheet/FromLinkSheet';
 import {
   FromTextSheet,
   type FromTextPrefill,
-} from './components/FromTextSheet';
-import { bleedSx } from './components/bleed';
-import { RecipeFilters } from './components/RecipeFilters';
-import { RecipeRow } from './components/RecipeRow';
-import { TagNoMatch } from './components/TagNoMatch';
-import { SectionLabel } from './components/SectionLabel';
+} from './components/FromTextSheet/FromTextSheet';
+import { bleedSx } from '@/components/recipe/bleed';
+import { RecipeFilters } from '@/components/recipe/RecipeFilters/RecipeFilters';
+import { RecipeRow } from '@/components/recipe/RecipeRow/RecipeRow';
+import { TagNoMatch } from './components/TagNoMatch/TagNoMatch';
+import { SectionLabel } from './components/SectionLabel/SectionLabel';
 
 /**
  * The list without the Variants that sit under a Base in it. The Base's count becomes the

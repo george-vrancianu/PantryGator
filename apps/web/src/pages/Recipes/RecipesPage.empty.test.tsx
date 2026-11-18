@@ -1,12 +1,12 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { getToast } from '../../test/toast';
+import { getToast } from '@/test/toast';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CookTonightCard } from '../../lib/cookTonight';
-import type { RecipeListItem } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubMotion } from '../../test/viewport';
+import type { CookTonightCard } from '@/lib/cookTonight';
+import type { RecipeListItem } from '@/lib/recipes';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubMotion } from '@/test/viewport';
 import { RecipesPage } from './RecipesPage';
 
 /*

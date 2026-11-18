@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event';
 import type { QueryClient } from '@tanstack/react-query';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CookTonightCard } from '../../lib/cookTonight';
-import type { RecipeListItem } from '../../lib/recipes';
-import type { RecipeTag } from '../../lib/tags';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { expectSticksAtScrollerTop } from '../../test/stickyHeader';
-import { stubMotion } from '../../test/viewport';
+import type { CookTonightCard } from '@/lib/cookTonight';
+import type { RecipeListItem } from '@/lib/recipes';
+import type { RecipeTag } from '@/lib/tags';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { expectSticksAtScrollerTop } from '@/test/stickyHeader';
+import { stubMotion } from '@/test/viewport';
 import { RecipesPage } from './RecipesPage';
 
 /*

@@ -2,7 +2,7 @@ import { Alert, Box, Sheet, Spinner, Typography } from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExploreRow } from '../../../components/ExploreRow';
+import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
 import { copyToFamily, refreshAfterCopy } from '../../../lib/addToFamily';
 import { translateApiError } from '../../../i18n/translateApiError';
 import {
@@ -10,8 +10,8 @@ import {
   useRecipes,
   type RecipeBrowse,
 } from '../../../lib/recipes';
-import { RecipeFilters } from '../../Recipes/components/RecipeFilters';
-import { RecipeRow } from '../../Recipes/components/RecipeRow';
+import { RecipeFilters } from '@/components/recipe/RecipeFilters/RecipeFilters';
+import { RecipeRow } from '@/components/recipe/RecipeRow/RecipeRow';
 
 type Props = {
   open: boolean;

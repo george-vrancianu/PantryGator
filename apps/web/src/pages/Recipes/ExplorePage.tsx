@@ -14,29 +14,32 @@ import {
 import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { ExploreRow } from '../../components/ExploreRow';
-import { QuickViewSheet } from '../../components/QuickViewSheet';
+import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
+import { QuickViewSheet } from './components/QuickViewSheet/QuickViewSheet';
 import { HiddenByAllergiesNote } from '@/components/allergy/HiddenByAllergiesNote/HiddenByAllergiesNote';
-import { translateApiError } from '../../i18n/translateApiError';
-import { isPlainClick } from '../../lib/isPlainClick';
-import { localIso } from '../../lib/pantry';
-import { useAddToFamily } from '../../lib/addToFamily';
-import { exploreAdds, useExploreAdds } from '../../lib/exploreAdds';
+import { translateApiError } from '@/i18n/translateApiError';
+import { isPlainClick } from '@/lib/isPlainClick';
+import { localIso } from '@/lib/pantry';
+import { useAddToFamily } from '@/lib/addToFamily';
+import { exploreAdds, useExploreAdds } from '@/lib/exploreAdds';
 import {
   canMakeBases,
   cardFor,
   indexCards,
   useCookTonight,
-} from '../../lib/cookTonight';
+} from '@/lib/cookTonight';
 import {
   isFiltering,
   useRecipes,
   type RecipeBrowse,
   type RecipeListItem,
-} from '../../lib/recipes';
-import { RecipeFilters, TagFilterRows } from './components/RecipeFilters';
-import { SectionLabel } from './components/SectionLabel';
-import { TagNoMatch } from './components/TagNoMatch';
+} from '@/lib/recipes';
+import {
+  RecipeFilters,
+  TagFilterRows,
+} from '@/components/recipe/RecipeFilters/RecipeFilters';
+import { SectionLabel } from './components/SectionLabel/SectionLabel';
+import { TagNoMatch } from './components/TagNoMatch/TagNoMatch';
 
 /** Rows a group shows before "Show n more". */
 const LIMIT = 4;
