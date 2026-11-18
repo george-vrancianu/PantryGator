@@ -133,6 +133,31 @@ describe('SwipeRow', () => {
       expect(circle()).toBeNull();
     });
 
+    it('fades the cancelled circle from its current size: the grow stays, paused', async () => {
+      vi.useFakeTimers();
+      renderHoldable();
+      fireEvent.pointerDown(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      await act(() => vi.advanceTimersByTimeAsync(300));
+      const growing = getComputedStyle(
+        circle()!.firstElementChild as Element,
+      ).animation;
+      expect(growing).toContain('pp-hold-grow');
+      fireEvent.pointerUp(content(), {
+        pointerId: 1,
+        clientX: 50,
+        clientY: 20,
+      });
+      const fading = getComputedStyle(
+        circle()!.firstElementChild as Element,
+      ).animation;
+      expect(fading).toMatch(/pp-hold-grow.*forwards paused/);
+      expect(fading).toContain('pp-hold-fade');
+    });
+
     it('draws no circle under reduce-motion', async () => {
       vi.useFakeTimers();
       vi.stubGlobal('matchMedia', (query: string) => ({
