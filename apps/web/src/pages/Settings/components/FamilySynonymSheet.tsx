@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Sheet,
   Stack,
   Typography,
@@ -10,10 +9,8 @@ import {
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IngredientIconSlot } from '../../../components/IngredientIconSlot';
-import { RemoveLink } from '../../../components/RemoveLink';
 import type { FamilyCatalogSynonym } from '../../../lib/familyCatalog';
 import { InfoNote } from './InfoNote';
-import { SheetHeader } from '../../../components/SheetHeader';
 
 export type FamilySynonymSheetProps = {
   open: boolean;
@@ -48,18 +45,16 @@ export function FamilySynonymSheet({
         removeRequested.current = false;
         onRemove();
       }}
-      label={quoted}
+      title={quoted}
+      subtitle={meta}
       size="content"
-      header={
-        <SheetHeader
-          size="roomy"
-          title={quoted}
-          subtitle={meta}
-          backLabel={t('settings:familyCatalog.back')}
-          closeLabel={t('settings:familyCatalog.close')}
-          onClose={onClose}
-        />
-      }
+      destructive={{
+        label: t('settings:familyCatalog.synonymRemoveLink'),
+        onClick: () => {
+          removeRequested.current = true;
+          onClose();
+        },
+      }}
     >
       <Stack spacing={2} sx={{ px: 3, pt: 1, pb: 3 }}>
         <Box
@@ -88,15 +83,6 @@ export function FamilySynonymSheet({
             ingredient: synonym.ingredient.name,
           })}
         </InfoNote>
-        <Button onClick={onClose}>{t('settings:familyCatalog.done')}</Button>
-        <RemoveLink
-          onClick={() => {
-            removeRequested.current = true;
-            onClose();
-          }}
-        >
-          {t('settings:familyCatalog.synonymRemoveLink')}
-        </RemoveLink>
       </Stack>
     </Sheet>
   );

@@ -9,10 +9,20 @@ import {
   useBreakpointUp,
   useToast,
 } from '@pocket-pantry/ui';
-import { useEffect, useRef, type KeyboardEvent, type RefObject } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type RefObject,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogSearchResult } from '../../lib/catalog';
-import { AddToCatalogForm, type PickOutcome } from './AddToCatalogForm';
+import {
+  AddToCatalogForm,
+  type FormAction,
+  type PickOutcome,
+} from './AddToCatalogForm';
 
 /** Marks the button that opens the popover, so a tap on it is not an "outside" tap. */
 export const ADD_TO_CATALOG_TRIGGER = 'data-add-to-catalog-trigger';
@@ -45,6 +55,8 @@ export function AddToCatalog({
   const wide = useBreakpointUp('md');
   const categoryRef = useRef<HTMLInputElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  // The phone Sheet pins the form's primary action; the popover leaves it inside the form.
+  const [action, setAction] = useState<FormAction | null>(null);
 
   const picked = (result: CatalogSearchResult, outcome: PickOutcome) => {
     if (outcome.kind === 'added') {
@@ -122,6 +134,7 @@ export function AddToCatalog({
       onCancel={onDismiss}
       initialAllergenIds={initialAllergenIds}
       autoFocus={wide}
+      onAction={wide ? undefined : setAction}
     />
   );
 
@@ -129,11 +142,21 @@ export function AddToCatalog({
     return (
       <Sheet
         open
-        label={title}
-        header={header}
+        title={title}
+        subtitle={t('catalogAdd.subtitle')}
         size="content"
         onClose={onDismiss}
         initialFocus={categoryRef}
+        primary={
+          action
+            ? {
+                label: action.label,
+                disabled: action.disabled,
+                pending: action.pending,
+                onClick: action.onClick,
+              }
+            : undefined
+        }
       >
         {form}
       </Sheet>
