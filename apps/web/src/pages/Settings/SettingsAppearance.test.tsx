@@ -1,9 +1,9 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApplyMemberTheme } from '../../components/ApplyMemberTheme';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { stubSystemScheme } from '../../test/viewport';
+import { ApplyMemberTheme } from '@/components/ApplyMemberTheme';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { stubSystemScheme } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 type Stored = { theme: string; matchSystem: boolean };

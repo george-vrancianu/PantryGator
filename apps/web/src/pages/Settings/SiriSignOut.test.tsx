@@ -2,8 +2,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fakeNativeIos, keychain, resetSiriEnvironment } from '../../test/siri';
-import { renderWithProviders, stubApi } from '../../test/render';
+import { fakeNativeIos, keychain, resetSiriEnvironment } from '@/test/siri';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { SettingsPage } from './SettingsPage';
 
 function App() {

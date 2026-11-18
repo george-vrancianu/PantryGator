@@ -3,14 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { authoredCss } from '@pocket-pantry/ui/test/authoredCss';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { ApplyMemberLocale } from '../../components/ApplyMemberLocale';
-import { ApplyMemberTheme } from '../../components/ApplyMemberTheme';
-import {
-  renderInAppLayout,
-  renderWithProviders,
-  stubApi,
-} from '../../test/render';
-import { stubSystemScheme } from '../../test/viewport';
+import { ApplyMemberLocale } from '@/components/ApplyMemberLocale';
+import { ApplyMemberTheme } from '@/components/ApplyMemberTheme';
+import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
+import { stubSystemScheme } from '@/test/viewport';
 import { SettingsPage } from './SettingsPage';
 
 function stubSettings(savedLocale: string | null = null, role = 'member') {

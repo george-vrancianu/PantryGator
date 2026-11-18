@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useScroller } from '../../../lib/scroller';
+import { useScroller } from '@/lib/scroller';
 
 export type SettingsTab = 'you' | 'family';
 

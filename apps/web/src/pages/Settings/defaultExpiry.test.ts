@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CategoryOptions } from '../../lib/settings';
+import type { CategoryOptions } from '@/lib/settings';
 import {
   DEFAULT_START_DAYS,
   groupCategories,
