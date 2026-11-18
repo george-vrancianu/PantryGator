@@ -100,7 +100,8 @@
       "ingredients": "Ingrediente",
       "manual": "Scris de mână",
       "finish_shopping": "Finalizare cumpărături",
-      "recipe": "Rețetă"
+      "recipe": "Rețetă",
+      "voice": "Notă vocală"
     },
     "resolve": "Rezolvă",
     "resolveName": "Rezolvă {{name}}",

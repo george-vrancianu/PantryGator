@@ -1,9 +1,13 @@
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import request from 'supertest';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { DATABASE } from '../src/database/database.constants';
 import type { Database } from '../src/database/database.types';
-import { recipes, shoppingItemSourceRecipes } from '../src/database/schema';
+import {
+  recipes,
+  shoppingItemSourceRecipes,
+  unmatchedEntries,
+} from '../src/database/schema';
 import { seedId } from '../src/catalog/seed/seed-catalog';
 import { createTestApp, TEST_ORIGIN } from './support/create-test-app';
 
@@ -343,6 +347,27 @@ describe('Shopping List Voice Actions (integration)', () => {
         true,
       );
       expect(items.find((i) => i.quantity === 2)).toBeDefined();
+    });
+
+    it('queues the Unmatched names of an add and of a check from a Voice Note as source voice', async () => {
+      const cookie = await signUp();
+      const res = await apply(cookie, [
+        action('add', { name: 'Voice added rolls' }, 'add'),
+        action('check', { name: 'Voice checked rolls' }, 'chk'),
+      ]).expect(201);
+      const ids = (res.body as { applied: { rowId: string }[] }).applied.map(
+        (a) => a.rowId,
+      );
+      expect(ids).toHaveLength(2);
+      const rows = await app
+        .get<Database>(DATABASE)
+        .select()
+        .from(unmatchedEntries)
+        .where(inArray(unmatchedEntries.shoppingItemId, ids));
+      expect(rows.map((r) => [r.rawName, r.source]).sort()).toEqual([
+        ['Voice added rolls', 'voice'],
+        ['Voice checked rolls', 'voice'],
+      ]);
     });
 
     it('removes the item from the list', async () => {

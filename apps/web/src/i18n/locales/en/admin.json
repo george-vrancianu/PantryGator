@@ -99,7 +99,8 @@
       "ingredients": "Ingredients",
       "manual": "Typed",
       "finish_shopping": "Finish Shopping",
-      "recipe": "Recipe"
+      "recipe": "Recipe",
+      "voice": "Voice Note"
     },
     "resolve": "Resolve",
     "resolveName": "Resolve {{name}}",

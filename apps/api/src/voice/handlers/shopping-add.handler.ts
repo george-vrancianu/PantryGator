@@ -46,7 +46,7 @@ export function shoppingAddHandler(
             ...subjectOf(draft, 'name'),
             ...(quantity === null || unit === null ? {} : { quantity, unit }),
             // Queued for curation like any typed name.
-            source: 'manual',
+            source: 'voice',
           },
           // The Unmatched name is written in the Catalog Language (the read
           // prompt asks for it), so that is the queue's source language.
