@@ -262,6 +262,11 @@ export class RecipeDraftsService {
     });
   }
 
+  /**
+   * Unlike a read or an update, this does not run the lazy expiry first: an
+   * expired Recipe Draft that is not yet purged is still deleted and answers 204
+   * (the Member wanted it gone, and it is). Only an id that is already gone is 404.
+   */
   async remove(memberId: string, id: string): Promise<void> {
     const deleted = await this.database
       .delete(recipeDrafts)
