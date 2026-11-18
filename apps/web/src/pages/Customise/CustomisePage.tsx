@@ -40,6 +40,7 @@ import { Screen } from '../../components/layout/Screen';
 import { translateApiError } from '../../i18n/translateApiError';
 import {
   useDashboardLayout,
+  WIDGET_SIZES,
   type WidgetInstance,
   type WidgetSize,
 } from '../../lib/dashboard';
@@ -58,7 +59,7 @@ import {
   useGridColumns,
   widgetSpan,
 } from '../../lib/layoutColumns';
-import { WIDGET_REGISTRY } from '../Dashboard/widgets/registry';
+import { WIDGET_CATALOG } from '@/components/dashboard/widgetCatalog';
 import { WidgetPreview } from './WidgetPreview';
 
 const FOCUS_RING = {
@@ -87,8 +88,8 @@ function WidgetRow({
 }: RowProps) {
   const { t } = useTranslation(['customise', 'dashboard']);
   const reduceMotion = usePrefersReducedMotion();
-  const definition = WIDGET_REGISTRY[widget.type] as
-    (typeof WIDGET_REGISTRY)[typeof widget.type] | undefined;
+  const definition = WIDGET_CATALOG[widget.type] as
+    (typeof WIDGET_CATALOG)[typeof widget.type] | undefined;
   const name = definition
     ? t(definition.nameKey, { ns: 'dashboard' })
     : widget.type;
@@ -102,7 +103,11 @@ function WidgetRow({
     isDragging,
   } = useSortable({ id: widget.id });
   const columns = useGridColumns();
-  const sizes = definition?.sizes ?? [];
+  const sizes =
+    (
+      WIDGET_SIZES[widget.type] as
+        (typeof WIDGET_SIZES)[typeof widget.type] | undefined
+    )?.sizes ?? [];
   const nextOne = nextSize(
     sizes,
     sizesAvailableAt(sizes, columns),
@@ -310,8 +315,8 @@ export function CustomisePage() {
 
   const widgets = layout.data.widgets;
   const nameOf = (widget: Pick<WidgetInstance, 'type'>) => {
-    const definition = WIDGET_REGISTRY[widget.type] as
-      (typeof WIDGET_REGISTRY)[typeof widget.type] | undefined;
+    const definition = WIDGET_CATALOG[widget.type] as
+      (typeof WIDGET_CATALOG)[typeof widget.type] | undefined;
     return definition
       ? t(definition.nameKey, { ns: 'dashboard' })
       : widget.type;
@@ -510,7 +515,7 @@ export function CustomisePage() {
                 <Box
                   key={type}
                   sx={{
-                    gridColumn: `span ${widgetSpan(WIDGET_REGISTRY[type].defaultSize, columns).columns}`,
+                    gridColumn: `span ${widgetSpan(WIDGET_SIZES[type].defaultSize, columns).columns}`,
                     bgcolor: tokens.color.surface,
                     border: `1px solid ${tokens.color.line}`,
                     borderRadius: radius.card,

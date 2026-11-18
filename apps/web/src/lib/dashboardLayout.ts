@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { apiRequest } from './api';
 import {
   DASHBOARD_LAYOUT_KEY,
+  WIDGET_SIZES,
   type DashboardLayout,
   type WidgetInstance,
   type WidgetSize,
   type WidgetType,
 } from './dashboard';
-import { WIDGET_REGISTRY } from '../pages/Dashboard/widgets/registry';
 
 /** Move a Widget to `toIndex` (clamped); an unknown id leaves the layout unchanged. */
 export function moveWidget(
@@ -40,7 +40,7 @@ export function resizeWidget(
   size: WidgetSize,
 ): WidgetInstance[] {
   return widgets.map((w) =>
-    w.id === id && WIDGET_REGISTRY[w.type]?.sizes.includes(size)
+    w.id === id && WIDGET_SIZES[w.type]?.sizes.includes(size)
       ? { ...w, size }
       : w,
   );
@@ -95,14 +95,14 @@ export function addWidget(
 ): WidgetInstance[] {
   return [
     ...widgets,
-    { id: newId(), type, size: WIDGET_REGISTRY[type].defaultSize },
+    { id: newId(), type, size: WIDGET_SIZES[type].defaultSize },
   ];
 }
 
 /** Widget types not yet on the dashboard, in registry order (the gallery never offers a type twice). */
 export function availableWidgetTypes(widgets: WidgetInstance[]): WidgetType[] {
   const present = new Set(widgets.map((w) => w.type));
-  return (Object.keys(WIDGET_REGISTRY) as WidgetType[]).filter(
+  return (Object.keys(WIDGET_SIZES) as WidgetType[]).filter(
     (type) => !present.has(type),
   );
 }

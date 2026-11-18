@@ -19,6 +19,21 @@ export type WidgetSize = 'small' | 'wide' | 'tall';
 export type WidgetInstance = { id: string; type: WidgetType; size: WidgetSize };
 export type DashboardLayout = { widgets: WidgetInstance[] };
 
+/** The sizes a Widget type offers and the one it starts with. Adding a Widget type is one entry here. */
+export const WIDGET_SIZES: Record<
+  WidgetType,
+  { sizes: WidgetSize[]; defaultSize: WidgetSize }
+> = {
+  'use-soon': { sizes: ['small', 'wide', 'tall'], defaultSize: 'wide' },
+  shopping: { sizes: ['small', 'wide'], defaultSize: 'small' },
+  'pantry-stock': { sizes: ['small', 'wide'], defaultSize: 'small' },
+  suggestions: { sizes: ['small', 'wide'], defaultSize: 'small' },
+  'cook-tonight': { sizes: ['small', 'wide', 'tall'], defaultSize: 'wide' },
+  'meal-plan': { sizes: ['wide'], defaultSize: 'wide' },
+  budget: { sizes: ['small', 'wide'], defaultSize: 'small' },
+  nutrition: { sizes: ['small', 'wide'], defaultSize: 'small' },
+};
+
 export const DASHBOARD_LAYOUT_KEY = ['dashboard-layout'] as const;
 
 /** The signed-in Member's own layout (a default one until they customise it). */
