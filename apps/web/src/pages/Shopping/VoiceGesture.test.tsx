@@ -11,15 +11,15 @@ import {
   stubVoiceFetch,
   talkButton,
   wake,
-} from '../../test/voice';
+} from '@/test/voice';
 import {
   holdFor,
   holdLongEnough,
   pressDown,
   useVoiceTimers,
-} from '../../test/voiceHold';
-import { renderInAppLayout, stubApi } from '../../test/render';
-import { voiceNote } from '../../lib/voiceNote';
+} from '@/test/voiceHold';
+import { renderInAppLayout, stubApi } from '@/test/render';
+import { voiceNote } from '@/lib/voiceNote';
 import { ShoppingPage } from './ShoppingPage';
 
 function setup() {

@@ -1,19 +1,16 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type {
-  FinishProposal,
-  FinishProposalLine,
-} from '../../lib/finishShopping';
-import type { ShoppingItem, ShoppingList } from '../../lib/shopping';
+import type { FinishProposal, FinishProposalLine } from '@/lib/finishShopping';
+import type { ShoppingItem, ShoppingList } from '@/lib/shopping';
 import {
   calendarDay,
   quickPick,
   quickPickTiles,
   sheetButton,
-} from '../../test/expirySheet';
-import { pickLocation, pressedLocation } from '../../test/location';
-import { renderWithProviders, stubApi } from '../../test/render';
+} from '@/test/expirySheet';
+import { pickLocation, pressedLocation } from '@/test/location';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { ShoppingPage } from './ShoppingPage';
 
 const item = (id: string, name: string, checked: boolean): ShoppingItem => ({

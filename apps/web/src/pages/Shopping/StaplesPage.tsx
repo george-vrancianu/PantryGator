@@ -11,23 +11,23 @@ import {
 } from '@pocket-pantry/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountSheet } from '../../components/AmountSheet';
-import { Screen } from '../../components/layout/Screen';
+import { AmountSheet } from './components/AmountSheet/AmountSheet';
+import { Screen } from '@/components/layout/Screen';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
 import { BrowseByAisle } from '@/components/catalogSearch/emptyState/BrowseByAisle/BrowseByAisle';
-import { translateApiError } from '../../i18n/translateApiError';
-import { formatAmount, type Amount } from '../../lib/amount';
+import { translateApiError } from '@/i18n/translateApiError';
+import { formatAmount, type Amount } from '@/lib/amount';
 import {
   isPendingStaple,
   staplesQueryKey,
   useStapleMutations,
   useStaples,
   type Staple,
-} from '../../lib/staples';
-import { useDeferredRemoval } from '../../lib/useDeferredRemoval';
-import { useRowHint, type RowHint } from '../../lib/useRowHint';
-import { useSwipeRowLabels } from '../../lib/useSwipeRowLabels';
-import { RowHintNote } from '../../components/RowHintNote';
+} from '@/lib/staples';
+import { useDeferredRemoval } from '@/lib/useDeferredRemoval';
+import { useRowHint, type RowHint } from '@/lib/useRowHint';
+import { useSwipeRowLabels } from '@/lib/useSwipeRowLabels';
+import { RowHintNote } from '@/components/RowHintNote';
 
 /** The Family's Staples: add by Catalog search, set a preferred quantity and unit, or remove. */
 export function StaplesPage() {

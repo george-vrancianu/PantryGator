@@ -1,10 +1,10 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Template, TemplateLine } from '../../../lib/shoppingTemplates';
-import { localIso, useDeleteBatch } from '../../../lib/pantry';
-import { useSuggestions } from '../../../lib/suggestions';
-import { renderWithProviders, stubApi } from '../../../test/render';
+import type { Template, TemplateLine } from '@/lib/shoppingTemplates';
+import { localIso, useDeleteBatch } from '@/lib/pantry';
+import { useSuggestions } from '@/lib/suggestions';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { ApplyTemplatePicker } from './ApplyTemplatePicker';
 
 const produce = { id: 'a1', name: 'Fruit & veg', sortOrder: 1 };

@@ -8,9 +8,9 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Unit } from '../../../lib/catalog';
-import type { Template, TemplateLine } from '../../../lib/shoppingTemplates';
-import { renderWithProviders, stubApi } from '../../../test/render';
+import type { Unit } from '@/lib/catalog';
+import type { Template, TemplateLine } from '@/lib/shoppingTemplates';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { TemplateEditorPage } from './TemplateEditorPage';
 import { TemplatesPage } from './TemplatesPage';
 

@@ -9,13 +9,9 @@ import {
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
-import {
-  UNITS,
-  type CatalogSearchResult,
-  type Unit,
-} from '../../../lib/catalog';
-import { parseQuantity } from '../../../lib/pantry';
-import type { NewShoppingItem } from '../../../lib/shopping';
+import { UNITS, type CatalogSearchResult, type Unit } from '@/lib/catalog';
+import { parseQuantity } from '@/lib/pantry';
+import type { NewShoppingItem } from '@/lib/shopping';
 
 export type AddItemFormProps = {
   adding: boolean;

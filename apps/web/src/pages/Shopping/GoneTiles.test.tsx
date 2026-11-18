@@ -1,9 +1,9 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CatalogSearchResult } from '../../lib/catalog';
-import type { ShoppingList } from '../../lib/shopping';
-import { renderWithProviders, stubApi } from '../../test/render';
+import type { CatalogSearchResult } from '@/lib/catalog';
+import type { ShoppingList } from '@/lib/shopping';
+import { renderWithProviders, stubApi } from '@/test/render';
 import { ShoppingPage } from './ShoppingPage';
 
 const dairy = { id: 'a4', name: 'Dairy & eggs', sortOrder: 4 };

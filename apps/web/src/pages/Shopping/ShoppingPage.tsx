@@ -11,25 +11,25 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { useTemplates } from '../../lib/shoppingTemplates';
-import { Screen } from '../../components/layout/Screen';
+import { useTemplates } from '@/lib/shoppingTemplates';
+import { Screen } from '@/components/layout/Screen';
 import {
   RowToggleErrorProvider,
   useRowToggleErrors,
-} from '../../components/RowToggleErrors';
-import { RowHintNote } from '../../components/RowHintNote';
-import { useRowHint } from '../../lib/useRowHint';
-import { itemCount } from '../../lib/shopping';
-import { UnverifiedToast } from '../../components/UnverifiedToast';
-import { AddSheet } from './components/addSheet/AddSheet';
-import { FinishShoppingReview } from './components/FinishShoppingReview';
-import { ShoppingGroups } from './components/ShoppingGroups';
-import { SaveTemplateSheet } from './components/SaveTemplateSheet';
-import { ApplyTemplatesSheet } from './components/ApplyTemplatesSheet';
-import { SaveListRow } from './components/SaveListRow';
-import { EmptyListStart } from './components/EmptyListStart';
-import { FinishShoppingRow } from './components/FinishShoppingRow';
-import { ShoppingHeader } from './components/ShoppingHeader';
+} from '@/components/RowToggleErrors';
+import { RowHintNote } from '@/components/RowHintNote';
+import { useRowHint } from '@/lib/useRowHint';
+import { itemCount } from '@/lib/shopping';
+import { UnverifiedToast } from '@/components/UnverifiedToast';
+import { AddSheet } from './components/addSheet/AddSheet/AddSheet';
+import { FinishShoppingReview } from './components/FinishShoppingReview/FinishShoppingReview';
+import { ShoppingGroups } from './components/ShoppingGroups/ShoppingGroups';
+import { SaveTemplateSheet } from './components/SaveTemplateSheet/SaveTemplateSheet';
+import { ApplyTemplatesSheet } from './components/ApplyTemplatesSheet/ApplyTemplatesSheet';
+import { SaveListRow } from './components/SaveListRow/SaveListRow';
+import { EmptyListStart } from './components/EmptyListStart/EmptyListStart';
+import { FinishShoppingRow } from './components/FinishShoppingRow/FinishShoppingRow';
+import { ShoppingHeader } from './components/ShoppingHeader/ShoppingHeader';
 import { useShoppingScreen } from './hooks/useShoppingScreen';
 
 export function ShoppingPage() {
