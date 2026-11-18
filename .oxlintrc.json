@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["unicorn", "oxc", "typescript", "react", "jsx-a11y"],
+  "plugins": ["unicorn", "oxc", "typescript", "react", "jsx-a11y", "import"],
   "categories": { "correctness": "error" },
   "rules": {
     // Off: the rule wants role="group"/"checkbox"/"progressbar"/... swapped for fieldset/input/progress
@@ -10,9 +10,9 @@
     // Off (10 findings): the autofocus calls are deliberate (sheets and dialogs move focus to their first field on open);
     // removing them would change Member-visible focus behaviour.
     "jsx-a11y/no-autofocus": "off",
-    // Off on purpose: with the `import` plugin on, apps/web has one cycle (lib/pantry -> settings -> recipes -> pantry),
-    // reported 3 times. Fixing it is its own change; enable the rule once it is gone (docs/agents/codebase-map.md).
-    "import/no-cycle": "off"
+    // On (the `import` plugin adds about 0.25s to a lint run): a cycle makes module load order matter. The one that
+    // existed (lib/pantry -> settings -> recipes -> pantry) is gone: `localIso` moved to lib/localIso.ts.
+    "import/no-cycle": "error"
   },
   "overrides": [
     // Import rules, ADR 0044 (details: docs/agents/codebase-map.md). Override globs are relative to THIS
