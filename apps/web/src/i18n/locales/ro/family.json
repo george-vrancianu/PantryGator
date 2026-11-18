@@ -35,6 +35,9 @@
   "joinShoppingItems_one": "Se va șterge {{count}} Articol din lista de cumpărături.",
   "joinShoppingItems_few": "Se vor șterge {{count}} Articole din lista de cumpărături.",
   "joinShoppingItems_other": "Se vor șterge {{count}} de Articole din lista de cumpărături.",
+  "joinRecipeDrafts_one": "Se va șterge {{count}} ciornă de rețetă.",
+  "joinRecipeDrafts_few": "Se vor șterge {{count}} ciorne de rețete.",
+  "joinRecipeDrafts_other": "Se vor șterge {{count}} de ciorne de rețete.",
   "removeNamed": "Elimină: {{name}}",
   "makeOwnerNamed": "Fă Proprietar: {{name}}"
 }

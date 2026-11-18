@@ -43,6 +43,40 @@ export const Chips: StoryObj<typeof ChoiceRadioGroup> = {
   render: () => <Group choices={languages} layout="chips" />,
 };
 
+/** One card with a divided row per choice: the Recipe link and text sheets' reading language. */
+export const List: StoryObj<typeof ChoiceRadioGroup> = {
+  render: () => <Group choices={languages} layout="list" />,
+};
+
+export const ListDisabled: StoryObj<typeof ChoiceRadioGroup> = {
+  render: () => (
+    <Group
+      choices={languages}
+      layout="list"
+      hint="Locked while reading."
+      disabled
+    />
+  ),
+};
+
+export const ListLongText: StoryObj<typeof ChoiceRadioGroup> = {
+  render: () => (
+    <Group
+      layout="list"
+      choices={[
+        {
+          value: 'a',
+          label:
+            'A label long enough that it has to wrap onto several lines inside the row',
+          description:
+            'With a description just as long, and the check pinned right.',
+        },
+        { value: 'b', label: 'Short' },
+      ]}
+    />
+  ),
+};
+
 export const OliveTone: StoryObj<typeof ChoiceRadioGroup> = {
   render: () => (
     <Box sx={{ backgroundColor: 'pp.accent', p: 2 }}>

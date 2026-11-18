@@ -61,7 +61,13 @@
   "fill": {
     "button": "Fill",
     "onlyWhatIHave": "Only what I have",
-    "filling": "Filling…"
+    "filling": "Filling…",
+    "filled_one": "Filled {{count}} slot.",
+    "filled_other": "Filled {{count}} slots.",
+    "nothing": "Nothing could be filled.",
+    "emptyForAllergies_one": "{{count}} slot stayed empty because of Allergies.",
+    "emptyForAllergies_other": "{{count}} slots stayed empty because of Allergies.",
+    "withAllergies": "{{filled}} {{empty}}"
   },
   "addMissing": {
     "plan_one": "Add {{count}} missing",

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { and, desc, eq, inArray, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { CatalogLocale } from '../catalog/catalog.schemas';
 import { DATABASE } from '../database/database.constants';
 import type { Database, Executor, Tx } from '../database/database.types';
@@ -9,6 +9,7 @@ import { recipeDrafts, recipes, user } from '../database/schema';
 import { ApiException } from '../common/api-exception';
 import { catalogScope } from '../catalog/catalog-scope';
 import { recipeTitles } from '../recipes/recipe-view';
+import { recipeDraftExpired } from './recipe-draft-expiry';
 import {
   recipeDraftLimitReached,
   recipeDraftNotFound,
@@ -81,15 +82,7 @@ export async function deleteExpiredRecipeDrafts(
 ): Promise<void> {
   await executor
     .delete(recipeDrafts)
-    .where(
-      and(
-        eq(recipeDrafts.memberId, memberId),
-        lt(
-          recipeDrafts.updatedAt,
-          sql`now() - make_interval(days => ${RECIPE_DRAFT_TTL_DAYS})`,
-        ),
-      ),
-    );
+    .where(and(eq(recipeDrafts.memberId, memberId), recipeDraftExpired));
 }
 
 function originOf(content: RecipeDraftContent): RecipeDraftOrigin {

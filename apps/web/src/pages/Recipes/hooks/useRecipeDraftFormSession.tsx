@@ -11,6 +11,7 @@ import type { GuidanceInput } from '@/lib/adminRecipes';
 import type { Autosave } from '@/lib/recipeDraftAutosave';
 import type { RecipeDraftView } from '@/lib/recipeDrafts';
 import { useLeaveGuard } from '@/lib/useLeaveGuard';
+import { familyRecipeHref } from '@/lib/recipeHref';
 import { RecipeDraftWriteNotice } from '../components/RecipeDraftWriteNotice/RecipeDraftWriteNotice';
 import type { DiscardedDraftState } from './useRecipeDraftDiscard';
 
@@ -19,6 +20,8 @@ export type RecipeDraftRouteProps = {
   /** The Recipe Draft the form was opened on, if resuming one. */
   resumed?: RecipeDraftView;
   onDraftId: (id: string) => void;
+  /** Drops the supplied fill from the history entry (see `useRecipeDraftRoute`). */
+  clearState: () => void;
   /** Reload the form on the latest Recipe Draft (a version conflict's "Load latest"). */
   onLoadLatest: (latest: RecipeDraftView) => void;
 };
@@ -90,7 +93,7 @@ export function useRecipeDraftFormSession({
         {
           onSuccess: (saved) => {
             autosave.stop();
-            navigate(`/recipes/${saved.id}`);
+            navigate(familyRecipeHref(saved.id));
           },
           onError: () => {
             setFinishing(false);
@@ -103,7 +106,11 @@ export function useRecipeDraftFormSession({
 
   const notices: ReactNode = (
     <>
-      <RecipeDraftWriteNotice error={autosave.error} status={autosave.status} />
+      <RecipeDraftWriteNotice
+        error={autosave.error}
+        status={autosave.status}
+        onKeepAsNew={autosave.keepAsNew}
+      />
       {autosave.status === 'conflict' && draftId ? (
         <RecipeDraftConflictBanner draftId={draftId} onLoaded={onLoadLatest} />
       ) : null}

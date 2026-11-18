@@ -9,7 +9,11 @@ import { DATABASE } from '../database/database.constants';
 import type { Database, Executor } from '../database/database.types';
 import { mealPlanSlots, mealPlans, recipes, user } from '../database/schema';
 import { lockMemberAndFamily, runLocked } from '../family/family-locks';
-import { fillPlan, randomTieBreaker } from '../recipes/matching/plan-fill';
+import {
+  fillPlan,
+  randomTieBreaker,
+  slotsEmptiedByAllergies,
+} from '../recipes/matching/plan-fill';
 import {
   dayStatus,
   isAddable,
@@ -41,6 +45,7 @@ import {
   type CreateMealPlanBody,
   type FillBody,
   type MealPlanSummary,
+  type FilledMealPlanView,
   type MealPlanView,
   type MealWindowView,
   type PlanSlotView,
@@ -453,7 +458,7 @@ export class MealPlansService {
     body: FillBody,
     locale: CatalogLocale,
     today = utcToday(),
-  ): Promise<MealPlanView> {
+  ): Promise<FilledMealPlanView> {
     return runLocked(this.database, async (tx) => {
       const { familyId } = await lockMemberAndFamily(tx, memberId);
       const plan = await this.findPlan(tx, familyId, id);
@@ -464,13 +469,18 @@ export class MealPlansService {
         today,
         memberId,
       );
-      const choices = fillPlan({
+      const fillInput = {
         today,
         ...loaded,
         staleThresholdDays: await this.settings.staleThresholdOf(familyId),
         onlyWhatIHave: body.onlyWhatIHave,
-        tieBreaker: randomTieBreaker,
-      });
+      };
+      const choices = fillPlan({ ...fillInput, tieBreaker: randomTieBreaker });
+      // Slots a Recipe the Allergies block would have taken: filled when nothing is blocked,
+      // not filled now. Only asked when some Recipe is blocked.
+      const emptyForAllergies = loaded.recipes.some((r) => r.blocksFill)
+        ? slotsEmptiedByAllergies(fillInput)
+        : 0;
       const rows = choices.flatMap(({ slotId, recipeId }) => {
         const at = emptySlots.get(slotId);
         return at ? [{ mealPlanId: plan.id, ...at, recipeId }] : [];
@@ -479,7 +489,18 @@ export class MealPlansService {
       if (rows.length > 0) {
         await tx.insert(mealPlanSlots).values(rows).onConflictDoNothing();
       }
-      return this.view(tx, memberId, familyId, plan.id, locale, today);
+      const view = await this.view(
+        tx,
+        memberId,
+        familyId,
+        plan.id,
+        locale,
+        today,
+      );
+      return {
+        ...view,
+        fill: { filled: rows.length, emptyForAllergies },
+      };
     });
   }
 

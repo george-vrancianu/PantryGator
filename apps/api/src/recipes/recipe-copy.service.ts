@@ -41,28 +41,16 @@ export class RecipeCopyService {
     private readonly settings: SettingsService,
   ) {}
 
+  /**
+   * Migration 0046 mirrors this copy in SQL (it cannot call TypeScript), so the two must stay in
+   * parity. 0046 never queued Unmatched lines; migration 0053 backfills the names that came from the source.
+   */
   async copy(
     memberId: string,
     sourceId: string,
     locale: CatalogLocale,
   ): Promise<{ id: string; created: boolean }> {
-    return this.copyFor(
-      await this.settings.familyIdOf(memberId),
-      sourceId,
-      locale,
-    );
-  }
-
-  /**
-   * `copy` for a Family, without an acting Member. Migration 0046 mirrors this copy in SQL
-   * (it cannot call TypeScript), so the two must stay in parity.
-   * 0046 never queued Unmatched lines; migration 0053 backfills the names that came from the source.
-   */
-  async copyFor(
-    familyId: string,
-    sourceId: string,
-    locale: CatalogLocale,
-  ): Promise<{ id: string; created: boolean }> {
+    const familyId = await this.settings.familyIdOf(memberId);
     const source = await this.readSource(this.database, sourceId, familyId);
     const live = await this.liveCopy(this.database, familyId, sourceId);
     if (live) return { id: live, created: false };

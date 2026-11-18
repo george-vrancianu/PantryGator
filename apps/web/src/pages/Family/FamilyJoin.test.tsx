@@ -34,6 +34,7 @@ function stub(routes: Record<string, () => Response> = {}) {
       Response.json({
         batches: 12,
         shoppingItems: 3,
+        recipeDrafts: 2,
       }),
     'POST /api/family/join': () => Response.json(joined),
     ...routes,
@@ -62,7 +63,7 @@ describe('FamilyPage: joining another Family', () => {
       'Your current Household of One and its Pantry and Shopping data will be deleted. Data is not merged.',
     );
     expect(warning).toHaveTextContent(
-      '12 Batches will be deleted. 3 Shopping Items will be deleted.',
+      '12 Batches will be deleted. 3 Shopping Items will be deleted. 2 Recipe Drafts will be deleted.',
     );
     // Nothing is joined until the Member confirms.
     expect(calls.map((c) => c.key)).not.toContain('POST /api/family/join');
@@ -216,6 +217,7 @@ describe('FamilyPage: leaving, removing, transferring and deleting', () => {
         Response.json({
           batches: 1,
           shoppingItems: 1,
+          recipeDrafts: 1,
         }),
     });
     renderWithProviders(<FamilyPage />);
@@ -225,7 +227,23 @@ describe('FamilyPage: leaving, removing, transferring and deleting', () => {
     );
     await userEvent.click(screen.getByRole('button', { name: 'Check code' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      '1 Batch will be deleted. 1 Shopping Item will be deleted.',
+      '1 Batch will be deleted. 1 Shopping Item will be deleted. 1 Recipe Draft will be deleted.',
+    );
+  });
+
+  it('says nothing of Recipe Drafts when there are none', async () => {
+    stub({
+      'GET /api/family/join-preview': () =>
+        Response.json({ batches: 1, shoppingItems: 1, recipeDrafts: 0 }),
+    });
+    renderWithProviders(<FamilyPage />);
+    await userEvent.type(
+      await screen.findByLabelText('Invite Code', { selector: 'input' }),
+      'K7M2PQ9X',
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Check code' }));
+    expect(await screen.findByRole('alert')).not.toHaveTextContent(
+      'Recipe Draft',
     );
   });
 

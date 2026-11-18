@@ -5,6 +5,7 @@ import {
   Link,
   Sheet,
   displayType,
+  plusBottomInset,
   radius,
   useToast,
   visuallyHidden,
@@ -26,6 +27,11 @@ import {
 } from '@/lib/recipes';
 import { StatusPills } from '@/components/recipe/StatusPills/StatusPills';
 import { AddToFamilyButton } from '@/components/recipe/AddToFamilyButton/AddToFamilyButton';
+
+/** Lifts a toast above the quick view's action buttons. */
+export const QUICK_VIEW_TOAST_BOTTOM =
+  // Sheet bottom padding 28 + explanation line(s) ~36 + gap 10 + Make a Variant 48 + gap 8 + Add 48 + 8 slack
+  plusBottomInset(186);
 
 type Props = {
   /** The Recipe shown; keep passing it while the sheet closes, so the content stays through the slide. */

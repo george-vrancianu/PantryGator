@@ -1,13 +1,23 @@
-import { Alert, Box, Sheet, Spinner, Typography } from '@pocket-pantry/ui';
+import {
+  Alert,
+  Box,
+  Button,
+  Sheet,
+  Spinner,
+  Typography,
+} from '@pocket-pantry/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
-import { copyToFamily, refreshAfterCopy } from '@/lib/addToFamily';
+import { archiveCopy, copyToFamily, refreshAfterCopy } from '@/lib/addToFamily';
 import { translateApiError } from '@/i18n/translateApiError';
 import { isFiltering, useRecipes, type RecipeBrowse } from '@/lib/recipes';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters/RecipeFilters';
 import { RecipeRow } from '@/components/recipe/RecipeRow/RecipeRow';
+
+/** How many Catalog Recipes the Explore section lists before "Show more". */
+const EXPLORE_CAP = 5;
 
 type Props = {
   open: boolean;
@@ -17,7 +27,8 @@ type Props = {
   error: string | null;
   /** A slot write is running; picks are ignored until it settles. */
   busy: boolean;
-  onPick: (recipeId: string) => void;
+  /** Sets the slot; resolves true when it was set. A Catalog pick undoes its copy on false. */
+  onPick: (recipeId: string) => Promise<boolean>;
   onClose: () => void;
 };
 
@@ -55,24 +66,39 @@ export function RecipePickerSheet({
   });
   const queryClient = useQueryClient();
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [showAllExplore, setShowAllExplore] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
+  // Closing the sheet (it stays mounted) puts "Show more" back to collapsed.
+  if (!open && showAllExplore) setShowAllExplore(false);
   const items = recipes.data?.recipes ?? [];
   // A Catalog Recipe the Family already has is listed above as its copy.
   const catalogItems = (explore.data?.recipes ?? []).filter(
     (recipe) => recipe.familyCopyId === null,
   );
+  const shownCatalog = showAllExplore
+    ? catalogItems
+    : catalogItems.slice(0, EXPLORE_CAP);
   // Not `useAddToFamily`: the sheet closes on a pick, so there is no Undo to offer.
-  const pickCatalog = async (recipe: {
-    id: string;
-    familyCopyId: string | null;
-  }) => {
+  const pickCatalog = async (recipe: { id: string; title: string }) => {
     if (busy || addingId) return;
     setAddError(null);
     setAddingId(recipe.id);
     try {
       const copy = await copyToFamily(recipe.id);
+      // The slot needs the copy's id, so the copy comes first; if the slot then fails, a copy
+      // this pick made is archived again (Undo reverses only what the action created).
+      const set = await onPick(copy.id);
+      // (A slot write that landed server-side but failed on the network would still leave the
+      // slot on the archived copy; rare, accepted.)
+      if (!set && copy.created) {
+        try {
+          await archiveCopy(copy.id);
+        } catch {
+          // The Recipe stays in the Family: say so rather than leave it unexplained.
+          setAddError(t('recipes:explore.undoFailed', { title: recipe.title }));
+        }
+      }
       await refreshAfterCopy(queryClient);
-      onPick(copy.id);
     } catch (error) {
       setAddError(translateApiError(t, error));
     } finally {
@@ -86,7 +112,15 @@ export function RecipePickerSheet({
       onClose={onClose}
       title={t('mealPlans:picker.title')}
       subtitle={context}
-      toolbar={<RecipeFilters value={browse} onChange={setBrowse} />}
+      toolbar={
+        <RecipeFilters
+          value={browse}
+          onChange={(next) => {
+            setBrowse(next);
+            setShowAllExplore(false);
+          }}
+        />
+      }
     >
       <Box sx={{ px: 3, pb: 2 }}>
         {error ? <Alert>{error}</Alert> : null}
@@ -110,7 +144,7 @@ export function RecipePickerSheet({
               card={undefined}
               filtering
               onSelect={() => {
-                if (!busy) onPick(recipe.id);
+                if (!busy && !addingId) void onPick(recipe.id);
               }}
             />
           ))}
@@ -139,7 +173,7 @@ export function RecipePickerSheet({
               aria-labelledby="picker-explore"
               sx={{ listStyle: 'none', m: 0, p: 0 }}
             >
-              {catalogItems.map((recipe) => (
+              {shownCatalog.map((recipe) => (
                 <ExploreRow
                   key={recipe.id}
                   recipe={recipe}
@@ -150,6 +184,13 @@ export function RecipePickerSheet({
                 />
               ))}
             </Box>
+            {shownCatalog.length < catalogItems.length ? (
+              <Button variant="ghost" onClick={() => setShowAllExplore(true)}>
+                {t('recipes:explore.showMore', {
+                  count: catalogItems.length - shownCatalog.length,
+                })}
+              </Button>
+            ) : null}
           </section>
         ) : null}
       </Box>

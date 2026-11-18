@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { apiRequest } from './api';
+import { ApiError, apiRequest } from './api';
 import type { RecipeTag } from './tags';
 import type {
   Difficulty,
@@ -263,6 +263,41 @@ export const recipesQueryKey = ['recipes'] as const;
 export const isFiltering = (browse: RecipeBrowse) =>
   browse.search.trim() !== '' || browse.tagIds.length > 0;
 
+/** The Recipe list's query, shared by `useRecipes` and a prefetch so both fill the same cache entry. */
+export const recipeListQueryOptions = ({
+  search,
+  tagIds,
+  includeVariants = false,
+  showHidden = false,
+  scope,
+}: {
+  search: string;
+  tagIds: string[];
+  includeVariants?: boolean;
+  showHidden?: boolean;
+  scope?: 'family' | 'catalog';
+}) => ({
+  queryKey: [
+    ...recipesQueryKey,
+    'list',
+    scope ?? 'all',
+    search,
+    // Not debounced: a Tag pick is a tap, not typing.
+    tagIds.join(','),
+    ...(includeVariants ? ['variants'] : []),
+    ...(showHidden ? ['showHidden'] : []),
+  ],
+  queryFn: () => {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (tagIds.length > 0) params.set('tagIds', tagIds.join(','));
+    if (includeVariants) params.set('includeVariants', 'true');
+    if (showHidden) params.set('showHidden', 'true');
+    if (scope) params.set('scope', scope);
+    return apiRequest<RecipeList>(`/recipes?${params}`);
+  },
+});
+
 /** The Recipe list; the search is debounced, the shown rows stay while the next load runs. */
 export function useRecipes(
   browse: RecipeBrowse,
@@ -286,27 +321,14 @@ export function useRecipes(
   } = {},
 ) {
   const search = useDebounced(browse.search.trim(), 300);
-  const { tagIds } = browse;
   return useQuery({
-    queryKey: [
-      ...recipesQueryKey,
-      'list',
-      scope ?? 'all',
+    ...recipeListQueryOptions({
       search,
-      // Not debounced: a Tag pick is a tap, not typing.
-      tagIds.join(','),
-      ...(includeVariants ? ['variants'] : []),
-      ...(showHidden ? ['showHidden'] : []),
-    ],
-    queryFn: () => {
-      const params = new URLSearchParams();
-      if (search) params.set('search', search);
-      if (tagIds.length > 0) params.set('tagIds', tagIds.join(','));
-      if (includeVariants) params.set('includeVariants', 'true');
-      if (showHidden) params.set('showHidden', 'true');
-      if (scope) params.set('scope', scope);
-      return apiRequest<RecipeList>(`/recipes?${params}`);
-    },
+      tagIds: browse.tagIds,
+      includeVariants,
+      showHidden,
+      scope,
+    }),
     // `searchOnly`: nothing to fetch until a search term has settled (the debounce has run).
     enabled: enabled && (!searchOnly || search !== ''),
     placeholderData: keepPreviousData,
@@ -363,12 +385,26 @@ export function useResolveTag() {
   });
 }
 
+/**
+ * For a lookup that waits on the answer (the base of a resumed Recipe Draft): a
+ * Recipe that is gone or hidden answers 404 or 403 for good, so it settles at
+ * once instead of after the retries; other failures get two.
+ */
+export function retryUnlessGone(failureCount: number, error: unknown) {
+  if (
+    error instanceof ApiError &&
+    (error.status === 404 || error.status === 403)
+  )
+    return false;
+  return failureCount < 2;
+}
+
 /** One Recipe with its text, plus its base, Variants and ingredient diff. */
 export function useRecipe(
   id: string,
   enabled = true,
-  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form). */
-  retry?: boolean,
+  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form); `retryUnlessGone` to settle at once on a 404 or 403 and retry other failures. */
+  retry?: boolean | typeof retryUnlessGone,
 ) {
   return useQuery({
     ...(retry === undefined ? {} : { retry }),
