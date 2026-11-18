@@ -174,5 +174,14 @@ export function useShoppingMutations() {
       }),
     onSuccess,
   });
-  return { add, addMany, setChecked, setAmount, remove };
+  /** One atomic call for Undo; ids already gone are ignored by the server. */
+  const removeMany = useMutation({
+    mutationFn: (ids: string[]) =>
+      apiRequest<ShoppingList>(path('/items/bulk-delete'), {
+        method: 'POST',
+        body: { ids },
+      }),
+    onSuccess,
+  });
+  return { add, addMany, setChecked, setAmount, remove, removeMany };
 }

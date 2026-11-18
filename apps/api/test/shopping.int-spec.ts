@@ -515,6 +515,81 @@ describe('Shopping List (integration)', () => {
     });
   });
 
+  describe('bulk removal (POST items/bulk-delete)', () => {
+    it('removes the given items in one call and keeps the rest', async () => {
+      const { cookie } = await signUp('Ana');
+      await add(cookie, { name: 'bulk one' });
+      await add(cookie, { name: 'bulk two' });
+      const list = await add(cookie, { name: 'bulk three' });
+      const [one, two, three] = items(list).map((i) => i.id);
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({ ids: [one, three] })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([two]);
+      expect(items(await getList(cookie)).map((i) => i.id)).toEqual([two]);
+    });
+
+    it('ignores ids that are already gone or unknown, removing the rest', async () => {
+      const { cookie } = await signUp('Ana');
+      const list = await add(cookie, { name: 'gone soon' });
+      const [id] = items(list).map((i) => i.id);
+      await call('delete', cookie, `/items/${id}`).expect(200);
+      const kept = await add(cookie, { name: 'kept' });
+      const keptId = items(kept)[0].id;
+      const fresh = await add(cookie, { name: 'fresh' });
+      const freshId = items(fresh).find((i) => i.name !== 'kept')!.id;
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({
+          ids: [id, freshId, '00000000-0000-4000-8000-000000000000', freshId],
+        })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([keptId]);
+    });
+
+    it("never removes another Family's items", async () => {
+      const ana = await signUp('Ana');
+      const stranger = await signUp('Stranger');
+      const mine = items(await add(ana.cookie, { name: 'mine' }))[0].id;
+      const theirs = items(await add(stranger.cookie, { name: 'theirs' }))[0]
+        .id;
+
+      const response = await call('post', ana.cookie, '/items/bulk-delete')
+        .send({ ids: [mine, theirs] })
+        .expect(200);
+
+      expect(items(response.body as List)).toEqual([]);
+      expect(items(await getList(stranger.cookie)).map((i) => i.id)).toEqual([
+        theirs,
+      ]);
+    });
+
+    it('rejects an empty, oversized or malformed ids array', async () => {
+      const { cookie } = await signUp('Ana');
+      const send = (ids: unknown) =>
+        call('post', cookie, '/items/bulk-delete').send({ ids });
+      await send([]).expect(400);
+      await send(['not-a-uuid']).expect(400);
+      await send(
+        Array.from(
+          { length: 101 },
+          () => '00000000-0000-4000-8000-000000000000',
+        ),
+      ).expect(400);
+    });
+
+    it('requires a signed-in Member', async () => {
+      await request(app.getHttpServer())
+        .post('/api/shopping-list/items/bulk-delete')
+        .set('origin', TEST_ORIGIN)
+        .send({ ids: ['00000000-0000-4000-8000-000000000000'] })
+        .expect(401);
+    });
+  });
+
   describe('Family scoping', () => {
     it('shares one list between Members of a Family and isolates other Families', async () => {
       const ana = await signUp('Ana');

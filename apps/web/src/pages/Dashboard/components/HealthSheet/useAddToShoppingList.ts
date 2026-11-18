@@ -28,7 +28,7 @@ export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
   const { undoOptions } = useUndoToast();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { addMany, remove } = useShoppingMutations();
+  const { addMany, removeMany } = useShoppingMutations();
 
   const itemsFor = (
     key: HealthTodoKey,
@@ -47,8 +47,8 @@ export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
 
   const undo = async (insertedIds: string[]) => {
     try {
-      // One at a time: each delete answers with the whole list, and parallel answers could cache a stale one.
-      for (const id of new Set(insertedIds)) await remove.mutateAsync(id);
+      if (insertedIds.length > 0)
+        await removeMany.mutateAsync([...new Set(insertedIds)]);
     } catch (error) {
       toast.show(translateApiError(t, error));
     } finally {

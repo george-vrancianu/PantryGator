@@ -20,10 +20,12 @@ import {
   addShoppingItemBody,
   addShoppingItemsBody,
   itemIdParam,
+  removeShoppingItemsBody,
   setAmountBody,
   setCheckedBody,
   type AddShoppingItemBody,
   type AddShoppingItemsBody,
+  type RemoveShoppingItemsBody,
   type SetAmountBody,
   type SetCheckedBody,
   type ShoppingListView,
@@ -87,6 +89,24 @@ export class ShoppingController {
     return this.shopping.addItems(
       member.id,
       body.items,
+      await this.languages.catalogLanguageOf(member.id),
+    );
+  }
+
+  @Post('items/bulk-delete')
+  @HttpCode(200)
+  @ApiOperation({
+    summary:
+      "Remove several Shopping Items at once (Undo of an add); all or none. Ids that are already gone or not on the Family's list are ignored, never an error",
+  })
+  async removeMany(
+    @CurrentUser() member: CurrentUserValue,
+    @Body(new ZodValidationPipe(removeShoppingItemsBody))
+    body: RemoveShoppingItemsBody,
+  ): Promise<ShoppingListView> {
+    return this.shopping.removeItems(
+      member.id,
+      body.ids,
       await this.languages.catalogLanguageOf(member.id),
     );
   }

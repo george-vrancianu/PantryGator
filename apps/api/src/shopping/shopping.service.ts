@@ -386,6 +386,29 @@ export class ShoppingService {
   }
 
   /**
+   * Removes the given items from the Family's active list in one transaction.
+   * Ids already gone, or on another Family's list, are ignored so Undo is safe to repeat.
+   */
+  async removeItems(
+    memberId: string,
+    itemIds: string[],
+    locale: CatalogLocale,
+  ): Promise<ShoppingListView> {
+    return this.database.transaction(async (tx) => {
+      const { listId, scope } = await this.lockActiveList(tx, memberId);
+      await tx
+        .delete(shoppingItems)
+        .where(
+          and(
+            inArray(shoppingItems.id, itemIds),
+            eq(shoppingItems.listId, listId),
+          ),
+        );
+      return this.view(tx, listId, scope, locale);
+    });
+  }
+
+  /**
    * The active list's items (oldest first) under the list lock, for callers
    * (Voice Notes) that must find the row to act on inside their own transaction.
    */

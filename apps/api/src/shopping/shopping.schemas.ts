@@ -34,6 +34,12 @@ export const addShoppingItemsBody = z.object({
 });
 export type AddShoppingItemsBody = z.infer<typeof addShoppingItemsBody>;
 
+/** Undo of an add removes what the add created in one call. */
+export const removeShoppingItemsBody = z.object({
+  ids: z.array(z.uuid()).min(1).max(MAX_BULK_SHOPPING_ITEMS),
+});
+export type RemoveShoppingItemsBody = z.infer<typeof removeShoppingItemsBody>;
+
 export const setCheckedBody = z.object({ checked: z.boolean() });
 export type SetCheckedBody = z.infer<typeof setCheckedBody>;
 
