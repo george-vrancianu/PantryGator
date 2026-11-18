@@ -2,7 +2,7 @@ import { useId, type ReactNode } from 'react';
 import { Box } from '../atoms/Layout';
 import { CheckIcon } from '../atoms/icons';
 import { Typography } from '../atoms/Typography';
-import { focusRingStyle } from '../theme/focusRing';
+import { focusRingStyle, insetFocusRingStyle } from '../theme/focusRing';
 import { color, palette, radius } from '../theme/themeVars';
 import { visuallyHidden } from '../theme/visuallyHidden';
 
@@ -25,8 +25,11 @@ type Props<T extends string> = {
   choices: Choice<T>[];
   value: T;
   onChange: (value: T) => void;
-  /** Rows one under another (the default) or chips that wrap. */
-  layout?: 'rows' | 'chips';
+  /**
+   * Rows one under another (the default), chips that wrap, or `list`: one bordered card with a
+   * row per choice, divider lines between them and the picked row marked by a check on a tint.
+   */
+  layout?: 'rows' | 'chips' | 'list';
   /** Hide the visible name (the group keeps it for assistive technology). */
   hideLabel?: boolean;
   /**
@@ -39,7 +42,7 @@ type Props<T extends string> = {
 };
 
 function choiceRadius(layout: Props<string>['layout']) {
-  return layout === 'rows' ? radius.control : radius.chip;
+  return layout === 'chips' ? radius.chip : radius.control;
 }
 
 /**
@@ -57,6 +60,7 @@ export function ChoiceRadioGroup<T extends string>({
   tone = 'plain',
   disabled = false,
 }: Props<T>) {
+  const list = layout === 'list' && tone === 'plain';
   const olive = tone === 'olive';
   const id = useId();
   const labelId = `${id}-label`;
@@ -94,14 +98,26 @@ export function ChoiceRadioGroup<T extends string>({
         </Typography>
       ) : null}
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: layout === 'rows' ? 'column' : 'row',
-          flexWrap: 'wrap',
-          gap: '8px',
-        }}
+        sx={
+          list
+            ? {
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+                borderRadius: radius.card,
+                border: '1px solid',
+                borderColor: 'pp.cardLine',
+                backgroundColor: 'pp.cardBg',
+              }
+            : {
+                display: 'flex',
+                flexDirection: layout === 'chips' ? 'row' : 'column',
+                flexWrap: 'wrap',
+                gap: '8px',
+              }
+        }
       >
-        {choices.map((choice) => {
+        {choices.map((choice, index) => {
           const selected = choice.value === value;
           const textId = `${id}-${choice.value}`;
           return (
@@ -116,31 +132,45 @@ export function ChoiceRadioGroup<T extends string>({
                 justifyContent: 'space-between',
                 gap: '12px',
                 boxSizing: 'border-box',
-                minHeight: layout === 'rows' ? 50 : 44,
+                minHeight: layout === 'chips' ? 44 : 50,
                 px: '16px',
-                borderRadius: choiceRadius(layout),
-                ...(olive
+                borderRadius: list ? 0 : choiceRadius(layout),
+                ...(list
                   ? {
-                      border: '3px solid',
-                      borderColor: selected
-                        ? palette('secondary-main')
-                        : 'transparent',
+                      border: 0,
+                      borderTop: index === 0 ? 0 : '1px solid',
+                      borderColor: 'divider',
                       backgroundColor: selected
-                        ? 'pp.cardBg'
-                        : color.accentOnTint,
-                      color: selected ? 'text.primary' : color.cardBg,
-                      py: '14px',
-                    }
-                  : {
-                      border: '2px solid',
-                      borderColor: selected ? 'pp.accent' : 'pp.cardLine',
-                      backgroundColor: selected ? 'pp.accentTint' : 'pp.cardBg',
+                        ? 'pp.accentTint'
+                        : 'transparent',
                       color: selected ? color.accentOnTint : 'text.primary',
-                    }),
+                    }
+                  : olive
+                    ? {
+                        border: '3px solid',
+                        borderColor: selected
+                          ? palette('secondary-main')
+                          : 'transparent',
+                        backgroundColor: selected
+                          ? 'pp.cardBg'
+                          : color.accentOnTint,
+                        color: selected ? 'text.primary' : color.cardBg,
+                        py: '14px',
+                      }
+                    : {
+                        border: '2px solid',
+                        borderColor: selected ? 'pp.accent' : 'pp.cardLine',
+                        backgroundColor: selected
+                          ? 'pp.accentTint'
+                          : 'pp.cardBg',
+                        color: selected ? color.accentOnTint : 'text.primary',
+                      }),
                 fontWeight: selected ? 700 : 600,
                 cursor: disabled ? 'not-allowed' : 'pointer',
                 opacity: disabled ? 0.45 : 1,
-                '&:has(input:focus-visible)': focusRingStyle,
+                '&:has(input:focus-visible)': list
+                  ? insetFocusRingStyle
+                  : focusRingStyle,
               }}
             >
               <Box

@@ -5,7 +5,6 @@ import {
   Stack,
   TextField,
   Typography,
-  radius,
 } from '@pocket-pantry/ui';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
@@ -21,14 +20,6 @@ import {
 } from '@/lib/linkRecipe';
 import { familyRecipeHref } from '@/lib/recipeHref';
 import { AlreadyInRecipes } from '../AlreadyInRecipes/AlreadyInRecipes';
-
-/** The editor's 44 pt field. */
-const fieldSx = {
-  '& .MuiOutlinedInput-root': { minHeight: 44, borderRadius: radius.control },
-  '& .MuiOutlinedInput-root:not(.MuiInputBase-multiline) input': {
-    py: '10px',
-  },
-};
 
 /**
  * "From a link", a sheet over Recipes: the Member gives the address of a recipe page and the read
@@ -212,7 +203,7 @@ function FromLinkBody({
                 setFull(false);
                 setUrl(event.target.value);
               }}
-              sx={fieldSx}
+              density="editor"
               slotProps={{
                 htmlInput: {
                   maxLength: MAX_LINK_LENGTH,

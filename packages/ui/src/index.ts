@@ -255,6 +255,7 @@ export {
   type RefreshLoaderProps,
 } from './molecules/RefreshLoader';
 export { ChoiceRadioGroup, type Choice } from './molecules/ChoiceRadioGroup';
+export { AddRow, EditorCard, type AddRowProps } from './molecules/EditorCard';
 export {
   ScreenHeader,
   type ScreenHeaderAction,

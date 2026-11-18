@@ -88,4 +88,68 @@ describe('ChoiceRadioGroup', () => {
       }
     });
   });
+
+  describe('list layout', () => {
+    const row = (name: string) =>
+      screen.getByRole('radio', { name }).closest('label')!;
+
+    it('keeps the radio semantics and picks like the other layouts', () => {
+      const onChange = vi.fn();
+      render(
+        <ChoiceRadioGroup
+          label="Language"
+          layout="list"
+          choices={choices}
+          value="en"
+          onChange={onChange}
+        />,
+      );
+      expect(screen.getAllByRole('radio')).toHaveLength(2);
+      fireEvent.click(screen.getByRole('radio', { name: 'Română' }));
+      expect(onChange).toHaveBeenCalledWith('ro');
+    });
+
+    it('draws square rows 50 high, divided by a line, with no border on each row', () => {
+      render(
+        <ChoiceRadioGroup
+          label="Language"
+          layout="list"
+          choices={choices}
+          value="en"
+          onChange={() => {}}
+        />,
+      );
+      const second = getComputedStyle(row('Română'));
+      expect(second.minHeight).toBe('50px');
+      expect(second.borderRadius).toBe('0px');
+      expect(second.borderTopWidth).toBe('1px');
+      expect(getComputedStyle(row('English')).borderTopWidth).toBe('0px');
+    });
+
+    it('rows keep their own card look in the default layout', () => {
+      render(
+        <ChoiceRadioGroup
+          label="Language"
+          choices={choices}
+          value="en"
+          onChange={() => {}}
+        />,
+      );
+      expect(getComputedStyle(row('Română')).borderTopWidth).toBe('2px');
+    });
+
+    it('marks the picked row with a check', () => {
+      render(
+        <ChoiceRadioGroup
+          label="Language"
+          layout="list"
+          choices={choices}
+          value="ro"
+          onChange={() => {}}
+        />,
+      );
+      expect(row('Română').querySelector('svg')).not.toBeNull();
+      expect(row('English').querySelector('svg')).toBeNull();
+    });
+  });
 });
