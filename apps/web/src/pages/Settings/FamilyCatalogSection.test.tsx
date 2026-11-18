@@ -513,7 +513,7 @@ describe('FamilyCatalogSection', () => {
       ).toBeVisible();
     });
 
-    it('sends nothing on Cancel', async () => {
+    it('sends nothing when the X discards the draft', async () => {
       const calls = stub();
       renderWithProviders(<FamilyCatalogSection />);
       const user = userEvent.setup();
@@ -522,7 +522,10 @@ describe('FamilyCatalogSection', () => {
       await user.click(
         within(dialog).getByRole('button', { name: 'Remove the name Booch' }),
       );
-      await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+      expect(
+        within(dialog).queryByRole('button', { name: 'Cancel' }),
+      ).toBeNull();
+      await user.click(within(dialog).getByRole('button', { name: 'Close' }));
       await vi.waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 
       expect(writes(calls)).toEqual([]);
@@ -655,8 +658,9 @@ describe('FamilyCatalogSection', () => {
 
       expect(within(dialog).getByText('In the Catalog')).toBeVisible();
       expect(
-        within(dialog).getByRole('button', { name: 'Done' }),
+        within(dialog).getByRole('button', { name: 'Close' }),
       ).toBeVisible();
+      expect(within(dialog).queryByRole('button', { name: 'Done' })).toBeNull();
       expect(writes(calls)).toEqual([]);
     });
 

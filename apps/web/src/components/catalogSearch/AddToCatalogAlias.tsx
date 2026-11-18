@@ -24,7 +24,11 @@ import {
 import { IngredientIconSlot } from '../IngredientIconSlot';
 import { OptionRow } from './OptionRow';
 import { resultMeta } from './SearchResultRow';
-import type { PickOutcome } from './AddToCatalogForm';
+import {
+  useReportedAction,
+  type FormAction,
+  type PickOutcome,
+} from './AddToCatalogForm';
 
 export type AddToCatalogAliasProps = {
   /** The trimmed Name the Member is giving another name to. */
@@ -32,6 +36,8 @@ export type AddToCatalogAliasProps = {
   searchRef: RefObject<HTMLInputElement | null>;
   onPicked: (result: CatalogSearchResult, outcome: PickOutcome) => void;
   onCancel: () => void;
+  /** The host pins the primary action: no Cancel and no primary button here; it is reported instead. */
+  onAction?: (action: FormAction | null) => void;
 };
 
 function existingOf(error: unknown): CatalogSearchResult | null {
@@ -54,6 +60,7 @@ export function AddToCatalogAlias({
   searchRef,
   onPicked,
   onCancel,
+  onAction,
 }: AddToCatalogAliasProps) {
   const { color } = tokens;
   const { t } = useTranslation('catalog');
@@ -85,6 +92,25 @@ export function AddToCatalogAlias({
       },
     );
   };
+  useReportedAction(
+    onAction,
+    existing
+      ? {
+          label: t('catalogAdd.pick', { name: existing.name }),
+          disabled: false,
+          pending: false,
+          onClick: () => onPicked(existing, { kind: 'existing' }),
+        }
+      : {
+          label: target
+            ? t('catalogAdd.link')
+            : `${t('catalogAdd.link')} · ${t('catalogAdd.pickOne')}`,
+          disabled: !target || name === '',
+          pending: link.isPending,
+          onClick: submit,
+        },
+    true,
+  );
   const keyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown' && rows.length > 0) {
       event.preventDefault();
@@ -222,40 +248,42 @@ export function AddToCatalogAlias({
           {t('catalogAdd.aliasExists', { name, ingredient: existing.name })}
         </Box>
       ) : null}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          sx={{ height: 52 }}
-        >
-          {t('catalogAdd.cancel')}
-        </Button>
-        {existing ? (
+      {onAction ? null : (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
           <Button
             type="button"
-            onClick={() => onPicked(existing, { kind: 'existing' })}
+            variant="secondary"
+            onClick={onCancel}
+            sx={{ height: 52 }}
           >
-            {t('catalogAdd.pick', { name: existing.name })}
+            {t('catalogAdd.cancel')}
           </Button>
-        ) : (
-          <Button
-            type="button"
-            onClick={submit}
-            disabled={!target || name === '' || link.isPending}
-          >
-            {t('catalogAdd.link')}
-            {target ? null : (
-              <Box
-                component="span"
-                sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
-              >
-                · {t('catalogAdd.pickOne')}
-              </Box>
-            )}
-          </Button>
-        )}
-      </Box>
+          {existing ? (
+            <Button
+              type="button"
+              onClick={() => onPicked(existing, { kind: 'existing' })}
+            >
+              {t('catalogAdd.pick', { name: existing.name })}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={submit}
+              disabled={!target || name === '' || link.isPending}
+            >
+              {t('catalogAdd.link')}
+              {target ? null : (
+                <Box
+                  component="span"
+                  sx={{ ml: '6px', color: color.urgentFg, fontWeight: 600 }}
+                >
+                  · {t('catalogAdd.pickOne')}
+                </Box>
+              )}
+            </Button>
+          )}
+        </Box>
+      )}
     </>
   );
 }

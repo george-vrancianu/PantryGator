@@ -28,67 +28,67 @@ export function AllergenEditor({ allergen, onDone }: Props) {
   const [name, setName] = useState(allergen?.name ?? '');
 
   return (
-    <Stack spacing={3}>
-      <EditorForm
-        heading={
-          allergen
-            ? t('admin:allergen.edit', {
-                name: localName(allergen, i18n.language),
-              })
-            : t('admin:allergen.new')
-        }
-        error={save.error}
-        canSave={name.trim() !== ''}
-        saving={save.isPending}
-        onSubmit={() =>
-          save.mutate({ name: name.trim() }, { onSuccess: onDone })
-        }
-        onCancel={onDone}
-      >
-        <TextField
-          label={t('admin:allergen.name')}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-      </EditorForm>
-      {allergen ? (
-        <Stack spacing={1}>
-          {allergen.archived ? (
-            <Typography variant="body2" color="text.secondary">
-              {t('admin:allergen.retiredNote')}
-            </Typography>
+    <EditorForm
+      after={
+        <>
+          {allergen ? (
+            <Stack spacing={1}>
+              {allergen.archived ? (
+                <Typography variant="body2" color="text.secondary">
+                  {t('admin:allergen.retiredNote')}
+                </Typography>
+              ) : null}
+              {retire.error ? (
+                <Alert>{translateApiError(t, retire.error)}</Alert>
+              ) : null}
+              <div>
+                <Button
+                  variant="secondary"
+                  disabled={retire.isPending}
+                  onClick={() =>
+                    retire.mutate(
+                      { id: allergen.id, archive: !allergen.archived },
+                      { onSuccess: onDone },
+                    )
+                  }
+                >
+                  {allergen.archived
+                    ? t('admin:allergen.unretire')
+                    : t('admin:allergen.retire')}
+                </Button>
+              </div>
+            </Stack>
           ) : null}
-          {retire.error ? (
-            <Alert>{translateApiError(t, retire.error)}</Alert>
+          {allergen ? (
+            <TranslationsEditor
+              entityType="allergen"
+              entityId={allergen.id}
+              name={allergen.name}
+              translations={allergen.translations}
+              synonyms={false}
+            />
           ) : null}
-          <div>
-            <Button
-              variant="secondary"
-              disabled={retire.isPending}
-              onClick={() =>
-                retire.mutate(
-                  { id: allergen.id, archive: !allergen.archived },
-                  { onSuccess: onDone },
-                )
-              }
-            >
-              {allergen.archived
-                ? t('admin:allergen.unretire')
-                : t('admin:allergen.retire')}
-            </Button>
-          </div>
-        </Stack>
-      ) : null}
-      {allergen ? (
-        <TranslationsEditor
-          entityType="allergen"
-          entityId={allergen.id}
-          name={allergen.name}
-          translations={allergen.translations}
-          synonyms={false}
-        />
-      ) : null}
-    </Stack>
+        </>
+      }
+      heading={
+        allergen
+          ? t('admin:allergen.edit', {
+              name: localName(allergen, i18n.language),
+            })
+          : t('admin:allergen.new')
+      }
+      error={save.error}
+      canSave={name.trim() !== ''}
+      saving={save.isPending}
+      onSubmit={() => save.mutate({ name: name.trim() }, { onSuccess: onDone })}
+      onCancel={onDone}
+    >
+      <TextField
+        label={t('admin:allergen.name')}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        required
+      />
+    </EditorForm>
   );
 }

@@ -1,7 +1,6 @@
 import {
   Alert,
   Box,
-  Button,
   IconButton,
   MinusIcon,
   PlusIcon,
@@ -13,7 +12,7 @@ import {
   tokens,
   useToast,
 } from '@pocket-pantry/ui';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { translateApiError } from '../../../i18n/translateApiError';
 import {
@@ -30,7 +29,6 @@ import {
   type CategoryRef,
 } from '../defaultExpiry';
 import { CategoryPicker } from './CategoryPicker';
-import { SheetHeader } from '../../../components/SheetHeader';
 
 /** Where the sheet opens: the pick list, or straight into an override (edit mode). */
 export type SheetStart =
@@ -94,11 +92,11 @@ export function DefaultExpirySheet({
   // Focus moves to the new view once the sheet has opened (not on first render).
   const entered = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const daysRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!entered.current) return;
     if (view.mode === 'pick') searchRef.current?.focus();
-    else titleRef.current?.focus();
+    else daysRef.current?.focus();
   }, [view.mode]);
 
   const category =
@@ -132,6 +130,26 @@ export function DefaultExpirySheet({
   // "Use Catalog default" whenever the open category has an override, however it was reached.
   const hasOverride = category !== null && overrideDays(category.id) !== null;
 
+  const actions =
+    view.mode === 'days' && category
+      ? {
+          primary: {
+            label: t('defaultExpiry.save'),
+            pending: setOverride.isPending,
+            onClick: save,
+          },
+          secondary: hasOverride
+            ? {
+                label: t('defaultExpiry.useCatalogButton'),
+                onClick: () => {
+                  onUseCatalog(category);
+                  onClose();
+                },
+              }
+            : undefined,
+        }
+      : {};
+
   return (
     <Sheet
       open={open}
@@ -139,74 +157,28 @@ export function DefaultExpirySheet({
       onEntered={() => {
         entered.current = true;
       }}
-      initialFocus={view.mode === 'pick' ? searchRef : titleRef}
+      initialFocus={view.mode === 'pick' ? searchRef : daysRef}
       onExited={onExited}
-      label={category ? category.name : t('defaultExpiry.pickTitle')}
-      size={view.mode === 'pick' ? 'tall' : 'content'}
-      header={
-        view.mode === 'pick' ? (
-          <SheetHeader
-            title={t('defaultExpiry.pickTitle')}
-            subtitle={t('defaultExpiry.pickHint')}
-            titleRef={titleRef}
-            onClose={onClose}
-            backLabel={t('defaultExpiry.back')}
-            closeLabel={t('defaultExpiry.close')}
-          />
-        ) : (
-          <SheetHeader
-            title={category?.name ?? ''}
-            subtitle={subline(t, category)}
-            titleRef={titleRef}
-            onBack={
-              view.fromPick
-                ? () => {
-                    setQuery('');
-                    setView({ mode: 'pick' });
-                  }
-                : undefined
+      title={
+        view.mode === 'pick'
+          ? t('defaultExpiry.pickTitle')
+          : (category?.name ?? '')
+      }
+      subtitle={
+        view.mode === 'pick'
+          ? t('defaultExpiry.pickHint')
+          : subline(t, category) || undefined
+      }
+      onBack={
+        view.mode === 'days' && view.fromPick
+          ? () => {
+              setQuery('');
+              setView({ mode: 'pick' });
             }
-            onClose={onClose}
-            backLabel={t('defaultExpiry.back')}
-            closeLabel={t('defaultExpiry.close')}
-          />
-        )
+          : undefined
       }
-      footer={
-        view.mode === 'days' ? (
-          <Stack spacing={1} sx={{ p: 2 }}>
-            {setOverride.error ? (
-              <Alert>{translateApiError(t, setOverride.error)}</Alert>
-            ) : null}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: 1,
-              }}
-            >
-              {hasOverride ? (
-                <Button
-                  variant="ghost"
-                  sx={{ height: 52 }}
-                  onClick={() => {
-                    onUseCatalog(category);
-                    onClose();
-                  }}
-                >
-                  {t('defaultExpiry.useCatalogButton')}
-                </Button>
-              ) : (
-                <span />
-              )}
-              <Button disabled={setOverride.isPending} onClick={save}>
-                {t('defaultExpiry.save')}
-              </Button>
-            </Box>
-          </Stack>
-        ) : undefined
-      }
+      size={view.mode === 'pick' ? 'tall' : 'content'}
+      {...actions}
     >
       {view.mode === 'pick' ? (
         <CategoryPicker
@@ -231,6 +203,10 @@ export function DefaultExpirySheet({
         />
       ) : (
         <DaysEditor
+          groupRef={daysRef}
+          error={
+            setOverride.error ? translateApiError(t, setOverride.error) : null
+          }
           days={days}
           onDays={setDays}
           catalogDays={category?.catalogDays ?? null}
@@ -275,10 +251,16 @@ function catalogDefaultText(
 }
 
 function DaysEditor({
+  groupRef,
+  error,
   days,
   onDays,
   catalogDays,
 }: {
+  /** Takes focus when the editor opens: it replaces the picker the Member just left. */
+  groupRef: Ref<HTMLDivElement>;
+  /** Why Save failed; the sheet stays open. */
+  error: string | null;
   days: number;
   onDays: (value: number) => void;
   catalogDays: number | null;
@@ -287,7 +269,14 @@ function DaysEditor({
   const { color } = tokens;
   return (
     <Stack spacing={2} sx={{ px: 2, pb: 2 }}>
-      <Box role="group" aria-label={t('defaultExpiry.quickPicks')}>
+      {error ? <Alert>{error}</Alert> : null}
+      <Box
+        ref={groupRef}
+        tabIndex={-1}
+        role="group"
+        aria-label={t('defaultExpiry.quickPicks')}
+        sx={{ outline: 'none' }}
+      >
         <Box
           sx={{
             display: 'grid',

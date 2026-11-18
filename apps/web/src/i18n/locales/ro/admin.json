@@ -15,7 +15,6 @@
     "da": "Daneză"
   },
   "common": {
-    "close": "Închide",
     "save": "Salvează",
     "saving": "Se salvează…",
     "delete": "Șterge",
@@ -523,7 +522,6 @@
     "otherFamilies_few": "+{{count}} familii",
     "otherFamilies_other": "+{{count}} de familii",
     "synonymTitle": "„{{name}}” → {{ingredient}}",
-    "back": "Înapoi",
     "promoteAction": "Promovează în Catalog",
     "mergeAction": "Îmbină cu…",
     "emptyDismissed": "Niciun nume pus deoparte."
