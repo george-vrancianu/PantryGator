@@ -9,7 +9,7 @@ import type {
   VoiceReviewAction,
 } from './voice';
 
-/** Where the Voice Note is: the hold-to-talk button, the status pill and Review all read this. */
+/** Where the Voice Note is: the hold-to-talk button, the Background Read strip and Review all read this. */
 export type VoicePhase =
   | 'idle'
   | 'recording'
@@ -70,8 +70,8 @@ export type VoiceNoteState = {
   };
   error?: VoiceErrorCode;
   /**
-   * The server's error behind a `failed` that the pill has no wording of its own for: the raw code
-   * and parameters, translated by the status pill. Absent for a send that never reached the server.
+   * The server's error behind a `failed` that the Gator bubble has no wording of its own for: the raw code
+   * and parameters, translated by the Gator bubble. Absent for a send that never reached the server.
    */
   rawError?: { code: string; params: Record<string, unknown> };
   /** The Voice Cap, once the server reported it reached. In memory only; a reload drops it. */
@@ -198,7 +198,7 @@ export type VoiceNoteEntry = {
 
 /**
  * What the module holds: the Voice Notes (the Voice Inbox, at most MAX_NOTES), which one is open
- * (Review, the answer sheet, or a failure's pill), and the module-level Voice Cap and recording in progress.
+ * (Review, the answer sheet, or a failure's Gator bubble row), and the module-level Voice Cap and recording in progress.
  */
 export type VoiceNoteStore = {
   notes: VoiceNoteEntry[];

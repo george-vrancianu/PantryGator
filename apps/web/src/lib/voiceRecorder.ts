@@ -4,8 +4,11 @@ import {
   type MicrophoneSession,
   type Recording,
 } from './microphone';
-import { MAX_VOICE_NOTE_MS, MIN_VOICE_NOTE_MS } from './voice';
-import type { VoiceDefaultTarget } from './voice';
+import {
+  MAX_VOICE_NOTE_MS,
+  MIN_VOICE_NOTE_MS,
+  type VoiceDefaultTarget,
+} from './voice';
 import { isSheet, type Inbox } from './voiceInbox';
 import type {
   StartBlocker,

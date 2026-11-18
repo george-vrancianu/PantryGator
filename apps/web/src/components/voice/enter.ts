@@ -1,4 +1,4 @@
-/** The fade-and-rise a floating voice layer (the Listening card, the status pill) arrives with. */
+/** The fade-and-rise a floating voice layer (the Listening card, the Gator bubble) arrives with. */
 export const enter = {
   animation: 'pp-voice-in 200ms cubic-bezier(.2,.8,.2,1)',
   '@keyframes pp-voice-in': {
