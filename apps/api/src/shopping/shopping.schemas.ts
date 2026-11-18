@@ -34,9 +34,14 @@ export const addShoppingItemsBody = z.object({
 });
 export type AddShoppingItemsBody = z.infer<typeof addShoppingItemsBody>;
 
-/** Undo of an add removes what the add created in one call. */
+/**
+ * Undo of an add removes what the add created in one call, so the cap must cover the largest
+ * Add missing: a 7-day plan x 3 mealtimes x 100 Recipe lines (every line a distinct missing
+ * Ingredient) is 2100 rows.
+ */
+export const MAX_BULK_DELETE_SHOPPING_ITEMS = 2100;
 export const removeShoppingItemsBody = z.object({
-  ids: z.array(z.uuid()).min(1).max(MAX_BULK_SHOPPING_ITEMS),
+  ids: z.array(z.uuid()).min(1).max(MAX_BULK_DELETE_SHOPPING_ITEMS),
 });
 export type RemoveShoppingItemsBody = z.infer<typeof removeShoppingItemsBody>;
 

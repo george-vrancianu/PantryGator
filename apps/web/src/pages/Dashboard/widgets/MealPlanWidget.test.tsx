@@ -1058,7 +1058,7 @@ describe('MealPlanWidget Add missing', () => {
     before: MealWindow,
     after: MealWindow,
     created = ['sh1', 'sh2', 'sh3'],
-    { failPost = false, count = created.length } = {},
+    { failPost = false, failDelete = false, count = created.length } = {},
   ) {
     let current = before;
     const deleted: string[][] = [];
@@ -1089,6 +1089,12 @@ describe('MealPlanWidget Add missing', () => {
           .filter((c) => c.key === 'POST /api/shopping-list/items/bulk-delete')
           .at(-1) as { body: { ids: string[] } };
         deleted.push(last.body.ids);
+        if (failDelete) {
+          return Response.json(
+            { code: 'validation_failed', params: {} },
+            { status: 400 },
+          );
+        }
         return list();
       },
     });
@@ -1328,6 +1334,28 @@ describe('MealPlanWidget Add missing', () => {
     await u.click(screen.getByRole('button', { name: 'Undo' }));
 
     await waitFor(() => expect(api.deleted).toEqual([['sh1', 'sh2', 'sh3']]));
+  });
+
+  it('shows the error and refetches what the list feeds when the Undo call fails', async () => {
+    const u = user();
+    const api = setup(shortWeek(), allOnList(shortWeek()), ['sh1'], {
+      failDelete: true,
+    });
+    renderWidget();
+    await u.click(await screen.findByRole('button', { name: 'Add 4' }));
+    await screen.findByText('1 added to the Shopping List');
+    // The list change keys include the forecast, which this Widget keeps mounted.
+    const windowReads = () =>
+      api.calls.filter((c) => c.key === 'GET /api/meal-plans/window').length;
+    const before = windowReads();
+
+    await u.click(screen.getByRole('button', { name: 'Undo' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Please check what you entered',
+    );
+    expect(api.deleted).toEqual([['sh1']]);
+    await waitFor(() => expect(windowReads()).toBeGreaterThan(before));
   });
 
   it('counts an Unmatched Ingredient once however its name is cased', async () => {

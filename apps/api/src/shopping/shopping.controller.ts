@@ -104,7 +104,7 @@ export class ShoppingController {
     @Body(new ZodValidationPipe(removeShoppingItemsBody))
     body: RemoveShoppingItemsBody,
   ): Promise<ShoppingListView> {
-    return this.shopping.removeItems(
+    return this.shopping.removeMany(
       member.id,
       body.ids,
       await this.languages.catalogLanguageOf(member.id),

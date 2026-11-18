@@ -37,8 +37,7 @@ export function useAddMissing(today: IsoDate) {
 
   const undo = async (createdIds: string[]) => {
     try {
-      if (createdIds.length > 0)
-        await removeMany.mutateAsync([...new Set(createdIds)]);
+      await removeMany.mutateAsync(createdIds);
     } catch (error) {
       toast.show(translateApiError(t, error));
     }

@@ -47,8 +47,7 @@ export function useAddToShoppingList(state: PantryHealthState): ShoppingFix {
 
   const undo = async (insertedIds: string[]) => {
     try {
-      if (insertedIds.length > 0)
-        await removeMany.mutateAsync([...new Set(insertedIds)]);
+      await removeMany.mutateAsync(insertedIds);
     } catch (error) {
       toast.show(translateApiError(t, error));
     } finally {

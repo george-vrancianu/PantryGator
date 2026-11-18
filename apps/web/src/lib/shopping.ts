@@ -174,14 +174,20 @@ export function useShoppingMutations() {
       }),
     onSuccess,
   });
-  /** One atomic call for Undo; ids already gone are ignored by the server. */
+  /**
+   * One atomic call for Undo; ids already gone are ignored by the server. Duplicates are dropped
+   * and an empty list sends nothing.
+   */
   const removeMany = useMutation({
-    mutationFn: (ids: string[]) =>
-      apiRequest<ShoppingList>(path('/items/bulk-delete'), {
+    mutationFn: async (ids: string[]) => {
+      const unique = [...new Set(ids)];
+      if (unique.length === 0) return null;
+      return apiRequest<ShoppingList>(path('/items/bulk-delete'), {
         method: 'POST',
-        body: { ids },
-      }),
-    onSuccess,
+        body: { ids: unique },
+      });
+    },
+    onSuccess: (list: ShoppingList | null) => list && onSuccess(list),
   });
   return { add, addMany, setChecked, setAmount, remove, removeMany };
 }

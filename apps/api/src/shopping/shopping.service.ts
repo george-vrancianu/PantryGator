@@ -389,7 +389,7 @@ export class ShoppingService {
    * Removes the given items from the Family's active list in one transaction.
    * Ids already gone, or on another Family's list, are ignored so Undo is safe to repeat.
    */
-  async removeItems(
+  async removeMany(
     memberId: string,
     itemIds: string[],
     locale: CatalogLocale,

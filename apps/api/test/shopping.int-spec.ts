@@ -9,6 +9,7 @@ import {
   shoppingLists,
   user,
 } from '../src/database/schema';
+import { MAX_BULK_DELETE_SHOPPING_ITEMS } from '../src/shopping/shopping.schemas';
 import { ShoppingService } from '../src/shopping/shopping.service';
 import { createTestApp, TEST_ORIGIN } from './support/create-test-app';
 import { storeUiLanguage } from './support/stored-language';
@@ -539,7 +540,7 @@ describe('Shopping List (integration)', () => {
       const kept = await add(cookie, { name: 'kept' });
       const keptId = items(kept)[0].id;
       const fresh = await add(cookie, { name: 'fresh' });
-      const freshId = items(fresh).find((i) => i.name !== 'kept')!.id;
+      const freshId = items(fresh).find((i) => i.name === 'fresh')!.id;
 
       const response = await call('post', cookie, '/items/bulk-delete')
         .send({
@@ -575,10 +576,28 @@ describe('Shopping List (integration)', () => {
       await send(['not-a-uuid']).expect(400);
       await send(
         Array.from(
-          { length: 101 },
+          { length: MAX_BULK_DELETE_SHOPPING_ITEMS + 1 },
           () => '00000000-0000-4000-8000-000000000000',
         ),
       ).expect(400);
+    });
+
+    it('accepts exactly the cap, enough for the largest Add missing', async () => {
+      const { cookie } = await signUp('Ana');
+      const list = await add(cookie, { name: 'survivor' });
+      const survivorId = items(list)[0].id;
+      const unknown = Array.from(
+        { length: MAX_BULK_DELETE_SHOPPING_ITEMS },
+        (_, i) => `00000000-0000-4000-8000-${String(i).padStart(12, '0')}`,
+      );
+
+      const response = await call('post', cookie, '/items/bulk-delete')
+        .send({ ids: unknown })
+        .expect(200);
+
+      expect(items(response.body as List).map((i) => i.id)).toEqual([
+        survivorId,
+      ]);
     });
 
     it('requires a signed-in Member', async () => {
