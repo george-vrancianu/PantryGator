@@ -55,7 +55,7 @@ jobs:
       - name: Check migrations
         run: npm run check:migrations
 
-      - name: Check web layout lint rules fire and move map
+      - name: Check web layout lint rules fire
         run: npm run check:web-layout
 
       - name: Test
