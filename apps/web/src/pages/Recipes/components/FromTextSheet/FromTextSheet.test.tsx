@@ -9,10 +9,7 @@ import {
 import { MAX_PASTED_TEXT_LENGTH } from '@/lib/linkRecipe';
 import { renderWithProviders, stubApi } from '@/test/render';
 import { stubViewport } from '@/test/viewport';
-import {
-  FromTextSheet,
-  type FromTextPrefill,
-} from './components/FromTextSheet/FromTextSheet';
+import { FromTextSheet, type FromTextPrefill } from './FromTextSheet';
 
 const pending = new Promise<Response>(() => {});
 

@@ -10,7 +10,7 @@ import {
   type RecipeDraftKind,
   type RecipeDraftSummary,
 } from '@/lib/recipeDrafts';
-import { recipeDraftPath } from './components/RecipeDraftRow/RecipeDraftRow';
+import { recipeDraftPath } from '../RecipeDraftRow/RecipeDraftRow';
 
 /**
  * "Continue your draft?" (ADR 0028): before a blank New Recipe or New Variant form,

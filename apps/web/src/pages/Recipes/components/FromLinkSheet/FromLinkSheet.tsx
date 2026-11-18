@@ -19,7 +19,7 @@ import {
   checkRecipeLink,
   type ReadingLanguage,
 } from '@/lib/linkRecipe';
-import { AlreadyInRecipes } from '../../AlreadyInRecipes';
+import { AlreadyInRecipes } from '../AlreadyInRecipes/AlreadyInRecipes';
 
 /** The editor's 44 pt field. */
 const fieldSx = {

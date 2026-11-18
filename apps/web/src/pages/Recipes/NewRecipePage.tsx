@@ -14,7 +14,7 @@ import {
 } from '@/lib/recipeDraftContent';
 import { DRAFT_PARAM } from '@/lib/recipeRoutes';
 import { useRecipeDraftRoute } from './hooks/useRecipeDraftRoute';
-import { RecipeDraftContinue } from './RecipeDraftContinue';
+import { RecipeDraftContinue } from './components/RecipeDraftContinue/RecipeDraftContinue';
 import {
   plateMatchInput,
   useResumedPlateBases,

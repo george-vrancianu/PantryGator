@@ -14,7 +14,7 @@ import {
 } from '@/lib/recipeDraftContent';
 import { DRAFT_PARAM } from '@/lib/recipeRoutes';
 import { useRecipeDraftRoute } from './hooks/useRecipeDraftRoute';
-import { RecipeDraftContinue } from './RecipeDraftContinue';
+import { RecipeDraftContinue } from './components/RecipeDraftContinue/RecipeDraftContinue';
 import { useRecipeDraftAutosave } from '@/lib/recipeDraftAutosave';
 import { Screen } from '@/components/layout/Screen/Screen';
 import { translateApiError } from '@/i18n/translateApiError';
