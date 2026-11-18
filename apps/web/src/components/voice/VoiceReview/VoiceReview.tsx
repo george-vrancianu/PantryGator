@@ -402,6 +402,8 @@ function ReviewSheet({ review }: { review: ReviewSettings }) {
       open
       onClose={() => undefined}
       dismissable={false}
+      // A merged Review came from the sheet of notes: Back returns there, with nothing applied or discarded.
+      onBack={merged && !applying ? () => voiceNote.unmerge() : undefined}
       onEscape={() => {
         if (!applying) setConfirming(true);
       }}

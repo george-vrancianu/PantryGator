@@ -145,6 +145,8 @@ export type VoiceNoteAdapters = {
   startMicrophone: () => Promise<MicrophoneSession>;
   /** Tells the Member something. Can also be attached later with `attachNotifier`. */
   notify?: (notice: VoiceNotice) => void;
+  /** How long a network error waits before its one automatic retry. Default `NETWORK_RETRY_DELAY_MS`; 0 retries at once. A test seam: tests pass 0 to skip the wait. */
+  retryDelayMs?: number;
 };
 
 export type VoiceNoteEdit = Partial<{
@@ -157,6 +159,8 @@ export type VoiceNoteEdit = Partial<{
   noExpiry: boolean;
   batchId: string | null;
   defaults: VoiceReviewAction['defaults'];
+  /** The Shopping Item the new Match is on the list as (Review's kind label reads it). Left out, a Match change clears it. */
+  shoppingItem: NonNullable<VoiceReviewAction['rows']['shoppingItem']> | null;
 }>;
 
 /** What stopped the recording came to: sent to be read, too short to read, or nothing was recording. */
@@ -193,6 +197,9 @@ const MAX_READS = 2;
 const MAX_NOTES = 5;
 /** The most Voice Actions one Apply takes (the API's limit); a merged Review over it is refused. */
 export const MAX_APPLY_ACTIONS = 50;
+
+/** A network error waits this long before its one automatic retry: a dropped signal needs a moment to come back. */
+export const NETWORK_RETRY_DELAY_MS = 1500;
 
 /** What `openMerged` came to. */
 type MergeOutcome = 'opened' | 'tooMany' | 'refused';
@@ -239,6 +246,13 @@ const nextUtcMidnight = (now: number) => {
     day.getUTCDate() + 1,
   );
 };
+
+/** A Voice Action Apply can send once Review is done with it: not an entry that was not found or understood. */
+const canBeApplied = (a: VoiceReviewAction) =>
+  a.status !== 'notFound' && a.status !== 'notUnderstood';
+
+const pause = (ms: number) =>
+  ms > 0 ? new Promise<void>((resolve) => setTimeout(resolve, ms)) : undefined;
 
 const isReady = (n: VoiceNoteEntry) =>
   n.phase === 'review' || n.phase === 'answers';
@@ -465,6 +479,7 @@ export function createVoiceNote(
   let release: (() => void) | undefined;
   /** Told when a read settles, kept or failed (a kept read costs Credits). */
   const settledListeners = new Set<() => void>();
+  const unmergedListeners = new Set<() => void>();
   let notifier = adapters.notify;
   let capTimer: ReturnType<typeof setTimeout> | undefined;
   /** The microphone: being asked for, then live; and what the recording is for. */
@@ -712,6 +727,9 @@ export function createVoiceNote(
           error instanceof ApiError &&
           error.code === 'network_error'
         ) {
+          await pause(adapters.retryDelayMs ?? NETWORK_RETRY_DELAY_MS);
+          // Cancelled while waiting: the note is already gone.
+          if (request.signal.aborted) return;
           continue;
         }
         settled();
@@ -1038,20 +1056,37 @@ export function createVoiceNote(
 
     /**
      * Opens one Review of every Voice Note that is waiting for one ("Review all"), in recording order. Needs
-     * two or more and nothing else on screen. Over MAX_APPLY_ACTIONS Voice Actions it is refused.
+     * two or more and nothing else on screen. Over MAX_APPLY_ACTIONS sendable Voice Actions (not the ones not found or not understood) it is refused.
      */
     openMerged(): MergeOutcome {
       if (store.live || store.merged || isSheet(openNote())) return 'refused';
       const notes = store.notes.filter(hasActions);
       if (notes.length < 2) return 'refused';
       const total = notes.reduce(
-        (sum, n) => sum + (n.proposal?.actions.length ?? 0),
+        (sum, n) =>
+          sum + (n.proposal?.actions.filter(canBeApplied).length ?? 0),
         0,
       );
       if (total > MAX_APPLY_ACTIONS) return 'tooMany';
       store = { ...store, merged: notes.map((n) => n.id) };
       emit();
       return 'opened';
+    },
+
+    /**
+     * Back from a merged Review ("Review all") to the Voice Inbox: nothing is applied or discarded, the notes
+     * stay as they are with their edits, and `onUnmerged` listeners (the sheet of notes) are told. Not while Apply is in flight.
+     */
+    unmerge() {
+      if (!store.merged || phase() !== 'review') return;
+      store = { ...store, merged: undefined };
+      emit();
+      unmergedListeners.forEach((listener) => listener());
+    },
+    /** Told when Back left a merged Review. Returns the way to stop listening. */
+    onUnmerged(listener: () => void) {
+      unmergedListeners.add(listener);
+      return () => void unmergedListeners.delete(listener);
     },
 
     /** Review: drops a Voice Action. */
@@ -1068,8 +1103,17 @@ export function createVoiceNote(
     },
     /** Review: changes a Voice Action. */
     edit(id: string, patch: VoiceNoteEdit) {
+      const { shoppingItem, ...fields } = patch;
       mapActions((actions) =>
-        actions.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+        actions.map((a) => {
+          if (a.id !== id) return a;
+          const next = { ...a, ...fields };
+          // The row on the list belongs to the Match it was read for, so a new Match drops it.
+          if ('ingredient' in fields || shoppingItem !== undefined) {
+            next.rows = { ...a.rows, shoppingItem: shoppingItem ?? undefined };
+          }
+          return next;
+        }),
       );
     },
     /** Apply was sent: Review stays open, its buttons disabled. Only from Review. */

@@ -46,7 +46,7 @@ async function record(
 }
 
 /** A fake sender whose answers the test settles by hand. */
-function setup() {
+function setup(retryDelayMs = 0) {
   const requests: VoiceNoteRequest[] = [];
   const pending: Array<{
     resolve: (value: VoiceNoteResult) => void;
@@ -77,6 +77,7 @@ function setup() {
     send,
     keepScreenAwake,
     startMicrophone,
+    retryDelayMs,
     notify: (notice) => notices.push(notice),
   });
   const answer = (value: VoiceNoteResult, at = pending.length - 1) =>
@@ -156,6 +157,53 @@ describe('Voice Note module', () => {
       note.edit('b', { quantity: 7 });
       const [a, b] = note.getState().proposal!.actions;
       expect([a.quantity, b.quantity]).toEqual([1, 7]);
+    });
+
+    it('drops the Shopping Item row of the old Match when the Match changes', async () => {
+      const ctx = setup();
+      await record(ctx.note, options);
+      ctx.answer({
+        transcript: 'x',
+        actions: [
+          {
+            id: 'a',
+            target: 'shopping',
+            op: 'check',
+            rows: { shoppingItem: { id: 'row-1', name: 'Milk' } },
+          },
+        ],
+      } as never);
+      await settle();
+      ctx.note.openReady();
+      ctx.note.edit('a', { ingredient: { id: 'ing-eggs' } as never });
+      expect(ctx.note.getState().proposal!.actions[0].rows.shoppingItem).toBe(
+        undefined,
+      );
+    });
+
+    it('takes the Shopping Item row an edit brings along with a new Match', async () => {
+      const ctx = setup();
+      await record(ctx.note, options);
+      ctx.answer({
+        transcript: 'x',
+        actions: [{ id: 'a', target: 'shopping', op: 'check', rows: {} }],
+      } as never);
+      await settle();
+      ctx.note.openReady();
+      const item = {
+        id: 'row-2',
+        name: 'Eggs',
+        quantity: null,
+        unit: null,
+        checked: false,
+      };
+      ctx.note.edit('a', {
+        ingredient: { id: 'ing-eggs' } as never,
+        shoppingItem: item,
+      });
+      expect(
+        ctx.note.getState().proposal!.actions[0].rows.shoppingItem,
+      ).toEqual(item);
     });
 
     it('ignores edits outside Review', () => {
@@ -650,6 +698,84 @@ describe('Voice Note module', () => {
     });
   });
 
+  describe('Review all limit', () => {
+    const actions = (prefix: string, count: number, status: string) =>
+      Array.from({ length: count }, (_, i) => ({
+        id: `${prefix}${i}`,
+        status,
+      }));
+    async function twoNotes(first: unknown[], second: unknown[]) {
+      const ctx = setup();
+      await record(ctx.note, options);
+      await record(ctx.note, options);
+      ctx.answer({ transcript: 'a', actions: first } as never, 0);
+      ctx.answer({ transcript: 'b', actions: second } as never, 1);
+      await settle();
+      return ctx;
+    }
+
+    it('counts only Voice Actions Apply can send toward the 50', async () => {
+      const ctx = await twoNotes(
+        [...actions('a', 30, 'ready'), ...actions('n', 10, 'notUnderstood')],
+        [...actions('b', 20, 'ready'), ...actions('f', 10, 'notFound')],
+      );
+      expect(ctx.note.openMerged()).toBe('opened');
+    });
+
+    it('refuses more than 50 sendable Voice Actions', async () => {
+      const ctx = await twoNotes(
+        actions('a', 26, 'ready'),
+        actions('b', 25, 'needsBatch'),
+      );
+      expect(ctx.note.openMerged()).toBe('tooMany');
+    });
+  });
+
+  describe('Back from a merged Review', () => {
+    async function merged() {
+      const ctx = setup();
+      await record(ctx.note, options);
+      await record(ctx.note, options);
+      ctx.answer(result('a'), 0);
+      ctx.answer(result('b'), 1);
+      await settle();
+      expect(ctx.note.openMerged()).toBe('opened');
+      return ctx;
+    }
+
+    it('returns to the Voice Inbox with the notes kept and their edits too, and tells the listener', async () => {
+      const { note } = await merged();
+      const heard = vi.fn();
+      note.onUnmerged(heard);
+      note.edit('a', { quantity: 9 });
+      note.unmerge();
+      expect(note.getState().phase).toBe('idle');
+      expect(note.getState().inbox).toMatchObject({ ready: 2 });
+      expect(heard).toHaveBeenCalledOnce();
+      // Opening one note shows its edit.
+      note.openReady();
+      expect(
+        note.getState().proposal!.actions.map((a) => a.quantity),
+      ).toContain(9);
+    });
+
+    it('does nothing when no merged Review is open', async () => {
+      const ctx = await inReview('a');
+      const heard = vi.fn();
+      ctx.note.onUnmerged(heard);
+      ctx.note.unmerge();
+      expect(ctx.note.getState().phase).toBe('review');
+      expect(heard).not.toHaveBeenCalled();
+    });
+
+    it('does nothing while Apply is in flight', async () => {
+      const { note } = await merged();
+      note.applying();
+      note.unmerge();
+      expect(note.getState().phase).toBe('applying');
+    });
+  });
+
   describe('automatic retry', () => {
     it('sends a network error once more by itself, and reads the note if that works', async () => {
       const ctx = setup();
@@ -670,6 +796,29 @@ describe('Voice Note module', () => {
       expect(ctx.note.getState().inbox).toMatchObject({ ready: 1, failed: 0 });
       // One lock for the whole read, released once.
       expect(ctx.released()).toEqual([1]);
+    });
+
+    it('waits before the second try, and stops waiting if the note is cancelled', async () => {
+      vi.useFakeTimers();
+      try {
+        const ctx = setup(1500);
+        await record(ctx.note, options);
+        ctx.refuse(new ApiError('network_error', 0));
+        await vi.advanceTimersByTimeAsync(1499);
+        expect(ctx.send).toHaveBeenCalledOnce();
+        await vi.advanceTimersByTimeAsync(1);
+        expect(ctx.send).toHaveBeenCalledTimes(2);
+
+        const second = setup(1500);
+        await record(second.note, options);
+        second.refuse(new ApiError('network_error', 0));
+        await settle();
+        cancelFirst(second.note);
+        await vi.advanceTimersByTimeAsync(5000);
+        expect(second.send).toHaveBeenCalledOnce();
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('fails with the recording kept when the second try fails too, and does not try a third', async () => {

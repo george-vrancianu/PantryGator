@@ -25,7 +25,7 @@ export type BackgroundAction =
       type: 'menu';
       label: string;
       icon: ReactNode;
-      items: Array<{ label: string; onClick: () => void }>;
+      items: Array<{ label: string; current?: boolean; onClick: () => void }>;
     };
 
 export type BackgroundItem = {

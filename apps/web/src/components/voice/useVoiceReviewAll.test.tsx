@@ -354,6 +354,19 @@ describe('Review all in the Voice Inbox', () => {
     expect(screen.queryByText('2 in the background')).toBeNull();
   });
 
+  it('has a Back from the merged Review to the sheet of notes, with the notes kept', async () => {
+    const sheet = await twoNotes([shop('a1', bread)], [shop('b1', eggs)]);
+    const dialog = await reviewAll(sheet);
+    await userEvent.click(dialog.getByRole('button', { name: 'Back' }));
+
+    const back = within(await screen.findByRole('dialog', { name: 'Review' }));
+    expect(
+      await back.findByRole('button', { name: 'Review all (2)' }),
+    ).toBeVisible();
+    expect(screen.queryByRole('dialog', { name: 'Review all' })).toBeNull();
+    expect(applied).toHaveLength(0);
+  });
+
   it('refuses a merge over 50 Voice Actions with a message, and lets the notes be reviewed on their own', async () => {
     const many = (prefix: string, count: number) =>
       Array.from({ length: count }, (_, i) => shop(`${prefix}${i}`, bread));
