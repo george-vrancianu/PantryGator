@@ -88,15 +88,12 @@ export type SheetPrimary = {
 } & ({ onClick: () => void; form?: never } | { form: string; onClick?: never });
 
 /** The footer's alternative action, on the left. A real alternative, never a way to close. */
-export type SheetSecondary = {
-  label: string;
-  onClick: () => void;
-  /** Drawn and announced as disabled, never hidden. A pending primary disables it too. */
-  disabled?: boolean;
-};
+export type SheetSecondary = SheetAlternative;
 
 /** A danger link at the bottom of the content, away from the primary. */
-export type SheetDestructive = {
+export type SheetDestructive = SheetAlternative;
+
+type SheetAlternative = {
   label: string;
   onClick: () => void;
   /** Drawn and announced as disabled, never hidden. A pending primary disables it too. */

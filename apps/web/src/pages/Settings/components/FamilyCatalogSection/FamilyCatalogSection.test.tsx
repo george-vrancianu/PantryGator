@@ -313,6 +313,12 @@ describe('FamilyCatalogSection', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Back' }));
 
     expect(await screen.findByLabelText('Name')).toHaveValue('Kombucha x');
+    // ADR 0039: Back puts focus on the control that opened the step.
+    await vi.waitFor(() =>
+      expect(
+        within(dialog).getByRole('button', { name: /Category/ }),
+      ).toHaveFocus(),
+    );
   });
 
   it('keeps Save disabled with no change and with a blank name', async () => {

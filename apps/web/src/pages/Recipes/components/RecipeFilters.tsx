@@ -46,8 +46,9 @@ type Props = {
 
 /**
  * The search box with a Tags button beside it, and the picked Tags as chips below (tap one to
- * remove it), laid out by the caller: RecipesPage pins it, a Sheet's `toolbar` (the Meal plan picker) pins it
- * itself. The Tags sheet holds the picking.
+ * remove it). It is layout-neutral: it does no pinning of its own. Its two callers pin it differently,
+ * RecipesPage with its own sticky header and the Meal plan picker with the Sheet's `toolbar`.
+ * The Tags sheet holds the picking.
  */
 export function RecipeFilters({
   value,

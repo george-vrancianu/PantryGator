@@ -219,9 +219,6 @@ describe('Finish Shopping review', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
     );
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
-    );
     await user.click(review.getByRole('button', { name: 'Drop Milk' }));
     await user.click(
       review.getByRole('button', { name: 'Add 2 items to Pantry' }),

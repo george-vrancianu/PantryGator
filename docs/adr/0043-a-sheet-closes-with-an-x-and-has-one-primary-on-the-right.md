@@ -36,11 +36,11 @@ This overrides the sheet-action parts of these handoffs: `canopy` (§8.1 "Close 
 
 Spec: #871. Shipping the rule left five places where the code and the rule disagreed, or where the rule had no answer. These five decisions amend Decision above.
 
-- **The X is always Cancel, including on live pickers.** Sheets where every tap is a completed add (Add to Shopping List, Add to Pantry) are not edits and still close with the X. A Sheet that edits a value holds a draft, and only its primary (Done or Save) commits it. The X, the scrim and Escape discard the draft. The expiry pickers used to save every tap straight away, so their X kept the date; they now hold the picked date as a draft and Done commits it. "No expiry" stays the secondary and commits at once, because it is a choice, not an edit.
+- **The X is always Cancel, including on live pickers.** Sheets where every tap is a completed add (Add to Shopping List, Add to Pantry) are not edits and still close with the X. A Sheet that edits a value holds a draft, and only its primary (Done or Save) commits it. The X, the scrim and Escape discard the draft. The expiry pickers used to save every tap straight away, so their X kept the date; they now hold the picked date as a draft and Done commits it. "No expiry" stays the secondary and commits at once and closes the Sheet, because it is a choice, not an edit.
 - **The X always closes the whole Sheet.** A step inside a Sheet (the Family Ingredient pick step) goes back with Back, or with the action that confirms the pick. It never goes back with the X, the scrim or Escape.
 - **No Sheet keeps a close-only Done.** The Meal Plan slot was the last one: Change Recipe becomes its primary, and "Clear this meal" stays the destructive link.
-- **The secondary and the destructive link take `disabled`.** An alternative that cannot be used right now is drawn and announced as disabled, not hidden and not blocked in code with no cue (the Tags filter's Clear until a Tag is picked, the Meal Plan slot's Change Recipe and Clear, the Admin editors' Restore and Delete). A pending primary still disables both.
-- **`Sheet` has a `toolbar` slot, for search and filter controls only, never actions.** It sits under the title row and above the scroller, pinned and outside the scroll. `Sheet` draws its fill (the sheet surface), its horizontal padding and the divider under it. Actions stay in the footer and the content roles above; a reviewer rejects an action in the toolbar. Callers never hand-build a sticky wrapper for top controls.
+- **The secondary and the destructive link take `disabled`.** An alternative that cannot be used right now is drawn and announced as disabled, not hidden and not blocked in code with no cue (the Tags filter's Clear until a Tag is picked, the Meal Plan slot's Clear, the Admin editors' Restore and Delete). A pending primary still disables both.
+- **`Sheet` has a `toolbar` slot, for search and filter controls only, never actions.** It sits under the title row and above the scroller, pinned and outside the scroll. `Sheet` draws its fill (the sheet surface), its horizontal padding and the divider under it. Actions stay in the footer, or in the destructive link at the bottom of the content; a reviewer rejects an action in the toolbar. Callers never hand-build a sticky wrapper for top controls.
 
 ## Considered options
 
@@ -60,7 +60,7 @@ Spec: #871. Shipping the rule left five places where the code and the rule disag
   - **Meal Plan slot:** Clear becomes a destructive link, and (amended) it loses its Done: Change Recipe is its primary.
   - **Voice Answer and Family synonym:** they lose their Done.
   - **Revoke a Promo Code:** it is drawn in danger tone.
-- Amendment (#871): the expiry pickers commit on Done and the X discards the pick; the Recipe picker moves its filters into `toolbar`; Tags filter, Meal Plan slot and the Admin editors show unavailable alternatives disabled instead of hiding them.
+- Amendment (#871): the expiry pickers commit on Done and the X discards the pick; the Recipe picker moves its filters into `toolbar`; Tags filter, Meal Plan slot and the Admin editors show unavailable alternatives disabled instead of hiding them or blocking them silently.
 - Page tests that clicked Cancel or a header Done now use the X.
 - New handoffs reference this ADR for Sheet actions instead of specifying them.
 - Page bars that replace the Dock (Review, Catalog Recipe preview), popovers and full-screen camera tools are not Sheets and are not covered here.

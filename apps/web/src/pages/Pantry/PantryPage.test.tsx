@@ -1118,7 +1118,7 @@ describe('PantryPage', () => {
           screen.queryByRole('dialog', { name: 'Expires' }),
         ).not.toBeInTheDocument(),
       );
-      expect(screen.queryByText('Thu, Oct 15')).not.toBeInTheDocument();
+      expect(screen.queryByText(/Oct 15/)).not.toBeInTheDocument();
 
       sheet = await openSheet(user);
       expect(within(sheet).getByRole('status')).toHaveTextContent('Nov 13');
@@ -1130,6 +1130,25 @@ describe('PantryPage', () => {
         ).not.toBeInTheDocument(),
       );
       expect((await save(user, calls)).expiryDate).toBe('2026-10-15');
+    });
+
+    it('a scrim tap discards the picked date like the X', async () => {
+      const user = userEvent.setup();
+      await addParmesan(user);
+      let sheet = await openSheet(user);
+
+      await user.click(calendarDay(sheet, 'Thursday, October 15, 2026'));
+      const backdrops = document.querySelectorAll('.MuiBackdrop-root');
+      await user.click(backdrops[backdrops.length - 1]);
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: 'Expires' }),
+        ).not.toBeInTheDocument(),
+      );
+      expect(screen.queryByText(/Oct 15/)).not.toBeInTheDocument();
+
+      sheet = await openSheet(user);
+      expect(within(sheet).getByRole('status')).toHaveTextContent('Nov 13');
     });
 
     /** The quick-pick tiles, as "accessible name: pressed". */

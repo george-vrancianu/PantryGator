@@ -278,6 +278,10 @@ describe('UnmatchedQueue: Family ingredients', () => {
     expect(calls.map((c) => c.key)).not.toContain(
       'POST /api/admin/family-ingredients/promote',
     );
+    // ADR 0039: closing puts focus back on the row that opened the sheet.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', { name: /^Kombucha/ })).toHaveFocus(),
+    );
   });
 
   it('explains a rejected promote, keeps the picker open and points to merging', async () => {

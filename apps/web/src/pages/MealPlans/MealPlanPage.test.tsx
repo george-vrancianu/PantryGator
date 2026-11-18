@@ -258,9 +258,9 @@ describe('Meal Plan page', () => {
       within(picker).getByRole('img', { name: 'Contains Peanuts' }),
     ).toBeVisible();
     // The search is the Sheet's pinned toolbar, not part of the scrolling list.
-    const toolbar = picker.querySelector('[data-sheet-toolbar]');
-    expect(toolbar).toBeInstanceOf(HTMLElement);
-    expect(within(toolbar as HTMLElement).getByRole('searchbox')).toBeVisible();
+    const toolbar = picker.querySelector<HTMLElement>('[data-sheet-toolbar]');
+    if (!toolbar) throw new Error('The picker has no toolbar');
+    expect(within(toolbar).getByRole('searchbox')).toBeVisible();
     await u.type(within(picker).getByRole('searchbox'), 'lemon');
     await waitFor(() =>
       expect(within(picker).queryByText('Green curry')).toBeNull(),

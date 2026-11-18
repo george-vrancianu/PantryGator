@@ -184,10 +184,10 @@ export const WithToolbarDark: Story = {
 
 const disabledStory = (): Story['render'] => () =>
   render({
-    title: 'Filter by Tag',
+    title: 'Edit item',
     size: 'content',
-    primary: { label: 'Show 12 Recipes', onClick: noop },
-    secondary: { label: 'Clear', onClick: noop, disabled: true },
+    primary: { label: 'Save', onClick: noop },
+    secondary: { label: 'Restore', onClick: noop, disabled: true },
     destructive: { label: 'Delete', onClick: noop, disabled: true },
     children: <Body />,
   });
