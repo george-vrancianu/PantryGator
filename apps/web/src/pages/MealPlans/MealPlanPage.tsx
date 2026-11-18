@@ -48,7 +48,12 @@ function fillMessage(t: TFunction, { filled, emptyForAllergies }: FillResult) {
       ? t('mealPlans:fill.filled', { count: filled })
       : t('mealPlans:fill.nothing');
   return emptyForAllergies > 0
-    ? `${first} ${t('mealPlans:fill.emptyForAllergies', { count: emptyForAllergies })}`
+    ? t('mealPlans:fill.withAllergies', {
+        filled: first,
+        empty: t('mealPlans:fill.emptyForAllergies', {
+          count: emptyForAllergies,
+        }),
+      })
     : first;
 }
 

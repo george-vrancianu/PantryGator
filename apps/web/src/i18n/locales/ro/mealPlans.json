@@ -74,7 +74,8 @@
     "nothing": "Nu s-a putut completa nimic.",
     "emptyForAllergies_one": "{{count}} slot a rămas gol din cauza alergiilor.",
     "emptyForAllergies_few": "{{count}} sloturi au rămas goale din cauza alergiilor.",
-    "emptyForAllergies_other": "{{count}} de sloturi au rămas goale din cauza alergiilor."
+    "emptyForAllergies_other": "{{count}} de sloturi au rămas goale din cauza alergiilor.",
+    "withAllergies": "{{filled}} {{empty}}"
   },
   "addMissing": {
     "plan_one": "Adaugă {{count}} ingredient lipsă",
