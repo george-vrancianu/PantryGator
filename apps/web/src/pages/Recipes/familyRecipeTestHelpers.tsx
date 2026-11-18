@@ -169,7 +169,7 @@ export function setup(
   const { fetchMock, calls } = stubApi({
     'GET /api/recipes/filters': () => Response.json(filters),
     'GET /api/recipes/tags': () => Response.json(pickable),
-    // Edit's Save also stores the Guidance (#595).
+    // Edit's Save also stores the Guidance (issue 595).
     'PUT /api/recipes/g/guidance': () => Response.json(saved),
     ...routes,
   });
