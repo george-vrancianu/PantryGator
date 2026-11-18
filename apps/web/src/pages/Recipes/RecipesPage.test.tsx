@@ -576,6 +576,16 @@ describe('RecipesPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('leaves out the Variants hint when no listed Recipe has a Variant', async () => {
+      setup(() => [item({ id: 'p', title: 'Pancakes' })]);
+      await findRow('Pancakes');
+      expect(
+        screen.queryByText(
+          'Search or pick a filter to see Variants on their own.',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
     it('heads the list "Matches" with its count and drops the hint while filtering', async () => {
       setup((url) => (filtered(url) ? [frittata] : [omelette, soup]));
       await findRow('Omelette');

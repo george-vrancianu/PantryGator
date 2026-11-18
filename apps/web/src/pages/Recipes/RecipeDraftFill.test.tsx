@@ -2,7 +2,7 @@ import { act, screen, within } from '@testing-library/react';
 import { StrictMode } from 'react';
 import userEvent from '@testing-library/user-event';
 import type { InitialEntry } from 'react-router-dom';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RecipeDraftContent } from '@/lib/recipeDrafts';
 import { renderWithProviders, stubApi } from '@/test/render';
@@ -334,6 +334,46 @@ describe('Recipe Drafts for supplied fills', () => {
     await screen.findByLabelText(/^Title/);
     await elapse(3000);
     expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+  });
+
+  it('drops the supplied fill from the history entry once the first create starts, and keeps the form', async () => {
+    // The create does not answer yet: a reload now must not find the fill and create a second Recipe Draft.
+    let answer: (response: Response) => void = () => {};
+    const created = new Promise<Response>((resolve) => (answer = resolve));
+    const { fetchMock, calls } = stubApi({
+      'GET /api/recipes/filters': () => Response.json(filters),
+      'POST /api/recipe-drafts': () => created,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const StateProbe = () => (
+      <output data-testid="state">{JSON.stringify(useLocation().state)}</output>
+    );
+    renderWithProviders(
+      <Routes>
+        <Route
+          path="/recipes/new"
+          element={
+            <>
+              <NewRecipePage />
+              <StateProbe />
+            </>
+          }
+        />
+      </Routes>,
+      { route: { pathname: '/recipes/new', state: fill } },
+    );
+    expect(await screen.findByLabelText(/^Title/)).toHaveValue(
+      'Pancakes from a blog',
+    );
+    await elapse(100);
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+    expect(screen.getByTestId('state')).toHaveTextContent('null');
+    // The form is still the filled one, not restarted blank.
+    expect(screen.getByLabelText(/^Title/)).toHaveValue('Pancakes from a blog');
+    await elapse(3000);
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+    answer(Response.json({ id: DRAFT_ID, version: 1 }, { status: 201 }));
+    await elapse(100);
   });
 
   describe('resuming a Plate Scan Recipe Draft', () => {

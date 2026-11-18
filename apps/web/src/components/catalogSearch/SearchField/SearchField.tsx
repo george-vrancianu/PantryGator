@@ -4,6 +4,7 @@ import {
   CloseIcon,
   IconButton,
   SearchIcon,
+  insetFocusRingStyle,
   palette,
   visuallyHidden,
   radius,
@@ -47,6 +48,11 @@ export type SearchFieldProps = {
   canClear?: boolean;
   /** The "Add to your catalog" button, shown before the clear × while text is typed. */
   addToCatalog?: { label: string; open: boolean; onOpen: () => void } | null;
+  /**
+   * `field` is the recessed 48 pt well (default). `row` is the compact 50 pt row of an editor card:
+   * no well, no fill, the search icon in the accent, the focus ring inset.
+   */
+  variant?: 'field' | 'row';
   /** Rows are showing while newer results load: the spinner takes the right slot. */
   refetching: boolean;
   reducedMotion: boolean;
@@ -75,10 +81,12 @@ export function SearchField({
   onClear,
   canClear = false,
   addToCatalog = null,
+  variant = 'field',
   refetching,
   reducedMotion,
 }: SearchFieldProps) {
   const { t } = useTranslation('catalog');
+  const row = variant === 'row';
 
   const rightSlot = selected ? null : refetching ? (
     <Box
@@ -119,17 +127,21 @@ export function SearchField({
     <Box
       sx={{
         position: 'relative',
-        height: 48,
+        height: row ? 50 : 48,
         display: 'flex',
         alignItems: 'center',
-        borderRadius: radius.control,
-        border: `${border.field} solid transparent`,
-        // A recessed well (Canopy 5: Field on a sheet).
-        backgroundColor: themeColor.fieldBg,
-        boxShadow: shadow.recess,
-        '&:focus-within': {
-          boxShadow: `${shadow.recess}, 0 0 0 3px ${palette('pp-accentTint')}`,
-        },
+        ...(row
+          ? { '&:focus-within': insetFocusRingStyle }
+          : {
+              borderRadius: radius.control,
+              border: `${border.field} solid transparent`,
+              // A recessed well (Canopy 5: Field on a sheet).
+              backgroundColor: themeColor.fieldBg,
+              boxShadow: shadow.recess,
+              '&:focus-within': {
+                boxShadow: `${shadow.recess}, 0 0 0 3px ${palette('pp-accentTint')}`,
+              },
+            }),
       }}
     >
       <Box
@@ -137,7 +149,7 @@ export function SearchField({
           position: 'absolute',
           left: 14,
           display: 'flex',
-          color: palette('text-secondary'),
+          color: row ? palette('pp-accent') : palette('text-secondary'),
         }}
       >
         <SearchIcon size={20} />

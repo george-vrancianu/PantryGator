@@ -7,10 +7,12 @@ import {
   Spinner,
   Stack,
   Toggle,
+  useToast,
   Typography,
   palette,
 } from '@pocket-pantry/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
@@ -29,6 +31,7 @@ import {
   shortSummary,
   useMealPlan,
   useMealPlanMutations,
+  type FillResult,
   type MealPlanDetail,
   type SlotKey,
 } from '@/lib/mealPlanPage';
@@ -38,9 +41,27 @@ import { DayCard } from './components/DayCard/DayCard';
 import { RecipePickerSheet } from './components/RecipePickerSheet/RecipePickerSheet';
 import { SlotSheet } from './components/SlotSheet/SlotSheet';
 
+/** The toast after Fill: the count or "nothing", then the slots Allergies kept empty. */
+function fillMessage(t: TFunction, { filled, emptyForAllergies }: FillResult) {
+  const first =
+    filled > 0
+      ? t('mealPlans:fill.filled', { count: filled })
+      : t('mealPlans:fill.nothing');
+  return emptyForAllergies > 0
+    ? // `withAllergies` is just "{{filled}} {{empty}}" in every locale; it is a key so a locale can reorder the two.
+      t('mealPlans:fill.withAllergies', {
+        filled: first,
+        empty: t('mealPlans:fill.emptyForAllergies', {
+          count: emptyForAllergies,
+        }),
+      })
+    : first;
+}
+
 /** One Meal Plan: the forecast summary, Fill, Add missing, and a card per day with its three Mealtimes. `?day=` opens on a day. */
 export function MealPlanPage() {
   const { t, i18n } = useTranslation(['mealPlans', 'common']);
+  const toast = useToast();
   const language = i18n.language;
   const { id = '' } = useParams();
   const [params] = useSearchParams();
@@ -104,15 +125,21 @@ export function MealPlanPage() {
     onSuccess?: () => void,
   ) => {
     clearErrors();
-    mutations.setSlot.mutate(
-      {
+    return mutations.setSlot
+      .mutateAsync({
         id,
         ...ref,
         recipeId,
         ...(servings === undefined ? {} : { servings }),
-      },
-      { onSuccess },
-    );
+      })
+      .then(
+        () => {
+          onSuccess?.();
+          return true;
+        },
+        // The error shows from the mutation's state; the caller only needs to know it failed.
+        () => false,
+      );
   };
 
   return (
@@ -154,7 +181,13 @@ export function MealPlanPage() {
             onOnlyWhatIHave={setOnlyWhatIHave}
             onFill={() => {
               clearErrors();
-              mutations.fill.mutate({ id, onlyWhatIHave });
+              mutations.fill.mutate(
+                { id, onlyWhatIHave },
+                {
+                  onSuccess: ({ fill }) =>
+                    toast.show(fillMessage(t, fill), { polite: true }),
+                },
+              );
             }}
             adding={addMissing.isPending}
             onAddMissing={() => addMissing.add({ scope: 'plan', planId: id })}
@@ -214,14 +247,15 @@ export function MealPlanPage() {
             error={picking ? errorText : null}
             busy={mutations.setSlot.isPending}
             onPick={(recipeId) =>
-              picking &&
-              putSlot(
-                picking,
-                recipeId,
-                days[picking.dayIndex]?.slots[picking.mealtime]
-                  ?.servingsOverride ?? undefined,
-                () => setPicking(null),
-              )
+              picking
+                ? putSlot(
+                    picking,
+                    recipeId,
+                    days[picking.dayIndex]?.slots[picking.mealtime]
+                      ?.servingsOverride ?? undefined,
+                    () => setPicking(null),
+                  )
+                : Promise.resolve(false)
             }
             onClose={() => setPicking(null)}
           />

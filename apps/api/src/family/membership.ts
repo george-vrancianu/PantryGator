@@ -1,4 +1,4 @@
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import {
   batches,
   family,
@@ -8,6 +8,7 @@ import {
   user,
 } from '../database/schema';
 import type { Tx } from '../database/database.types';
+import { recipeDraftLive } from '../recipe-drafts/recipe-draft-expiry';
 import { withFreshInviteCode } from './invite-code';
 
 /**
@@ -34,11 +35,17 @@ export async function moveToNewHouseholdOfOne(
     .where(eq(user.id, memberId));
 }
 
-export type FamilyDataCounts = { batches: number; shoppingItems: number };
+export type FamilyDataCounts = {
+  batches: number;
+  shoppingItems: number;
+  /** The Recipe Drafts of the Family's Members; they end with the Family (ADR 0028). */
+  recipeDrafts: number;
+};
 
 /**
  * What a Family owns that is deleted along with it, as shown in the join
- * warning: Batches, and Shopping Items across active and archived lists.
+ * warning: Batches, Shopping Items across active and archived lists, and
+ * Recipe Drafts.
  * Deleting the Family itself relies on every Family-owned table referencing
  * `family` with ON DELETE CASCADE (enforced by a test over information_schema).
  */
@@ -55,5 +62,14 @@ export async function countFamilyData(
     .from(shoppingItems)
     .innerJoin(shoppingLists, eq(shoppingItems.listId, shoppingLists.id))
     .where(eq(shoppingLists.familyId, familyId));
-  return { batches: batchCount, shoppingItems: itemCount };
+  const [{ n: draftCount }] = await tx
+    .select({ n: count() })
+    .from(recipeDrafts)
+    // Expiry is lazy: a row past its 30 days is already lost, so it is not counted.
+    .where(and(eq(recipeDrafts.familyId, familyId), recipeDraftLive));
+  return {
+    batches: batchCount,
+    shoppingItems: itemCount,
+    recipeDrafts: draftCount,
+  };
 }

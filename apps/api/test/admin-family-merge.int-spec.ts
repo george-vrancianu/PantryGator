@@ -440,6 +440,87 @@ describe('Admin: merge Family Ingredients, Synonym candidates (integration)', ()
       }
     });
 
+    it('re-points the Ingredients of Recipe Drafts too, on lines and on Guidance links, and leaves other ids alone', async () => {
+      const target = await shared(unique('Afm Draft Target'));
+      const copy = await made(a, unique('Afm Draft Copy'));
+      const bystander = await made(b, unique('Afm Draft Bystander'));
+      const draft = (who: Who, ingredientId: string, linkTarget: string) =>
+        who
+          .post('/recipe-drafts', {
+            kind: 'new_recipe',
+            content: {
+              title: unique('Afm Draft'),
+              servings: '2',
+              prepMinutes: '',
+              cookMinutes: '',
+              difficulty: '',
+              lines: [
+                {
+                  ingredientId,
+                  name: '',
+                  quantity: '1',
+                  unit: 'g',
+                  optional: false,
+                  note: '',
+                },
+                {
+                  ingredientId: '',
+                  name: 'Typed only',
+                  quantity: '1',
+                  unit: 'g',
+                  optional: false,
+                  note: '',
+                },
+              ],
+              steps: [{ text: 'Stir', timer: '' }],
+              guidance: {
+                nutritionNote: '',
+                pairings: [
+                  {
+                    kind: 'food',
+                    label: 'Side',
+                    reason: '',
+                    principle: '',
+                    linkType: 'ingredient',
+                    linkTarget,
+                  },
+                ],
+                eatingMoments: [],
+              },
+            },
+          })
+          .expect(201);
+      const mine = (await draft(a, copy.id, copy.id)).body as { id: string };
+      const other = (await draft(b, bystander.id, bystander.id)).body as {
+        id: string;
+      };
+
+      await merge(copy.id, target.id).expect(200);
+
+      const got = (await a.get(`/recipe-drafts/${mine.id}`).expect(200))
+        .body as {
+        version: number;
+        content: {
+          lines: { ingredientId: string; name: string }[];
+          guidance: { pairings: { linkTarget: string }[] };
+        };
+      };
+      expect(got.content.lines.map((l) => [l.ingredientId, l.name])).toEqual([
+        [target.id, ''],
+        ['', 'Typed only'],
+      ]);
+      expect(got.content.guidance.pairings[0].linkTarget).toBe(target.id);
+      // The form open elsewhere holds the old content: its next save is a conflict, not a silent undo.
+      expect(got.version).toBe(2);
+      const stored = (await b.get(`/recipe-drafts/${other.id}`).expect(200))
+        .body as {
+        version: number;
+        content: { lines: { ingredientId: string }[] };
+      };
+      expect(stored.version).toBe(1);
+      expect(stored.content.lines[0].ingredientId).toBe(bystander.id);
+    });
+
     it('de-duplicates rows a Family already holds on both the copy and the target, Family Synonyms included', async () => {
       const name = unique('Afm Dedup');
       const target = await shared(unique('Afm Dedup Target'));
@@ -636,6 +717,43 @@ describe('Admin: merge Family Ingredients, Synonym candidates (integration)', ()
       });
       // Family Synonyms are not shared: an outsider has none.
       expect(await searchIds(d, name)).toContain(keep.id);
+    });
+
+    it("re-points the other Families' Recipe Drafts to the promoted Ingredient", async () => {
+      const name = unique('Afm Promote Draft');
+      const keep = await made(a, name);
+      const copy = await made(b, name);
+      const res = await b
+        .post('/recipe-drafts', {
+          kind: 'new_recipe',
+          content: {
+            title: unique('Afm Promote Draft'),
+            servings: '2',
+            prepMinutes: '',
+            cookMinutes: '',
+            difficulty: '',
+            lines: [
+              {
+                ingredientId: copy.id,
+                name: '',
+                quantity: '1',
+                unit: 'g',
+                optional: false,
+                note: '',
+              },
+            ],
+            steps: [{ text: 'Stir', timer: '' }],
+          },
+        })
+        .expect(201);
+      const { id } = res.body as { id: string };
+
+      await promote(keep.id).expect(200);
+
+      const got = (await b.get(`/recipe-drafts/${id}`).expect(200)).body as {
+        content: { lines: { ingredientId: string }[] };
+      };
+      expect(got.content.lines.map((l) => l.ingredientId)).toEqual([keep.id]);
     });
 
     it("keeps promote's Family Synonyms when another group is merged into the promoted Ingredient later", async () => {

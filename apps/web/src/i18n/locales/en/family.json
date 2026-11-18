@@ -33,6 +33,8 @@
   "joinBatches_other": "{{count}} Batches will be deleted.",
   "joinShoppingItems_one": "{{count}} Shopping Item will be deleted.",
   "joinShoppingItems_other": "{{count}} Shopping Items will be deleted.",
+  "joinRecipeDrafts_one": "{{count}} Recipe Draft will be deleted.",
+  "joinRecipeDrafts_other": "{{count}} Recipe Drafts will be deleted.",
   "removeNamed": "Remove {{name}}",
   "makeOwnerNamed": "Make {{name}} the Owner"
 }

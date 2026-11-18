@@ -27,6 +27,7 @@ export function GatorBubblePanel({
 } & LinkProps) {
   return (
     <Box
+      data-testid="gator-bubble-panel"
       {...(to
         ? {
             component: Link,
@@ -39,7 +40,10 @@ export function GatorBubblePanel({
       sx={{
         position: 'relative',
         display: 'block',
-        height: 206,
+        // At least Gator's height; long text (or a long translation) pushes the panel taller.
+        minHeight: 206,
+        boxSizing: 'border-box',
+        py: '12px',
         borderRadius: radius.card,
         bgcolor: palette('pp-accentTint'),
         color: palette('pp-accentOnTint'),
@@ -59,10 +63,10 @@ export function GatorBubblePanel({
       </Box>
       <Box
         sx={{
-          position: 'absolute',
+          position: 'relative',
           // Beside Gator, not pinned to the far edge, so it stays next to him on a wide screen.
-          left: 'min(188px, calc(100% - 162px))',
-          top: 12,
+          // In the flow, so the panel grows with it.
+          ml: 'min(188px, calc(100% - 162px))',
           width: 150,
           boxSizing: 'border-box',
           p: '11px 13px',

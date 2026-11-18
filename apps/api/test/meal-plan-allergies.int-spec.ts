@@ -24,7 +24,11 @@ type Slot = {
   recipeId: string;
   allergyWarning: CompactAllergyWarning | null;
 };
-type PlanDetail = { id: string; slots: Slot[] };
+type PlanDetail = {
+  id: string;
+  slots: Slot[];
+  fill?: { filled: number; emptyForAllergies: number };
+};
 type Window = { days: { slots: Slot[] }[] };
 
 /** A write's today must be near the server's UTC date. */
@@ -279,6 +283,59 @@ describe('Meal Plans and Allergies (integration)', () => {
       const milkFree = await milkFreeRecipe(ana.email);
       const plan = await fill(ana.plans, (await createPlan(ana.plans)).id);
       expectFilledWithoutMilkRecipes(plan, milkFree);
+    });
+
+    it('says how many slots it filled and none stayed empty for Allergies when nobody is allergic', async () => {
+      const ana = await member('fill-result-free');
+      await stockMilk(ana.email);
+      await milkRecipe(ana.email);
+      const plan = await fill(ana.plans, (await createPlan(ana.plans)).id);
+      expect(plan.fill).toEqual({
+        filled: plan.slots.length,
+        emptyForAllergies: 0,
+      });
+      expect(plan.slots.length).toBeGreaterThan(0);
+    });
+
+    it('counts no slot for Allergies when a safe Recipe fills the slot, however often Fill is pressed', async () => {
+      const ana = await member('fill-result-safe');
+      await ana.settings.put('/allergies', { allergenIds: [MILK] }).expect(200);
+      // No milk in the Pantry: the milk Recipe fits no slot under "Only what I have".
+      await milkRecipe(ana.email);
+      const milkFree = await milkFreeRecipe(ana.email);
+      const planId = (await createPlan(ana.plans)).id;
+      for (let i = 0; i < 5; i++) {
+        const plan = await fill(ana.plans, planId);
+        expect(plan.slots.map((s) => s.recipeId)).toContain(milkFree);
+        expect(plan.fill?.emptyForAllergies).toBe(0);
+        for (const { mealtime } of plan.slots) {
+          await ana.plans.del(`/${planId}/slots/0/${mealtime}${q}`).expect(204);
+        }
+      }
+    });
+
+    it('counts none for Allergies when the blocked Recipe could not have been placed anyway', async () => {
+      const ana = await member('fill-result-unusable');
+      await ana.settings.put('/allergies', { allergenIds: [MILK] }).expect(200);
+      // No milk in the Pantry, so under "Only what I have" the milk Recipe fits no slot.
+      await milkRecipe(ana.email);
+      const plan = await fill(ana.plans, (await createPlan(ana.plans)).id);
+      expect(plan.slots).toHaveLength(0);
+      expect(plan.fill).toEqual({ filled: 0, emptyForAllergies: 0 });
+    });
+
+    // One Recipe fills one slot of the day: Fill never repeats a Recipe within two days.
+    it('counts the slots left empty only because Allergies ruled the Recipe out', async () => {
+      const ana = await member('fill-result-blocked');
+      await stockMilk(ana.email);
+      await ana.settings.put('/allergies', { allergenIds: [MILK] }).expect(200);
+      await milkRecipe(ana.email);
+      const plan = await fill(ana.plans, (await createPlan(ana.plans)).id);
+      expect(plan.slots).toHaveLength(0);
+      expect(plan.fill).toEqual({
+        filled: 0,
+        emptyForAllergies: 1,
+      });
     });
 
     it('still picks a Recipe whose only match is an optional line', async () => {

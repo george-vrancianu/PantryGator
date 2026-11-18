@@ -410,6 +410,75 @@ describe('Recipe Drafts autosave on New Recipe', () => {
     expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
   });
 
+  it('sends what is pending when the page is hidden, which mobile browsers do without a pagehide', async () => {
+    const user = typer();
+    const inits: Array<RequestInit | undefined> = [];
+    const calls = setup('/recipes/new', {
+      'POST /api/recipe-drafts': () =>
+        Response.json({ id: DRAFT_ID, version: 1 }, { status: 201 }),
+    });
+    const inner = globalThis.fetch;
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
+      inits.push(init);
+      return inner(input, init);
+    });
+    await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(0);
+    const hidden = vi
+      .spyOn(document, 'visibilityState', 'get')
+      .mockReturnValue('hidden');
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    hidden.mockRestore();
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+    expect(inits.find((init) => init?.method === 'POST')?.keepalive).toBe(true);
+  });
+
+  it('ignores a visibilitychange while the page is visible', async () => {
+    const user = typer();
+    const calls = setup('/recipes/new', {
+      'POST /api/recipe-drafts': () =>
+        Response.json({ id: DRAFT_ID, version: 1 }, { status: 201 }),
+    });
+    await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
+    const visible = vi
+      .spyOn(document, 'visibilityState', 'get')
+      .mockReturnValue('visible');
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    visible.mockRestore();
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(0);
+  });
+
+  it('sends a body over the keepalive cap plainly when the page is only hidden', async () => {
+    const inits: Array<RequestInit | undefined> = [];
+    const calls = setup('/recipes/new', {
+      'POST /api/recipe-drafts': () =>
+        Response.json({ id: DRAFT_ID, version: 1 }, { status: 201 }),
+    });
+    const inner = globalThis.fetch;
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
+      inits.push(init);
+      return inner(input, init);
+    });
+    fireEvent.change(await screen.findByLabelText(/^Title/), {
+      target: { value: 'x'.repeat(70_000) },
+    });
+    const hidden = vi
+      .spyOn(document, 'visibilityState', 'get')
+      .mockReturnValue('hidden');
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    hidden.mockRestore();
+    expect(sent(calls, 'POST /api/recipe-drafts')).toHaveLength(1);
+    expect(
+      inits.find((init) => init?.method === 'POST')?.keepalive,
+    ).toBeFalsy();
+  });
+
   it('resumes the form exactly as typed, half-typed values included, and updates from the version it was given', async () => {
     const user = typer();
     const content: RecipeDraftContent = {

@@ -33,6 +33,8 @@
   "joinBatches_other": "{{count}} partier bliver slettet.",
   "joinShoppingItems_one": "{{count}} indkøbsvare bliver slettet.",
   "joinShoppingItems_other": "{{count}} indkøbsvarer bliver slettet.",
+  "joinRecipeDrafts_one": "{{count}} opskriftkladde bliver slettet.",
+  "joinRecipeDrafts_other": "{{count}} opskriftkladder bliver slettet.",
   "removeNamed": "Fjern {{name}}",
   "makeOwnerNamed": "Gør {{name}} til ejer"
 }
