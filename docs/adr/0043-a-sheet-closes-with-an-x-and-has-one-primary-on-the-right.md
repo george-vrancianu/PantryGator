@@ -31,6 +31,16 @@ We decided on one rule. `Sheet` enforces it through its interface: callers say w
 
 This overrides the sheet-action parts of these handoffs: `canopy` (§8.1 "Close or Done right", §8.2 the Done pill on Add items), `shopping` (the Done pill), `shopping-import` (the Close and Cancel pills), `family-catalog-rows` (Save on the left), `settings-handoff` (the Save pill) and `voice-notes` (ghost Discard and Keep reviewing become the secondary). Opening and closing focus is unchanged (ADR 0039).
 
+## Amendment (2026-11-18): the X is always Cancel, a toolbar slot, disabled alternatives
+
+Spec: #871. Shipping the rule left five places where the code and the rule disagreed, or where the rule had no answer. These five decisions amend Decision above.
+
+- **The X is always Cancel, including on live pickers.** A Sheet that changes something holds a draft, and only its primary (Done or Save) commits it. The X, the scrim and Escape discard the draft. The expiry pickers used to save every tap straight away, so their X kept the date; they now hold the picked date as a draft and Done commits it. "No expiry" stays the secondary and commits at once, because it is a choice, not an edit.
+- **The X always closes the whole Sheet.** A step inside a Sheet (the Family Ingredient pick step) goes back with Back, or with the action that confirms the pick. It never goes back with the X, the scrim or Escape.
+- **No Sheet keeps a close-only Done.** The Meal Plan slot was the last one: Change Recipe becomes its primary, and "Clear this meal" stays the destructive link.
+- **The secondary and the destructive link take `disabled`.** An alternative that cannot be used right now is drawn and announced as disabled, not hidden and not blocked in code with no cue (the Tags filter's Clear until a Tag is picked, the Meal Plan slot's Change Recipe and Clear, the Admin editors' Restore and Delete). A pending primary still disables both.
+- **`Sheet` has a `toolbar` slot, for search and filter controls only, never actions.** It sits under the title row and above the scroller, pinned and outside the scroll. `Sheet` draws its fill (the sheet surface), its horizontal padding and the divider under it. Actions stay in the footer and the content roles above; a reviewer rejects an action in the toolbar. Callers never hand-build a sticky wrapper for top controls.
+
 ## Considered options
 
 - **Let each Sheet choose between an X and a labelled Close or Done pill** (Canopy §8.1). Rejected: that choice is how the five kinds of close came about, and "Done" ended up meaning both "close" and "commit".
@@ -38,6 +48,7 @@ This overrides the sheet-action parts of these handoffs: `canopy` (§8.1 "Close 
 - **Shared footer pieces that callers compose** (`Sheet.Footer`, `Sheet.Primary`). Rejected: every caller would still have to know the order, widths and safe area, so the rule would drift again. Props with roles let the type checker refuse a third button.
 - **A danger button in the footer for every destructive action.** Rejected: it puts Remove next to Save, which is one slip from losing data. A link in the content keeps it apart.
 - **Keep `Dialog` for confirmations.** Rejected: it has three users, all short confirmations or picks, and keeping it would mean a second action model to draw and test.
+- **Sticky content inside the scroller** (a caller's own sticky wrapper for search and filters). Rejected because each caller hand-builds it (its own fill, overflow fix and padding) and it can cover the focused row.
 - **Ask "Discard changes?" when an edited Sheet is closed.** Rejected for now: Cancel and the X discard silently today, and no Member has asked for it.
 
 ## Consequences
