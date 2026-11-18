@@ -216,7 +216,6 @@
     "buttonLabelCount": "Filter by Tags, {{count}} selected",
     "sheetTitle": "Filter by Tags",
     "sheetHint": "Recipes must have <b>every</b> Tag you pick.",
-    "close": "Close",
     "fieldPlaceholder": "Type to find a Tag",
     "fieldLabel": "Filter by Tags",
     "yourTags": "Your Tags",
@@ -396,7 +395,6 @@
   },
   "quickView": {
     "eyebrow": "Catalog Recipe",
-    "close": "Close",
     "missing": "missing",
     "seeWhole": "See the whole Recipe",
     "add": "Add to your Recipes",

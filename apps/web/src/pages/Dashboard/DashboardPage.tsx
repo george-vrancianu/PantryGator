@@ -18,7 +18,7 @@ import { useGridColumns } from '../../lib/layoutColumns';
 import { useToday } from '../../lib/useToday';
 import { CalendarDay } from './components/CalendarDay';
 import { PantryHealthCluster } from './components/PantryHealthCluster';
-import { WIDGET_REGISTRY } from './widgets/registry';
+import { WIDGET_COMPONENTS } from './widgets/registry';
 
 /** How far Pantry Health moves down in the header: added above it, taken from the room above the sheet. */
 const HEADER_SHIFT = 10;
@@ -95,10 +95,9 @@ export function DashboardPage() {
           >
             {layout.data.widgets.map(({ id, type, size }) => {
               // A layout saved by a newer app version may hold a type this one lacks.
-              const definition = WIDGET_REGISTRY[type] as
-                (typeof WIDGET_REGISTRY)[typeof type] | undefined;
-              if (!definition) return null;
-              const Widget = definition.component;
+              const Widget = WIDGET_COMPONENTS[type] as
+                (typeof WIDGET_COMPONENTS)[typeof type] | undefined;
+              if (!Widget) return null;
               return <Widget key={id} size={size} columns={columns} />;
             })}
           </Box>

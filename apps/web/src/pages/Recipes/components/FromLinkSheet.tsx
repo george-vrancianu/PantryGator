@@ -1,14 +1,13 @@
 import {
   Alert,
   Box,
-  Button,
-  CookbookIcon,
   Sheet,
   Stack,
   TextField,
   Typography,
   radius,
 } from '@pocket-pantry/ui';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { CreditPrice } from '../../../components/CreditPrice';
@@ -53,23 +52,36 @@ export function FromLinkSheet({
   onClose: () => void;
   onExited?: () => void;
 }) {
-  const { t } = useTranslation('recipes');
+  // A fresh body each time the sheet opens, so an earlier read's link is never left in the field.
+  const [session, setSession] = useState(0);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setSession(session + 1);
+  }
   return (
-    <Sheet
+    <FromLinkBody
+      key={session}
       open={open}
       onClose={onClose}
       onExited={onExited}
-      size="content"
-      label={t('fromLink.heading')}
-    >
-      <FromLinkForm onSubmitted={onClose} />
-    </Sheet>
+    />
   );
 }
 
-/** Mounted afresh each time the sheet opens, so an earlier read's link is never left in the field. */
-function FromLinkForm({ onSubmitted }: { onSubmitted: () => void }) {
+function FromLinkBody({
+  open,
+  onClose,
+  onExited,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onExited?: () => void;
+}) {
+  const onSubmitted = onClose;
   const { t } = useTranslation('recipes');
+  const formId = useId();
+  const navigate = useNavigate();
   const linkPrice = useCreditPrice('link-page');
   const [url, setUrl] = useState('');
   const [language, setLanguage] = useState<ReadingLanguage>('catalog');
@@ -128,81 +140,101 @@ function FromLinkForm({ onSubmitted }: { onSubmitted: () => void }) {
     setDuplicate({ recipeId, read: () => start(true) });
   };
 
-  if (duplicate) {
-    return (
-      <Box sx={{ px: 2.5, pt: 1, pb: 2.5 }}>
-        <AlreadyInRecipes
-          ref={duplicateHeading}
-          recipeId={duplicate.recipeId}
-          onOpen={onSubmitted}
-          onReadAgain={duplicate.read}
-        />
-      </Box>
-    );
-  }
-
   return (
-    <Stack
-      component="form"
-      spacing={2}
-      noValidate
-      onSubmit={submit}
-      aria-label={t('fromLink.heading')}
-      sx={{ px: 2.5, pt: 1, pb: 2.5 }}
+    <Sheet
+      open={open}
+      onClose={onClose}
+      onExited={onExited}
+      size="content"
+      title={t('fromLink.heading')}
+      primary={
+        duplicate
+          ? {
+              label: t('fromLink.duplicate.open'),
+              onClick: () => {
+                // Close first: closing edits the address, and the Recipe's must come last.
+                onSubmitted();
+                navigate(`/recipes/${duplicate.recipeId}`);
+              },
+            }
+          : {
+              label: checking ? t('fromLink.checking') : t('fromLink.submit'),
+              form: formId,
+              pending: checking,
+              disabled: input === '',
+            }
+      }
+      secondary={
+        duplicate
+          ? {
+              label: t('fromLink.duplicate.readAgain'),
+              onClick: duplicate.read,
+            }
+          : undefined
+      }
     >
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-        <CookbookIcon size={24} aria-hidden="true" />
-        <Typography component="h2" variant="h2">
-          {t('fromLink.heading')}
-        </Typography>
-      </Stack>
-      <Typography color="text.secondary">{t('fromLink.hint')}</Typography>
-      {full ? (
-        <Alert>{t('fromLink.full', { count: MAX_HELD_RECIPE_READS })}</Alert>
-      ) : null}
-      <Box>
-        <Typography
-          component="label"
-          htmlFor={fieldId}
-          variant="sectionLabel"
-          color="text.secondary"
-          sx={{ display: 'block', mb: '6px' }}
+      {duplicate ? (
+        <Box sx={{ px: 2.5, pt: 1, pb: 2.5 }}>
+          <AlreadyInRecipes ref={duplicateHeading} />
+        </Box>
+      ) : (
+        <Stack
+          id={formId}
+          component="form"
+          spacing={2}
+          noValidate
+          onSubmit={submit}
+          aria-label={t('fromLink.heading')}
+          sx={{ px: 2.5, pt: 1, pb: 2.5 }}
         >
-          {t('fromLink.label')}
-        </Typography>
-        <TextField
-          id={fieldId}
-          type="url"
-          value={url}
-          onChange={(event) => {
-            setFull(false);
-            setUrl(event.target.value);
-          }}
-          sx={fieldSx}
-          slotProps={{
-            htmlInput: {
-              maxLength: MAX_LINK_LENGTH,
-              inputMode: 'url',
-              autoCapitalize: 'none',
-              autoCorrect: 'off',
-              spellCheck: false,
-            },
-          }}
-        />
-      </Box>
-      <ReadingLanguageChoice value={language} onChange={setLanguage} />
-      {linkPrice ? (
-        <Typography variant="meta" color="text.secondary">
-          <Trans
-            t={t}
-            i18nKey="fromLink.priceLink"
-            components={{ price: <CreditPrice kind="link-page" /> }}
-          />
-        </Typography>
-      ) : null}
-      <Button type="submit" fullWidth disabled={input === '' || checking}>
-        {checking ? t('fromLink.checking') : t('fromLink.submit')}
-      </Button>
-    </Stack>
+          <Typography color="text.secondary">{t('fromLink.hint')}</Typography>
+          {full ? (
+            <Alert>
+              {t('fromLink.full', { count: MAX_HELD_RECIPE_READS })}
+            </Alert>
+          ) : null}
+          <Box>
+            <Typography
+              component="label"
+              htmlFor={fieldId}
+              variant="sectionLabel"
+              color="text.secondary"
+              sx={{ display: 'block', mb: '6px' }}
+            >
+              {t('fromLink.label')}
+            </Typography>
+            <TextField
+              id={fieldId}
+              type="url"
+              value={url}
+              onChange={(event) => {
+                setFull(false);
+                setUrl(event.target.value);
+              }}
+              sx={fieldSx}
+              slotProps={{
+                htmlInput: {
+                  maxLength: MAX_LINK_LENGTH,
+                  inputMode: 'url',
+                  autoCapitalize: 'none',
+                  autoCorrect: 'off',
+                  spellCheck: false,
+                },
+              }}
+            />
+          </Box>
+          <ReadingLanguageChoice value={language} onChange={setLanguage} />
+          {linkPrice ? (
+            <Typography variant="meta" color="text.secondary">
+              <Trans
+                t={t}
+                i18nKey="fromLink.priceLink"
+                components={{ price: <CreditPrice kind="link-page" /> }}
+              />
+            </Typography>
+          ) : null}
+        </Stack>
+      )}
+    </Sheet>
   );
 }
