@@ -9,16 +9,16 @@ import {
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { localIso } from '../../lib/pantry';
+import { localIso } from '@/lib/pantry';
 import {
   dateRange,
   planPhase,
   planTitle,
   useMealPlans,
   type PlanPhase,
-} from '../../lib/mealPlanPage';
-import { useToday } from '../../lib/useToday';
-import { translateApiError } from '../../i18n/translateApiError';
+} from '@/lib/mealPlanPage';
+import { useToday } from '@/lib/useToday';
+import { translateApiError } from '@/i18n/translateApiError';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 
 const PHASE_TONE: Record<PlanPhase, TagTone> = {

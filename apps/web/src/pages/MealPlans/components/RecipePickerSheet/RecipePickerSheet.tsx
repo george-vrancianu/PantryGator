@@ -3,13 +3,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExploreRow } from '@/components/recipe/ExploreRow/ExploreRow';
-import { copyToFamily, refreshAfterCopy } from '../../../lib/addToFamily';
-import { translateApiError } from '../../../i18n/translateApiError';
-import {
-  isFiltering,
-  useRecipes,
-  type RecipeBrowse,
-} from '../../../lib/recipes';
+import { copyToFamily, refreshAfterCopy } from '@/lib/addToFamily';
+import { translateApiError } from '@/i18n/translateApiError';
+import { isFiltering, useRecipes, type RecipeBrowse } from '@/lib/recipes';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters/RecipeFilters';
 import { RecipeRow } from '@/components/recipe/RecipeRow/RecipeRow';
 

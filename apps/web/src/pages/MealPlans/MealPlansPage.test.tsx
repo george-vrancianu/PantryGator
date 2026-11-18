@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { iso, summary, plan, useFixedToday } from '../../test/mealPlans';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { iso, summary, plan, useFixedToday } from '@/test/mealPlans';
 import { MealPlansPage } from './MealPlansPage';
 
 describe('Meal plans list', () => {

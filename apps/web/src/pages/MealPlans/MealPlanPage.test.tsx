@@ -2,10 +2,10 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { MealPlanDetail } from '../../lib/mealPlanPage';
-import type { RecipeListItem } from '../../lib/recipes';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { issue, iso, plan, slot, useFixedToday } from '../../test/mealPlans';
+import type { MealPlanDetail } from '@/lib/mealPlanPage';
+import type { RecipeListItem } from '@/lib/recipes';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { issue, iso, plan, slot, useFixedToday } from '@/test/mealPlans';
 import { MealPlanPage } from './MealPlanPage';
 
 /** Yesterday, today and tomorrow. */

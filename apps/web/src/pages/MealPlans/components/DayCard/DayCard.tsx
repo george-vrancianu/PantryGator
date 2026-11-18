@@ -10,12 +10,8 @@ import {
   dayLabel,
   statusLabel,
 } from '@/components/mealPlan/MealPlanPopover/mealPlanText';
-import { MEALTIMES, type Mealtime } from '../../../lib/mealPlan';
-import {
-  missingFor,
-  type PlanDay,
-  type PlanSlot,
-} from '../../../lib/mealPlanPage';
+import { MEALTIMES, type Mealtime } from '@/lib/mealPlan';
+import { missingFor, type PlanDay, type PlanSlot } from '@/lib/mealPlanPage';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 
 /** A filled slot's forecast as the Widget's Tag: covered, on list, short, or "No longer available". */
