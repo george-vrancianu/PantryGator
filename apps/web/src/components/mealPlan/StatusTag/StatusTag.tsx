@@ -1,19 +1,20 @@
-import { CheckIcon, ShoppingIcon, Tag } from '@pocket-pantry/ui';
+import { CheckIcon, ShoppingIcon, Tag, type TagTone } from '@pocket-pantry/ui';
 import type { ReactNode } from 'react';
 import type { SlotStatus } from '@/lib/mealPlan';
 import { slotStatusTone } from '@/lib/statusTone';
 
-/** The icon a status carries by default: Covered a check, On list a trolley, the others none. */
-const defaultIcon = (status: SlotStatus): ReactNode => {
-  switch (status) {
-    case 'covered':
-      return <CheckIcon size={12} strokeWidth={3} />;
-    case 'onList':
-      return <ShoppingIcon size={12} strokeWidth={2.4} />;
-    case 'short':
-    case 'unavailable':
-      return undefined;
-  }
+/** One row per status: its tone (from the one status mapping) and the icon it carries by default, a check for Covered and a trolley for On list. */
+const statusLook: Record<SlotStatus, { tone: TagTone; icon: ReactNode }> = {
+  covered: {
+    tone: slotStatusTone.covered,
+    icon: <CheckIcon size={12} strokeWidth={3} />,
+  },
+  onList: {
+    tone: slotStatusTone.onList,
+    icon: <ShoppingIcon size={12} strokeWidth={2.4} />,
+  },
+  short: { tone: slotStatusTone.short, icon: undefined },
+  unavailable: { tone: slotStatusTone.unavailable, icon: undefined },
 };
 
 /** A Meal Plan forecast status as a Tag: tone and icon come from the one status mapping. */
@@ -28,7 +29,7 @@ export function StatusTag({
   children: ReactNode;
 }) {
   return (
-    <Tag tone={slotStatusTone[status]} icon={icon ?? defaultIcon(status)}>
+    <Tag tone={statusLook[status].tone} icon={icon ?? statusLook[status].icon}>
       {children}
     </Tag>
   );

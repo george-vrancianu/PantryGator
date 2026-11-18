@@ -37,6 +37,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { keyframesSx } from '@/lib/keyframesSx';
+import { onListTone } from '@/lib/statusTone';
 import {
   dayMissing,
   slotsInOrder,
@@ -175,7 +176,7 @@ function IssueLine({
         ) : null}
       </Box>
       {issue.onList ? (
-        <Tag tone="soon" sx={{ py: '2px', px: '7px' }}>
+        <Tag tone={onListTone} sx={{ py: '2px', px: '7px' }}>
           {t('forecast.status.onList')}
         </Tag>
       ) : !uncertain ? (

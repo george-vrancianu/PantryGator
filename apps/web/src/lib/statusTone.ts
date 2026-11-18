@@ -15,7 +15,7 @@ export const onListTone: TagTone = slotStatusTone.onList;
 
 /** The tone of a Recipe line's Pantry status. A line that is only short is "soon" (the Member can still buy it); a missing one is urgent. */
 export const pantryLineTone: Record<PantryLineStatus, TagTone> = {
-  covered: slotStatusTone.covered,
+  covered: 'accent',
   short: 'soon',
   missing: 'urgent',
 };

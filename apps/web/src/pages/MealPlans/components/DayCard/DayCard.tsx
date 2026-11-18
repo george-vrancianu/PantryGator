@@ -15,7 +15,7 @@ import { missingFor, type PlanDay, type PlanSlot } from '@/lib/mealPlanPage';
 import { RecipeRowLayout } from '@/components/recipe/RecipeRowLayout/RecipeRowLayout';
 
 /** A filled slot's forecast as the Widget's Tag: covered, on list, short, or "No longer available". */
-function StatusTag({ slot }: { slot: PlanSlot }) {
+function SlotStatus({ slot }: { slot: PlanSlot }) {
   const { t } = useTranslation('mealPlans');
   if (!slot.status) return null;
   return (
@@ -135,7 +135,7 @@ export const DayCard = forwardRef<HTMLHeadingElement, Props>(function DayCard(
               meta={[mealtimeName, t('servings', { count: slot.servings })]}
               pills={
                 <>
-                  {day.past ? null : <StatusTag slot={slot} />}
+                  {day.past ? null : <SlotStatus slot={slot} />}
                   {slot.allergyWarning ? (
                     <Box sx={{ mt: '6px' }}>
                       <AllergenIndicator
