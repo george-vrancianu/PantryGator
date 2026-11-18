@@ -27,7 +27,7 @@ We decided on one rule. `Sheet` enforces it through its interface: callers say w
 - **While the primary is pending,** both footer buttons are disabled and the X still works.
 - **A Sheet's primary is the standard primary button, not the gold key.** Gold marks the page's primary action in the top bar (ADR 0042); a second gold key inside a Sheet would weaken that signal.
 - **`Dialog` is retired.** `Sheet` already becomes a centred dialog from `md` up, so short confirmations become content-sized Sheets that follow the same rule.
-- **No custom footer.** `Sheet` drops its `header` and `footer` slots once every caller has moved. A Sheet that doesn't fit the rule needs an amendment here, not a hand-drawn footer.
+- **No custom footer.** `Sheet` no longer has `header`, `footer` or `label` (removed in #833, once every caller had moved). A Sheet that doesn't fit the rule needs an amendment here, not a hand-drawn footer.
 
 This overrides the sheet-action parts of these handoffs: `canopy` (§8.1 "Close or Done right", §8.2 the Done pill on Add items), `shopping` (the Done pill), `shopping-import` (the Close and Cancel pills), `family-catalog-rows` (Save on the left), `settings-handoff` (the Save pill) and `voice-notes` (ghost Discard and Keep reviewing become the secondary). Opening and closing focus is unchanged (ADR 0039).
 
@@ -42,7 +42,7 @@ This overrides the sheet-action parts of these handoffs: `canopy` (§8.1 "Close 
 
 ## Consequences
 
-- About 30 call sites move to the new interface, one area at a time (#821). `SheetHeader`, the editor footer portal and `Dialog` are deleted.
+- About 30 call sites move to the new interface, one area at a time (#821). `SheetHeader`, the editor footer portal and `Dialog` were deleted.
 - Some Sheets change shape:
   - **Quick View:** "See whole" becomes a link in the content, so Add and Make a Variant fit the footer.
   - **Meal Plan slot:** Clear becomes a destructive link.

@@ -466,24 +466,6 @@ describe('Sheet title row, footer and destructive link', () => {
     ).toBeTruthy();
   });
 
-  it('keeps the old label, header and footer working', () => {
-    render(
-      <Sheet
-        open
-        onClose={noop}
-        label="Old"
-        header={<h2>Head</h2>}
-        footer={<button type="button">Foot</button>}
-      >
-        Body
-      </Sheet>,
-    );
-    expect(screen.getByRole('dialog', { name: 'Old' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Foot' })).toBeTruthy();
-    // No new chrome is drawn for an old-style sheet.
-    expect(screen.queryByRole('button', { name: 'Close' })).toBeNull();
-  });
-
   it('rejects a secondary without a primary, at the type level', () => {
     render(
       // @ts-expect-error a secondary needs a primary (ADR 0043)

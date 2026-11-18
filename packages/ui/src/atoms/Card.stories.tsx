@@ -119,7 +119,7 @@ function ToastAndSheet() {
       <Sheet
         open={open}
         onClose={() => setOpen(false)}
-        label="Add items"
+        title="Add items"
         size="content"
       >
         <Box sx={{ p: 3 }}>Sheet body</Box>
