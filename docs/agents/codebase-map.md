@@ -33,7 +33,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `allergy/`: Allergen indicators and the "hidden by Allergies" note.
   - `auth/`: the sign-in and sign-up shell and the language switcher.
   - `backgroundRead/`: the Background Read host, Gator bubble and sheet.
-  - `catalog/`: Catalog Ingredient icon slot and the amount field.
+  - `catalog/`: Catalog Ingredient icon slot and the amount field (with its usual-amount row as a sub-part).
   - `catalogSearch/`: Catalog search and "add to Catalog" with aisle views.
   - `credits/`: Credit price display.
   - `dashboard/`: the Dashboard widget catalog.
@@ -44,7 +44,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `layout/`: the app frame, dock and providers (below).
   - `lists/`: shared list-row parts (flash, hint note, toggle errors, status icon, Staple toggle).
   - `mealPlan/`: the Meal Plan popover.
-  - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip, usual amount).
+  - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip).
   - `recipe/`: Recipe rows, filters, badges and Pantry status.
   - `recipeEditor/`: the Recipe editor's sections and fields.
   - `review/`: the app's `ReviewActionBar`, the `packages/ui` bar plus the Gator-bubble bound.
@@ -57,7 +57,7 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
 - `import/no-cycle` is on (error; the `import` plugin adds about 0.1s to the web lint run, 0.4s to 0.5s). `apps/web` has no import cycle; the last one (`lib/pantry.ts` -> `settings.ts` -> `recipes.ts` -> `pantry.ts`) went when `localIso` moved to `lib/localIso.ts` (`pantry.ts` still re-exports it). Break a new cycle by moving the shared piece into a module both sides import. The plugin's other rules add no findings.
 - Rule self-test: `npm run check:web-layout` (CI step) lints six fixtures that break the rules, one per `files` glob (`.ts` and `.tsx` in `components/lintSelfTest/`, `lib/lintSelfTest/`, `pages/Pantry/lintSelfTest/`; `npm run lint -w apps/web` ignores them), plus two shared-test fixtures (`AllowsPageInTest.test.fixture.ts` in `components/lintSelfTest/` and `lib/lintSelfTest/`) that must get 0 Rule A and exactly 1 Rule B, and fails if any rule glob stops matching or a whole-page import is flagged.
 - `lib/` holds non-visual logic: API client (`api.ts`), data hooks, the Voice Note module (`voiceNote.ts`), dates, amounts. `lib/tags.ts` holds the `RecipeTag` type and row ordering (`orderRowTags`, `splitRowTags`, `rowTagNames`).
-- `test/` holds shared test helpers: `render.tsx` (render with providers), `voice.ts` (fake voice environment), `voiceDom.ts` (mock-free bubble and Review-sheet DOM helpers: use it when a test does not need the voice mocks; import `test/voice` FIRST when it does), `setup.ts` (vitest setup), plus per-feature helpers (`scan.ts`, `review.ts`, `mealPlans.ts`, `viewport.ts`, `scroll.ts`).
+- `test/` holds shared test helpers: `render.tsx` (render with providers), `voice.ts` (fake voice environment), `voiceDom.ts` (mock-free bubble and Review-sheet DOM helpers: use it when a test does not need the voice mocks; import `test/voice` FIRST when it does), `setup.ts` (vitest setup), plus per-feature helpers (`scan.ts`, `review.ts`, `mealPlans.ts`, `viewport.ts`, `scroll.ts`, `familyRecipePages.tsx` (the New Recipe, New Variant and Edit Family Recipe pages rendered with their routes and stubbed API)).
 - i18n: `i18n/locales/{en,ro,da}/<namespace>.json`, one file per namespace, same names in all three. Wiring in `i18n/resources.ts`; API error codes map to copy in `i18n/translateApiError.ts`.
 
 ## UI package (`packages/ui/src`)
