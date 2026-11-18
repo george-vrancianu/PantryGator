@@ -452,10 +452,14 @@ describe('the expiry sheet in the Review table', () => {
     );
 
     await user.click(calendarDay(sheet, 'Monday, December 28, 2026'));
+    // Only Done commits the pick.
+    expect(screen.getByLabelText('Expiry date: Parmesan')).toHaveValue(
+      '24.12.2026',
+    );
+    await done(user);
     expect(screen.getByLabelText('Expiry date: Parmesan')).toHaveValue(
       '28.12.2026',
     );
-    await done(user);
     expect(opener).toHaveFocus();
     expect(await saved(user, calls)).toMatchObject({
       expiryDate: '2026-12-28',
@@ -480,8 +484,10 @@ describe('the expiry sheet in the Review table', () => {
     const calls = renderReview([line({ lowConfidence: true })]);
     const sheet = await openSheet(user);
     await user.click(sheetButton(sheet, 'No expiry'));
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
+    );
     expect(screen.getByLabelText('Expiry date: Parmesan')).toHaveValue('');
-    await done(user);
     expect(await saved(user, calls)).toMatchObject({ expiryDate: null });
   });
 
