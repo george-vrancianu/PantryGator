@@ -82,7 +82,8 @@ export function useRowHint(list: RowList, active: boolean): RowHint {
   }, [list]);
 
   return {
-    reserve: unseen && (active || shown),
+    // A gesture that skips the hint before it shows leaves nothing to reserve space for.
+    reserve: unseen && (shown || (active && !learned)),
     visible: shown && !learned,
     peek,
     onLearned,

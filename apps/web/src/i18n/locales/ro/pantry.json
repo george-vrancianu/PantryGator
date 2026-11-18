@@ -82,6 +82,7 @@
     "removeStaple": "Scoate din produsele de bază"
   },
   "batch": {
+    "named": "{{name}}, {{expires}}",
     "noDate": "fără dată"
   },
   "edit": {

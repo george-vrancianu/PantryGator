@@ -79,6 +79,7 @@
     "removeStaple": "Fjern som basisvare"
   },
   "batch": {
+    "named": "{{name}}, {{expires}}",
     "noDate": "ingen dato"
   },
   "edit": {

@@ -329,6 +329,12 @@ export function RollUpRow({
                   index === 0 && rowHint.leader === panelId && rowHint.hint.peek
                 }
                 onLearned={rowHint.hint.onLearned}
+                sameAmount={rollUp.batches.some(
+                  (other) =>
+                    other.id !== batch.id &&
+                    other.quantity === batch.quantity &&
+                    other.unit === batch.unit,
+                )}
                 today={today}
                 onRemove={onRemoveBatch}
                 onLeft={() =>
