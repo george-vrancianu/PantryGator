@@ -17,7 +17,7 @@ export type Choice<T extends string> = {
   lang?: string;
 };
 
-type Props<T extends string> = {
+type BaseProps<T extends string> = {
   /** Accessible and visible name of the group. */
   label: string;
   /** A line under the label, read as the group's description. */
@@ -25,21 +25,29 @@ type Props<T extends string> = {
   choices: Choice<T>[];
   value: T;
   onChange: (value: T) => void;
-  /**
-   * Rows one under another (the default), chips that wrap, or `list`: one bordered card with a
-   * row per choice, divider lines between them and the picked row marked by a check on a tint.
-   */
-  layout?: 'rows' | 'chips' | 'list';
   /** Hide the visible name (the group keeps it for assistive technology). */
   hideLabel?: boolean;
-  /**
-   * `olive` is for the Intro's olive ground: the group's name is cream, the picked choice is a cream
-   * card with a thick butter border, the others are the darker olive.
-   */
-  tone?: 'plain' | 'olive';
   /** Every choice is dimmed and cannot be picked; the group is marked disabled for assistive technology. */
   disabled?: boolean;
 };
+
+/**
+ * How the choices are laid out, and the tone. `list` is one bordered card with a row per choice,
+ * divider lines between them and the picked row marked by a check on a tint; it is only plain.
+ */
+type LayoutProps =
+  | {
+      /** Rows one under another (the default), or chips that wrap. */
+      layout?: 'rows' | 'chips';
+      /**
+       * `olive` is for the Intro's olive ground: the group's name is cream, the picked choice is a
+       * cream card with a thick butter border, the others are the darker olive.
+       */
+      tone?: 'plain' | 'olive';
+    }
+  | { layout: 'list'; tone?: 'plain' };
+
+type Props<T extends string> = BaseProps<T> & LayoutProps;
 
 function choiceRadius(layout: Props<string>['layout']) {
   return layout === 'chips' ? radius.chip : radius.control;
@@ -60,7 +68,7 @@ export function ChoiceRadioGroup<T extends string>({
   tone = 'plain',
   disabled = false,
 }: Props<T>) {
-  const list = layout === 'list' && tone === 'plain';
+  const list = layout === 'list';
   const olive = tone === 'olive';
   const id = useId();
   const labelId = `${id}-label`;

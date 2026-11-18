@@ -141,6 +141,8 @@ export function CatalogSearch({
   const inputRef = hostInputRef ?? ownInputRef;
   const reducedMotion = usePrefersReducedMotion();
   // The row's popover hangs from the whole row; it keeps clear of the bottom edge and the home indicator.
+  // The Dock is hidden on the Recipe editor routes (dockState), so the row clears only the safe inset,
+  // not `dockBottomPx()`; the inset is read once, so it does not follow a rotation.
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [viewportInset] = useState(() =>
     row ? readSafeInsets().bottom + 8 : 8,
@@ -376,6 +378,9 @@ export function CatalogSearch({
   const rowPopoverSx = {
     width: anchor?.offsetWidth,
     maxWidth: '100%',
+    // As tall as the inline popover was; the Popper caps it further to the room on its side.
+    maxHeight: 360,
+    overflowY: 'auto' as const,
     boxSizing: 'border-box' as const,
     ...cardSurface,
     boxShadow: shadow.float,

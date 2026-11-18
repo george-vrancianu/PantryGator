@@ -141,8 +141,13 @@ export function RecipeLinesSection({
                   // Keep the open popover above the rows after this one.
                   zIndex: addingKey === line.key ? 1 : row.sx.zIndex,
                   p: 1,
-                  borderTop: index === 0 ? 0 : 1,
-                  borderColor: 'divider',
+                  // In the editor card the card draws the hairlines between rows.
+                  ...(editorCard
+                    ? {}
+                    : {
+                        borderTop: index === 0 ? 0 : 1,
+                        borderColor: 'divider',
+                      }),
                 }}
               >
                 <Stack

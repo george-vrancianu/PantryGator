@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '../atoms/Layout';
 import { StepNumber } from '../atoms/StepNumber';
-import { AddRow, EditorCard } from './EditorCard';
+import { AddRow } from './AddRow';
+import { EditorCard } from './EditorCard';
 
 const meta: Meta<typeof EditorCard> = {
   title: 'Molecules/EditorCard',

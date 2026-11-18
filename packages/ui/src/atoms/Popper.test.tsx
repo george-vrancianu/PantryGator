@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Popper, roomOnSide } from './Popper';
+import { Popper, pickSide, roomOnSide } from './Popper';
 
 describe('roomOnSide', () => {
   const anchor = { top: 500, bottom: 550 };
@@ -19,6 +19,28 @@ describe('roomOnSide', () => {
 
   it('keeps a larger inset, such as one that clears the Dock', () => {
     expect(roomOnSide('bottom', anchor, 700, 100)).toBe(50);
+  });
+});
+
+describe('pickSide', () => {
+  it('opens below when the content fits there', () => {
+    expect(pickSide({ top: 100, bottom: 150 }, 700, 300, 8)).toBe('bottom');
+  });
+
+  it('opens below when a comfortable height is there, even if the content is taller', () => {
+    expect(pickSide({ top: 300, bottom: 350 }, 700, 900, 8)).toBe('bottom');
+  });
+
+  it('opens above when neither side fits the content and above has more room', () => {
+    expect(pickSide({ top: 500, bottom: 550 }, 700, 900, 8)).toBe('top');
+  });
+
+  it('stays below when neither side fits and below has more room', () => {
+    expect(pickSide({ top: 100, bottom: 150 }, 300, 900, 8)).toBe('bottom');
+  });
+
+  it('only needs the content height, not a comfortable one, when the content is short', () => {
+    expect(pickSide({ top: 500, bottom: 550 }, 700, 100, 8)).toBe('bottom');
   });
 });
 

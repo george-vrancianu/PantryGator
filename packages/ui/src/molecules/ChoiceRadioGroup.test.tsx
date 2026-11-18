@@ -138,6 +138,27 @@ describe('ChoiceRadioGroup', () => {
       expect(getComputedStyle(row('Română')).borderTopWidth).toBe('2px');
     });
 
+    it('disables every radio and marks the group disabled', () => {
+      const onChange = vi.fn();
+      render(
+        <ChoiceRadioGroup
+          label="Language"
+          layout="list"
+          disabled
+          choices={choices}
+          value="en"
+          onChange={onChange}
+        />,
+      );
+      expect(screen.getByRole('radiogroup').getAttribute('aria-disabled')).toBe(
+        'true',
+      );
+      for (const radio of screen.getAllByRole('radio')) {
+        expect((radio as HTMLInputElement).disabled).toBe(true);
+      }
+      expect(getComputedStyle(row('Română')).cursor).toBe('not-allowed');
+    });
+
     it('marks the picked row with a check', () => {
       render(
         <ChoiceRadioGroup

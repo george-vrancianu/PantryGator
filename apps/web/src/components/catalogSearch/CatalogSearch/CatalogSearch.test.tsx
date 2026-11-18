@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useState } from 'react';
+import { useState, type ReactElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CatalogSearchResult } from '@/lib/catalog';
 import { renderWithProviders } from '@/test/render';
@@ -1301,6 +1301,21 @@ describe('CatalogSearch row variant (editor card)', () => {
     const style = getComputedStyle(box);
     expect(style.height).toBe('50px');
     expect(style.boxShadow).toBe('');
+  });
+
+  it('draws the search icon in the accent, unlike the default field', () => {
+    stubSearch(() => []);
+    const iconColor = (ui: ReactElement) => {
+      const { unmount } = renderWithProviders(ui);
+      const box = screen.getByRole('combobox').parentElement!;
+      const value = getComputedStyle(box.firstElementChild!).color;
+      unmount();
+      return value;
+    };
+    const row = iconColor(<CatalogSearch variant="row" onSelect={() => {}} />);
+    const field = iconColor(<CatalogSearch onSelect={() => {}} />);
+    expect(row).not.toBe('');
+    expect(row).not.toBe(field);
   });
 
   it('keeps the default field at 48 pt', () => {
