@@ -1,9 +1,9 @@
 import { GlobeIcon } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
-import { SCAN_LANGUAGES } from '../../i18n/resources';
-import { usePreferredSpokenLanguage } from '../../lib/usePreferredSpokenLanguage';
-import { formatClock } from '../../lib/voice';
-import { useVoiceNoteState, voiceNote } from '../../lib/voiceNote';
+import { SCAN_LANGUAGES } from '@/i18n/resources';
+import { usePreferredSpokenLanguage } from '@/lib/usePreferredSpokenLanguage';
+import { formatClock } from '@/lib/voice';
+import { useVoiceNoteState, voiceNote } from '@/lib/voiceNote';
 import type {
   BackgroundAction,
   BackgroundItem,

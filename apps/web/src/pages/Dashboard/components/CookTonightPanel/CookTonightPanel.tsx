@@ -12,8 +12,8 @@ import type { CookTonightCard } from '@/lib/cookTonight';
 import { cookTonightPanelState } from '@/lib/cookTonightPanel';
 import { useGatorAlt } from '@/lib/useGatorAlt';
 import { useGatorTapLink } from '@/lib/useGatorTapLink';
-import { EmptyPotPanel } from '@/components/EmptyPotPanel';
-import { GatorBubblePanel } from '@/components/GatorBubblePanel';
+import { EmptyPotPanel } from '@/components/gator/EmptyPotPanel/EmptyPotPanel';
+import { GatorBubblePanel } from '@/components/gator/GatorBubblePanel/GatorBubblePanel';
 
 /**
  * Gator's bubble panel for Cook Tonight, in the wide/tall Dashboard Widget:

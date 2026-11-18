@@ -6,11 +6,11 @@ import { PantryPage } from '@/pages/Pantry/PantryPage';
 import { RecipesPage } from '@/pages/Recipes/RecipesPage';
 import { REFRESH_LOADER_RETRACT_MS } from '@pocket-pantry/ui';
 import { MIN_BUSY_MS } from '@/lib/refresh';
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from '../AppLayout/AppLayout';
 import { renderInAppLayout, renderWithProviders, stubApi } from '@/test/render';
 import { stubMatchMedia } from '@/test/viewport';
 import { makeScrollable, pull } from '@/test/scroll';
-import { AppScreenHeader } from '@/components/AppScreenHeader';
+import { AppScreenHeader } from '../Screen/AppScreenHeader/AppScreenHeader';
 
 const batch = {
   id: 'b1',

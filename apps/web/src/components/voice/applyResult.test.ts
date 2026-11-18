@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createI18n } from '../../i18n';
-import type { VoiceApplyResult, VoiceReviewAction } from '../../lib/voice';
+import { createI18n } from '@/i18n/index';
+import type { VoiceApplyResult, VoiceReviewAction } from '@/lib/voice';
 import { applyToast } from './applyResult';
 
 const act = (id: string, name: string) =>
