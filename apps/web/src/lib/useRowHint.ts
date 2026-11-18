@@ -55,6 +55,8 @@ export function useRowHint(list: RowList, active: boolean): RowHint {
   const [unseen] = useState(() => !wasShown(list));
   const [shown, setShown] = useState(false);
   const [learned, setLearned] = useState(false);
+  // The gesture that taught it is still down: the rows must not jump under the finger.
+  const [released, setReleased] = useState(false);
   const [peek, setPeek] = useState(false);
   const peekTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -74,6 +76,18 @@ export function useRowHint(list: RowList, active: boolean): RowHint {
 
   useEffect(() => () => clearTimeout(peekTimer.current), []);
 
+  // `onLearned` fires at zone 1, mid-drag: give the reserved space back only when the pointer lets go.
+  useEffect(() => {
+    if (!learned || released) return;
+    const release = () => setReleased(true);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    return () => {
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+    };
+  }, [learned, released]);
+
   const onLearned = useCallback(() => {
     // A gesture used before the hint showed makes it pointless for good.
     remember(list);
@@ -82,8 +96,8 @@ export function useRowHint(list: RowList, active: boolean): RowHint {
   }, [list]);
 
   return {
-    // A gesture that skips the hint before it shows leaves nothing to reserve space for.
-    reserve: unseen && (shown || (active && !learned)),
+    // A gesture that skips the hint before it shows leaves nothing to reserve space for, once it is released.
+    reserve: unseen && (shown || (active && !(learned && released))),
     visible: shown && !learned,
     peek,
     onLearned,

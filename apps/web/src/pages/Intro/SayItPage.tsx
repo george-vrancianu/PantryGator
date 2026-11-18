@@ -5,7 +5,7 @@ import {
   CheckIcon,
   color,
   radius,
-  tokens,
+  palette,
   Typography,
   IntroLook,
 } from '@pocket-pantry/ui';
@@ -174,8 +174,8 @@ function SayItScreen() {
                     width: 20,
                     height: 20,
                     borderRadius: '50%',
-                    backgroundColor: tokens.color.butter,
-                    color: tokens.color.butterInk,
+                    backgroundColor: palette('secondary-main'),
+                    color: palette('secondary-contrastText'),
                   }}
                 >
                   <CheckIcon size={13} />
