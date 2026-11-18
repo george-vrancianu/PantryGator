@@ -20,6 +20,7 @@ We decided on one layout and a lint rule that keeps it true. The moves are plann
   - There is no `common/` folder. Something with no domain home and no app knowledge belongs in `packages/ui`.
 - **Each component gets its own folder:** `RecipeRow/RecipeRow.tsx` with `RecipeRow.test.tsx` beside it, and no `index.ts`. Hooks and non-visual `.ts` files stay flat in `hooks/` or `lib/`, with their test beside them.
 - **Pages sit flat at their area root, one page per file** (`pages/Recipes/RecipePage.tsx`, its test beside it).
+  - The one exception is Shopping's Template pages (`TemplatesPage`, `TemplateEditorPage`), which sit in `pages/Shopping/templates/` with their Template parts (decided 2026-11-18).
 - **A test lives beside what it renders:**
   - a page test beside the page;
   - a component test in the component's folder;
