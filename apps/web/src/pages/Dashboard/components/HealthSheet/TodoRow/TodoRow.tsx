@@ -8,16 +8,16 @@ import {
   usePrefersReducedMotion,
   visuallyHidden,
 } from '@pocket-pantry/ui';
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { HealthTodo } from '@/lib/health';
 import type { useExpiryTags } from '@/lib/pantry';
 import type { PantryHealthState } from '@/lib/usePantryHealth';
-import { SEVERITY } from './severity';
-import type { TodoItem } from './todoItems';
-import { TodoItemRow, type ItemAction } from './TodoItemRow';
-import type { ShoppingFix } from './useAddToShoppingList';
-import type { DateFix } from './useDateBatches';
+import { SEVERITY } from '../severity';
+import type { TodoItem } from '../todoItems';
+import { TodoItemRow, type ItemAction } from '../TodoItemRow/TodoItemRow';
+import type { ShoppingFix } from '../useAddToShoppingList';
+import type { DateFix } from '../useDateBatches';
 
 const OPEN_MS = 300;
 const EASING = 'cubic-bezier(.2,.8,.2,1)';
@@ -27,8 +27,9 @@ type RowProps = {
   todo: HealthTodo;
   title: string;
   items: TodoItem[];
-  open: boolean;
-  onToggle: () => void;
+  /** The mounted row that is open; a row is open when this is its own mark. */
+  openRow: symbol | null;
+  onOpenChange: (row: symbol | null) => void;
   tagFor: ReturnType<typeof useExpiryTags>['tagFor'];
   onToss: PantryHealthState['tossBatches'];
   onUsed: PantryHealthState['markUsed'];
@@ -39,7 +40,7 @@ type RowProps = {
   onSetDate: (batchId: string) => void;
 };
 
-/** What a Member can do to one item of a Health To-do on its own row. */
+/** Which item action a Health To-do's row offers for this item. */
 function itemAction(todo: Pick<HealthTodo, 'key'>, item: TodoItem): ItemAction {
   if (todo.key === 'expired' || (todo.key === 'undated' && item.forgotten))
     return 'toss';
@@ -51,8 +52,8 @@ export function TodoRow({
   todo,
   title,
   items,
-  open,
-  onToggle,
+  openRow,
+  onOpenChange,
   tagFor,
   onToss,
   onUsed,
@@ -64,6 +65,9 @@ export function TodoRow({
   const { t } = useTranslation('dashboard');
   const reduceMotion = usePrefersReducedMotion();
   const itemsId = useId();
+  // A To-do that vanishes unmounts its row, so when it returns it is a new mark and starts closed.
+  const [self] = useState(() => Symbol(todo.key));
+  const open = openRow === self;
   const count = todo.itemIds.length;
   const severity = SEVERITY[todo.key];
   const names = items
@@ -120,7 +124,7 @@ export function TodoRow({
           type="button"
           aria-expanded={open}
           aria-controls={itemsId}
-          onClick={onToggle}
+          onClick={() => onOpenChange(open ? null : self)}
           sx={{
             all: 'unset',
             boxSizing: 'border-box',

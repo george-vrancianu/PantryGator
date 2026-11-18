@@ -1541,6 +1541,20 @@ describe('PantryHealthCluster', () => {
       expect(calls.some((call) => call.key.startsWith('DELETE'))).toBe(false);
     });
 
+    it('brings a tossed Health To-do back closed on Undo', async () => {
+      const { user, sheet } = await openTodo(/^Toss 2 expired/);
+
+      await user.click(
+        within(sheet).getByRole('button', { name: 'Toss 2 expired' }),
+      );
+      await user.click(await screen.findByRole('button', { name: 'Undo' }));
+
+      expect(disclosure(sheet, /^Toss 2 expired/)).toHaveAttribute(
+        'aria-expanded',
+        'false',
+      );
+    });
+
     it('tosses a single expired Batch from its row with "Toss {name}"', async () => {
       const { user, sheet, calls } = await openTodo(/^Toss 2 expired/);
 

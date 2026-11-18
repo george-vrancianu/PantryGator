@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   HEALTH_TODO_KEYS,
-  partitionForgotten,
+  isForgotten,
   usualExpiryDate,
   type HealthTodo,
   type HealthTodoGroup,
@@ -14,7 +14,7 @@ import type { PantryHealthState } from '@/lib/usePantryHealth';
 import { expiringSoonDay, todoTitle } from './todoText';
 import { todoItems } from './todoItems';
 import { SetDateSheet } from './SetDateSheet';
-import { TodoRow } from './TodoRow';
+import { TodoRow } from './TodoRow/TodoRow';
 import { useAddToShoppingList } from './useAddToShoppingList';
 import { useDateBatches } from './useDateBatches';
 
@@ -29,7 +29,7 @@ type Props = {
 export function HealthTodos({ state, today }: Props) {
   const { t, i18n } = useTranslation('dashboard');
   const { tagFor } = useExpiryTags(today);
-  const [openKey, setOpenKey] = useState<HealthTodoKey | null>(null);
+  const [openRow, setOpenRow] = useState<symbol | null>(null);
   const { todos, batches, staples, staleThresholdDays, tossBatches, markUsed } =
     state;
   const shopping = useAddToShoppingList(state);
@@ -53,12 +53,10 @@ export function HealthTodos({ state, today }: Props) {
     ...HEALTH_TODO_KEYS.filter(
       (key) => !todos.some((todo) => todo.key === key),
     ),
-    ...(partitionForgotten(batches, todayIso).forgotten.length > 0
+    ...(batches.some((batch) => isForgotten(batch, todayIso))
       ? []
       : (['rotation'] as const)),
   ];
-  // A Health To-do that is gone is shown closed; its key stays until the next toggle replaces it.
-  const shownKey = todos.some((todo) => todo.key === openKey) ? openKey : null;
 
   return (
     <Box sx={{ p: '4px 18px 30px' }}>
@@ -120,10 +118,8 @@ export function HealthTodos({ state, today }: Props) {
                   todo={todo}
                   title={todoTitle(t, todo, day)}
                   items={itemsOf(todo)}
-                  open={shownKey === todo.key}
-                  onToggle={() =>
-                    setOpenKey(shownKey === todo.key ? null : todo.key)
-                  }
+                  openRow={openRow}
+                  onOpenChange={setOpenRow}
                   tagFor={tagFor}
                   onToss={tossBatches}
                   onUsed={markUsed}

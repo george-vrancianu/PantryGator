@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import type { useExpiryTags } from '@/lib/pantry';
 import { ExpiryTag } from '@/components/pantry/ExpiryTag/ExpiryTag';
 import { IngredientIconSlot } from '@/components/catalog/IngredientIconSlot/IngredientIconSlot';
-import type { TodoItem } from './todoItems';
+import type { TodoItem } from '../todoItems';
 
 /** What a Member can do to one item of a Health To-do on its own row. */
 export type ItemAction = 'toss' | 'used' | null;
