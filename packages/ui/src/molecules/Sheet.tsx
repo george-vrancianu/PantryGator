@@ -2,7 +2,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import MuiDialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import {
+  createContext,
   forwardRef,
+  useContext,
   useId,
   useState,
   type ReactElement,
@@ -146,6 +148,16 @@ const SlideUp = forwardRef(function SlideUp(
   return <Slide direction="up" easing={SLIDE_EASING} ref={ref} {...props} />;
 });
 
+const SheetContainerContext = createContext<HTMLElement | null>(null);
+
+/**
+ * Where the Sheets below this provider open, instead of the end of the body: an element of the
+ * screen that forces its own Theme or turns its content (the camera, ADR 0037). A Sheet gets the
+ * Theme and the turn of that element, and `position: fixed` resolves against it when it has a
+ * transform. `null` (the default) is the body.
+ */
+export const SheetContainerProvider = SheetContainerContext.Provider;
+
 /**
  * A modal sheet: a bottom sheet (90 dvh or content-sized, handle, slides up) below `md`, a
  * centred dialog (`sm` wide, 80 vh) from `md` up. Built on the MUI dialog, so
@@ -173,6 +185,7 @@ export function Sheet({
   onEscape,
 }: SheetProps) {
   const titleId = useId();
+  const container = useContext(SheetContainerContext);
   const usesRoles = title !== undefined;
   const labels = useUiLabels();
   const centred = useBreakpointUp('md');
@@ -188,6 +201,7 @@ export function Sheet({
   return (
     <MuiDialog
       open={open}
+      container={container ?? undefined}
       disableRestoreFocus={skipRestore}
       onClose={(_event, reason) => {
         if (dismissable) onClose();

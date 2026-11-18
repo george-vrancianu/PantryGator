@@ -3,7 +3,6 @@
     "title": "Spune ce ai făcut",
     "body": "Ține apăsat butonul, vorbește, apoi dă drumul. Verifici fiecare modificare înainte să se salveze ceva.",
     "privacy": "<b>PantryGator are nevoie de microfon</b> ca să audă notele vocale. Browserul te va întreba în continuare. Înregistrarea este transformată în text pentru a citi modificările tale, apoi ștearsă; nu se păstrează nimic.",
-    "notNow": "Nu acum",
     "allow": "Permite microfonul",
     "examples": {
       "shopping": {
@@ -63,7 +62,6 @@
     "chrome": "Android, Chrome",
     "chromeStep1": "Atinge lacătul de lângă adresă",
     "chromeStep2": "<b>Permisiuni</b> → <b>Microfon</b> → <b>Permite</b>",
-    "close": "Închide",
     "retry": "Am permis",
     "still": "Încă blocat. Permite microfonul în browser, apoi încearcă din nou."
   },
@@ -278,7 +276,6 @@
       "onlyExpired": "Doar expirat",
       "notSure": "Nu sunt sigur"
     },
-    "done": "Gata",
     "onShoppingList": "Deja pe Lista de cumpărături",
     "expiringSoon": "Expiră curând",
     "addToList_one": "Adaugă {{count}} în Lista de cumpărături",

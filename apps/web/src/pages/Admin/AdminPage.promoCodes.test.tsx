@@ -190,7 +190,7 @@ describe('AdminPage Promo Codes tab', () => {
     );
     const dialog = await screen.findByRole('dialog');
     expect(revoked).toEqual([]);
-    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }));
     expect(revoked).toEqual([]);
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),

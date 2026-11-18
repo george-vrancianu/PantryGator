@@ -3,7 +3,6 @@
     "title": "Sig, hvad du har gjort",
     "body": "Hold knappen nede, tal, og slip. Du tjekker hver ændring, før noget bliver gemt.",
     "privacy": "<b>PantryGator har brug for din mikrofon</b> for at høre stemmenoter. Din browser spørger som det næste. Optagelsen bliver til tekst, så dine ændringer kan læses, og slettes derefter; intet bliver gemt.",
-    "notNow": "Ikke nu",
     "allow": "Tillad mikrofon",
     "examples": {
       "shopping": {
@@ -63,7 +62,6 @@
     "chrome": "Android, Chrome",
     "chromeStep1": "Tryk på låsen ved adressen",
     "chromeStep2": "<b>Tilladelser</b> → <b>Mikrofon</b> → <b>Tillad</b>",
-    "close": "Luk",
     "retry": "Jeg har tilladt den",
     "still": "Stadig blokeret. Tillad mikrofonen i din browser, og prøv igen."
   },
@@ -270,7 +268,6 @@
       "onlyExpired": "Kun udløbet",
       "notSure": "Ikke sikker"
     },
-    "done": "Færdig",
     "onShoppingList": "Allerede på indkøbslisten",
     "expiringSoon": "Udløber snart",
     "addToList_one": "Tilføj {{count}} til indkøbslisten",

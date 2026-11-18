@@ -1,9 +1,10 @@
-import { Box } from '@pocket-pantry/ui';
+import { Box, SheetContainerProvider } from '@pocket-pantry/ui';
 import type { SxProps, Theme } from '@mui/material/styles';
 import {
   createContext,
   useContext,
   useMemo,
+  useState,
   type ComponentProps,
   type ReactNode,
   type CSSProperties,
@@ -81,6 +82,8 @@ export function useCameraFrame(): FrameValue {
  */
 export function CameraFrame({ children }: { children: ReactNode }) {
   const orientation = useCameraOrientation();
+  // Sheets over the camera open in the turned box, so they keep its Theme and its turn.
+  const [box, setBox] = useState<HTMLElement | null>(null);
   const angle = orientation.rotateBack;
   const viewport = useMemo(
     () => ({
@@ -117,33 +120,36 @@ export function CameraFrame({ children }: { children: ReactNode }) {
         };
   return (
     <FrameContext.Provider value={value}>
-      <Box
-        data-testid="camera-frame"
-        data-rotate-back={angle}
-        style={style}
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          // The box itself lets touches through to the swipe surface under it; its children take them.
-          pointerEvents: 'none',
-          ':where(&) > *': { pointerEvents: 'auto' },
-          // MUI centres a Snackbar with left:50% from the `sm` breakpoint, which sees the landscape
-          // window: in a turned frame that squeezes it to half the width. Fill the frame instead.
-          ...(turned && {
-            '& .MuiSnackbar-root': {
-              left: 8,
-              right: 8,
-              transform: 'none',
-            },
-          }),
-          [INSET_TOP]: insets.top,
-          [INSET_BOTTOM]: insets.bottom,
-          [INSET_LEFT]: insets.left,
-          [INSET_RIGHT]: insets.right,
-        }}
-      >
-        {children}
-      </Box>
+      <SheetContainerProvider value={box}>
+        <Box
+          ref={setBox}
+          data-testid="camera-frame"
+          data-rotate-back={angle}
+          style={style}
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            // The box itself lets touches through to the swipe surface under it; its children take them.
+            pointerEvents: 'none',
+            ':where(&) > *': { pointerEvents: 'auto' },
+            // MUI centres a Snackbar with left:50% from the `sm` breakpoint, which sees the landscape
+            // window: in a turned frame that squeezes it to half the width. Fill the frame instead.
+            ...(turned && {
+              '& .MuiSnackbar-root': {
+                left: 8,
+                right: 8,
+                transform: 'none',
+              },
+            }),
+            [INSET_TOP]: insets.top,
+            [INSET_BOTTOM]: insets.bottom,
+            [INSET_LEFT]: insets.left,
+            [INSET_RIGHT]: insets.right,
+          }}
+        >
+          {children}
+        </Box>
+      </SheetContainerProvider>
     </FrameContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@pocket-pantry/ui';
+import { Sheet } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogSearch } from '@/components/catalogSearch/CatalogSearch/CatalogSearch';
@@ -13,13 +13,13 @@ type Props = {
   /** Ticked in the Contains row if the Member adds a new Family Ingredient: the Allergens a barcode product lists. */
   newIngredientAllergenIds?: readonly string[];
   onSelect: (match: CatalogSearchResult) => void;
-  /** Escape, backdrop click, or Cancel: the line stays as it was. */
+  /** The X, Escape or a scrim tap: the line stays as it was. */
   onClose: () => void;
 };
 
 /**
- * Pick the Ingredient a Review line matches: a bottom sheet on a phone, a
- * centred dialog on a wide screen. One instance serves every layout.
+ * Pick the Ingredient a Review line matches: a content-sized Sheet. Tapping a
+ * row picks; the X leaves the line as it was.
  */
 export function MatchDialog({
   open,
@@ -29,19 +29,15 @@ export function MatchDialog({
   onSelect,
   onClose,
 }: Props) {
-  const { t } = useTranslation(['review', 'common']);
+  const { t } = useTranslation('review');
   const searchRef = useRef<HTMLInputElement>(null);
   return (
-    <Dialog
+    <Sheet
+      size="content"
       open={open}
       onClose={onClose}
       title={t('review:match.dialogTitle', { name })}
       initialFocus={searchRef}
-      actions={
-        <Button variant="ghost" onClick={onClose}>
-          {t('common:cancel')}
-        </Button>
-      }
     >
       <CatalogSearch
         inputRef={searchRef}
@@ -50,6 +46,6 @@ export function MatchDialog({
         newIngredientAllergenIds={newIngredientAllergenIds}
         onSelect={onSelect}
       />
-    </Dialog>
+    </Sheet>
   );
 }

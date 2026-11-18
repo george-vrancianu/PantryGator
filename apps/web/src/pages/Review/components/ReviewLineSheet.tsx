@@ -1,12 +1,12 @@
-import { Box, Sheet, tokens } from '@pocket-pantry/ui';
+import { Sheet } from '@pocket-pantry/ui';
 import { useState, type RefObject } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
 import {
   displayName,
   type ReviewLine,
   type RowStatus,
 } from '../../../lib/review';
-import { sheetTitleId } from './layout';
 import { RowEditPanel } from './RowEditPanel';
 
 type Props = {
@@ -37,12 +37,16 @@ export function ReviewLineSheet({
   open,
   line,
   accessibleName,
+  sure,
+  onRemove,
+  onConfirm,
   onClose,
   initialFocus,
   onEntered,
   onExited,
   ...panel
 }: Props) {
+  const { t } = useTranslation('review');
   // Bumped once the sheet has closed, so a search left half-done is gone (the old match stays) when it opens again.
   const [opened, setOpened] = useState(0);
   return (
@@ -55,33 +59,17 @@ export function ReviewLineSheet({
         setOpened((n) => n + 1);
         onExited();
       }}
-      label={accessibleName}
-      header={
-        <Box
-          component="h2"
-          id={sheetTitleId(line.key)}
-          // Focus lands here (not on a field) when a matched line has nothing to fix.
-          tabIndex={-1}
-          sx={{
-            m: 0,
-            px: '20px',
-            py: '12px',
-            fontSize: 18,
-            fontWeight: 700,
-            color: tokens.color.ink,
-            overflowWrap: 'anywhere',
-          }}
-        >
-          {displayName(line)}
-        </Box>
-      }
+      title={displayName(line)}
+      primary={{
+        label: t(sure ? 'action.done' : 'action.confirm'),
+        onClick: onConfirm,
+      }}
+      destructive={{
+        label: t('action.remove', { name: accessibleName }),
+        onClick: onRemove,
+      }}
     >
-      <RowEditPanel
-        key={opened}
-        line={line}
-        accessibleName={accessibleName}
-        {...panel}
-      />
+      <RowEditPanel key={opened} line={line} {...panel} />
     </Sheet>
   );
 }

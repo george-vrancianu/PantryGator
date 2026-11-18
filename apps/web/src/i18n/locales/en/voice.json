@@ -3,7 +3,6 @@
     "title": "Say what you did",
     "body": "Hold the button, speak, let go. You check every change before anything is saved.",
     "privacy": "<b>PantryGator needs your microphone</b> to hear Voice Notes. Your browser will ask next. The recording is turned into text to read your changes, then deleted; nothing is kept.",
-    "notNow": "Not now",
     "allow": "Allow microphone",
     "examples": {
       "shopping": {
@@ -63,7 +62,6 @@
     "chrome": "Android, Chrome",
     "chromeStep1": "Tap the lock next to the address",
     "chromeStep2": "<b>Permissions</b> → <b>Microphone</b> → <b>Allow</b>",
-    "close": "Close",
     "retry": "I've allowed it",
     "still": "Still blocked. Allow the microphone in your browser, then try again."
   },
@@ -270,7 +268,6 @@
       "onlyExpired": "Only expired",
       "notSure": "Not sure"
     },
-    "done": "Done",
     "onShoppingList": "Already on your Shopping List",
     "expiringSoon": "Expiring soon",
     "addToList_one": "Add {{count}} to the Shopping List",

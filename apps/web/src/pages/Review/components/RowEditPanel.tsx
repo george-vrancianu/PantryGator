@@ -1,11 +1,4 @@
-import {
-  Box,
-  IconButton,
-  DeleteIcon,
-  tokens,
-  color,
-  radius,
-} from '@pocket-pantry/ui';
+import { Box, tokens } from '@pocket-pantry/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogParent, CatalogSearchResult } from '../../../lib/catalog';
@@ -33,18 +26,12 @@ import { fieldId } from './layout';
 type Props = {
   line: ReviewLine;
   status: RowStatus;
-  /** The Confirm button reads "Done" on a row that was already sure. */
-  sure: boolean;
   parents: CatalogParent[];
   onChange: (patch: Partial<ReviewLine>) => void;
   /** The chooser picked an Ingredient (another one, or a first one for an Unmatched line). */
   onPickMatch: (match: CatalogSearchResult) => void;
-  onRemove: () => void;
-  onConfirm: () => void;
   /** A Save or Confirm was blocked on this row: show every error now. */
   blocked: boolean;
-  /** From `accessibleNamesOf`: the display name, position-qualified when repeated. */
-  accessibleName: string;
 };
 
 /** The chooser's token for a name kept as typed: only its name and tag show. */
@@ -63,14 +50,10 @@ const typedResult: CatalogSearchResult = {
 export function RowEditPanel({
   line,
   status,
-  sure,
   parents,
   onChange,
   onPickMatch,
-  onRemove,
-  onConfirm,
   blocked,
-  accessibleName,
 }: Props) {
   const { t } = useTranslation(['review', 'pantry', 'common']);
   const expiry = useReviewLineExpiry(line, onChange);
@@ -216,7 +199,7 @@ export function RowEditPanel({
                   ? t('pantry:form.quantityInvalid')
                   : null
               }
-              // Enter has no save here; Confirm below closes the row.
+              // Enter has no save here; the sheet's primary closes the row.
               onSubmit={() => {}}
               // A Review line always carries a unit.
               allowNoUnit={false}
@@ -243,47 +226,6 @@ export function RowEditPanel({
               {...expiry}
               error={expiryError ? t('review:error.expiry') : null}
             />
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '8px',
-              alignSelf: 'flex-end',
-            }}
-          >
-            <IconButton
-              label={t('review:action.remove', { name: accessibleName })}
-              tone="urgentOutline"
-              size={40}
-              onClick={onRemove}
-            >
-              <DeleteIcon size={18} />
-            </IconButton>
-            <Box
-              component="button"
-              type="button"
-              onClick={onConfirm}
-              sx={{
-                flexGrow: 1,
-                height: 40,
-                border: 0,
-                borderRadius: radius.control,
-                bgcolor: tokens.color.accent,
-                color: color.accentInk,
-                fontFamily: 'inherit',
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: 'pointer',
-                '&:hover': { bgcolor: tokens.color.accentHover },
-                '&:focus-visible': {
-                  outline: `3px solid ${tokens.color.accent}`,
-                  outlineOffset: 2,
-                },
-              }}
-            >
-              {t(sure ? 'review:action.done' : 'review:action.confirm')}
-            </Box>
           </Box>
         </Box>
       </Box>

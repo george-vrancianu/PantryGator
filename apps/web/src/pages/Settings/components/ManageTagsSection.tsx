@@ -5,7 +5,7 @@ import {
   Card,
   CloseIcon,
   DeleteIcon,
-  Dialog,
+  Sheet,
   IconButton,
   Stack,
   TextField,
@@ -237,30 +237,18 @@ export function ManageTagsSection() {
           ) : null}
         </Stack>
       </Card>
-      <Dialog
+      <Sheet
         open={merging !== null}
+        size="content"
         onClose={() => setMerging(null)}
         title={t('settings:manageTags.merge.title', { name: merging?.name })}
-        actions={
-          <>
-            <Button
-              variant="ghost"
-              onClick={() => setMerging(null)}
-              sx={{ height: 52 }}
-            >
-              {t('common:cancel')}
-            </Button>
-            <Button
-              disabled={rename.isPending}
-              onClick={() =>
-                merging &&
-                send({ id: merging.id, name: merging.from }, merging.name, true)
-              }
-            >
-              {t('settings:manageTags.merge.confirm')}
-            </Button>
-          </>
-        }
+        primary={{
+          label: t('settings:manageTags.merge.confirm'),
+          pending: rename.isPending,
+          onClick: () =>
+            merging &&
+            send({ id: merging.id, name: merging.from }, merging.name, true),
+        }}
       >
         <Typography>
           {t('settings:manageTags.merge.body', {
@@ -268,7 +256,7 @@ export function ManageTagsSection() {
             from: merging?.from,
           })}
         </Typography>
-      </Dialog>
+      </Sheet>
     </Stack>
   );
 }

@@ -59,12 +59,12 @@ describe('Voice Note microphone sheets', () => {
       expect(screen.queryByText("Gator's listening")).toBeNull();
     });
 
-    it('can be pressed again after Not now, and changes nothing', async () => {
+    it('can be pressed again after closing, and changes nothing', async () => {
       renderInAppLayout(<ShoppingPage />, '/shopping');
       const button = await talkButton();
       pressDown(button);
       await userEvent.click(
-        await screen.findByRole('button', { name: 'Not now' }),
+        await screen.findByRole('button', { name: 'Close' }),
       );
       await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
       expect(mic.request).not.toHaveBeenCalled();

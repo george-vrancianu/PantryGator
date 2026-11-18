@@ -531,7 +531,7 @@ describe('AppLayout Review for actions that need a list', () => {
     );
     expect(
       dialog.getByRole('button', { name: 'Pick a list first' }),
-    ).toHaveAttribute('aria-disabled', 'true');
+    ).toBeEnabled();
     await userEvent.click(
       dialog.getByRole('button', { name: 'Pick a list first' }),
     );
@@ -549,7 +549,7 @@ describe('AppLayout Review for actions that need a list', () => {
     expect(dialog.queryByRole('region', { name: 'Shopping List' })).toBeNull();
     expect(
       dialog.getByRole('button', { name: 'Apply 1 change' }),
-    ).not.toHaveAttribute('aria-disabled');
+    ).toBeEnabled();
 
     await userEvent.click(
       pickerOf(dialog, 'Milk').getByRole('button', { name: 'Shopping List' }),
@@ -655,7 +655,7 @@ describe('AppLayout Review for actions that need a list', () => {
     await userEvent.click(all.getByRole('button', { name: 'Pantry' }));
     expect(
       dialog.getByRole('button', { name: 'Apply 2 changes' }),
-    ).not.toHaveAttribute('aria-disabled');
+    ).toBeEnabled();
     expect(sectionOf(dialog, 'Pantry')).toBeTruthy();
     expect(dialog.queryByRole('region', { name: 'Shopping List' })).toBeNull();
 
