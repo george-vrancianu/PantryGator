@@ -2,23 +2,23 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { IMAGE_PREPARATION } from '../../lib/scanImage';
-import { resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders } from '../../test/render';
-import { shutter, takeScan } from '../../test/scan';
-import { stubScreen } from '../../test/screen';
-import { IntroCameraPage } from '../Intro/IntroCameraPage';
+import { IMAGE_PREPARATION } from '@/lib/scanImage';
+import { resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders } from '@/test/render';
+import { shutter, takeScan } from '@/test/scan';
+import { stubScreen } from '@/test/screen';
+import { IntroCameraPage } from '@/pages/Intro/IntroCameraPage';
 import { ScanPage } from './ScanPage';
-import { CameraFrame } from '../../components/camera/CameraFrame';
-import { CameraToast } from '../../components/camera/CameraToast';
+import { CameraFrame } from '@/components/scan/camera/CameraFrame/CameraFrame';
+import { CameraToast } from '@/components/scan/camera/CameraToast/CameraToast';
 
 // On a phone on the web the camera chrome is rotated back by the opposite angle and the photo is
 // turned by the angle captured at the shutter (ADR 0037). The add-Batch camera is covered in
 // pages/Pantry/AddBatchRotateBack.test.tsx.
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/scanImage', () => {
+vi.mock('@/lib/scanImage', () => {
   const prepare = vi.fn(() => Promise.resolve('data:image/jpeg;base64,YQ=='));
   return {
     IMAGE_PREPARATION: {

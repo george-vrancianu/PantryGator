@@ -7,22 +7,22 @@ import {
   dispatchScanSession,
   getScanSession,
   resetScanSession,
-} from '../../lib/scanSession';
-import { Where } from '../../test/intro';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { scanOnce, shutter } from '../../test/scan';
+} from '@/lib/scanSession';
+import { Where } from '@/test/intro';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { scanOnce, shutter } from '@/test/scan';
 import {
   ReviewOverviewPage,
   type ReviewOverviewSettings,
-} from '../Review/ReviewOverviewPage';
+} from '@/pages/Review/ReviewOverviewPage';
 import { ScanPage, type ScanPageProps } from './ScanPage';
 
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
 
 function renderCamera(settings: ScanPageProps) {

@@ -8,24 +8,19 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetReads } from '../../lib/scanReads';
-import { dispatchScanSession, resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { ReviewOverviewPage } from '../Review/ReviewOverviewPage';
+import { resetReads } from '@/lib/scanReads';
+import { dispatchScanSession, resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { ReviewOverviewPage } from '@/pages/Review/ReviewOverviewPage';
 import { ScanPage } from './ScanPage';
-import {
-  fakeCamera,
-  expectStack,
-  photoStack,
-  stackCount,
-} from '../../test/scan';
+import { fakeCamera, expectStack, photoStack, stackCount } from '@/test/scan';
 
 const image = vi.hoisted(() => ({ cropFails: false }));
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
   cropToReceiptGuide: () => Promise.resolve('data:image/jpeg;base64,Y3JvcA=='),
   cropToReceiptArea: () =>

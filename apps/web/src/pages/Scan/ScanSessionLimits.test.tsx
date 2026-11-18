@@ -2,17 +2,17 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetReads } from '../../lib/scanReads';
-import { getScanSession, resetScanSession } from '../../lib/scanSession';
-import { renderWithProviders, stubApi } from '../../test/render';
-import { scanOnce } from '../../test/scan';
+import { resetReads } from '@/lib/scanReads';
+import { getScanSession, resetScanSession } from '@/lib/scanSession';
+import { renderWithProviders, stubApi } from '@/test/render';
+import { scanOnce } from '@/test/scan';
 import { ScanPage } from './ScanPage';
 
-vi.mock('../../lib/camera', async () =>
-  (await import('../../test/scan')).fakeCameraModule(),
+vi.mock('@/lib/camera', async () =>
+  (await import('@/test/scan')).fakeCameraModule(),
 );
-vi.mock('../../lib/image', async (importActual) => ({
-  ...(await importActual<typeof import('../../lib/image')>()),
+vi.mock('@/lib/image', async (importActual) => ({
+  ...(await importActual<typeof import('@/lib/image')>()),
   resizeImage: () => Promise.resolve('data:image/jpeg;base64,YQ=='),
 }));
 
@@ -66,7 +66,7 @@ describe('Scan Session limits', () => {
     for (let i = 0; i < 20; i += 1) await scanOnce();
     await scanOnce();
     expect(getScanSession().scans).toHaveLength(20);
-    const { dispatchScanSession } = await import('../../lib/scanSession');
+    const { dispatchScanSession } = await import('@/lib/scanSession');
     act(() =>
       dispatchScanSession({
         type: 'remove',
