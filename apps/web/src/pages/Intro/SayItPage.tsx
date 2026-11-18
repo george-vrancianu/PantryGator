@@ -43,8 +43,7 @@ const CONTINUE_TO = introPath(nextStep('say-it'));
 /** Say it's Voice Note settings: the app's Voice Inbox, with the Pantry as Default List (ADR 0021), the Setup look and no toast. */
 const SAY_IT_VOICE_SETTINGS: VoiceNoteSettings = {
   defaultTarget: 'pantry',
-  reviewLook: 'setup',
-  toastOnApply: false,
+  review: { look: 'setup', toastOnApply: false },
 };
 
 function ExampleCard({ phrase, result }: { phrase: string; result: string }) {
@@ -125,13 +124,16 @@ function SayItScreen() {
   // useAutoAdvance's: once the Voice Inbox is empty and something was saved here.
   const settings: VoiceNoteSettings = {
     ...SAY_IT_VOICE_SETTINGS,
-    afterApply: (result: VoiceApplyResult, actions: VoiceReviewAction[]) => {
-      // An apply of only already-done entries saved nothing new: it must not unlock moving on.
-      const savedSomething = result.applied.some((e) => !e.alreadyDone);
-      recordSaved(
-        savedByVoice(result.applied, actions),
-        savedSomething ? 'say-it' : undefined,
-      );
+    review: {
+      ...SAY_IT_VOICE_SETTINGS.review,
+      afterApply: (result: VoiceApplyResult, actions: VoiceReviewAction[]) => {
+        // An apply of only already-done entries saved nothing new: it must not unlock moving on.
+        const savedSomething = result.applied.some((e) => !e.alreadyDone);
+        recordSaved(
+          savedByVoice(result.applied, actions),
+          savedSomething ? 'say-it' : undefined,
+        );
+      },
     },
   };
 

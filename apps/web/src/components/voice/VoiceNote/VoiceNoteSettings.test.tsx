@@ -104,10 +104,9 @@ describe('the Voice Note host settings', () => {
     expect(sent[0].get('defaultTarget')).toBe('pantry');
   });
 
-  it('reviewLook: setup draws the Intro Review, app keeps the app one', async () => {
+  it('review.look: setup draws the Intro Review, app keeps the app one', async () => {
     await host({
-      ...APP_VOICE_SETTINGS,
-      reviewLook: 'setup',
+      review: { ...APP_VOICE_SETTINGS.review, look: 'setup' },
     });
     const review = await openFromStrip("Here's what I heard");
     expect(
@@ -115,18 +114,17 @@ describe('the Voice Note host settings', () => {
     ).toBeVisible();
   });
 
-  it('reviewLook: app keeps the app heading', async () => {
+  it('review.look: app keeps the app heading', async () => {
     await host(APP_VOICE_SETTINGS);
     const review = await openFromStrip(/./);
     expect(review).toHaveAccessibleName(/Review|What I heard/i);
     expect(review).not.toHaveAccessibleName("Here's what I heard");
   });
 
-  it('toastOnApply on: Apply toasts, and afterApply is told without changing the toast or look', async () => {
+  it('review.toastOnApply on: Apply toasts, and afterApply is told without changing the toast or look', async () => {
     const afterApply = vi.fn();
     await host({
-      ...APP_VOICE_SETTINGS,
-      afterApply,
+      review: { ...APP_VOICE_SETTINGS.review, afterApply },
     });
     await applyOne();
     await vi.waitFor(() => expect(afterApply).toHaveBeenCalledTimes(1));
@@ -135,12 +133,10 @@ describe('the Voice Note host settings', () => {
     expect(await screen.findByText(/applied/i)).toBeVisible();
   });
 
-  it('toastOnApply off: Apply shows no toast and hands the result to afterApply', async () => {
+  it('review.toastOnApply off: Apply shows no toast and hands the result to afterApply', async () => {
     const afterApply = vi.fn();
     await host({
-      ...APP_VOICE_SETTINGS,
-      toastOnApply: false,
-      afterApply,
+      review: { ...APP_VOICE_SETTINGS.review, toastOnApply: false, afterApply },
     });
     await applyOne();
     await vi.waitFor(() => expect(afterApply).toHaveBeenCalledTimes(1));
