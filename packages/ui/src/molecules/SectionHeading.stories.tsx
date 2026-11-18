@@ -20,3 +20,11 @@ export const OnlyYou: Story = {
 export const Admins: Story = {
   args: { scope: <ScopeCaption scope="admins" label="Admins" /> },
 };
+
+export const LongTitle: Story = {
+  args: {
+    title:
+      'A long line that keeps going well past one row so it has to wrap on a narrow phone and must still read cleanly.',
+    scope: <ScopeCaption scope="device" label="This phone" />,
+  },
+};

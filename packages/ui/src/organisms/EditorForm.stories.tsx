@@ -11,8 +11,7 @@ const labels: EditorFormLabels = {
   cancel: 'Cancel',
   delete: 'Delete',
   deleteConfirm: 'Delete this for good?',
-  confirm: 'Confirm',
-  cancelConfirm: 'Keep',
+  confirmLabels: { confirm: 'Confirm', cancel: 'Keep' },
 };
 
 const meta: Meta<typeof EditorForm> = {
@@ -50,4 +49,18 @@ export const InSheet: Story = {
       </EditorSheetContext.Provider>
     ),
   ],
+};
+export const CannotSave: Story = { args: { canSave: false } };
+export const Deleting: Story = {
+  args: { onDelete: noop, deleting: true },
+};
+export const LongText: Story = {
+  args: {
+    heading:
+      'A long line that keeps going well past one row so it has to wrap on a narrow phone and must still read cleanly.',
+    description:
+      'A long line that keeps going well past one row so it has to wrap on a narrow phone and must still read cleanly.',
+    errorMessage:
+      'A long line that keeps going well past one row so it has to wrap on a narrow phone and must still read cleanly.',
+  },
 };

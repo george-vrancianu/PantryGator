@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { ConfirmPrompt } from '@/components/confirm/ConfirmAction/ConfirmAction';
+import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
 import { EditorForm } from '@/components/editor/EditorForm/EditorForm';
 import { ExpiryField } from '@/components/expiryPicker/ExpiryField/ExpiryField';
 import { useFamily } from '@/lib/family';

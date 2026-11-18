@@ -3,6 +3,7 @@ import {
   type EditorFormProps,
 } from '@pocket-pantry/ui';
 import { useTranslation } from 'react-i18next';
+import { useConfirmLabels } from '@/components/editor/ConfirmAction/ConfirmAction';
 import { translateApiError } from '@/i18n/translateApiError';
 
 /** `Omit` that keeps each side of EditorForm's `hideActions` union. */
@@ -22,7 +23,8 @@ type Props = OmitEach<EditorFormProps, 'errorMessage' | 'labels'> & {
  * last API error translated.
  */
 export function EditorForm({ error, errorText, ...props }: Props) {
-  const { t } = useTranslation(['admin', 'errors', 'common']);
+  const { t } = useTranslation(['admin', 'errors']);
+  const confirmLabels = useConfirmLabels();
   return (
     <UiEditorForm
       {...props}
@@ -33,8 +35,7 @@ export function EditorForm({ error, errorText, ...props }: Props) {
         cancel: t('admin:common.cancel'),
         delete: t('admin:common.delete'),
         deleteConfirm: t('admin:common.deleteConfirm'),
-        confirm: t('common:confirm'),
-        cancelConfirm: t('common:cancel'),
+        confirmLabels,
       }}
     />
   );

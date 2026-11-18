@@ -11,8 +11,7 @@ const labels: EditorFormLabels = {
   cancel: 'Cancel',
   delete: 'Delete',
   deleteConfirm: 'Delete this for good?',
-  confirm: 'Confirm',
-  cancelConfirm: 'Keep',
+  confirmLabels: { confirm: 'Confirm', cancel: 'Keep' },
 };
 
 const base = {

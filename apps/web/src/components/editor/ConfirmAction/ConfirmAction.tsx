@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 /** The shared words of the "are you sure" step: Confirm and Cancel. */
-function useConfirmLabels() {
+export function useConfirmLabels() {
   const { t } = useTranslation('common');
   return { confirm: t('confirm'), cancel: t('cancel') };
 }

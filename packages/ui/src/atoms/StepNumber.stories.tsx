@@ -14,3 +14,7 @@ export const Filled: StoryObj<typeof StepNumber> = {};
 export const Dashed: StoryObj<typeof StepNumber> = {
   args: { dashed: true, children: '+' },
 };
+
+export const MultiDigit: StoryObj<typeof StepNumber> = {
+  args: { children: '128' },
+};

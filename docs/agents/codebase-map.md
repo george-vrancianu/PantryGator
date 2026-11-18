@@ -37,19 +37,19 @@ Root `package.json` fans out `lint`, `typecheck`, `test`, `build` to every works
   - `catalogSearch/`: Catalog search and "add to Catalog" with aisle views.
   - `credits/`: Credit price display.
   - `dashboard/`: the Dashboard widget catalog.
+  - `editor/`: the app's `EditorForm` (the `packages/ui` one with the editors' words and the translated API error filled in) and `ConfirmAction` / `ConfirmPrompt` (with the Confirm and Cancel words). Not a GLOSSARY term: the group is the app-word wrappers of the edit-and-delete step, which `EditorForm` nests.
   - `expiryPicker/`: the Expiry field, sheet and calendar helpers.
   - `gator/`: Gator banner, bubble panel and the empty-pot panel.
   - `intro/`: the setup callout.
-  - `layout/`: the app frame, dock and providers (below), and `ReviewActionBar` (the `packages/ui` bar plus the Gator-bubble bound).
+  - `layout/`: the app frame, dock and providers (below).
   - `lists/`: shared list-row parts (flash, hint note, toggle errors, status icon, Staple toggle).
   - `mealPlan/`: the Meal Plan popover.
   - `pantry/`: Pantry item parts (Expiry tag, Location icon and toggle, Running Low chip, usual amount).
   - `recipe/`: Recipe rows, filters, badges and Pantry status.
   - `recipeEditor/`: the Recipe editor's sections and fields.
+  - `review/`: the app's `ReviewActionBar`, the `packages/ui` bar plus the Gator-bubble bound.
   - `scan/`: Scan camera and barcode lookup notes.
   - `voice/`: Voice Note cards, sheets, answers and action editing.
-  - `confirm/`: the app's `ConfirmAction` / `ConfirmPrompt`, the `packages/ui` ones with the Confirm and Cancel words filled in.
-  - `editor/`: the app's `EditorForm`, the `packages/ui` one with the editors' words and the translated API error filled in.
   - Nothing sits loose at the `components/` root: it holds only group folders. Domain-free shared UI goes to `packages/ui` (BrandLockup, IntroLook, RowControls, SectionHeading, StepNumber, and the `EditorForm`, `ConfirmAction`, `ReviewActionBar` it wraps). `packages/ui` has no i18n, so such components take their words as props, and an app-side wrapper in a group supplies them when several callers share the strings.
 - `components/layout/` is the shared layout: `LayoutFrame` (top bar, header and the one scrolling sheet, page transitions, pull-to-refresh) and `Screen`, which every in-layout page renders to fill those regions. The window never scrolls: use `useScroller()` (`lib/scroller.tsx`) instead of `window.scrollTo/scrollBy/scrollY`. `lib/layoutKind.ts` says which route is a camera, editor or page, and which are Dock tab roots (`isRecipeEditor` is shared with `lib/dockState.ts`).
 - Cross-page tests: a `*.test.*` file under `components/` or `lib/` may import pages (ADR 0044 amendment), so a test of behaviour across several pages sits beside the shared module it checks (`components/layout/LayoutFrame/RefreshScreen.test.tsx`). Non-test shared files still never import pages.

@@ -25,3 +25,10 @@ export const First: Story = { args: { first: true } };
 export const Last: Story = { args: { last: true } };
 export const NoRemove: Story = { args: { remove: undefined } };
 export const Disabled: Story = { args: { disabled: true } };
+export const LongLabels: Story = {
+  args: {
+    moveUp: 'Move this ingredient up one place in the list',
+    moveDown: 'Move this ingredient down one place in the list',
+    remove: 'Remove this ingredient from the recipe',
+  },
+};

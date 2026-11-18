@@ -4,7 +4,7 @@ import {
 } from '@pocket-pantry/ui';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBubbleBottomBound } from '../useBubbleBottomBound';
+import { useBubbleBottomBound } from '@/components/layout/useBubbleBottomBound';
 
 type Props = Omit<ReviewActionBarProps, 'discardLabel' | 'ref'> & {
   /** "Discard" unless a screen has its own word for leaving (Setup says "Retake"). */

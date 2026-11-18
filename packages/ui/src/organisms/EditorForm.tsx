@@ -12,7 +12,11 @@ import { Alert } from '../atoms/Alert';
 import { Button } from '../atoms/Button';
 import { Box, Stack } from '../atoms/Layout';
 import { Typography } from '../atoms/Typography';
-import { ConfirmAction, ConfirmPrompt } from '../molecules/ConfirmAction';
+import {
+  ConfirmAction,
+  ConfirmPrompt,
+  type ConfirmLabels,
+} from '../molecules/ConfirmAction';
 import { Sheet } from '../molecules/Sheet';
 import { EditorSheetContext } from './editorSheetContext';
 
@@ -24,8 +28,7 @@ export type EditorFormLabels = {
   delete: string;
   deleteConfirm: string;
   /** The Confirm and Cancel buttons of the two-step delete. */
-  confirm: string;
-  cancelConfirm: string;
+  confirmLabels: ConfirmLabels;
 };
 
 type BaseProps = {
@@ -141,7 +144,7 @@ export function EditorForm({
         return (
           <ConfirmPrompt
             message={labels.deleteConfirm}
-            labels={{ confirm: labels.confirm, cancel: labels.cancelConfirm }}
+            labels={labels.confirmLabels}
             disabled={deleting}
             onConfirm={() => {
               setConfirmingDelete(false);
@@ -159,10 +162,7 @@ export function EditorForm({
           variant="ghost"
           label={deleteLabel}
           message={labels.deleteConfirm}
-          confirmLabels={{
-            confirm: labels.confirm,
-            cancel: labels.cancelConfirm,
-          }}
+          confirmLabels={labels.confirmLabels}
           disabled={deleting}
           onConfirm={onDelete}
         />

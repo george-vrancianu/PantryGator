@@ -2,7 +2,7 @@ import { Box, tokens, Typography } from '@pocket-pantry/ui';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GatorBanner } from '@/components/gator/GatorBanner/GatorBanner';
-import { ReviewActionBar } from '@/components/layout/ReviewActionBar/ReviewActionBar';
+import { ReviewActionBar } from '@/components/review/ReviewActionBar/ReviewActionBar';
 import type { SetupLeave } from '../SetupLeave/SetupLeave';
 import { SetupTopRow } from '../SetupTopRow/SetupTopRow';
 

@@ -3,7 +3,7 @@ import { paintedColour } from '../test/colour';
 import { authoredCss } from '../test/authoredCss';
 import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { renderWithTheme as renderWithProviders } from '../test/render';
+import { renderWithTheme } from '../test/render';
 import { IntroLook } from './IntroLook';
 
 const LIGHT_INK = '#141A16';
@@ -34,7 +34,7 @@ afterEach(() => {
 
 describe('IntroLook', () => {
   it('pads the top by the safe-area inset so Intro and auth screens clear the Dynamic Island', () => {
-    renderWithProviders(
+    renderWithTheme(
       <IntroLook>
         <p>Welcome</p>
       </IntroLook>,
@@ -49,7 +49,7 @@ describe('IntroLook', () => {
   ] as const)(
     'draws a status-bar band in the %s ground so scrolled content never shows behind the island',
     (ground, colour) => {
-      renderWithProviders(
+      renderWithTheme(
         <IntroLook ground={ground}>
           <p>Welcome</p>
         </IntroLook>,
@@ -62,7 +62,7 @@ describe('IntroLook', () => {
 
   it('paints its text in Light ink when the device is in Dark', () => {
     writeAppearance({ theme: 'dark', matchSystem: false });
-    renderWithProviders(
+    renderWithTheme(
       <IntroLook>
         <p>Create your account</p>
       </IntroLook>,

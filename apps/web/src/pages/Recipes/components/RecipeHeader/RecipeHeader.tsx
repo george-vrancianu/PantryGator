@@ -10,7 +10,7 @@ import { useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Screen } from '@/components/layout/Screen/Screen';
-import { ConfirmPrompt } from '@/components/confirm/ConfirmAction/ConfirmAction';
+import { ConfirmPrompt } from '@/components/editor/ConfirmAction/ConfirmAction';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useArchiveFamilyRecipe } from '@/lib/familyRecipes';
 import { familyRecipeHref } from '@/lib/recipeHref';

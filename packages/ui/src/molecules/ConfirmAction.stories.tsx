@@ -33,3 +33,11 @@ export const Prompt: StoryObj<typeof ConfirmPrompt> = {
     />
   ),
 };
+
+export const LongText: Story = {
+  args: {
+    label: 'Remove this ingredient from every recipe that uses it',
+    message:
+      'A long line that keeps going well past one row so it has to wrap on a narrow phone and must still read cleanly.',
+  },
+};
