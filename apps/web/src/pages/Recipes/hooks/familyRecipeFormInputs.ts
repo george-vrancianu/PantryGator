@@ -33,6 +33,7 @@ export function routePropsOf(
   return {
     resumed: route.resumed,
     onDraftId: route.onDraftId,
+    clearState: route.clearState,
     onLoadLatest: route.adopt,
   };
 }

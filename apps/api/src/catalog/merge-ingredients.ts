@@ -1,4 +1,5 @@
 import { and, eq, inArray, sql } from 'drizzle-orm';
+import { remapDraftIngredients } from '../recipe-drafts/remap-draft-ingredients';
 import { sharedTranslation } from './catalog-scope';
 import type { Tx } from '../database/database.types';
 import {
@@ -31,7 +32,7 @@ export type MergedIngredient = {
 
 /**
  * Folds the `sourceIds` Ingredients into `target` and deletes them: every
- * reference (Known Barcodes included) is re-pointed, and rows a Family would
+ * reference (Known Barcodes and Recipe Drafts included) is re-pointed, and rows a Family would
  * then hold twice (Staples, Running low, dismissals, stock history) are
  * de-duplicated. Batches also take the target's Leaf Category.
  *
@@ -75,6 +76,8 @@ export async function mergeIngredients(
     .update(recipePairings)
     .set({ linkedIngredientId: target.id })
     .where(inArray(recipePairings.linkedIngredientId, sourceIds));
+  // Recipe Drafts keep Ingredients inside their JSON content.
+  await remapDraftIngredients(tx, target.id, sourceIds);
 
   // Known Barcodes are unique per (Family, barcode), so re-pointing never collides.
   await tx

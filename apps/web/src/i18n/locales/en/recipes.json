@@ -335,7 +335,9 @@
     "conflictTitle": "This Recipe Draft was changed on another device",
     "conflictHint": "Your edits here are not saved. Load the latest to carry on from it.",
     "loadLatest": "Load latest",
-    "loadLatestFailed": "Couldn't load the latest. Try again."
+    "loadLatestFailed": "Couldn't load the latest. Try again.",
+    "keepAsNew": "Keep as a new Recipe Draft",
+    "seeDrafts": "See your Recipe Drafts"
   },
   "drafts": {
     "entry": "Drafts ({{count}})",
@@ -354,6 +356,9 @@
     "menu": "Options for {{name}}",
     "discard": "Discard draft",
     "discarded": "Recipe Draft discarded",
+    "discardAll": "Discard all",
+    "discardedMany_one": "{{count}} Recipe Draft discarded",
+    "discardedMany_other": "{{count}} Recipe Drafts discarded",
     "removeQuestion": "Discard {{name}}?",
     "context": "from your Recipe Drafts",
     "removeAction": "Discard {{name}}",

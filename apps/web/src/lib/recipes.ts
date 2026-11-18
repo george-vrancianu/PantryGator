@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { apiRequest } from './api';
+import { ApiError, apiRequest } from './api';
 import type { RecipeTag } from './tags';
 import type {
   Difficulty,
@@ -363,12 +363,26 @@ export function useResolveTag() {
   });
 }
 
+/**
+ * For a lookup that waits on the answer (the base of a resumed Recipe Draft): a
+ * Recipe that is gone or hidden answers 404 or 403 for good, so it settles at
+ * once instead of after the retries; other failures get two.
+ */
+export function retryUnlessGone(failureCount: number, error: unknown) {
+  if (
+    error instanceof ApiError &&
+    (error.status === 404 || error.status === 403)
+  )
+    return false;
+  return failureCount < 2;
+}
+
 /** One Recipe with its text, plus its base, Variants and ingredient diff. */
 export function useRecipe(
   id: string,
   enabled = true,
-  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form). */
-  retry?: boolean,
+  /** `false` to fail at once instead of retrying (a side lookup that must not hold a form); `retryUnlessGone` to settle at once on a 404 or 403 and retry other failures. */
+  retry?: boolean | typeof retryUnlessGone,
 ) {
   return useQuery({
     ...(retry === undefined ? {} : { retry }),

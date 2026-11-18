@@ -335,7 +335,9 @@
     "conflictTitle": "Denne opskriftkladde er ændret på en anden enhed",
     "conflictHint": "Dine ændringer her er ikke gemt. Hent den seneste kladde for at fortsætte fra den.",
     "loadLatest": "Hent nyeste",
-    "loadLatestFailed": "Kunne ikke hente den seneste kladde. Prøv igen."
+    "loadLatestFailed": "Kunne ikke hente den seneste kladde. Prøv igen.",
+    "keepAsNew": "Behold som ny opskriftkladde",
+    "seeDrafts": "Se dine opskriftkladder"
   },
   "drafts": {
     "entry": "Kladder ({{count}})",
@@ -354,6 +356,9 @@
     "menu": "Valgmuligheder for {{name}}",
     "discard": "Kassér kladde",
     "discarded": "Opskriftkladde kasseret",
+    "discardAll": "Kassér alle",
+    "discardedMany_one": "{{count}} opskriftkladde kasseret",
+    "discardedMany_other": "{{count}} opskriftkladder kasseret",
     "removeQuestion": "Kassér {{name}}?",
     "context": "fra dine opskriftkladder",
     "removeAction": "Kassér {{name}}",

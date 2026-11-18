@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DRAFT_PARAM } from '@/lib/recipeRoutes';
 import { useRecipeDraft, type RecipeDraftView } from '@/lib/recipeDrafts';
@@ -16,6 +16,8 @@ export function useRecipeDraftRoute(): {
   error: unknown;
   /** Call with the id once it exists: puts it in the URL by replacing the entry. */
   onDraftId: (id: string) => void;
+  /** Drops the router state (a supplied fill) from the history entry, without starting the form afresh: a reload then cannot create a second Recipe Draft from it. */
+  clearState: () => void;
   /** Reload the form on this Recipe Draft as fetched now (a version conflict's "Load latest"): the form remounts on it, with its new version. */
   adopt: (latest: RecipeDraftView) => void;
 } {
@@ -31,17 +33,30 @@ export function useRecipeDraftRoute(): {
     /** A Recipe Draft fetched on purpose to replace the form's content. */
     adopted: null as RecipeDraftView | null,
     reloads: 0,
+    /** Our own `clearState` replacement is on its way: not a new navigation. */
+    clearing: false,
   });
   if (formInstance.seen !== location.key) {
-    const ours = formInstance.own !== null && draftParam === formInstance.own;
-    setFormInstance({
-      key: ours ? formInstance.key : location.key,
-      seen: location.key,
-      own: ours ? formInstance.own : null,
-      adopted: null,
-      reloads: 0,
-    });
+    if (formInstance.clearing) {
+      setFormInstance({
+        ...formInstance,
+        seen: location.key,
+        clearing: false,
+      });
+    } else {
+      const ours = formInstance.own !== null && draftParam === formInstance.own;
+      setFormInstance({
+        key: ours ? formInstance.key : location.key,
+        seen: location.key,
+        own: ours ? formInstance.own : null,
+        adopted: null,
+        reloads: 0,
+        clearing: false,
+      });
+    }
   }
+  // StrictMode runs the form's effects twice on one location: clear once.
+  const clearedFor = useRef<string | null>(null);
   const resumeId =
     draftParam !== null &&
     draftParam !== formInstance.own &&
@@ -67,6 +82,16 @@ export function useRecipeDraftRoute(): {
         adopted: latest,
         reloads: current.reloads + 1,
       })),
+    clearState: () => {
+      if (location.state === null || location.state === undefined) return;
+      if (clearedFor.current === location.key) return;
+      clearedFor.current = location.key;
+      setFormInstance((current) => ({ ...current, clearing: true }));
+      navigate(
+        { pathname: location.pathname, search: location.search },
+        { replace: true, state: null },
+      );
+    },
     onDraftId: (id) => {
       if (id === draftParam) return;
       setFormInstance((current) => ({ ...current, own: id }));
