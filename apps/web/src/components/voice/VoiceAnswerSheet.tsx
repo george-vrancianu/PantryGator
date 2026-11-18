@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  gutterLeft,
-  gutterRight,
-  palette,
-  plusBottomInset,
-  radius,
-  shadow,
-  Sheet,
-  Typography,
-} from '@pocket-pantry/ui';
+import { Box, palette, radius, shadow, Sheet } from '@pocket-pantry/ui';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { focusVoiceButton } from '../../lib/voiceFocus';
@@ -19,7 +8,7 @@ import { AddToShoppingListButton } from './AddToShoppingListButton';
 import { HeardCard } from './HeardCard';
 import { PantryAnswerRow } from './PantryAnswerRow';
 
-/** The answer sheet for a Voice Note of only Pantry Questions: read-only, closed with Done. */
+/** The answer sheet for a Voice Note of only Pantry Questions: read-only, closed with the X. */
 export function VoiceAnswers() {
   const { phase } = useVoiceNoteState();
   return phase === 'answers' ? <AnswerSheet /> : null;
@@ -29,7 +18,7 @@ function AnswerSheet() {
   const { t } = useTranslation('voice');
   const { proposal, recording } = useVoiceNoteState();
   const { spokenLanguage } = usePreferredSpokenLanguage();
-  const title = useRef<HTMLHeadingElement>(null);
+  const body = useRef<HTMLDivElement>(null);
   const [added, setAdded] = useState(false);
   const answers = proposal?.answers ?? [];
 
@@ -42,42 +31,11 @@ function AnswerSheet() {
     <Sheet
       open
       onClose={done}
-      initialFocus={title}
-      label={t('answers.title')}
-      header={
-        <Box sx={{ px: 2.5, pt: 1.5, pb: 1.5 }}>
-          <Typography
-            component="h2"
-            variant="h2"
-            tabIndex={-1}
-            ref={title}
-            sx={{ outline: 'none' }}
-          >
-            {t('answers.title')}
-          </Typography>
-          {added ? null : (
-            <Typography sx={{ fontSize: 13, color: palette('text-secondary') }}>
-              {t('answers.subline')}
-            </Typography>
-          )}
-        </Box>
-      }
-      footer={
-        <Box
-          sx={{
-            pt: '12px',
-            pl: gutterLeft(16),
-            pr: gutterRight(16),
-            pb: plusBottomInset(20),
-          }}
-        >
-          <Button fullWidth onClick={done}>
-            {t('answers.done')}
-          </Button>
-        </Box>
-      }
+      title={t('answers.title')}
+      {...(added ? {} : { subtitle: t('answers.subline') })}
     >
       <Box
+        ref={body}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -114,7 +72,8 @@ function AnswerSheet() {
           answers={answers}
           onAdded={() => {
             setAdded(true);
-            title.current?.focus();
+            // The button that was pressed is gone: focus the dialog itself.
+            body.current?.closest<HTMLElement>('[role="dialog"]')?.focus();
           }}
         />
       </Box>

@@ -2,7 +2,6 @@ import {
   ActionMenu,
   Box,
   Button,
-  Gator,
   Sheet,
   Typography,
   palette,
@@ -30,25 +29,29 @@ const GROUPS: BackgroundStatus[] = ['ready', 'reading', 'failed'];
 /**
  * The Review sheet: the Jobs in three groups (Ready to review, Being read, Could not be read), each
  * only when it has Jobs, newest first, a row with its title, detail and the buttons its kind
- * brings. `footer` carries a group action of a kind (Review all); the sheet adds its note.
+ * brings. `primary` carries a group action of a kind (Review all), `notice` its refusal; the sheet adds its note.
  */
 export function BackgroundSheet({
   open,
   items,
-  footer,
+  primary,
+  notice,
   onClose,
   onExited,
 }: {
   open: boolean;
   items: BackgroundItem[];
-  footer?: ReactNode;
+  primary?: { label: string; onClick: () => void };
+  /** A message for the content's end, announced when it appears (the Review all refusal). */
+  notice?: ReactNode;
   onClose: () => void;
   onExited: () => void;
 }) {
   const { t } = useTranslation('background');
-  const title = useRef<HTMLHeadingElement>(null);
-  // A row's button can take its own row away; focus would fall to the page.
-  const focusTitle = () => title.current?.focus();
+  const body = useRef<HTMLDivElement>(null);
+  // A row's button can take its own row away; focus would fall to the page: the dialog itself takes it.
+  const focusDialog = () =>
+    body.current?.closest<HTMLElement>('[role="dialog"]')?.focus();
 
   const renderAction = (action: BackgroundAction, index: number) =>
     action.type === 'menu' ? (
@@ -60,7 +63,7 @@ export function BackgroundSheet({
           label: item.label,
           onClick: () => {
             // The menu returns focus to its trigger, which is gone once the row is read again.
-            requestAnimationFrame(focusTitle);
+            requestAnimationFrame(focusDialog);
             item.onClick();
           },
         }))}
@@ -73,7 +76,7 @@ export function BackgroundSheet({
         aria-label={action.ariaLabel}
         onClick={() => {
           if (action.closesSheet) onClose();
-          else focusTitle();
+          else focusDialog();
           action.onClick();
         }}
       >
@@ -152,79 +155,15 @@ export function BackgroundSheet({
       open={open}
       onClose={onClose}
       onExited={onExited}
-      initialFocus={title}
-      label={t('sheet.title')}
-      footer={
-        <>
-          {footer}
-          <Box
-            sx={{
-              px: 2.5,
-              pb: 1.5,
-              pt: footer ? 0 : 1.5,
-              fontSize: 12,
-              color: 'text.secondary',
-              textAlign: 'center',
-            }}
-          >
-            {t('sheet.note')}
-          </Box>
-        </>
-      }
-      header={
-        <Box
-          sx={{
-            px: 2.5,
-            pt: 1.5,
-            pb: 1.5,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-          }}
-        >
-          <Box
-            aria-hidden
-            sx={{
-              flex: 'none',
-              width: 52,
-              height: 52,
-              borderRadius: '50%',
-              overflow: 'hidden',
-              display: 'grid',
-              placeItems: 'center',
-              background: 'var(--pp-bubble-face)',
-            }}
-          >
-            <Gator
-              mood="thinking"
-              size={54}
-              loop="idle"
-              entrance={false}
-              decorative
-            />
-          </Box>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              component="h2"
-              variant="h2"
-              tabIndex={-1}
-              ref={title}
-              sx={{ outline: 'none' }}
-            >
-              {t('sheet.title')}
-            </Typography>
-            <Box sx={{ fontSize: 13, color: 'text.secondary' }}>
-              {t('sheet.summary', {
-                ready: counts.ready,
-                reading: counts.reading,
-                failed: counts.failed,
-              })}
-            </Box>
-          </Box>
-        </Box>
-      }
+      title={t('sheet.title')}
+      subtitle={t('sheet.summary', {
+        ready: counts.ready,
+        reading: counts.reading,
+        failed: counts.failed,
+      })}
+      {...(primary ? { primary } : {})}
     >
-      <Box sx={{ px: 2, pb: 2 }}>
+      <Box ref={body} sx={{ px: 2, pb: 2 }}>
         {GROUPS.map((status) => {
           const group = newestFirst(items.filter((i) => i.status === status));
           if (group.length === 0) return null;
@@ -256,6 +195,20 @@ export function BackgroundSheet({
             </Box>
           );
         })}
+        {notice ? (
+          // Stays in view above the pinned Review all, whatever the list's length.
+          <Box sx={{ position: 'sticky', bottom: 0, mt: 1 }}>{notice}</Box>
+        ) : null}
+        <Box
+          sx={{
+            pt: 2,
+            fontSize: 12,
+            color: 'text.secondary',
+            textAlign: 'center',
+          }}
+        >
+          {t('sheet.note')}
+        </Box>
       </Box>
     </Sheet>
   );

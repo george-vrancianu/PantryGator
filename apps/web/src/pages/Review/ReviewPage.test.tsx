@@ -604,9 +604,10 @@ describe('ReviewPage', () => {
       screen.queryByRole('dialog', { name: /Change match/ }),
     ).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Unit: / })).toBeNull();
+    // The sheet's own Remove link stays within reach while searching.
     expect(
-      screen.queryByRole('button', { name: 'Remove Parmesan' }),
-    ).toBeNull();
+      screen.getByRole('button', { name: 'Remove Parmesan' }),
+    ).toBeInTheDocument();
     await userEvent.type(search, 'milk');
     const option = await screen.findByRole('option', { name: /Milk/ });
     // The chooser has no use for a unit chip.
@@ -674,14 +675,10 @@ describe('ReviewPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('focuses the sheet title, not the chooser, on a matched line with nothing to fix', async () => {
+  it('focuses the sheet itself, not the chooser, on a matched line with nothing to fix', async () => {
     renderReview([sure()]);
     const panel = await openSheet('Parmesan');
-    await waitFor(() =>
-      expect(
-        within(panel).getByRole('heading', { name: 'Parmesan' }),
-      ).toHaveFocus(),
-    );
+    await waitFor(() => expect(panel).toHaveFocus());
   });
 
   it('tells repeated names apart by position, and only then', async () => {
@@ -727,8 +724,10 @@ describe('ReviewPage', () => {
     await userEvent.click(
       screen.getByRole('button', { name: /Tomato \(2 of 2\)/ }),
     );
+    // The sheet is titled with the name; the Remove link tells the repeat apart.
+    const sheet = await screen.findByRole('dialog', { name: 'Tomato' });
     expect(
-      await screen.findByRole('dialog', { name: 'Tomato (2 of 2)' }),
+      within(sheet).getByRole('button', { name: 'Remove Tomato (2 of 2)' }),
     ).toBeInTheDocument();
   });
 
@@ -742,8 +741,9 @@ describe('ReviewPage', () => {
     await userEvent.click(
       screen.getByRole('button', { name: /Parmesan \(1 of 2\)/ }),
     );
+    const first = await screen.findByRole('dialog', { name: 'Parmesan' });
     expect(
-      await screen.findByRole('dialog', { name: 'Parmesan (1 of 2)' }),
+      within(first).getByRole('button', { name: 'Remove Parmesan (1 of 2)' }),
     ).toBeInTheDocument();
     expect(screen.getByTestId('selected-token')).toHaveTextContent('Parmesan');
     await userEvent.keyboard('{Escape}');
@@ -751,8 +751,11 @@ describe('ReviewPage', () => {
     await userEvent.click(
       screen.getByRole('button', { name: /Mystery jar \(2 of 2\)/ }),
     );
+    const second = await screen.findByRole('dialog', { name: 'Mystery jar' });
     expect(
-      await screen.findByRole('dialog', { name: 'Mystery jar (2 of 2)' }),
+      within(second).getByRole('button', {
+        name: 'Remove Mystery jar (2 of 2)',
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('combobox', { name: 'Matched ingredient' }),

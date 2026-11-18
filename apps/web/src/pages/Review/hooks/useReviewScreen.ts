@@ -43,12 +43,7 @@ import {
   unverifiedState,
   type UnverifiedState,
 } from '../../../lib/unverifiedState';
-import {
-  EXCLUDED_TOGGLE_ID,
-  fieldId,
-  rowId,
-  sheetTitleId,
-} from '../components/layout';
+import { EXCLUDED_TOGGLE_ID, fieldId, rowId } from '../components/layout';
 
 /**
  * Review screen state for one card of the Scan Session. The Member's edits live here, and are
@@ -207,11 +202,9 @@ export function useReviewScreen(
     // A blocked-Save sheet closed before it finished opening must not make this open scroll.
     blockedEntry.current = false;
     const field = firstFocusField(line);
-    // A matched line with nothing to fix has no field to land on: the title, not the chooser.
+    // A matched line with nothing to fix has no field to land on: the sheet itself, not the chooser.
     enterFocus.current =
-      field === 'match' && line.match
-        ? sheetTitleId(key)
-        : sheetFieldId(line, field);
+      field === 'match' && line.match ? null : sheetFieldId(line, field);
   };
   // The Sheet focuses this once it has opened (a text field stays unfocused on a phone, ADR 0039).
   const sheetInitialFocus = useMemo<RefObject<HTMLElement | null>>(

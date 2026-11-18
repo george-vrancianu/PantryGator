@@ -16,8 +16,6 @@ export const rowGridSx = {
 export const rowId = (key: string) => `review-line-${key}`;
 /** DOM id of the row's name. */
 export const titleId = (key: string) => `review-line-${key}-title`;
-/** DOM id of the phone line sheet's heading, where focus lands on a matched line with nothing to fix. */
-export const sheetTitleId = (key: string) => `review-line-${key}-sheet-title`;
 /** DOM id of the Excluded row's button, where focus goes when no row is left after a Remove. */
 export const EXCLUDED_TOGGLE_ID = 'review-excluded-toggle';
 /** DOM id of one of a row's inputs, so a blocked Save can focus the first invalid one. */

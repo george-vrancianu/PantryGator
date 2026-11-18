@@ -823,7 +823,7 @@ describe('Voice Note on the Shopping List', () => {
         expect(spoken(reads[1].body)).toBe('ro');
       });
 
-      it('puts focus on the sheet title after a language is picked', async () => {
+      it('puts focus on the sheet itself after a language is picked', async () => {
         const { dialog } = await failFirst('en');
         await userEvent.click(
           within(dialog).getByRole('button', {
@@ -833,11 +833,7 @@ describe('Voice Note on the Shopping List', () => {
         await userEvent.click(
           await screen.findByRole('menuitem', { name: 'Dansk' }),
         );
-        await waitFor(() =>
-          expect(
-            within(dialog).getByRole('heading', { name: 'Review' }),
-          ).toHaveFocus(),
-        );
+        await waitFor(() => expect(dialog).toHaveFocus());
       });
 
       it('gives only the picked note the new language when several fail on the Voice Cap', async () => {
