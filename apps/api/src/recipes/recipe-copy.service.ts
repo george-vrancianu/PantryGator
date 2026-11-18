@@ -56,6 +56,7 @@ export class RecipeCopyService {
   /**
    * `copy` for a Family, without an acting Member. Migration 0046 mirrors this copy in SQL
    * (it cannot call TypeScript), so the two must stay in parity.
+   * 0046 never queued Unmatched lines; migration 0053 backfills the names that came from the source.
    */
   async copyFor(
     familyId: string,

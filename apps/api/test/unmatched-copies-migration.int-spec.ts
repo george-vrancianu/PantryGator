@@ -34,6 +34,8 @@ const ids = {
   matched: id(14),
   archivedLine: id(15),
   ownLine: id(16),
+  sourceFresh: id(17),
+  discarded: id(18),
 };
 
 describe('Migration 0053: backfill Unmatched names of Recipe copies (integration)', () => {
@@ -94,7 +96,9 @@ describe('Migration 0053: backfill Unmatched names of Recipe copies (integration
          ($2, $6, 1, 'Dismissed Spice', 'dismissed spice'),
          ($3, $6, 2, 'Fresh Spice', 'fresh spice'),
          ($4, $7, 0, 'Archived Spice', 'archived spice'),
-         ($5, $8, 0, 'Own Spice', 'own spice')`,
+         ($5, $8, 0, 'Own Spice', 'own spice'),
+         ($9, $10, 0, 'Fresh Spice', 'fresh spice'),
+         ($11, $6, 3, 'Discarded Spice', 'discarded spice')`,
       [
         ids.queued,
         ids.dismissed,
@@ -104,6 +108,9 @@ describe('Migration 0053: backfill Unmatched names of Recipe copies (integration
         ids.copy,
         ids.archivedCopy,
         ids.ownRecipe,
+        ids.sourceFresh,
+        ids.catalog,
+        ids.discarded,
       ],
     );
     await client.query(
@@ -142,6 +149,14 @@ describe('Migration 0053: backfill Unmatched names of Recipe copies (integration
     expect(
       found.find((e) => e.raw_name === 'Dismissed Spice')?.dismissed_at,
     ).not.toBeNull();
+  });
+
+  it('does not queue a name the Family discarded by deleting its Family Ingredient', async () => {
+    await seed();
+    await migrate();
+    expect(
+      (await entries()).some((e) => e.ingredient_line_id === ids.discarded),
+    ).toBe(false);
   });
 
   it('is idempotent', async () => {
