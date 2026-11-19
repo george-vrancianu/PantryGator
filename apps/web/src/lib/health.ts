@@ -110,6 +110,18 @@ export function isForgotten(batch: HealthBatch, today: IsoDate): boolean {
   );
 }
 
+/** Splits Batches into the Forgotten ones and the rest, each in its input order, judging each Batch once. */
+export function partitionForgotten<T extends HealthBatch>(
+  batches: readonly T[],
+  today: IsoDate,
+): { forgotten: T[]; rest: T[] } {
+  const forgotten: T[] = [];
+  const rest: T[] = [];
+  for (const batch of batches)
+    (isForgotten(batch, today) ? forgotten : rest).push(batch);
+  return { forgotten, rest };
+}
+
 /** The Ingredients that have a live (unexpired) Batch, built once per input. */
 function stockedIds(input: HealthInput): Set<string> {
   const stocked = new Set<string>();
@@ -141,6 +153,11 @@ const SUPPLY_CREDIT: Record<SupplyState, number> = {
   missing: 0,
 };
 
+/**
+ * Which of the five Supply states an Ingredient is in, from whether it is stocked, on the Running low list
+ * and on the Shopping List. Each state earns its own credit in `SUPPLY_CREDIT` (ADR 0018); an Ingredient
+ * that is not stocked is never `low`, and one that is stocked is never `missing`.
+ */
 function supplyState(
   id: string,
   stocked: boolean,
@@ -354,10 +371,8 @@ export function healthTodos(input: HealthInput): HealthTodo[] {
     (id) => !input.onShoppingList.has(id) && stockedSet.has(id),
   );
   const undated = input.batches.filter((batch) => batch.expiryDate === null);
-  const forgotten = undated
-    .filter((batch) => isForgotten(batch, input.today))
-    .sort((a, b) => overdueRatio(b, input) - overdueRatio(a, input));
-  const rest = undated.filter((batch) => !isForgotten(batch, input.today));
+  const { forgotten, rest } = partitionForgotten(undated, input.today);
+  forgotten.sort((a, b) => overdueRatio(b, input) - overdueRatio(a, input));
 
   const todos: PendingTodo[] = [
     {

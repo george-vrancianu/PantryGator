@@ -51,7 +51,7 @@ export function usePantryScreen() {
   const { hiddenIds } = removal;
   // The Add to Pantry sheet opens over the list; `start` is what it begins with.
   // `open` is separate from the rest so the sheet keeps its start while it slides away.
-  const [adding, setAdding] = useState<{
+  const [addSheet, setAddSheet] = useState<{
     open: boolean;
     start?: AddBatchStart;
     /** A shelf card's Location: every pick in the visit goes there. */
@@ -128,25 +128,24 @@ export function usePantryScreen() {
       !(query === '' && filter !== 'all'),
     error: batches.error ? translateApiError(t, batches.error) : null,
     today,
-    adding: adding.open,
-    /** The Location a shelf card's "+" presets for the sheet's picks. */
-    addLocation: adding.location,
-    /** What the Add to Pantry sheet starts with: nothing (the header "+") or a row's Ingredient. */
-    addStart: adding.start,
-    startAdding: () => setAdding({ open: true }),
-    /** A shelf card's "+": the sheet with that Location preset. */
-    startAddingAt: (location: StorageLocation) =>
-      setAdding({ open: true, location }),
+    /** The Add to Pantry sheet's `open`, `start` and `location` props. */
+    addSheet,
+    /** The header "+": the sheet with nothing preset. */
+    openAddSheet: () => setAddSheet({ open: true }),
+    /** A shelf card's "+": the sheet with that Location preset for its picks. */
+    addToLocation: (location: StorageLocation) =>
+      setAddSheet({ open: true, location }),
     /** Add batch from an open card: its Ingredient picked, or its Unmatched name typed in. */
-    startAddingTo: (row: PantryRow) =>
-      setAdding({
+    addBatchToRow: (row: PantryRow) =>
+      setAddSheet({
         open: true,
         start:
           row.ingredientId === null
             ? { unmatchedName: row.name }
             : { ingredient: { id: row.ingredientId, name: row.name } },
       }),
-    stopAdding: () => setAdding((current) => ({ ...current, open: false })),
+    closeAddSheet: () =>
+      setAddSheet((current) => ({ ...current, open: false })),
     /** Open the Ingredient, closing any other; or close it if it is the open one. */
     toggleOpen: (key: OpenIngredientKey) =>
       setOpenKey((current) => (current === key ? null : key)),

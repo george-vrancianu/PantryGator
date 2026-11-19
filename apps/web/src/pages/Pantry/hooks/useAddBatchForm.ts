@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { translateApiError } from '@/i18n/translateApiError';
 import { useToast } from '@pocket-pantry/ui';
 import {
-  FALLBACK_LOCATION,
   useCatalogSearch,
   type CatalogAllergen,
   type CatalogSearchResult,
@@ -23,12 +22,12 @@ import { type ProposedLine } from '@/lib/scan';
 import { defaultAmount } from '@/lib/usualAmounts';
 import type { CameraResult } from '@/components/scan/camera/CameraOverlay/CameraOverlay';
 import {
-  defaultExpiryDate,
   parseAmountText,
   useAddBatch,
   type Batch,
   type IsoDate,
 } from '@/lib/pantry';
+import { expiryFrom, locationFor, unmark } from './addBatchFields';
 
 /**
  * What the form starts with, from an open Ingredient card: the Ingredient (its id and name; the
@@ -85,7 +84,7 @@ export function useAddBatchForm({
   const [frozenUnit, setFrozenUnit] = useState<Unit | null>(null);
   const unit: Unit = chosenUnit ?? frozenUnit ?? ingredient?.defaultUnit ?? 'g';
   const [location, setLocation] = useState<StorageLocation>(
-    presetLocation ?? FALLBACK_LOCATION,
+    locationFor(presetLocation, null),
   );
   const [expiryDate, setExpiryDate] = useState<IsoDate | null>(null);
   const [description, setDescription] = useState('');
@@ -112,11 +111,7 @@ export function useAddBatchForm({
   const [productName, setProductName] = useState<string | null>(null);
   const edit = (field: PrefillField) => {
     touch(field);
-    setPrefilled((was) => {
-      const next = new Set(was);
-      next.delete(field);
-      return next;
-    });
+    setPrefilled((was) => unmark(was, field));
     if (field === 'ingredient') {
       setCheckIngredient(false);
       setSource(null);
@@ -149,11 +144,8 @@ export function useAddBatchForm({
       setChosenUnit(null);
       setQuantity(usualAmountText(result));
     }
-    setLocation(
-      presetLocation ?? result.defaults.location ?? FALLBACK_LOCATION,
-    );
-    const days = result.defaults.expiryDays;
-    setExpiryDate(days === null ? null : defaultExpiryDate(days, new Date()));
+    setLocation(locationFor(presetLocation, result.defaults.location));
+    setExpiryDate(expiryFrom(result.defaults.expiryDays));
   };
 
   // A starting Ingredient has only its id and name: its Catalog defaults come from searching its
@@ -171,15 +163,12 @@ export function useAddBatchForm({
     setIngredient(startingDefaults);
     if (!touched.location)
       setLocation(
-        presetLocation ??
-          startingDefaults.defaults.location ??
-          FALLBACK_LOCATION,
+        locationFor(presetLocation, startingDefaults.defaults.location),
       );
     if (!touched.amount && quantity.trim() === '')
       setQuantity(usualAmountText(startingDefaults));
-    const days = startingDefaults.defaults.expiryDays;
     if (!touched.expiry && !prefilled.has('expiry'))
-      setExpiryDate(days === null ? null : defaultExpiryDate(days, new Date()));
+      setExpiryDate(expiryFrom(startingDefaults.defaults.expiryDays));
     // Once, when the lookup lands; not again after the Member has picked or typed something else.
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- only startingDefaults: the other values are read as they are at that moment
   }, [startingDefaults]);
@@ -225,8 +214,8 @@ export function useAddBatchForm({
     const marks = new Set<PrefillField>();
     const matched = ingredientTouched ? null : read.match;
     if (!ingredientTouched) {
-      if (read.match) {
-        setIngredient(read.match);
+      if (matched) {
+        setIngredient(matched);
         setUnmatchedName(null);
         setFrozenUnit(null);
         setCheckIngredient(read.lowConfidence);
@@ -236,11 +225,7 @@ export function useAddBatchForm({
         setIngredient(null);
         setUnmatchedName(null);
         setCheckIngredient(false);
-        setPrefilled((was) => {
-          const next = new Set(was);
-          next.delete('ingredient');
-          return next;
-        });
+        setPrefilled((was) => unmark(was, 'ingredient'));
         if (read.name.trim()) setInitialQuery(read.name.trim());
       } else if (read.name.trim()) {
         setIngredient(null);
@@ -250,18 +235,13 @@ export function useAddBatchForm({
       }
     }
     if (matched && !touched.location)
-      setLocation(
-        presetLocation ?? matched.defaults.location ?? FALLBACK_LOCATION,
-      );
+      setLocation(locationFor(presetLocation, matched.defaults.location));
     if (!touched.expiry) {
       if (read.expiryDate) {
         setExpiryDate(read.expiryDate as IsoDate);
         marks.add('expiry');
       } else if (!ingredientTouched) {
-        const days = matched?.defaults.expiryDays ?? null;
-        setExpiryDate(
-          days === null ? null : defaultExpiryDate(days, new Date()),
-        );
+        setExpiryDate(expiryFrom(matched?.defaults.expiryDays ?? null));
       }
     }
     if (!touched.amount && read.quantity !== null) {

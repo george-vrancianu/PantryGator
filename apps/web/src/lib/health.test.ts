@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   healthTodos,
   pantryHealth,
+  partitionForgotten,
   usualExpiryDate,
   verdictOf,
   withExpiryDates,
@@ -515,6 +516,26 @@ describe('health to-dos', () => {
     expect(
       keys(input({ batches: [batch({ expiryDate: '2026-10-01' })] })),
     ).toEqual(['expired']);
+  });
+});
+
+describe('partitionForgotten', () => {
+  const old = (days: number) =>
+    new Date(Date.UTC(2026, 9, 15, 12) - days * 86_400_000).toISOString();
+
+  it('splits Batches into Forgotten and the rest, keeping each group in order', () => {
+    const a = batch({ expiryDate: null, createdAt: old(30) });
+    const b = batch({ expiryDate: null, createdAt: old(2) });
+    const c = batch({ expiryDate: null, createdAt: old(40) });
+    const dated = batch({ createdAt: old(3000) });
+    expect(partitionForgotten([a, b, c, dated], TODAY)).toEqual({
+      forgotten: [a, c],
+      rest: [b, dated],
+    });
+  });
+
+  it('returns two empty groups for no Batches', () => {
+    expect(partitionForgotten([], TODAY)).toEqual({ forgotten: [], rest: [] });
   });
 });
 
