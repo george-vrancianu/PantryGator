@@ -4,35 +4,58 @@ import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import {
-  MemoryRouter,
+  createMemoryRouter,
   Route,
+  RouterProvider,
   Routes,
   type InitialEntry,
 } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout/AppLayout';
 import { VoiceNotices } from '@/components/voice/VoiceNotices/VoiceNotices';
 import { createI18n, type Locale } from '../i18n';
+import { RethrowRouteError } from '../lib/RethrowRouteError';
 import { RouterLink } from '../lib/RouterLink';
 
-type Options = { route?: InitialEntry; locale?: Locale };
+type Options = {
+  route?: InitialEntry;
+  locale?: Locale;
+  /** Entries already behind `route` in the history, so `navigate(-1)` has somewhere to go. */
+  before?: InitialEntry[];
+};
 
-/** Render with the same providers as `main.tsx`, but a memory router and a fresh query cache. */
+/**
+ * Render with the same providers as `main.tsx`, but a memory router and a fresh query cache.
+ * The router is a data router (so `useBlocker` works), with one splat route around `ui`,
+ * as `main.tsx` has around `<App>`. A render crash is re-thrown, as in the app.
+ */
 export function renderWithProviders(
   ui: ReactElement,
-  { route = '/', locale = 'en' }: Options = {},
+  { route = '/', locale = 'en', before = [] }: Options = {},
 ) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   const i18n = createI18n(locale);
+  const router = createMemoryRouter(
+    [
+      {
+        path: '*',
+        errorElement: <RethrowRouteError />,
+        element: (
+          <>
+            <VoiceNotices />
+            {ui}
+          </>
+        ),
+      },
+    ],
+    { initialEntries: [...before, route] },
+  );
   const result = render(
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         <AppUiProvider linkComponent={RouterLink}>
-          <MemoryRouter initialEntries={[route]}>
-            <VoiceNotices />
-            {ui}
-          </MemoryRouter>
+          <RouterProvider router={router} />
         </AppUiProvider>
       </QueryClientProvider>
     </I18nextProvider>,
