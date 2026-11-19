@@ -21,6 +21,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/catalog/seed/run-seed.ts",
     "credits:grant": "tsx src/credits/grant/run-credits-grant.ts",
+    "demo:seed": "tsx src/demo/run-demo-seed.ts",
     "scan:replay": "tsx src/ai/scan-replay/run-scan-replay.ts",
     "voice:replay": "tsx src/ai/scan-replay/run-voice-replay.ts"
   },
