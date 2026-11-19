@@ -1,17 +1,16 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  BrowserRouter,
+  createBrowserRouter,
   Link,
-  Route,
-  Routes,
+  RouterProvider,
   useLocation,
   useNavigate,
 } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLeaveGuard } from './useLeaveGuard';
 
-/** The router the app really uses (`<BrowserRouter>`), where `useBlocker` does not exist. */
+/** The router the app really uses: a data router on the browser's real history. */
 let ask = false;
 
 function Form() {
@@ -62,20 +61,17 @@ function Page({ name }: { name: string }) {
 
 const mount = async () => {
   window.history.replaceState(null, '', '/start');
-  render(
-    <BrowserRouter>
-      <Routes>
-        <Route path="/start" element={<Page name="start" />} />
-        <Route path="/form" element={<Form />} />
-        <Route path="/other" element={<Page name="other" />} />
-      </Routes>
-    </BrowserRouter>,
-  );
+  const router = createBrowserRouter([
+    { path: '/start', element: <Page name="start" /> },
+    { path: '/form', element: <Form /> },
+    { path: '/other', element: <Page name="other" /> },
+  ]);
+  render(<RouterProvider router={router} />);
   await userEvent.click(screen.getByRole('button', { name: 'open form' }));
   await screen.findByText('form');
 };
 
-describe('useLeaveGuard on a BrowserRouter', () => {
+describe('useLeaveGuard on a data router', () => {
   let confirm: ReturnType<typeof vi.spyOn>;
   beforeEach(() => {
     ask = false;
@@ -174,7 +170,9 @@ describe('useLeaveGuard on a BrowserRouter', () => {
     await mount();
     ask = true;
     await userEvent.click(screen.getByRole('button', { name: 'go back' }));
-    expect(confirm).toHaveBeenCalledTimes(1);
+    // The router undoes a declined Back asynchronously, as the browser's history does.
+    await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(window.location.pathname).toBe('/form'));
     expect(screen.getByText('form')).toBeVisible();
     expect(window.location.pathname).toBe('/form');
   });

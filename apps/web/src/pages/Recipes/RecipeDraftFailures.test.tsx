@@ -86,6 +86,7 @@ function setup(
   routes: Parameters<typeof stubApi>[0],
   route = '/recipes/new',
   locale: 'en' | 'ro' | 'da' = 'en',
+  before: string[] = [],
 ) {
   const { fetchMock, calls } = stubApi({
     'GET /api/recipes/filters': () => Response.json(filters),
@@ -117,7 +118,7 @@ function setup(
         }
       />
     </Routes>,
-    { route, locale },
+    { route, locale, before },
   );
   return calls;
 }
@@ -318,11 +319,14 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
 
     it('asks for navigate(-1), the same door as Back inside the router', async () => {
       const user = typer();
-      setup({ [POST]: serverError });
+      // Something behind the form to go back to.
+      setup({ [POST]: serverError }, '/recipes/new', 'en', ['/recipes']);
       await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
       await elapse(1600);
       await screen.findByText(FAILED);
       await user.click(screen.getByRole('button', { name: 'go back' }));
+      // A history move settles asynchronously in the data router.
+      await elapse(0);
       expect(confirm).toHaveBeenCalledTimes(1);
       expect(screen.getByLabelText(/^Title/)).toHaveValue('Gran stew');
     });
