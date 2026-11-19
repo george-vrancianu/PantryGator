@@ -84,9 +84,11 @@ function Leave() {
 
 function setup(
   routes: Parameters<typeof stubApi>[0],
-  route = '/recipes/new',
-  locale: 'en' | 'ro' | 'da' = 'en',
-  before: string[] = [],
+  options: {
+    route?: string;
+    locale?: 'en' | 'ro' | 'da';
+    before?: string[];
+  } = {},
 ) {
   const { fetchMock, calls } = stubApi({
     'GET /api/recipes/filters': () => Response.json(filters),
@@ -118,7 +120,7 @@ function setup(
         }
       />
     </Routes>,
-    { route, locale, before },
+    { route: '/recipes/new', ...options },
   );
   return calls;
 }
@@ -232,7 +234,7 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
       'says it, and asks before leaving, in %s',
       async (locale, text, ask) => {
         const user = typer();
-        setup({ [POST]: serverError }, '/recipes/new', locale);
+        setup({ [POST]: serverError }, { locale });
         await user.type(
           (await screen.findAllByRole('textbox'))[0],
           'Gran stew',
@@ -320,7 +322,7 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
     it('asks for navigate(-1), the same door as Back inside the router', async () => {
       const user = typer();
       // Something behind the form to go back to.
-      setup({ [POST]: serverError }, '/recipes/new', 'en', ['/recipes']);
+      setup({ [POST]: serverError }, { before: ['/recipes'] });
       await user.type(await screen.findByLabelText(/^Title/), 'Gran stew');
       await elapse(1600);
       await screen.findByText(FAILED);
@@ -562,11 +564,7 @@ describe('Recipe Draft save failures, leave guard and version conflict', () => {
       ['da', 'Denne opskriftkladde er ændret på en anden enhed', 'Hent nyeste'],
     ] as const)('says it in %s', async (locale, text, action) => {
       const user = typer();
-      setup(
-        { [POST]: () => created(), [PUT]: conflict },
-        '/recipes/new',
-        locale,
-      );
+      setup({ [POST]: () => created(), [PUT]: conflict }, { locale });
       const title = (await screen.findAllByRole('textbox'))[0];
       await user.type(title, 'Gran');
       await elapse(1600);

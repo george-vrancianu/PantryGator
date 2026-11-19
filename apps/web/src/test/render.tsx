@@ -60,6 +60,7 @@ export function renderWithProviders(
       </QueryClientProvider>
     </I18nextProvider>,
   );
+  // RTL's own rerender would replace the whole tree, dropping the providers and router.
   const rerender = (next: ReactElement) => act(() => setUi(next));
   return { ...result, rerender, i18n, queryClient };
 }

@@ -174,7 +174,6 @@ describe('useLeaveGuard on a data router', () => {
     await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(window.location.pathname).toBe('/form'));
     expect(screen.getByText('form')).toBeVisible();
-    expect(window.location.pathname).toBe('/form');
   });
 
   it('does not ask when a save clears the unsaved work and leaves in the same tick', async () => {
