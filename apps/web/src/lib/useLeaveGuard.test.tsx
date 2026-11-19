@@ -59,9 +59,11 @@ function Page({ name }: { name: string }) {
   );
 }
 
+let router: ReturnType<typeof createBrowserRouter> | undefined;
+
 const mount = async () => {
   window.history.replaceState(null, '', '/start');
-  const router = createBrowserRouter([
+  router = createBrowserRouter([
     { path: '/start', element: <Page name="start" /> },
     { path: '/form', element: <Form /> },
     { path: '/other', element: <Page name="other" /> },
@@ -77,7 +79,11 @@ describe('useLeaveGuard on a data router', () => {
     ask = false;
     confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
   });
-  afterEach(() => confirm.mockRestore());
+  afterEach(() => {
+    confirm.mockRestore();
+    router?.dispose();
+    router = undefined;
+  });
 
   it('lets everything through while nothing is unsaved', async () => {
     await mount();
@@ -113,7 +119,7 @@ describe('useLeaveGuard on a data router', () => {
     ask = true;
     act(() => window.history.back());
     await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
-    // The move is undone, and the router never saw it.
+    // The router blocks the pop, the guard declines, and the router resets it.
     await waitFor(() => expect(window.location.pathname).toBe('/form'));
     expect(screen.getByText('form')).toBeVisible();
     expect(confirm).toHaveBeenCalledTimes(1);

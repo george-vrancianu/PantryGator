@@ -16,7 +16,7 @@ import { useBlocker } from 'react-router-dom';
  * `shouldAsk` is read at the moment of leaving, so it is current even in the
  * same tick as the state change that cleared it.
  *
- * A navigation to the same pathname never asks. A guarded page's own back or
+ * A guarded page's own back or
  * cancel must be a link or a path `navigate(...)`, not `navigate(-1)`, to keep
  * the in-app ask: `navigate(-1)` with no earlier entry leaves the app, and then
  * only `beforeunload` asks.

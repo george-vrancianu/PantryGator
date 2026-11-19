@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { App } from './App';
 import { VoiceNotices } from '@/components/voice/VoiceNotices/VoiceNotices';
 import { createI18n } from './i18n';
+import { RethrowRouteError } from './lib/RethrowRouteError';
 import { RouterLink } from './lib/RouterLink';
 
 const queryClient = new QueryClient({
@@ -18,6 +19,7 @@ const i18n = createI18n();
 const router = createBrowserRouter([
   {
     path: '*',
+    errorElement: <RethrowRouteError />,
     element: (
       <>
         <VoiceNotices />
