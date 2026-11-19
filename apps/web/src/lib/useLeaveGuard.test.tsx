@@ -1,17 +1,16 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  BrowserRouter,
+  createBrowserRouter,
   Link,
-  Route,
-  Routes,
+  RouterProvider,
   useLocation,
   useNavigate,
 } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLeaveGuard } from './useLeaveGuard';
 
-/** The router the app really uses (`<BrowserRouter>`), where `useBlocker` does not exist. */
+/** The router the app really uses: a data router on the browser's real history. */
 let ask = false;
 
 function Form() {
@@ -23,6 +22,19 @@ function Form() {
       <Link to="/other">other</Link>
       <button type="button" onClick={() => navigate(-1)}>
         go back
+      </button>
+      <button type="button" onClick={() => navigate('/other')}>
+        go other
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          // A save: the unsaved work is cleared and the page leaves in the same tick.
+          ask = false;
+          navigate('/other');
+        }}
+      >
+        save and leave
       </button>
       <button
         type="button"
@@ -49,20 +61,17 @@ function Page({ name }: { name: string }) {
 
 const mount = async () => {
   window.history.replaceState(null, '', '/start');
-  render(
-    <BrowserRouter>
-      <Routes>
-        <Route path="/start" element={<Page name="start" />} />
-        <Route path="/form" element={<Form />} />
-        <Route path="/other" element={<Page name="other" />} />
-      </Routes>
-    </BrowserRouter>,
-  );
+  const router = createBrowserRouter([
+    { path: '/start', element: <Page name="start" /> },
+    { path: '/form', element: <Form /> },
+    { path: '/other', element: <Page name="other" /> },
+  ]);
+  render(<RouterProvider router={router} />);
   await userEvent.click(screen.getByRole('button', { name: 'open form' }));
   await screen.findByText('form');
 };
 
-describe('useLeaveGuard on a BrowserRouter', () => {
+describe('useLeaveGuard on a data router', () => {
   let confirm: ReturnType<typeof vi.spyOn>;
   beforeEach(() => {
     ask = false;
@@ -143,5 +152,37 @@ describe('useLeaveGuard on a BrowserRouter', () => {
     await userEvent.click(screen.getByRole('button', { name: 'go back' }));
     expect(await screen.findByText('start at /start')).toBeVisible();
     expect(confirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('asks for navigate(...), staying on decline and leaving on accept', async () => {
+    await mount();
+    ask = true;
+    await userEvent.click(screen.getByRole('button', { name: 'go other' }));
+    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('form')).toBeVisible();
+    confirm.mockReturnValue(true);
+    await userEvent.click(screen.getByRole('button', { name: 'go other' }));
+    expect(await screen.findByText('other at /other')).toBeVisible();
+    expect(confirm).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps the page when navigate(-1) is declined', async () => {
+    await mount();
+    ask = true;
+    await userEvent.click(screen.getByRole('button', { name: 'go back' }));
+    // The router undoes a declined Back asynchronously, as the browser's history does.
+    await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(window.location.pathname).toBe('/form'));
+    expect(screen.getByText('form')).toBeVisible();
+  });
+
+  it('does not ask when a save clears the unsaved work and leaves in the same tick', async () => {
+    await mount();
+    ask = true;
+    await userEvent.click(
+      screen.getByRole('button', { name: 'save and leave' }),
+    );
+    expect(await screen.findByText('other at /other')).toBeVisible();
+    expect(confirm).not.toHaveBeenCalled();
   });
 });

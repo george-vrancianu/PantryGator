@@ -1,75 +1,47 @@
-import type { ContextType } from 'react';
-import { useContext, useEffect, useLayoutEffect, useRef } from 'react';
-import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useBlocker } from 'react-router-dom';
 
 /**
  * Asks before the Member leaves while `shouldAsk()` is true (unsaved work).
  *
- * The app runs on `<BrowserRouter>`, where React Router's `useBlocker` is not
- * available (it needs a data router), so this hook guards the three doors itself:
- *  - in-app navigation (links, `navigate(...)`, `navigate(-1)`): it wraps the
- *    router's `navigator.push / replace / go` while mounted, and asks with
- *    `window.confirm` (the same dialog the Scan screen uses);
- *  - the browser's Back and Forward buttons: a capturing `popstate` listener
- *    runs before the router's, asks, and on "stay" undoes the move with
- *    `history.go` (a `replace` to the same path, such as putting `?draft=` in
- *    the address, never asks);
+ * The app runs on a data router (`createBrowserRouter`), so this uses
+ * React Router's `useBlocker`:
+ *  - in-app navigation (links, `navigate(...)`, `navigate(-1)`) and the
+ *    browser's Back and Forward buttons are all blocked the same way; on
+ *    "blocked" it asks with `window.confirm` (the same dialog the Scan screen
+ *    uses) and then `proceed()`s or `reset()`s. A navigation to the same
+ *    pathname (such as putting `?draft=` in the address) never asks;
  *  - closing, reloading or leaving the site: `beforeunload`, with the browser's
  *    own wording.
  * `shouldAsk` is read at the moment of leaving, so it is current even in the
  * same tick as the state change that cleared it.
+ *
+ * A navigation to the same pathname never asks. A guarded page's own back or
+ * cancel must be a link or a path `navigate(...)`, not `navigate(-1)`, to keep
+ * the in-app ask: `navigate(-1)` with no earlier entry leaves the app, and then
+ * only `beforeunload` asks.
+ *
+ * React Router allows one active blocker at a time: mount one guard per page.
  */
 export function useLeaveGuard(shouldAsk: () => boolean, message: string): void {
-  const { navigator } = useContext(UNSAFE_NavigationContext);
-  const location = useLocation();
   const latest = useRef({ shouldAsk, message });
-  // Where the history entry we stand on sits, to undo a Back the Member declined.
-  const position = useRef<number | null>(null);
-  const here = useRef(location.pathname);
   useLayoutEffect(() => {
     latest.current = { shouldAsk, message };
-    here.current = location.pathname;
   });
-  useEffect(() => {
-    position.current = historyIndex();
-  }, [location.key]);
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname &&
+      latest.current.shouldAsk(),
+  );
 
   useEffect(() => {
-    /** True when leaving may go ahead. */
-    const ask = () =>
-      !latest.current.shouldAsk() || window.confirm(latest.current.message);
+    if (blocker.state !== 'blocked') return;
+    if (window.confirm(latest.current.message)) blocker.proceed();
+    else blocker.reset();
+  }, [blocker]);
 
-    // A `go` the Member agreed to is followed by a popstate that must not ask again.
-    let approved = false;
-    const restore = guardNavigator(navigator, ask, () => here.current, {
-      onGo: () => (approved = true),
-      onOther: () => (approved = false),
-    });
-
-    let undoing = false;
-    const onPop = (event: PopStateEvent) => {
-      if (approved) {
-        approved = false;
-        return;
-      }
-      if (undoing) {
-        undoing = false;
-        event.stopImmediatePropagation();
-        return;
-      }
-      if (!latest.current.shouldAsk()) return;
-      if (window.confirm(latest.current.message)) return;
-      // Declined: the browser has already moved, so put it back before the router hears of it.
-      event.stopImmediatePropagation();
-      const from = position.current;
-      const to = historyIndex();
-      if (from !== null && to !== null && from !== to) {
-        undoing = true;
-        window.history.go(from - to);
-      }
-    };
-    window.addEventListener('popstate', onPop, true);
-
+  useEffect(() => {
     const onUnload = (event: BeforeUnloadEvent) => {
       if (!latest.current.shouldAsk()) return;
       event.preventDefault();
@@ -77,62 +49,6 @@ export function useLeaveGuard(shouldAsk: () => boolean, message: string): void {
       event.returnValue = '';
     };
     window.addEventListener('beforeunload', onUnload);
-
-    return () => {
-      window.removeEventListener('popstate', onPop, true);
-      window.removeEventListener('beforeunload', onUnload);
-      restore();
-    };
-  }, [navigator]);
-}
-
-/** React Router keeps each entry's position in `history.state.idx`. */
-function historyIndex(): number | null {
-  const idx = (window.history.state as { idx?: unknown } | null)?.idx;
-  return typeof idx === 'number' ? idx : null;
-}
-
-function pathOf(target: string): string {
-  return target.split(/[?#]/)[0];
-}
-
-type Navigator = NonNullable<
-  ContextType<typeof UNSAFE_NavigationContext>
->['navigator'];
-
-/**
- * Makes `push`, `replace` and `go` ask first; returns the undo. It replaces
- * methods on the one shared navigator, so it assumes a single guard is mounted
- * at a time (one form per page); a second would wrap the first and ask twice.
- */
-function guardNavigator(
-  navigator: Navigator,
-  ask: () => boolean,
-  currentPath: () => string,
-  { onGo, onOther }: { onGo: () => void; onOther: () => void },
-): () => void {
-  const { push, replace, go } = navigator;
-  navigator.push = (...args: Parameters<typeof push>) => {
-    onOther();
-    if (ask()) push.apply(navigator, args);
-  };
-  navigator.replace = (...args: Parameters<typeof replace>) => {
-    onOther();
-    const [to] = args;
-    const target = typeof to === 'string' ? to : (to.pathname ?? currentPath());
-    // Same page (the address gaining its `draft` id) is not leaving.
-    if (pathOf(target) === currentPath() || ask()) {
-      replace.apply(navigator, args);
-    }
-  };
-  navigator.go = (delta: number) => {
-    if (!ask()) return;
-    onGo();
-    go.call(navigator, delta);
-  };
-  return () => {
-    navigator.push = push;
-    navigator.replace = replace;
-    navigator.go = go;
-  };
+    return () => window.removeEventListener('beforeunload', onUnload);
+  }, []);
 }

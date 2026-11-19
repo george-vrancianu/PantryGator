@@ -1,11 +1,12 @@
 import { AppUiProvider } from '@/components/layout/AppUiProvider/AppUiProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render } from '@testing-library/react';
-import type { ReactElement } from 'react';
+import { act, render } from '@testing-library/react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import {
-  MemoryRouter,
+  createMemoryRouter,
   Route,
+  RouterProvider,
   Routes,
   type InitialEntry,
 } from 'react-router-dom';
@@ -14,30 +15,54 @@ import { VoiceNotices } from '@/components/voice/VoiceNotices/VoiceNotices';
 import { createI18n, type Locale } from '../i18n';
 import { RouterLink } from '../lib/RouterLink';
 
-type Options = { route?: InitialEntry; locale?: Locale };
+type Options = {
+  route?: InitialEntry;
+  locale?: Locale;
+  /** Entries already behind `route` in the history, so `navigate(-1)` has somewhere to go. */
+  before?: InitialEntry[];
+};
 
-/** Render with the same providers as `main.tsx`, but a memory router and a fresh query cache. */
+/**
+ * Render with the same providers as `main.tsx`, but a memory router and a fresh query cache.
+ * The router is a data router (so `useBlocker` works), with one splat route around `ui`,
+ * as `main.tsx` has around `<App>`. `rerender(newUi)` swaps `ui` and keeps the providers.
+ */
 export function renderWithProviders(
   ui: ReactElement,
-  { route = '/', locale = 'en' }: Options = {},
+  { route = '/', locale = 'en', before = [] }: Options = {},
 ) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
   const i18n = createI18n(locale);
+  let setUi: (next: ReactElement) => void = () => {};
+  function Current() {
+    const [current, set] = useState(ui);
+    useEffect(() => {
+      setUi = set;
+    }, []);
+    return (
+      <>
+        <VoiceNotices />
+        {current}
+      </>
+    );
+  }
+  const router = createMemoryRouter([{ path: '*', element: <Current /> }], {
+    initialEntries: [...before, route],
+  });
   const result = render(
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         <AppUiProvider linkComponent={RouterLink}>
-          <MemoryRouter initialEntries={[route]}>
-            <VoiceNotices />
-            {ui}
-          </MemoryRouter>
+          <RouterProvider router={router} />
         </AppUiProvider>
       </QueryClientProvider>
     </I18nextProvider>,
   );
-  return { ...result, i18n, queryClient };
+  // RTL's own rerender would replace the whole tree, dropping the providers and router.
+  const rerender = (next: ReactElement) => act(() => setUi(next));
+  return { ...result, rerender, i18n, queryClient };
 }
 
 /** Render a page inside the app layout at its route, as the app does (the Voice Note lives in the layout). */
